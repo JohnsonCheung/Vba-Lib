@@ -10,7 +10,7 @@ For J = 0 To S1S2_UB(Ay)
    S1S2 = Ay(J)
    MdNm = S1S2.S1
    MthNm = S1S2.S2
-   Set M = Md(MdNm)
+'   Set M = Md(MdNm)
    MdMth_EnsPrivate M, MthNm
 Next
 End Sub

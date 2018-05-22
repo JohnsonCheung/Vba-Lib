@@ -1,70 +1,47 @@
 Attribute VB_Name = "Dta"
 Option Explicit
-Sub SetPush(A As Dictionary, K)
-If A.Exists(K) Then Exit Sub
-A.Add K, Empty
-End Sub
-Function DrsFldLvs$(A As Drs)
-DrsFldLvs = JnSpc(A.Fny)
-End Function
-Function DryColSet(Dry(), Col_Ix%) As Dictionary
-Dim O As New Dictionary
-If Not AyIsEmp(Dry) Then
-    Dim Dr
-    For Each Dr In Dry
-        SetPush O, Dr(Col_Ix)
-    Next
-End If
-Set DryColSet = O
-End Function
-Function DryKeyGpAy(Dry(), K_Ix%, Gp_Ix%) As Variant()
-If AyIsEmp(Dry) Then Exit Function
-Dim J%, O, K, GpAy(), O_Ix&, Gp, Dr, K_Ay()
-For Each Dr In Dry
-    K = Dr(K_Ix)
-    Gp = Dr(Gp_Ix)
-    O_Ix = AyIx(K_Ay, K)
-    If O_Ix = -1 Then
-        Push K_Ay, K
-        Push O, Array(K, Array(Gp))
+Sub DrIxAy_Asg(Dr, IxAy%(), ParamArray OAp())
+Dim J%
+For J = 0 To UB(IxAy)
+    If IsObject(OAp(J)) Then
+        Set OAp(J) = Dr(IxAy(J))
     Else
-        Push O(O_Ix)(1), Gp
+        OAp(J) = Dr(IxAy(J))
     End If
 Next
-DryKeyGpAy = O
-End Function
-Function IsSimTyLvs(A$) As Boolean
-Dim Ay$(): Ay = LvsSy(A)
-If AyIsEmp(Ay) Then Exit Function
-Dim I
-For Each I In Ay
-   If Not IsSimTyStr(Ay) Then Exit Function
-Next
-IsSimTyLvs = True
-End Function
-
-Sub DrsLoFmt(A As Drs, At As Range, LoFmtrLy$(), Optional LoNm$)
-Dim Lo As ListObject
-Set Lo = DrsLo(A, At, LoNm)
-LoFmt Lo, LoFmtrLy
+End Sub
+Sub AssEqDry(A(), B())
+If Not DryIsEq(A, B) Then Stop
 End Sub
 
-Function IsSimTyStr(S) As Boolean
-Select Case UCase(S)
-Case "TXT", "NBR", "LGC", "DTE", "OTH": IsSimTyStr = True
-End Select
+Function AyConst_ValConstDry(A, Constant) As Variant()
+If AyIsEmp(A) Then Exit Function
+Dim O(), I
+For Each I In A
+   Push O, Array(I, Constant)
+Next
+AyConst_ValConstDry = O
 End Function
 
-Function NewSimTy(SimTyStr$) As eSimTy
-Dim O As eSimTy
-Select Case UCase(SimTyStr)
-Case "TXT": O = eTxt
-Case "NBR": O = eNbr
-Case "LGC": O = eLgc
-Case "DTE": O = eDte
-Case Else: O = eOth
-End Select
-NewSimTy = O
+Function AyDt(A, Optional FldNm$ = "Itm", Optional DtNm$ = "Ay") As Dt
+Dim O As Dt
+O.DtNm = DtNm
+O.Fny = ApSy(FldNm)
+Dim ODry(), J%
+For J = 0 To UB(A)
+    Push ODry, Array(A(J))
+Next
+O.Dry = ODry
+AyDt = O
+End Function
+
+Function ConstAy_ConstValDry(Cons, A) As Variant()
+If AyIsEmp(A) Then Exit Function
+Dim O(), I
+For Each I In A
+   Push O, Array(Cons, I)
+Next
+ConstAy_ConstValDry = O
 End Function
 
 Function DaoTyToSim(T As DataTypeEnum) As eSimTy
@@ -102,23 +79,10 @@ End Select
 DaoTyToSim = O
 End Function
 
-Function SimTy_QuoteTp$(A As eSimTy)
-Const CSub$ = "SimTyQuoteTp"
-Dim O$
-Select Case A
-Case eTxt: O = "'?'"
-Case eNbr, eLgc: O = "?"
-Case eDte: O = "#?#"
-Case Else
-   Er CSub, "Given {eSimTy} should be [eTxt eNbr eDte eLgc]", A
-End Select
-SimTy_QuoteTp = O
-End Function
-
-Function DbDs(A As Database, Tbl_or_Tny, Optional DsNm$ = "Ds") As Ds
+Function DbDs(A As Database, Tny0, Optional DsNm$ = "Ds") As Ds
 Dim DtAy() As Dt
     Dim U%, Tny$()
-    Tny = DftNy(Tbl_or_Tny)
+    Tny = DftNy(Tny0)
     U = UB(Tny)
     ReDim DtAy(U)
     Dim J%
@@ -129,6 +93,17 @@ Dim O As Ds
     O.DsNm = DsNm
     O.DtAy = DtAy
 DbDs = O
+End Function
+
+Function DotNy_Dry(DotNy$()) As Variant()
+If AyIsEmp(DotNy) Then Exit Function
+Dim O(), I
+For Each I In DotNy
+   With Brk1(I, ".")
+       Push O, ApSy(.S1, .S2)
+   End With
+Next
+DotNy_Dry = O
 End Function
 
 Function DrExpLinesCol(Dr, LinesColIx%) As Variant()
@@ -144,6 +119,40 @@ Dim O()
     Next
 DrExpLinesCol = O
 End Function
+
+Function DrLin$(Dr, Wdt%())
+Dim UDr%
+   UDr = UB(Dr)
+Dim O$()
+   Dim U1%: U1 = UB(Wdt)
+   ReDim O(U1)
+   Dim W, V
+   Dim J%, V1$
+   J = 0
+   For Each W In Wdt
+       If UDr >= J Then V = Dr(J) Else V = ""
+       V1 = AlignL(V, W)
+       O(J) = V1
+       J = J + 1
+   Next
+DrLin = Quote(Join(O, " | "), "| * |")
+End Function
+
+Sub DrecBrw(A As Drec)
+DicBrw DrecDic(A)
+End Sub
+
+Function DrecDic(A As Drec) As Dictionary
+Dim J%, O As New Dictionary
+For J = 0 To UB(A.Fny)
+   O.Add A.Fny(J), A.Dr(J)
+Next
+Set DrecDic = O
+End Function
+
+Sub DrecDmp(A As Drec)
+DicDmp DrecDic(A)
+End Sub
 
 Function DrsAddConstCol(A As Drs, ColNm$, ConstVal) As Drs
 Dim O As Drs
@@ -184,7 +193,7 @@ End Sub
 Function DrsDrpCol(A As Drs, ColLvs_or_Ny) As Drs
 Dim ColNy$(): ColNy = DftNy(ColLvs_or_Ny)
 Ass AyHasSubAy(A.Fny, ColNy)
-Dim IxAy&()
+Dim IxAy%()
     IxAy = FnyIxAy(A.Fny, ColNy)
 Dim J%
 With DrsDrpCol
@@ -207,6 +216,16 @@ Dim O As Drs
 DrsExpLinesCol = O
 End Function
 
+Function DrsFldLvs$(A As Drs)
+DrsFldLvs = JnSpc(A.Fny)
+End Function
+
+Sub DrsLoFmt(A As Drs, At As Range, LoFmtrLy$(), Optional LoNm$)
+Dim Lo As ListObject
+Set Lo = DrsLo(A, At, LoNm)
+'LoFmt Lo, LoFmtrLy
+End Sub
+
 Function DrsReOrd(A As Drs, Partial_Fny0) As Drs
 Dim ReOrdFny$(): ReOrdFny = DftNy(Partial_Fny0)
 Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
@@ -214,6 +233,10 @@ Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
 Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
 DrsReOrd.Fny = OFny
 DrsReOrd.Dry = ODry
+End Function
+
+Function DrsRowCnt&(A As Drs, ColNm$, EqVal)
+DrsRowCnt = DryRowCnt(A.Dry, AyIx(A.Fny, ColNm), EqVal)
 End Function
 
 Function DrsSel(A As Drs, Fny0, Optional CrtEmpColIfReqFldNotFound As Boolean) As Drs
@@ -228,6 +251,10 @@ Dim O As Drs
     O.Fny = Fny
     O.Dry = DrySel(A.Dry, IxAy, CrtEmpColIfReqFldNotFound)
 DrsSel = O
+End Function
+
+Function DrsSrt(A As Drs, ColNm$, Optional IsDes As Boolean) As Drs
+DrsSrt = NewDrs(A.Fny, DrySrt(A.Dry, AyIx(A.Fny, ColNm), IsDes))
 End Function
 
 Function DrsStrCol(Drs As Drs, ColNm$) As String()
@@ -266,264 +293,6 @@ Dim O As Drs
 DrsWhRow = O
 End Function
 
-Sub DsBrw(A As Ds)
-AyBrw DsLy(A)
-End Sub
-
-Function DsHasDt(A As Ds, DtNm) As Boolean
-If DsIsEmp(A) Then Exit Function
-Dim J%
-For J = 0 To UBound(A.DtAy)
-    If A.DtAy(J).DtNm = DtNm Then DsHasDt = True: Exit Function
-Next
-End Function
-
-Function DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As String()
-Dim O$()
-    Push O, "*Ds " & A.DsNm & "=================================================="
-Dim Dic As Dictionary ' DicOf_Tn_to_BrkColNm
-    Set Dic = MapStr_Dic(DtBrkLinMapStr)
-If Not DtAy_IsEmp(A.DtAy) Then
-    Dim J%, DtNm$, Dt As Dt, BrkColNm$
-    For J = 0 To UBound(A.DtAy)
-        Dt = A.DtAy(J)
-        DtNm$ = Dt.DtNm
-        If Dic.Exists(DtNm) Then BrkColNm = Dic(DtNm) Else BrkColNm = ""
-        PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
-    Next
-End If
-DsLy = O
-End Function
-
-Sub Fiy(Fny$(), FldLvs$, ParamArray OAp())
-'Fiy=Field Index Array
-Dim A$(): A = SplitSpc(FldLvs)
-Dim I&(): I = AyIxAy(Fny, A)
-Dim J%
-For J = 0 To UB(I)
-    OAp(J) = I(J)
-Next
-End Sub
-
-Function FnyIxAy(Fny$(), FldLvs_or_Fny) As Long()
-Dim SubFny$(): SubFny = DftNy(FldLvs_or_Fny)
-'Return Field Ix A
-FnyIxAy = AyIxAy(Fny, SubFny)
-End Function
-
-Function NewDs(A() As Dt, Optional DsNm$ = "Ds") As Ds
-NewDs.DsNm = DsNm
-NewDs.DtAy = A
-End Function
-
-Function DsIsEmp(A As Ds) As Boolean
-DsIsEmp = DtAy_IsEmp(A.DtAy)
-End Function
-
-Function DtIsEmp(A As Dt) As Boolean
-DtIsEmp = AyIsEmp(A.Dry)
-End Function
-Function DtNmDrs_Dt(A$, Drs As Drs) As Dt
-With DtNmDrs_Dt
-    .DtNm = A
-    .Fny = Drs.Fny
-    .Dry = Drs.Dry
-End With
-End Function
-Function DtAy_IsEmp(A() As Dt) As Boolean
-DtAy_IsEmp = DtAySz(A) = 0
-End Function
-Function ItrNy(A, Optional Lik$ = "*") As String()
-Dim O$(), Obj, N$
-If A.Count > 0 Then
-    For Each Obj In A
-        N = Obj.Name
-        If N Like Lik Then Push O, N
-    Next
-End If
-ItrNy = O
-End Function
-Sub ItrDrs__Tst()
-DrsBrw ItrDrs(DbtFlds(SampleDb_DutyPrepare, "Permit"), "Name Type Required")
-'DrsBrw ItrDrs(Application.VBE.VBProjects, "Name Type")
-End Sub
-Function ItrItmByPrp(A, PrpNm$, PrpV)
-Dim O, V
-If A.Count > 0 Then
-    For Each O In A
-        V = CallByName(O, PrpNm, VbGet)
-        If V = PrpV Then
-            Asg O, ItrItmByPrp
-            Exit Function
-        End If
-    Next
-End If
-End Function
-Function ItrCntByBoolPrp&(A, BoolPrpNm$)
-If A.Count = 0 Then Exit Function
-Dim O, Cnt&
-For Each O In A
-    If CallByName(O, BoolPrpNm, VbGet) Then
-        Cnt = Cnt + 1
-    End If
-Next
-ItrCntByBoolPrp = Cnt
-End Function
-
-Function ItrDrs(Itr, PrpNy0) As Drs
-Dim Ny$()
-    Ny = DftNy(PrpNy0)
-Dim Dry()
-    Dim Obj
-    If Itr.Count > 0 Then
-        For Each Obj In Itr
-            Push Dry, ObjPrpDr(Obj, Ny)
-        Next
-    End If
-Dim O As Drs
-    O.Fny = Ny
-    O.Dry = Dry
-ItrDrs = O
-End Function
-
-Function ObjPrpDr(Obj, PrpNy0) As Variant()
-Dim Ny$(): Ny = DftNy(PrpNy0)
-Dim U%
-    U = UB(Ny)
-Dim O()
-    ReDim O(U)
-    Dim J%
-    For J = 0 To U
-        O(J) = CallByName(Obj, Ny(J), VbGet)
-    Next
-ObjPrpDr = O
-End Function
-
-Private Sub DbDs__Tst()
-Dim Ds As Ds
-Ds = DbDs(CurDb, "Permit PermitD")
-Stop
-End Sub
-
-Private Sub DrsSel__Tst()
-'DrsBrw DrsSel(Vmd.MthDrs, "MthNm Mdy Ty MdNm")
-'DrsBrw Vmd.MthDrs
-End Sub
-
-Private Sub DsWb__Tst()
-Dim Wb As Workbook
-Set Wb = DsWb(DbDs(CurDb, "Permit PermitD"))
-WbVis Wb
-Stop
-Wb.Close False
-End Sub
-
-Sub Tst()
-DrsSel__Tst
-ItrDrs__Tst
-End Sub
-
-Function DtAySz%(DtAy() As Dt)
-On Error Resume Next
-DtAySz = UBound(DtAy) + 1
-End Function
-
-Sub DtBrw(Dt As Dt, Optional Fnn)
-AyBrw DtLy(Dt), IIf(ValIsEmp(Fnn), Dt.DtNm, Fnn)
-End Sub
-
-Function DtCsvLy(A As Dt) As String()
-Dim O$()
-Dim QQStr$
-Dim Dr
-Push O, JnComma(AyQuoteDbl(A.Fny))
-For Each Dr In A.Dry
-   Push O, FmtQQAv(QQStr, Dr)
-Next
-End Function
-
-Sub DtDmp(A As Dt)
-AyDmp DtLy(A)
-End Sub
-Sub DsDmp(A As Ds)
-AyDmp DsLy(A)
-End Sub
-
-Function DtDrpCol(A As Dt, ColLvs_or_Ny) As Dt
-Dim B As Drs: B = DtDrs(A)
-Dim C As Drs: C = DrsDrpCol(B, ColLvs_or_Ny)
-DtDrpCol = NewDt(A.DtNm, C.Fny, C.Dry)
-End Function
-
-Function DtDrs(A As Dt) As Drs
-Dim O As Drs
-O.Fny = A.Fny
-O.Dry = A.Dry
-DtDrs = O
-End Function
-
-Function DtLy(A As Dt, Optional MaxColWdt& = 100, Optional BrkColNm$) As String()
-Dim O$()
-   Push O, "*Tbl " & A.DtNm
-   PushAy O, DrsLy(DtDrs(A), MaxColWdt, BrkColNm)
-DtLy = O
-End Function
-
-Function DtReOrd(A As Dt, ColLvs$) As Dt
-Dim ReOrdFny$(): ReOrdFny = LvsSy(ColLvs)
-Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
-Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
-Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
-DtReOrd.DtNm = A.DtNm
-DtReOrd.Fny = OFny
-DtReOrd.Dry = ODry
-End Function
-
-Function SqNRow%(A)
-On Error Resume Next
-SqNRow = UBound(A, 1)
-End Function
-Function SqNCol%(A)
-On Error Resume Next
-SqNCol = UBound(A, 2)
-End Function
-
-Function DtSrt(A As Dt, ColNm$, Optional IsDes As Boolean) As Dt
-DtSrt = NewDtByDrs(A.DtNm, DrsSrt(DtDrs(A), ColNm, IsDes))
-End Function
-
-Function NewDt(DtNm$, Fny0, Dry) As Dt
-NewDt.Dry = Dry
-NewDt.Fny = DftNy(Fny0)
-NewDt.DtNm = DtNm
-End Function
-
-Function NewDtByDrs(DtNm$, A As Drs) As Dt
-NewDtByDrs = NewDt(DtNm, A.Fny, A.Dry)
-End Function
-
-Function SampleDt() As Dt
-Dim O As Dt
-O.DtNm = "Sample"
-O.Dry = Array(Array(1))
-O.Fny = LvsSy("A B C")
-End Function
-
-Sub AssEqDry(A(), B())
-If Not DryIsEq(A, B) Then Stop
-End Sub
-
-Function DotNyDry(DotNy$()) As Variant()
-If AyIsEmp(DotNy) Then Exit Function
-Dim O(), I
-For Each I In DotNy
-   With Brk1(I, ".")
-       Push O, ApSy(.S1, .S2)
-   End With
-Next
-DotNyDry = O
-End Function
-
 Function DryAddConstCol(Dry(), ConstVal) As Variant()
 If AyIsEmp(Dry) Then Exit Function
 Dim N%
@@ -552,6 +321,42 @@ For Each Dr In Dry
 Next
 DryCol = O
 End Function
+
+Function DryColSet(Dry(), Col_Ix%) As Dictionary
+Dim O As New Dictionary
+If Not AyIsEmp(Dry) Then
+    Dim Dr
+    For Each Dr In Dry
+        SetPush O, Dr(Col_Ix)
+    Next
+End If
+Set DryColSet = O
+End Function
+
+Sub DryDmp(Dry)
+AyDmp DryLy(Dry)
+End Sub
+
+Function DryDrIx_IsBrk(Dry, DrIx&, BrkColIx%) As Boolean
+If AyIsEmp(Dry) Then Exit Function
+If DrIx = 0 Then Exit Function
+If DrIx = UB(Dry) Then Exit Function
+If Dry(DrIx)(BrkColIx) = Dry(DrIx - 1)(BrkColIx) Then Exit Function
+DryDrIx_IsBrk = True
+End Function
+
+Function DryCvCellToStr(Dry, ShwZer As Boolean) As Variant()
+Dim O(), Dr
+For Each Dr In Dry
+   Push O, DrValCellStr(Dr, ShwZer)
+Next
+DryCvCellToStr = O
+End Function
+
+Function DryIntCol(Dry(), ColIx%) As Integer()
+DryIntCol = AyIntAy(DryCol(Dry, ColIx))
+End Function
+
 Function DryIsEq(A(), B()) As Boolean
 Dim N&: N = Sz(A)
 If N <> Sz(B) Then Exit Function
@@ -564,35 +369,27 @@ Next
 DryIsEq = True
 End Function
 
-
-Sub DryDmp(Dry)
-AyDmp DryLy(Dry)
-End Sub
-
-Function DryFmtCell(Dry, ShwZer As eShwZer) As Variant()
-Dim O(), Dr
-For Each Dr In Dry
-   Push O, DrFmtCell(Dr, ShwZer)
-Next
-DryFmtCell = O
-End Function
-
-Function DryDrIx_IsBrk(Dry, DrIx&, BrkColIx%) As Boolean
+Function DryKeyGpAy(Dry(), K_Ix%, Gp_Ix%) As Variant()
 If AyIsEmp(Dry) Then Exit Function
-If DrIx = 0 Then Exit Function
-If DrIx = UB(Dry) Then Exit Function
-If Dry(DrIx)(BrkColIx) = Dry(DrIx - 1)(BrkColIx) Then Exit Function
-DryDrIx_IsBrk = True
+Dim J%, O, K, GpAy(), O_Ix&, Gp, Dr, K_Ay()
+For Each Dr In Dry
+    K = Dr(K_Ix)
+    Gp = Dr(Gp_Ix)
+    O_Ix = AyIx(K_Ay, K)
+    If O_Ix = -1 Then
+        Push K_Ay, K
+        Push O, Array(K, Array(Gp))
+    Else
+        Push O(O_Ix)(1), Gp
+    End If
+Next
+DryKeyGpAy = O
 End Function
 
-Function DryIntCol(Dry(), ColIx%) As Integer()
-DryIntCol = AyIntAy(DryCol(Dry, ColIx))
-End Function
-
-Function DryLy(A, Optional MaxColWdt& = 100, Optional BrkColIx% = -1, Optional ShwZer As eShwZer) As String()
-If ValIsEmp(A) Then Exit Function
+Function DryLy(A, Optional MaxColWdt& = 100, Optional BrkColIx% = -1, Optional ShwZer As Boolean) As String()
+If VarIsEmp(A) Then Exit Function
 Dim A1()
-    A1 = DryFmtCell(A, ShwZer)
+    A1 = DryCvCellToStr(A, ShwZer)
 Dim Hdr$
     Dim W%(): W = DryWdtAy(A1, MaxColWdt)
     If AyIsEmp(W) Then Exit Function
@@ -611,12 +408,12 @@ Dim O$()
         For Each Dr In A1
             IsBrk = DryDrIx_IsBrk(A, DrIx, BrkColIx)
             If IsBrk Then Push O, Hdr
-            Push O, Dr_Lin(Dr, W)
+            Push O, DrLin(Dr, W)
             DrIx = DrIx + 1
         Next
     Else
         For Each Dr In A1
-            Push O, Dr_Lin(Dr, W)
+            Push O, DrLin(Dr, W)
         Next
     End If
     Push O, Hdr
@@ -698,13 +495,22 @@ Next
 DryReOrd = O
 End Function
 
-Function DryRmvColByIxAy(Dry, IxAy&()) As Variant()
+Function DryRmvColByIxAy(Dry, IxAy%()) As Variant()
 If AyIsEmp(Dry) Then Exit Function
 Dim O(), Dr
 For Each Dr In Dry
    Push O, AyWhExclIxAy(Dr, IxAy)
 Next
 DryRmvColByIxAy = O
+End Function
+
+Function DryRowCnt&(Dry, ColIx&, EqVal)
+If AyIsEmp(Dry) Then Exit Function
+Dim J&, O&, Dr
+For Each Dr In Dry
+   If Dr(ColIx) = EqVal Then O = O + 1
+Next
+DryRowCnt = O
 End Function
 
 Function DrySel(A(), ColIxAy&(), Optional CrtEmpColIfReqFldNotFound As Boolean) As Variant()
@@ -768,7 +574,7 @@ Dim O%()
    Dim Dr, UDr%, U%, V, L%, J%
    U = -1
    For Each Dr In Dry
-       If Not ValIsStrAy(Dr) Then Er CSub, "This routine should call DryCvFmtEachCell first so that each cell is FmtCell as a string.|Now some Dr in given-Dry is not a StrAy, but[" & TypeName(Dr) & "]"
+       If Not VarIsStrAy(Dr) Then Er CSub, "This routine should call DryCvFmtEachCell first so that each cell is ValCellStr as a string.|Now some Dr in given-Dry is not a StrAy, but[" & TypeName(Dr) & "]"
        UDr = UB(Dr)
        If UDr > U Then ReDim Preserve O(UDr): U = UDr
        If AyIsEmp(Dr) Then GoTo Nxt
@@ -788,15 +594,6 @@ Next
 DryWdtAy = O
 End Function
 
-Function DryRowCnt&(Dry, ColIx&, EqVal)
-If AyIsEmp(Dry) Then Exit Function
-Dim J&, O&, Dr
-For Each Dr In Dry
-   If Dr(ColIx) = EqVal Then O = O + 1
-Next
-DryRowCnt = O
-End Function
-
 Function DryWh(Dry(), ColIx%, EqVal) As Variant()
 Dim O()
 Dim J&
@@ -812,89 +609,207 @@ DryRg Dry, WsA1(O)
 Set DryWs = O
 End Function
 
-Function AyConst_ValConstDry(A, Constant) As Variant()
-If AyIsEmp(A) Then Exit Function
-Dim O(), I
-For Each I In A
-   Push O, Array(I, Constant)
-Next
-AyConst_ValConstDry = O
-End Function
-
-Function ConstAy_ConstValDry(Cons, A) As Variant()
-If AyIsEmp(A) Then Exit Function
-Dim O(), I
-For Each I In A
-   Push O, Array(Cons, I)
-Next
-ConstAy_ConstValDry = O
-End Function
-
-Function VblLy_Dry(A$()) As Variant()
-If AyIsEmp(A) Then Exit Function
-Dim O()
-   Dim I
-   For Each I In A
-       Push O, SyTrim(SplitVBar(CStr(I)))
-   Next
-VblLy_Dry = O
-End Function
-
-Sub VblLy_Dry__Tst()
-Dim VblLy$()
-Dim Exp$()
-Push VblLy, "|lskdf|sdlf|lsdkf"
-Push VblLy, "|lsdf|"
-Push VblLy, "|lskdfj|sdlfk|sdlkfj|sdklf|skldf|"
-Push VblLy, "|sdf"
-Dim Act()
-Act = VblLy_Dry(VblLy)
-DryBrw Act
+Sub DsAddDt(ODs As Ds, T As Dt)
+If DsHasDt(ODs, T.DtNm) Then Err.Raise 1, , FmtQQ("DsAddDt: Ds[?] already has Dt[?]", ODs.DsNm, T.DtNm)
+Dim N%: N = DtAySz(ODs.DtAy)
+ReDim Preserve ODs.DtAy(N)
+ODs.DtAy(N) = T
 End Sub
 
-Function Dr_Lin$(Dr, Wdt%())
-Dim UDr%
-   UDr = UB(Dr)
-Dim O$()
-   Dim U1%: U1 = UB(Wdt)
-   ReDim O(U1)
-   Dim W, V
-   Dim J%
-   J = 0
-   For Each W In Wdt
-       If UDr >= J Then V = Dr(J) Else V = ""
-       O(J) = AlignL(V, W)
-       J = J + 1
-   Next
-Dr_Lin = Quote(Join(O, " | "), "| * |")
-End Function
+Sub DsBrw(A As Ds)
+AyBrw DsLy(A)
+End Sub
 
-Function DrsSrt(A As Drs, ColNm$, Optional IsDes As Boolean) As Drs
-DrsSrt = NewDrs(A.Fny, DrySrt(A.Dry, AyIx(A.Fny, ColNm), IsDes))
-End Function
-Function S1S2Ay_Dry(A() As S1S2) As Variant()
-Dim O()
+Sub DsDmp(A As Ds)
+AyDmp DsLy(A)
+End Sub
+
+Function DsHasDt(A As Ds, DtNm) As Boolean
+If DsIsEmp(A) Then Exit Function
 Dim J%
-For J = 0 To S1S2_UB(A)
-   With A(J)
-       Push O, Array(.S1, .S2)
-   End With
+For J = 0 To UBound(A.DtAy)
+    If A.DtAy(J).DtNm = DtNm Then DsHasDt = True: Exit Function
 Next
-S1S2Ay_Dry = O
 End Function
 
-Function DrsRowCnt&(A As Drs, ColNm$, EqVal)
-DrsRowCnt = DryRowCnt(A.Dry, AyIx(A.Fny, ColNm), EqVal)
+Function DsIsEmp(A As Ds) As Boolean
+DsIsEmp = DtAy_IsEmp(A.DtAy)
 End Function
 
-Function S1S2Ay_Drs(A() As S1S2) As Drs
-S1S2Ay_Drs.Fny = SplitSpc("S1 S2")
-S1S2Ay_Drs.Dry = S1S2Ay_Dry(A)
+Function DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As String()
+Dim O$()
+    Push O, "*Ds " & A.DsNm & "=================================================="
+Dim Dic As Dictionary ' DicOf_Tn_to_BrkColNm
+    Set Dic = MapStr_Dic(DtBrkLinMapStr)
+If Not DtAy_IsEmp(A.DtAy) Then
+    Dim J%, DtNm$, Dt As Dt, BrkColNm$
+    For J = 0 To UBound(A.DtAy)
+        Dt = A.DtAy(J)
+        DtNm$ = Dt.DtNm
+        If Dic.Exists(DtNm) Then BrkColNm = Dic(DtNm) Else BrkColNm = ""
+        PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
+    Next
+End If
+DsLy = O
 End Function
-Function NewDrsByVbl(DrsVbl$) As Drs
-'SpecStr:Vbl:VbarLine
-'SpecStr:DrsVbl:Data-record-set-vbar-line
-NewDrsByVbl = NewDrsByLy(SplitVBar(DrsVbl))
+
+Function DtAySz%(DtAy() As Dt)
+On Error Resume Next
+DtAySz = UBound(DtAy) + 1
+End Function
+
+Function DtAy_IsEmp(A() As Dt) As Boolean
+DtAy_IsEmp = DtAySz(A) = 0
+End Function
+
+Sub DtBrw(Dt As Dt, Optional Fnn)
+AyBrw DtLy(Dt), IIf(VarIsEmp(Fnn), Dt.DtNm, Fnn)
+End Sub
+
+Function DtCsvLy(A As Dt) As String()
+Dim O$()
+Dim QQStr$
+Dim Dr
+Push O, JnComma(AyQuoteDbl(A.Fny))
+For Each Dr In A.Dry
+   Push O, FmtQQAv(QQStr, Dr)
+Next
+End Function
+
+Sub DtDmp(A As Dt)
+AyDmp DtLy(A)
+End Sub
+
+Function DtDrpCol(A As Dt, ColLvs_or_Ny) As Dt
+Dim B As Drs: B = DtDrs(A)
+Dim C As Drs: C = DrsDrpCol(B, ColLvs_or_Ny)
+DtDrpCol = NewDt(A.DtNm, C.Fny, C.Dry)
+End Function
+
+Function DtDrs(A As Dt) As Drs
+Dim O As Drs
+O.Fny = A.Fny
+O.Dry = A.Dry
+DtDrs = O
+End Function
+
+Function DtIsEmp(A As Dt) As Boolean
+DtIsEmp = AyIsEmp(A.Dry)
+End Function
+
+Function DtLy(A As Dt, Optional MaxColWdt& = 100, Optional BrkColNm$, Optional ShwZer As Boolean) As String()
+Dim O$()
+   Push O, "*Tbl " & A.DtNm
+   PushAy O, DrsLy(DtDrs(A), MaxColWdt, BrkColNm, ShwZer)
+DtLy = O
+End Function
+
+Function DtNmDrs_Dt(A$, Drs As Drs) As Dt
+With DtNmDrs_Dt
+    .DtNm = A
+    .Fny = Drs.Fny
+    .Dry = Drs.Dry
+End With
+End Function
+
+Function DtReOrd(A As Dt, ColLvs$) As Dt
+Dim ReOrdFny$(): ReOrdFny = LvsSy(ColLvs)
+Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
+Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
+Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
+DtReOrd.DtNm = A.DtNm
+DtReOrd.Fny = OFny
+DtReOrd.Dry = ODry
+End Function
+
+Function DtSrt(A As Dt, ColNm$, Optional IsDes As Boolean) As Dt
+DtSrt = NewDtByDrs(A.DtNm, DrsSrt(DtDrs(A), ColNm, IsDes))
+End Function
+
+Sub Fiy(Fny$(), FldLvs$, ParamArray OAp())
+'Fiy=Field Index Array
+Dim A$(): A = SplitSpc(FldLvs)
+Dim I&(): I = AyIxAy(Fny, A)
+Dim J%
+For J = 0 To UB(I)
+    OAp(J) = I(J)
+Next
+End Sub
+
+Function IsSimTyLvs(A$) As Boolean
+Dim Ay$(): Ay = LvsSy(A)
+If AyIsEmp(Ay) Then Exit Function
+Dim I
+For Each I In Ay
+   If Not IsSimTyStr(Ay) Then Exit Function
+Next
+IsSimTyLvs = True
+End Function
+
+Function IsSimTyStr(S) As Boolean
+Select Case UCase(S)
+Case "TXT", "NBR", "LGC", "DTE", "OTH": IsSimTyStr = True
+End Select
+End Function
+
+Function ItrCntByBoolPrp&(A, BoolPrpNm$)
+If A.Count = 0 Then Exit Function
+Dim O, Cnt&
+For Each O In A
+    If CallByName(O, BoolPrpNm, VbGet) Then
+        Cnt = Cnt + 1
+    End If
+Next
+ItrCntByBoolPrp = Cnt
+End Function
+
+Function ItrDrs(Itr, PrpNy0) As Drs
+Dim Ny$()
+    Ny = DftNy(PrpNy0)
+Dim Dry()
+    Dim Obj
+    If Itr.Count > 0 Then
+        For Each Obj In Itr
+            Push Dry, ObjPrpDr(Obj, Ny)
+        Next
+    End If
+Dim O As Drs
+    O.Fny = Ny
+    O.Dry = Dry
+ItrDrs = O
+End Function
+
+Function ItrItmByPrp(A, PrpNm$, PrpV)
+Dim O, V
+If A.Count > 0 Then
+    For Each O In A
+        V = CallByName(O, PrpNm, VbGet)
+        If V = PrpV Then
+            Asg O, ItrItmByPrp
+            Exit Function
+        End If
+    Next
+End If
+End Function
+
+Function ItrNy(A, Optional Lik$ = "*") As String()
+Dim O$(), Obj, N$
+If A.Count > 0 Then
+    For Each Obj In A
+        N = Obj.Name
+        If N Like Lik Then Push O, N
+    Next
+End If
+ItrNy = O
+End Function
+
+Function NewDDLines(Ly$()) As DDLines
+Dim O As New DDLines
+Set NewDDLines = O.Init(Ly)
+End Function
+
+Function NewDrByLvs(Lvs$, TyAy() As eSimTy) As Variant()
+
 End Function
 
 Function NewDrs(Fny0, Dry) As Drs
@@ -922,38 +837,103 @@ End If
 NewDrsByLy = NewDrs(Fny, Dry)
 End Function
 
-Sub DrecBrw(A As Drec)
-DicBrw DrecDic(A)
-End Sub
+Function NewDrsByVbl(DrsVbl$) As Drs
+'SpecStr:Vbl:VbarLine
+'SpecStr:DrsVbl:Data-record-set-vbar-line
+NewDrsByVbl = NewDrsByLy(SplitVBar(DrsVbl))
+End Function
 
-Function DrecDic(A As Drec) As Dictionary
-Dim J%, O As New Dictionary
-For J = 0 To UB(A.Fny)
-   O.Add A.Fny(J), A.Dr(J)
+Function NewDs(A() As Dt, Optional DsNm$ = "Ds") As Ds
+NewDs.DsNm = DsNm
+NewDs.DtAy = A
+End Function
+
+Function NewDt(DtNm$, Fny0, Dry) As Dt
+NewDt.Dry = Dry
+NewDt.Fny = DftNy(Fny0)
+NewDt.DtNm = DtNm
+End Function
+
+Function NewDtByDrs(DtNm$, A As Drs) As Dt
+NewDtByDrs = NewDt(DtNm, A.Fny, A.Dry)
+End Function
+
+Function NewSimTy(SimTyStr$) As eSimTy
+Dim O As eSimTy
+Select Case UCase(SimTyStr)
+Case "TXT": O = eTxt
+Case "NBR": O = eNbr
+Case "LGC": O = eLgc
+Case "DTE": O = eDte
+Case Else: O = eOth
+End Select
+NewSimTy = O
+End Function
+
+Function ObjPrpDr(Obj, PrpNy0) As Variant()
+Dim Ny$(): Ny = DftNy(PrpNy0)
+Dim U%
+    U = UB(Ny)
+Dim O()
+    ReDim O(U)
+    Dim J%
+    For J = 0 To U
+        O(J) = CallByName(Obj, Ny(J), VbGet)
+    Next
+ObjPrpDr = O
+End Function
+
+Function S1S2Ay_Drs(A() As S1S2) As Drs
+S1S2Ay_Drs.Fny = SplitSpc("S1 S2")
+S1S2Ay_Drs.Dry = S1S2Ay_Dry(A)
+End Function
+
+Function S1S2Ay_Dry(A() As S1S2) As Variant()
+Dim O()
+Dim J%
+For J = 0 To S1S2_UB(A)
+   With A(J)
+       Push O, Array(.S1, .S2)
+   End With
 Next
-Set DrecDic = O
+S1S2Ay_Dry = O
 End Function
 
-Sub DrecDmp(A As Drec)
-DicDmp DrecDic(A)
-End Sub
-
-Function NewDDLines(Ly$()) As DDLines
-Dim O As New DDLines
-Set NewDDLines = O.Init(Ly)
+Function SampleDt() As Dt
+Dim O As Dt
+O.DtNm = "Sample"
+O.Dry = Array(Array(1))
+O.Fny = LvsSy("A B C")
 End Function
-Sub TstDDLines()
-Dim A As New DDLines: A.Tst
+
+Sub SetPush(A As Dictionary, K)
+If A.Exists(K) Then Exit Sub
+A.Add K, Empty
 End Sub
 
-Private Sub TitAy_Sq__Tst()
-Dim A$()
-Push A, "ksdf | skdfj  |skldf jf"
-Push A, "skldf|sdkfl|lskdf|slkdfj"
-Push A, "askdfj|sldkf"
-Push A, "fskldf"
-SqBrw TitAy_Sq(A)
-End Sub
+Function SimTy_QuoteTp$(A As eSimTy)
+Const CSub$ = "SimTyQuoteTp"
+Dim O$
+Select Case A
+Case eTxt: O = "'?'"
+Case eNbr, eLgc: O = "?"
+Case eDte: O = "#?#"
+Case Else
+   Er CSub, "Given {eSimTy} should be [eTxt eNbr eDte eLgc]", A
+End Select
+SimTy_QuoteTp = O
+End Function
+
+Function SqNCol%(A)
+On Error Resume Next
+SqNCol = UBound(A, 2)
+End Function
+
+Function SqNRow%(A)
+On Error Resume Next
+SqNRow = UBound(A, 1)
+End Function
+
 Function TitAy_Sq(TitAy$())
 Dim UFld%: UFld = UB(TitAy)
 Dim ColVBar()
@@ -980,25 +960,67 @@ Dim O()
     Next
 TitAy_Sq = O
 End Function
-Function AyDt(A, Optional FldNm$ = "Itm", Optional DtNm$ = "Ay") As Dt
-Dim O As Dt
-O.DtNm = DtNm
-O.Fny = ApSy(FldNm)
-Dim ODry(), J%
-For J = 0 To UB(A)
-    Push ODry, Array(A(J))
-Next
-O.Dry = ODry
-AyDt = O
-End Function
-Sub DsAddDt(ODs As Ds, T As Dt)
-If DsHasDt(ODs, T.DtNm) Then Err.Raise 1, , FmtQQ("DsAddDt: Ds[?] already has Dt[?]", ODs.DsNm, T.DtNm)
-Dim N%: N = DtAySz(ODs.DtAy)
-ReDim Preserve ODs.DtAy(N)
-ODs.DtAy(N) = T
+
+Sub TstDDLines()
+Dim A As New DDLines: A.Tst
 End Sub
 
-Function NewDrByLvs(Lvs$, TyAy() As eSimTy) As Variant()
-
+Function VblLy_Dry(A$()) As Variant()
+If AyIsEmp(A) Then Exit Function
+Dim O()
+   Dim I
+   For Each I In A
+       Push O, SyTrim(SplitVBar(CStr(I)))
+   Next
+VblLy_Dry = O
 End Function
 
+Private Sub DbDs__Tst()
+Dim Ds As Ds
+Ds = DbDs(CurDb, "Permit PermitD")
+Stop
+End Sub
+
+Private Sub DrsSel__Tst()
+'DrsBrw DrsSel(Vmd.MthDrs, "MthNm Mdy Ty MdNm")
+'DrsBrw Vmd.MthDrs
+End Sub
+
+Private Sub DsWb__Tst()
+Dim Wb As Workbook
+Set Wb = DsWb(DbDs(CurDb, "Permit PermitD"))
+WbVis Wb
+Stop
+Wb.Close False
+End Sub
+
+Sub ItrDrs__Tst()
+DrsBrw ItrDrs(DbtFlds(SampleDb_DutyPrepare, "Permit"), "Name Type Required")
+'DrsBrw ItrDrs(Application.VBE.VBProjects, "Name Type")
+End Sub
+
+Private Sub TitAy_Sq__Tst()
+Dim A$()
+Push A, "ksdf | skdfj  |skldf jf"
+Push A, "skldf|sdkfl|lskdf|slkdfj"
+Push A, "askdfj|sldkf"
+Push A, "fskldf"
+SqBrw TitAy_Sq(A)
+End Sub
+
+Sub VblLy_Dry__Tst()
+Dim VblLy$()
+Dim Exp$()
+Push VblLy, "|lskdf|sdlf|lsdkf"
+Push VblLy, "|lsdf|"
+Push VblLy, "|lskdfj|sdlfk|sdlkfj|sdklf|skldf|"
+Push VblLy, "|sdf"
+Dim Act()
+Act = VblLy_Dry(VblLy)
+DryBrw Act
+End Sub
+
+Sub Tst()
+DrsSel__Tst
+ItrDrs__Tst
+End Sub

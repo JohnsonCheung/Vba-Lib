@@ -28,7 +28,7 @@ End Function
 
 Function VblAlignAsLy(Vbl$, Optional Pfx$, Optional IdentOpt%, Optional Sfx$, Optional WdtOpt%) As String()
 Ass IsVdtVbl(Vbl)
-If ValIsEmp(Vbl) Then Exit Function
+If VarIsEmp(Vbl) Then Exit Function
 Dim Wdt%
     Dim W%
     W = VblWdt(Vbl)
@@ -65,6 +65,14 @@ Dim O$()
 VblAlignAsLy = O
 End Function
 
+Function VblAyWdt%(VblAy$())
+Dim W%(), J%
+For J = 0 To UB(VblAy)
+    Push W, VblWdt(VblAy(J))
+Next
+VblAyWdt = AyMax(W)
+End Function
+
 Function VblAy_AlignAsLines$(ExprVblAy$(), Optional Pfx$, Optional IdentOpt%, Optional SfxAy, Optional Sep$ = ",")
 VblAy_AlignAsLines = JnVBar(VblAy_AlignAsLy(ExprVblAy, Pfx, IdentOpt, SfxAy, Sep))
 End Function
@@ -73,9 +81,9 @@ Function VblAy_AlignAsLy(ExprVblAy$(), Optional Pfx$, Optional IdentOpt%, Option
 Dim NoSfxAy As Boolean
 Dim SfxWdt%
 Dim SfxAy$()
-    NoSfxAy = ValIsEmp(SfxAy)
+    NoSfxAy = VarIsEmp(SfxAy)
     If Not NoSfxAy Then
-        Ass ValIsSy(SfxAyOpt)
+        Ass VarIsSy(SfxAyOpt)
         SfxAy = AyAlignL(SfxAyOpt)
         Dim U%, J%: U = UB(SfxAy)
         For J = 0 To U
@@ -110,14 +118,6 @@ For J = 0 To U
     Push O, VblAlign(ExprVblAy(J), IdentOpt:=Ident, Pfx:=P, WdtOpt:=W, Sfx:=S)
 Next
 VblAy_AlignAsLy = O
-End Function
-
-Function VblAyWdt%(VblAy$())
-Dim W%(), J%
-For J = 0 To UB(VblAy)
-    Push W, VblWdt(VblAy(J))
-Next
-VblAyWdt = AyMax(W)
 End Function
 
 Function VblByLines$(Lines)

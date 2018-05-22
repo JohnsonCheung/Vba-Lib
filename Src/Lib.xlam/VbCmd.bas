@@ -7,7 +7,7 @@ Enum eCmpTySelection
 End Enum
 
 Sub AddCls(Nm$)
-PjCrtMd CurPj, Nm, vbext_ct_ClassModule
+CurPjx.CrtMd Nm, vbext_ct_ClassModule
 'MdGo Nm
 End Sub
 
@@ -18,7 +18,7 @@ MdMth_Go DftMdByMdNm(MdNm), FunNm
 End Sub
 
 Sub AddMd(Nm$)
-PjCrtMd CurPj, Nm, vbext_ct_StdModule
+'PjCrtMd CurPj, Nm, vbext_ct_StdModule
 'MdGo Nm
 End Sub
 
@@ -33,23 +33,29 @@ If MsgBox(FmtQQ("Delete this Md[?]", CurMdNm), vbYesNo + vbDefaultButton2) = vbY
 
 End If
 End Sub
-Sub GoMd(MdNm$)
-MdGo Md(MdNm)
-End Sub
+
 Sub GG()
 GoMd "XlsLoFmt"
 End Sub
+
 Sub GoCls(ClsNm$)
-MdGo Md(ClsNm)
+'MdGo Md(ClsNm)
 End Sub
-Sub LisPjMth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".")
-AyDmp PjMthNy(CurPj, , MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
+
+Sub GoMd(MdNm$)
+'MdGo Md(MdNm)
 End Sub
+
+Sub LisMdMth(Optional MthNmPatn$ = ".")
+AyDmp AyAddPfx(MdMthNy(CurMd, MthNmPatn), CurMdNm & ".")
+End Sub
+
 Sub LisMth(Optional MthNmPatn$ = ".")
 LisMdMth MthNmPatn
 End Sub
-Sub LisMdMth(Optional MthNmPatn$ = ".")
-AyDmp AyAddPfx(MdMthNy(CurMd, MthNmPatn), CurMdNm & ".")
+
+Sub LisPjMth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".")
+'AyDmp PjMthNy(CurPj, , MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
 End Sub
 
 Sub RenMd(NewNm$)

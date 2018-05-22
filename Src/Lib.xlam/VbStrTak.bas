@@ -64,4 +64,3 @@ Const S2$ = "Excel 8.0;HDR=YES;IMEX=2;DATABASE=??;AA=XX"
 Ass TakBet(S1, "DATABASE=", ";") = "??"
 Ass TakBet(S2, "DATABASE=", ";") = "??"
 End Sub
-

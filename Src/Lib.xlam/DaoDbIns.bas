@@ -1,6 +1,16 @@
 Attribute VB_Name = "DaoDbIns"
 Option Explicit
 
+Function DbDs_SqlAy_OfIns(A As Database, Ds As Ds) As String()
+If DsIsEmp(Ds) Then Exit Function
+Dim O$()
+Dim J%
+For J = 0 To UBound(Ds.DtAy)
+   PushAy O, DbDt_SqlAy_OfIns(A, Ds.DtAy(J))
+Next
+DbDs_SqlAy_OfIns = O
+End Function
+
 Function DbDt_SqlAy_OfIns(A As Database, Dt As Dt) As String()
 If DtIsEmp(Dt) Then Exit Function
 Dim SimTyAy() As eSimTy
@@ -31,16 +41,6 @@ End Sub
 Sub DtInsDb(A As Database, Dt As Dt)
 DbSqlAy_Run A, DbDt_SqlAy_OfIns(A, Dt)
 End Sub
-
-Function DbDs_SqlAy_OfIns(A As Database, Ds As Ds) As String()
-If DsIsEmp(Ds) Then Exit Function
-Dim O$()
-Dim J%
-For J = 0 To UBound(Ds.DtAy)
-   PushAy O, DbDt_SqlAy_OfIns(A, Ds.DtAy(J))
-Next
-DbDs_SqlAy_OfIns = O
-End Function
 
 Function SimTyAy_InsValTp$(SimTyAy() As eSimTy)
 Dim U%

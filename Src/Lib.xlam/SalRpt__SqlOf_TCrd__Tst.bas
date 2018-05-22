@@ -33,12 +33,12 @@ End Function
 Private Sub ZZ3_Tstr(A As ZZ3_TstDta)
 With A
    Dim Act$
-   Act = SqlOf_TCrd(.BrkCrd, .LisCrd)
+   Act = SqLoFmtr_TCrd(.BrkCrd, .LisCrd)
    Ass IsEq(Act, .Exp)
 End With
 End Sub
 
-Private Sub SqlOf_TCrd__Tst()
+Private Sub SqLoFmtr_TCrd__Tst()
 ZZ3_Tstr ZZ3_TstDta1
 ZZ3_Tstr ZZ3_TstDta2
 ZZ3_Tstr ZZ3_TstDta3

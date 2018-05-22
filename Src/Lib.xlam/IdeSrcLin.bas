@@ -19,10 +19,39 @@ Type Parse
     IsOk As Boolean
     Er_or_Ok As String
 End Type
+
+Function KwIsFunTy(S) As Boolean
+KwIsFunTy = AyHas(SyOfFunTy, S)
+End Function
+
+Function KwIsMdy(Mdy) As Boolean
+KwIsMdy = AyHas(Array("Private", "Public", "Friend", ""), Mdy)
+End Function
+
+Function KwIsMthTy(S) As Boolean
+KwIsMthTy = AyHas(S, SyOfMthTy)
+End Function
+
+Function MthLin_EnsPrivate(A) As StrOpt
+Dim P As Parse: P = ParseKwMdy(NewParse(A))
+If Not P.IsOk Then Exit Function
+Dim P1 As Parse: P1 = ParseKwMthTy(P)
+If Not P.IsOk Then Exit Function
+If P.Er_or_Ok = "Private" Then MthLin_EnsPrivate = SomStr(A): Exit Function
+MthLin_EnsPrivate = SomStr("Private " & P.Lin)
+End Function
+
+Function MthLin_Key$(A)
+With SrcLin_MthBrk(A)
+    MthLin_Key = FmtQQ("?:?:?", .Mdy, .Ty, .MthNm)
+End With
+End Function
+
 Function NewErParse(Er$, Lin$) As Parse
 NewErParse.Er_or_Ok = Er
 NewErParse.Lin = Lin
 End Function
+
 Function NewOkParse(Ok$, Lin$) As Parse
 Dim O As Parse
 With O
@@ -33,14 +62,14 @@ End With
 NewOkParse = O
 End Function
 
-
-Function SrcLin_IsRmk(Lin) As Boolean
-SrcLin_IsRmk = FstChr(LTrim(Lin)) = "'"
-End Function
-
 Function NewParse(Lin) As Parse
 NewParse.Lin = Lin
 NewParse.IsOk = True
+End Function
+
+Function NewSrcLin(A) As SrcLin
+Dim O As New SrcLin
+Set NewSrcLin = O.Init(A)
 End Function
 
 Function ParOneTerm(A As Parse, TermAy$()) As Parse
@@ -163,50 +192,6 @@ If Not A.IsOk Then ParseStr = A: Exit Function
 If Not HasPfx(A.Lin, Str) Then ParseStr = NewErParse(FmtQQ("[?] not found", Str), A.Lin): Exit Function
 ParseStr = NewOkParse(Str, RmvPfx(A.Lin, Str))
 End Function
-Function SrcLin_IsEmn(Lin) As Boolean
-SrcLin_IsEmn = HasPfx(SrcLin_RmvMdy(Lin), "Enum")
-End Function
-
-Function KwIsMdy(Mdy) As Boolean
-KwIsMdy = AyHas(Array("Private", "Public", "Friend", ""), Mdy)
-End Function
-
-Function SrcLin_IsTy(Lin) As Boolean
-SrcLin_IsTy = HasPfx(SrcLin_RmvMdy(Lin), "Type")
-End Function
-
-Private Sub SrcLin_IsMth__Tst()
-ZZ_SrcLin_IsMth
-End Sub
-Private Sub ZZ_SrcLin_IsMth()
-Dim O()
-Dim L
-For Each L In ZZSrc
-    Push O, Array(IIf(SrcLin_IsMth(L), "*Mth", ""), MthLin_Key(L), L)
-Next
-DrsBrw NewDrs("IsMth Key Lin", O)
-End Sub
-Private Function ZZSrc() As String()
-ZZSrc = MdSrc(Md("IdeSrcLin"))
-End Function
-Function SrcLin_IsMth(A) As Boolean
-'If HasPfx(A, "Function") Then Stop
-SrcLin_IsMth = KwIsFunTy(LinT1(SrcLin_RmvMdy(A)))
-End Function
-Function MthLin_Key$(A)
-With SrcLin_MthBrk(A)
-    MthLin_Key = FmtQQ("?:?:?", .Mdy, .Ty, .MthNm)
-End With
-End Function
-Function SrcLin_RmvMdy$(A)
-SrcLin_RmvMdy = LTrim(RmvPfxAy(A, SyOfMdy))
-End Function
-Function KwIsMthTy(S) As Boolean
-KwIsMthTy = AyHas(S, SyOfMthTy)
-End Function
-Function KwIsFunTy(S) As Boolean
-KwIsFunTy = AyHas(SyOfFunTy, S)
-End Function
 
 Function ParseTerm(A As Parse, Term$) As Parse
 ParseTerm = ParseRmvSpc(ParseStr(A, Term))
@@ -225,10 +210,50 @@ End Function
 Function ParseToLy(A As Parse) As String()
 ParseToLy = DicToLy(ParseToDic(A))
 End Function
-Function NewSrcLin(A) As SrcLin
-Dim O As New SrcLin
-Set NewSrcLin = O.Init(A)
+
+Function SrcLin_EndLinPfx$(A)
+Ass SrcLin_IsMth(A)
+SrcLin_EndLinPfx = "End " & LinT1(SrcLin_MthTy(A))
 End Function
+
+Function SrcLin_EnmNm$(A)
+'If SrcLin_IsEmn(A) Then EnmNm = LinNm(NoEnm)
+End Function
+
+Function SrcLin_IsCd(A) As Boolean
+If LinIsEmp(A) Then Exit Function
+If SrcLin_IsRmk(A) Then Exit Function
+SrcLin_IsCd = True
+End Function
+
+Function SrcLin_IsEmn(Lin) As Boolean
+SrcLin_IsEmn = HasPfx(SrcLin_RmvMdy(Lin), "Enum")
+End Function
+
+Function SrcLin_IsMth(A) As Boolean
+'If HasPfx(A, "Function") Then Stop
+SrcLin_IsMth = KwIsFunTy(LinT1(SrcLin_RmvMdy(A)))
+End Function
+
+Function SrcLin_IsRmk(Lin) As Boolean
+SrcLin_IsRmk = FstChr(LTrim(Lin)) = "'"
+End Function
+
+Function SrcLin_IsTy(Lin) As Boolean
+SrcLin_IsTy = HasPfx(SrcLin_RmvMdy(Lin), "Type")
+End Function
+
+Function SrcLin_Mdy$(A)
+SrcLin_Mdy = ParseRet(ParseKwMdy(NewParse(A)))
+End Function
+
+Function SrcLin_MthBrk(A) As MthBrk
+Dim P As Parse
+P = ParseKwMdy(NewParse(A)): If P.IsOk Then SrcLin_MthBrk.Mdy = P.Er_or_Ok Else Exit Function
+P = ParseKwMthTy(P):         If P.IsOk Then SrcLin_MthBrk.Ty = P.Er_or_Ok Else Exit Function
+P = ParseNm(P):              If P.IsOk Then SrcLin_MthBrk.MthNm = P.Er_or_Ok
+End Function
+
 Function SrcLin_MthDr(A, Lno&, Optional MdNm$) As Variant()
 With SrcLin_MthBrk(A)
    SrcLin_MthDr = Array(MdNm, Lno, .Mdy, .Ty, .MthNm)
@@ -239,10 +264,16 @@ Function SrcLin_MthNm$(A)
 SrcLin_MthNm = ParseRet(ParseNm(ParseKwMthTy(ParseKwMdy(NewParse(A)))))
 End Function
 
-Function SrcLin_IsCd(A) As Boolean
-If LinIsEmp(A) Then Exit Function
-If SrcLin_IsRmk(A) Then Exit Function
-SrcLin_IsCd = True
+Function SrcLin_MthTy$(A)
+SrcLin_MthTy = SrcLin_MthBrk(A).Ty
+End Function
+
+Function SrcLin_RmvMdy$(A)
+SrcLin_RmvMdy = LTrim(RmvPfxAy(A, SyOfMdy))
+End Function
+
+Function SrcLin_TyNm$(A)
+SrcLin_TyNm = ParseRet(ParseNm(ParseKwTy(ParseKwMdy(NewParse(A)))))
 End Function
 
 Function SyOfFunTy() As String()
@@ -292,9 +323,36 @@ End If
 SyOfSrcTy = Y
 End Function
 
-Function SrcLin_TyNm$(A)
-SrcLin_TyNm = ParseRet(ParseNm(ParseKwTy(ParseKwMdy(NewParse(A)))))
+Sub ZZ_PrjSrcDrs()
+Dim O As Drs: O = CurPjx.SrcDrs
+'DryBrw O
+
+Dim A As SrcLin: Set A = V(O.Dry(2)(1)).SrcLin
+Dim A1 As Drs: A1 = A.InfDrs
+DrsDmp A1
+Stop
+End Sub
+
+Private Function ZZSrc() As String()
+'ZZSrc = MdSrc(Md("IdeSrcLin"))
 End Function
+
+Private Function ZZSrcLin$()
+ZZSrcLin = "Private Sub SrcLin_IsMth()"
+End Function
+
+Private Sub ZZ_SrcLin_IsMth()
+Dim O()
+Dim L
+For Each L In ZZSrc
+    Push O, Array(IIf(SrcLin_IsMth(L), "*Mth", ""), MthLin_Key(L), L)
+Next
+DrsBrw NewDrs("IsMth Key Lin", O)
+End Sub
+
+Private Sub SrcLin_IsMth__Tst()
+ZZ_SrcLin_IsMth
+End Sub
 
 Private Sub SrcLin_MthBrk__Tst()
 Dim Act As MthBrk:
@@ -315,172 +373,3 @@ Dim Lin$
 Lin = "Private Sub SrcLin_MthNm__Tst )": Act = SrcLin_MthNm(Lin): Ass Act = "SrcLin_MthNm__Tst"
 Lin = "Property Set A(V)":           Act = SrcLin_MthNm(Lin): Ass Act = "A"
 End Sub
-Function SrcLin_EndLinPfx$(A)
-Ass SrcLin_IsMth(A)
-SrcLin_EndLinPfx = "End " & LinT1(SrcLin_MthTy(A))
-End Function
-
-Function SrcLin_Mdy$(A)
-SrcLin_Mdy = ParseRet(ParseKwMdy(NewParse(A)))
-End Function
-
-Function SrcLin_MthBrk(A) As MthBrk
-Dim P As Parse
-P = ParseKwMdy(NewParse(A)): If P.IsOk Then SrcLin_MthBrk.Mdy = P.Er_or_Ok Else Exit Function
-P = ParseKwMthTy(P):         If P.IsOk Then SrcLin_MthBrk.Ty = P.Er_or_Ok Else Exit Function
-P = ParseNm(P):              If P.IsOk Then SrcLin_MthBrk.MthNm = P.Er_or_Ok
-End Function
-
-Function SrcLin_MthTy$(A)
-SrcLin_MthTy = SrcLin_MthBrk(A).Ty
-End Function
-
-Property Get SrcLin_EnmNm$(A)
-'If SrcLin_IsEmn(A) Then EnmNm = LinNm(NoEnm)
-End Property
-'
-'Function FriendMthLin$()
-'If SrcLin_IsMth Then FriendMthLin = "Friend " & NoMdy
-'End Function
-'
-'Function Init(Lin) As SrcLin
-'A = Lin
-'A_SrcLin_IsMth = HasOneOfPfx(NoMdy, SyOfMthTy)
-'Set Init = Me
-'End Function
-'
-'Property Get MthBrk() As MthBrk
-'If Not SrcLin_IsMth Then Exit Property
-'Dim O As MthBrk
-'With O
-'    .Mdy = Mdy
-'    .MthNm = MthNm
-'    .Ty = MthTy
-'End With
-'MthBrk = O
-'End Property
-'
-'Property Get LinIsEmp() As Boolean
-'LinIsEmp = Trim(A) = ""
-'End Property
-'
-'Property Get SrcLin_IsEmn() As Boolean
-'SrcLin_IsEmn = HasPfx(NoMdy, C_Enm)
-'End Property
-'Sub MthBrk__Tst()
-'With MthBrk
-'    Debug.Print .Mdy
-'    Debug.Print .MthNm
-'    Debug.Print .Ty
-'End With
-'End Sub
-'Private Function ZZMthLin$()
-'ZZMthLin = "Property Get AA()"
-'End Function
-'Property Get SrcLin_IsMth() As Boolean
-'SrcLin_IsMth = A_SrcLin_IsMth
-'End Property
-'
-'Property Get IsPrpLin() As Boolean
-'IsPrpLin = HasPfx(NoMdy, C_Prp)
-'End Property
-'
-'Property Get SrcLin_IsRmk() As Boolean
-'SrcLin_IsRmk = FstChr(LTrim(A)) = "'"
-'End Property
-'
-'Property Get SrcLin_IsTy() As Boolean
-'SrcLin_IsTy = HasPfx(NoMdy, C_Ty)
-'End Property
-'
-'Property Get Mdy$()
-'Mdy = StrPfx(A, SyOfMdy)
-'End Property
-'
-'Property Get MthNm$()
-'If SrcLin_IsMth Then MthNm = LinNm(NoMthTy)
-'End Property
-'
-'Property Get MthTy$()
-'If SrcLin_IsMth Then MthTy = StrPfx(NoMdy, SyOfMthTy)
-'End Property
-'
-'Function NoMdy$()
-'NoMdy = LTrim(RmvPfxAy(A, SyOfMdy))
-'End Function
-'
-'Function PrivateMthLin$()
-'If SrcLin_IsMth Then PrivateMthLin = "Private " & NoMdy
-'End Function
-'
-'Property Get PrpTy$()
-'If IsPrpLin Then PrpTy = LinT1(NoFunTy)
-'End Property
-'
-'Function PrpValDr() As Variant()
-'PrpValDr = Array(, , A, EnmNm, LinIsEmp, SrcLin_IsEmn, SrcLin_IsMth, IsPrpLin, SrcLin_IsRmk, SrcLin_IsTy, Mdy, MthNm, MthTy, NoMdy, PrpTy, TyNm)
-'End Function
-'
-'Property Get PrpValFny() As String()
-'Static X As Boolean, Y$()
-'If Not X Then
-'    X = True
-'    Y = LvsSy("Md Lno Lin EnmNm LinIsEmp SrcLin_IsEmn SrcLin_IsMth IsPrpLin SrcLin_IsRmk SrcLin_IsTy Mdy MthNm MthTy NoMdy PrpTy TyNm")
-'End If
-'PrpValFny = Y
-'End Property
-'
-'Function PublicMthLin$()
-'If SrcLin_IsMth Then PublicMthLin = NoMdy
-'End Function
-'
-'Property Get TyNm$()
-'If SrcLin_IsTy Then TyNm = LinNm(NoTy)
-'End Property
-'
-'Private Property Get NoEnm$()
-'If SrcLin_IsEmn Then NoEnm = LTrim(RmvPfx(NoMdy, C_Enm))
-'End Property
-'
-'Private Property Get NoFunTy$()
-'If SrcLin_IsMth Then NoFunTy = RmvPfxAy(NoMdy, SyOfFunTy)
-'End Property
-'
-'Private Property Get NoMthTy$()
-'If SrcLin_IsMth Then NoMthTy = LTrim(RmvPfxAy(NoMdy, SyOfMthTy))
-'End Property
-'
-'Private Property Get NoTy$()
-'If SrcLin_IsTy Then NoTy = LTrim(RmvPfx(NoMdy, C_Ty))
-'End Property
-'Private Sub AllSrcCode__Tst()
-'Dim Dry()
-'Dim Dr()
-'Dim Drs As Drs
-'Dim O$()
-'Dim I, Lin
-'Dim Md As CodeModule:
-'Dim Lno&
-'Dim MNm$
-'For Each I In PjMbrAy(CurPj)
-'    Set Md = I
-'    MNm = MdNm(Md)
-'    Lno = 0
-'    For Each Lin In MdSrc(Md)
-'        Lno = Lno + 1
-'        A = Lin
-'        Dr = PrpValDr
-'        Dr(0) = MNm
-'        Dr(1) = Lno
-'        Push Dry, Dr
-'    Next
-'Next
-'Drs.Dry = Dry
-'Drs.Fny = PrpValFny
-'DrsWs Drs
-'End Sub
-'
-
-Private Function ZZSrcLin$()
-ZZSrcLin = "Private Sub SrcLin_IsMth()"
-End Function

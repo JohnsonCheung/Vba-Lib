@@ -1,7 +1,6 @@
 Attribute VB_Name = "VbStrRe"
 Option Explicit
 
-
 Function NewRe(Patn$, Optional MultiLine As Boolean, Optional IgnoreCase As Boolean, Optional IsGlobal As Boolean) As RegExp
 Dim O As New RegExp
 ReSet O, Patn, MultiLine, IgnoreCase, IsGlobal

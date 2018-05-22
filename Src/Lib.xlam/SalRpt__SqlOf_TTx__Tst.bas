@@ -7,7 +7,7 @@ Private Type ZZ6_TstDta
 End Type
 
 Private Function Act$(A As ZZ6_TstDta)
-Act = SqlOf_TTx(A.P)
+Act = SqLoFmtr_TTx(A.P)
 End Function
 
 Private Function ActOpt(A As ZZ6_TstDta) As StrOpt
@@ -17,6 +17,17 @@ With A
 End With
 Exit Function
 X:
+End Function
+
+Private Sub ZZ6_Push(O() As ZZ6_TstDta, I As ZZ6_TstDta)
+Dim N&: N = ZZ6_Sz(O)
+ReDim Preserve O(N)
+O(N) = I
+End Sub
+
+Private Function ZZ6_Sz%(A() As ZZ6_TstDta)
+On Error Resume Next
+ZZ6_Sz = UBound(A) + 1
 End Function
 
 Private Function ZZ6_TstDta0() As ZZ6_TstDta
@@ -64,21 +75,6 @@ ZZ6_Push O, ZZ6_TstDta3
 ZZ6_TstDtaAy = O
 End Function
 
-Private Sub ZZ6_Push(O() As ZZ6_TstDta, I As ZZ6_TstDta)
-Dim N&: N = ZZ6_Sz(O)
-ReDim Preserve O(N)
-O(N) = I
-End Sub
-
-Private Function ZZ6_Sz%(A() As ZZ6_TstDta)
-On Error Resume Next
-ZZ6_Sz = UBound(A) + 1
-End Function
-
-Private Function ZZ6_UB%(A() As ZZ6_TstDta)
-ZZ6_UB = ZZ6_Sz(A) - 1
-End Function
-
 Private Sub ZZ6_Tstr(A As ZZ6_TstDta)
 Dim M As StrOpt
    M = ActOpt(A)
@@ -92,7 +88,11 @@ With A
 End With
 End Sub
 
-Sub SqlOf_TTx__Tst()
+Private Function ZZ6_UB%(A() As ZZ6_TstDta)
+ZZ6_UB = ZZ6_Sz(A) - 1
+End Function
+
+Sub SqLoFmtr_TTx__Tst()
 Dim J%
 Dim Ay() As ZZ6_TstDta: Ay = ZZ6_TstDtaAy
 For J = 0 To ZZ6_UB(Ay)

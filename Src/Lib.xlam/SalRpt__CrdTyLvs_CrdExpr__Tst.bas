@@ -20,6 +20,17 @@ Exit Function
 X:
 End Function
 
+Private Sub ZZ1_Push(O() As ZZ1_CrdExpr_TstDta, M As ZZ1_CrdExpr_TstDta)
+Dim N&: N = ZZ1_Sz(O)
+ReDim Preserve O(N)
+O(N) = M
+End Sub
+
+Private Function ZZ1_Sz&(A() As ZZ1_CrdExpr_TstDta)
+On Error Resume Next
+ZZ1_Sz = UBound(A) + 1
+End Function
+
 Private Function ZZ1_TstDta0() As ZZ1_CrdExpr_TstDta
 With ZZ1_TstDta0
    .CrdPfxTyDry = ZZCrdPfxTyDry
@@ -63,17 +74,6 @@ ZZ1_Push O, ZZ1_TstDta1
 ZZ1_Push O, ZZ1_TstDta2
 ZZ1_Push O, ZZ1_TstDta3
 ZZ1_TstDtaAy = O
-End Function
-
-Private Sub ZZ1_Push(O() As ZZ1_CrdExpr_TstDta, M As ZZ1_CrdExpr_TstDta)
-Dim N&: N = ZZ1_Sz(O)
-ReDim Preserve O(N)
-O(N) = M
-End Sub
-
-Private Function ZZ1_Sz&(A() As ZZ1_CrdExpr_TstDta)
-On Error Resume Next
-ZZ1_Sz = UBound(A) + 1
 End Function
 
 Private Sub ZZ1_Tstr(A As ZZ1_CrdExpr_TstDta)

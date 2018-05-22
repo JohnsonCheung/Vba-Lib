@@ -1,23 +1,15 @@
 Attribute VB_Name = "DtaFmt"
 Option Explicit
-Enum eShwZer
-    eNo   'Rule:Enum: All Public-Enum-Nm should eXxxXxx format e + CmlStr
-    eYes  'Rule:Enum: All Enum-Mbr-Nm should e{CmlShtNm}XXX
-            'Rule:Enum: All eXxx{No|Yes} order place No first, so that the default of Enum take No first, because first Enum value is zero
-            'Rule:Enum: don't use value
-            'Rule:Enum: this is for function option.
-            'Rule:Enum: Using these rule will benefit in calling the optional enum as paramter, just giving the enum-mbr will be meaningfull.
-End Enum
-
-Function DrFmtCell(Dr, ShwZer As eShwZer) As String()
+Function DrValCellStr(Dr, ShwZer As Boolean) As String()
 Dim I, O$()
 For Each I In Dr
-    Push O, FmtCell(I, ShwZer)
+    Push O, ValCellStr(I, ShwZer)
 Next
-DrFmtCell = O
+DrValCellStr = O
 End Function
 
-Function DrsLy(A As Drs, Optional MaxColWdt& = 100, Optional BrkColNm$) As String()
+Function DrsLy(A As Drs, Optional MaxColWdt& = 100, Optional BrkColNm$, Optional ShwZer As Boolean) As String()
+'If BrkColNm changed, insert a break line
 If AyIsEmp(A.Fny) Then Exit Function
 Dim Drs As Drs:
     Drs = DrsAddRowIxCol(A)
@@ -26,14 +18,13 @@ Dim BrkColIx%
     If BrkColIx >= 0 Then BrkColIx = BrkColIx + 1 ' Need to increase by 1 due the Ix column is added
 Dim Dry(): Dry = Drs.Dry
 Push Dry, Drs.Fny
-Dim Ay$(): Ay = DryLy(Dry, MaxColWdt, BrkColIx:=BrkColIx)
+Dim Ay$(): Ay = DryLy(Dry, MaxColWdt, BrkColIx:=BrkColIx, ShwZer:=ShwZer) '<== Will insert break line if BrkColIx>=0
 Dim Lin$: Lin = Pop(Ay)
 Dim Hdr$: Hdr = Pop(Ay)
 Dim O$()
     PushAy O, Array(Lin, Hdr)
     PushAy O, Ay
     Push O, Lin
-'If BrkColNm <> "" Then O = DrsLyInsBrkLin(O, BrkColNm)
 DrsLy = O
 End Function
 
@@ -56,34 +47,40 @@ Dim O$()
 DrsLyInsBrkLin = O
 End Function
 
-Function FmtCell$(V, ShwZer As eShwZer)
+Function ValCellStr$(V, ShwZer As Boolean)
+'CellStr is a string can be displayed in a cell
 Dim O$
-If ValIsEmp(V) Then Exit Function
+If VarIsEmp(V) Then Exit Function
 If IsObject(V) Then
-    FmtCell = "[" & TypeName(V) & "]"
+    ValCellStr = "[" & TypeName(V) & "]"
     Exit Function
 End If
-If ValIsBool(V) Then
-    FmtCell = IIf(V, "TRUE", "FALSE")
+If VarIsBool(V) Then
+    ValCellStr = IIf(V, "TRUE", "FALSE")
     Exit Function
 End If
 
-If ShwZer = eNo Then
+If ShwZer Then
     If IsNumeric(V) Then
-        If V = 0 Then Exit Function
+        If V = 0 Then ValCellStr = "0"
+        Exit Function
     End If
 End If
 If IsArray(V) Then
     If AyIsEmp(V) Then Exit Function
-    FmtCell = "Ay" & UB(V) & ":" & V(0)
+    ValCellStr = "Ay" & UB(V) & ":" & V(0)
     Exit Function
 End If
 If InStr(V, vbCrLf) > 0 Then
-    FmtCell = Brk(V, vbCrLf).S1 & "|.."
+    ValCellStr = Brk(V, vbCrLf).S1 & "|.."
     Exit Function
 End If
-FmtCell = Nz(V, "")
+ValCellStr = Nz(V, "")
 End Function
+
+Sub Tst__VbFmt()
+DrsLyInsBrkLin__Tst
+End Sub
 
 Private Sub DrsLyInsBrkLin__Tst()
 Dim TblLy$()
@@ -93,8 +90,4 @@ TblLy = FtLy(TstResPth & "DrsLyInsBrkLin.txt")
 Act = DrsLyInsBrkLin(TblLy, "Tbl")
 Exp = FtLy(TstResPth & "DrsLyInsBrkLin_Exp.txt")
 AyPair_EqChk Exp, Act
-End Sub
-
-Sub Tst__VbFmt()
-DrsLyInsBrkLin__Tst
 End Sub

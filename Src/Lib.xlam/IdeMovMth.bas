@@ -1,11 +1,5 @@
 Attribute VB_Name = "IdeMovMth"
 Option Explicit
-Sub MovAllMth()
-
-End Sub
-Sub MovMth()
-
-End Sub
 
 Function CurTarMd() As CodeModule
 With CurVbe
@@ -24,6 +18,14 @@ End Function
 Function IsOnlyTwoCdPne() As Boolean
 IsOnlyTwoCdPne = CurVbe.CodePanes.Count = 2
 End Function
+
+Sub MovAllMth()
+
+End Sub
+
+Sub MovMth()
+
+End Sub
 
 Sub CurTarMd__Tst()
 Debug.Print MdNm(CurTarMd)

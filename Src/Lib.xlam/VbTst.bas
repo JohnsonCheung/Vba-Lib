@@ -21,7 +21,6 @@ Type ThowMsgOrVar
     ThowMsg As String
 End Type
 
-
 Function TMOIntSomInt(I%) As ThowMsgOrInt
 TMOIntSomInt.Som = True
 TMOIntSomInt.Int = I
@@ -70,7 +69,7 @@ End Sub
 
 Function TstResPth$()
 Dim O$
-    O = PjSrcPth(CurPj) & "TstRes\"
+'    O = PjSrcPth(CurPj) & "TstRes\"
     PthEns O
 TstResPth = O
 End Function
@@ -83,6 +82,6 @@ Sub ZGenTstXXX()
 Dim Qvbl$
 Dim Lvs$
 Qvbl = "Sub Tst?()|Dim A As New ?: A.Tst|End Sub"
-Lvs = JnSpc(PjClsNy(CurPj))
+'Lvs = JnSpc(PjClsNy(CurPj))
 Debug.Print SeedExp(Qvbl, Lvs)
 End Sub

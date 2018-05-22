@@ -7,13 +7,13 @@ For Each I In PfxAy
    If HasPfx(A, I) Then HasOneOfPfx = True: Exit Function
 Next
 End Function
+
 Function HasOneOfPfxIgnCas(A, PfxAy) As Boolean
 Dim I
 For Each I In PfxAy
    If HasPfxIgnCas(A, I) Then HasOneOfPfxIgnCas = True: Exit Function
 Next
 End Function
-
 
 Function HasPfx(A, Pfx) As Boolean
 HasPfx = (Left(A, Len(Pfx)) = Pfx)

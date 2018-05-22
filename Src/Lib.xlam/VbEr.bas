@@ -11,6 +11,7 @@ End Sub
 Sub ErMsgBrw(CSub$, MacroStr$, Av())
 AyBrw ErMsgLyByAv(CSub, MacroStr, Av())
 End Sub
+
 Function ErMsgLines$(CSub$, MacroStr$, ParamArray Ap())
 Dim Av(): Av = Ap
 ErMsgLines = ErMsgLinesByAv(CSub, MacroStr, Av)
@@ -73,7 +74,7 @@ RunAv = O
 End Function
 
 Function VarLy(V) As String()
-If ValIsPrim(V) Then
+If VarIsPrim(V) Then
    VarLy = ApSy(V)
 ElseIf IsArray(V) Then
    VarLy = AySy(V)

@@ -8,6 +8,11 @@ Private Type ZZ2_TstDta
     InclNm As Boolean
     InclPhone As Boolean
 End Type
+
+Private Sub ZZ2_Push(O() As ZZ2_TstDta, I As ZZ2_TstDta)
+
+End Sub
+
 Private Function ZZ2_TstDta0() As ZZ2_TstDta
 With ZZ2_TstDta0
     .BrkMbr = False
@@ -162,7 +167,7 @@ Private Sub ZZ2_TstDtaDmp(CasNo%)
 'Dim Exp$
 'Dim Act$
 '    Exp = M.Exp
-'    Act = SqlOf_OMbrWsOpt(
+'    Act = SqLoFmtr_OMbrWsOpt(
 'D.Add "**", IIf(Act = Exp, "Pass", "Fail")
 'DicDmp DicSrt(D)
 'If Act = Exp Then
@@ -177,17 +182,13 @@ Private Sub ZZ2_TstDtaDmp(CasNo%)
 'Ass IsEq( Act, Exp
 End Sub
 
-Private Sub ZZ2_Push(O() As ZZ2_TstDta, I As ZZ2_TstDta)
-
-End Sub
-
 Private Sub ZZ2_Tstr(A As ZZ2_TstDta)
 With A
-    Ass IsEq(SqlOf_OMbrWsOpt(.BrkMbr, .InclNm, .InclAdr, .InclEmail, .InclPhone), .Exp)
+    Ass IsEq(SqLoFmtr_OMbrWsOpt(.BrkMbr, .InclNm, .InclAdr, .InclEmail, .InclPhone), .Exp)
 End With
 End Sub
 
-Private Sub ZZ2__SqlOf_MbrWsOpt__Tst()
+Private Sub ZZ2__SqLoFmtr_MbrWsOpt__Tst()
 Dim Ay()  As ZZ2_TstDta
     Ay = ZZ2_TstDtaAy
 Dim J%

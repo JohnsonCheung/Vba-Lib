@@ -27,4 +27,3 @@ End Function
 Function WrkPth$()
 WrkPth = CurDbPth & "WorkingDir\"
 End Function
-

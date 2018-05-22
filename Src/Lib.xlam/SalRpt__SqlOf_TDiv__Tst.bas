@@ -31,11 +31,11 @@ End Function
 
 Private Sub ZZ4_Tstr(A As ZZ4_TstDta)
 With A
-   Ass IsEq(SqlOf_TDiv(.BrkDiv, .LisDiv), .Exp)
+   Ass IsEq(SqLoFmtr_TDiv(.BrkDiv, .LisDiv), .Exp)
 End With
 End Sub
 
-Private Sub SqlOf_TDiv__Tst()
+Private Sub SqLoFmtr_TDiv__Tst()
 ZZ4_Tstr ZZ4_TstDta1
 ZZ4_Tstr ZZ4_TstDta2
 ZZ4_Tstr ZZ4_TstDta3

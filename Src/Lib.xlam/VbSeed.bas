@@ -1,6 +1,17 @@
 Attribute VB_Name = "VbSeed"
 Option Explicit
 
+Function SeedExp$(Seed0, Tp0)
+Dim Seed$(): Seed = DftNy(Seed0)
+Dim Tp$()
+Select Case True
+Case VarIsStr(Tp0): Tp = SplitVBar(Tp0)
+Case VarIsSy(Tp0): Tp = Tp0
+Case Else: Stop
+End Select
+SeedExp = SeedExp__Expand(Seed, Tp)
+End Function
+
 Private Function SeedExp__Expand$(Seed$(), Ly$())
 Dim O$(), J%, I%
 For I = 0 To UB(Seed)
@@ -9,17 +20,6 @@ For I = 0 To UB(Seed)
    Next
 Next
 SeedExp__Expand = JnCrLf(O)
-End Function
-
-Function SeedExp$(Seed0, Tp0)
-Dim Seed$(): Seed = DftNy(Seed0)
-Dim Tp$()
-Select Case True
-Case ValIsStr(Tp0): Tp = SplitVBar(Tp0)
-Case ValIsSy(Tp0): Tp = Tp0
-Case Else: Stop
-End Select
-SeedExp = SeedExp__Expand(Seed, Tp)
 End Function
 
 Private Sub SeedExpLvs__Tst()

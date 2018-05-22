@@ -7,4 +7,3 @@ End Type
 Type Gp
     LnxAy() As Lnx
 End Type
-

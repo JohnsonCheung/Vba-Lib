@@ -24,4 +24,3 @@ Type Rslt
     RsltDrs As Drs
     ErLy() As String
 End Type
-

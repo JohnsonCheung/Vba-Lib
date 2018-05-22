@@ -17,15 +17,6 @@ Type DicOpt
    Som As Boolean
 End Type
 
-Sub X()
-Dim I
-For Each I In PjMdNyOfStd(CurPj)
-    If Left(I, 2) = "D0" Then
-        Md(I).Parent.Name = "Dta" & Mid(I, 4)
-    End If
-Next
-End Sub
-
 Function SomDic(A As Dictionary) As DicOpt
 Set SomDic.Dic = A
 SomDic.Som = True
@@ -50,3 +41,12 @@ Function SomVar(V) As VarOpt
 SomVar.Som = True
 SomVar.V = V
 End Function
+
+Sub X()
+Dim I
+'For Each I In PjMdNyOfStd(CurPj)
+    If Left(I, 2) = "D0" Then
+        'Md(I).Parent.Name = "Dta" & Mid(I, 4)
+    End If
+'Next
+End Sub

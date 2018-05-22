@@ -1,13 +1,6 @@
 Attribute VB_Name = "DaoInf"
 Option Explicit
 
-Sub DbBrwInf__Tst()
-'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
-'CurrentProject.Connection.Execute strDdlDim A As DBEngine: Set A = dao.DBEngine
-'not work: dao.DBEngine.Workspaces(1).Databases(1).Execute "GRANT SELECT ON MSysObjects TO Admin;"
-DbBrwInf FbDb(SampleFb_DutyPrepare)
-End Sub
-
 Sub DbBrwInf(A As Database)
 AyBrw DsLy(DbInfDs(A), 2000, DtBrkLinMapStr:="TblFld:Tbl")
 Exit Sub
@@ -24,6 +17,35 @@ O.DsNm = A.Name
 DbInfDs = O
 End Function
 
+Function DbInfDtOfLnk(A As Database) As Dt
+Dim T, Dry(), C$
+For Each T In DbTny(A)
+   C = A.TableDefs(T).Connect
+   If C <> "" Then Push Dry, Array(T, C)
+Next
+Dim O As Dt
+DbInfDtOfLnk = NewDt("Lnk", DftNy("Tbl Connect"), Dry)
+End Function
+
+Function DbInfDtOfPrp(Optional D As Database) As Dt
+DbInfDtOfPrp = NewDt("DbPrp", SplitSpc("A A"), EmpAy)
+End Function
+
+Function DbInfDtOfStru(A As Database) As Dt
+Dim T, Dry(), TT$
+For Each T In DbTny(A)
+   TT = T
+   Push Dry, Array(T, DbtRecCnt(A, TT), DbtDes(A, TT), DbtStruLin(A, TT, SkipTn:=True))
+Next
+Dim O As Dt
+   With O
+       .Dry = Dry
+       .Fny = ApSy("Tbl", "RecCnt", "Des", "Stru")
+       .DtNm = "Tbl"
+   End With
+DbInfDtOfStru = O
+End Function
+
 Function DbInfDtOfTblF(A As Database) As Dt
 Dim T, Dry()
 For Each T In DbTny(A)
@@ -34,10 +56,6 @@ O.Dry = Dry
 O.Fny = FnyOf_InfOf_TblF
 O.DtNm = "TblFld"
 DbInfDtOfTblF = O
-End Function
-
-Function DbInfDtOfPrp(Optional D As Database) As Dt
-DbInfDtOfPrp = NewDt("DbPrp", SplitSpc("A A"), EmpAy)
 End Function
 
 Function DbtStruLin$(A As Database, T$, Optional SkipTn As Boolean)
@@ -57,27 +75,9 @@ Else
 End If
 End Function
 
-Function DbInfDtOfLnk(A As Database) As Dt
-Dim T, Dry(), C$
-For Each T In DbTny(A)
-   C = A.TableDefs(T).Connect
-   If C <> "" Then Push Dry, Array(T, C)
-Next
-Dim O As Dt
-DbInfDtOfLnk = NewDt("Lnk", DftNy("Tbl Connect"), Dry)
-End Function
-
-Function DbInfDtOfStru(A As Database) As Dt
-Dim T, Dry(), TT$
-For Each T In DbTny(A)
-   TT = T
-   Push Dry, Array(T, DbtRecCnt(A, TT), DbtDes(A, TT), DbtStruLin(A, TT, SkipTn:=True))
-Next
-Dim O As Dt
-   With O
-       .Dry = Dry
-       .Fny = ApSy("Tbl", "RecCnt", "Des", "Stru")
-       .DtNm = "Tbl"
-   End With
-DbInfDtOfStru = O
-End Function
+Sub DbBrwInf__Tst()
+'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
+'CurrentProject.Connection.Execute strDdlDim A As DBEngine: Set A = dao.DBEngine
+'not work: dao.DBEngine.Workspaces(1).Databases(1).Execute "GRANT SELECT ON MSysObjects TO Admin;"
+DbBrwInf FbDb(SampleFb_DutyPrepare)
+End Sub

@@ -13,111 +13,87 @@ Type StrOpt
    Som As Boolean
    Str As String
 End Type
-Function IsEqStrOpt(A1 As StrOpt, A2 As StrOpt) As Boolean
-If A1.Som <> A1.Som Then Exit Function
-If A1.Str <> A2.Str Then Exit Function
-IsEqStrOpt = True
+Type LngOpt
+    Som As Boolean
+    Lng As Long
+End Type
+Function VarLngOpt(V) As LngOpt
+Dim O&
+On Error GoTo X
+O = V
+VarLngOpt = SomLng(O)
+Exit Function
+X:
 End Function
-
-Sub StrOpt_Dmp(A As StrOpt)
-Debug.Print StrOpt_Str(A)
-End Sub
-
-Function StrOpt_Str(A As StrOpt)
-StrOpt_Str = "StrOpt: *Som=" & A.Som & vbCrLf & A.Str
+Function SomLng(A&) As LngOpt
+With SomLng
+    .Som = True
+    .Lng = A
+End With
 End Function
-
-Function IsDigit(A) As Boolean
-IsDigit = "0" <= A And A <= "9"
+Function ObjS$(A)
+On Error Resume Next
+ObjS = A.S
 End Function
-
-Function IsLetter(A) As Boolean
-Dim C1$: C1 = UCase(A)
-IsLetter = ("A" <= C1 And C1 <= "Z")
-End Function
-
-Function IsNeedQuote(A) As Boolean
-IsNeedQuote = True
-If HasSubStr(A, " ") Then Exit Function
-If HasSubStr(A, "#") Then Exit Function
-If HasSubStr(A, ".") Then Exit Function
-IsNeedQuote = False
-End Function
-
-Function IsNm(A) As Boolean
-If Not IsLetter(FstChr(A)) Then Exit Function
-Dim L%: L = Len(A)
-If L > 64 Then Exit Function
-Dim J%
-For J = 2 To L
-   If Not IsNmChr(Mid(A, J, 1)) Then Exit Function
-Next
-IsNm = True
-End Function
-
-Function IsNmChr(A) As Boolean
-IsNmChr = True
-If IsLetter(A) Then Exit Function
-If A = "_" Then Exit Function
-If IsDigit(A) Then Exit Function
-IsNmChr = False
-End Function
-
-Function FmtQQ$(QQStr$, ParamArray Ap())
-Dim Av(): Av = Ap
-FmtQQ = FmtQQAv(QQStr, Av)
-End Function
-
-Function FmtQQAv$(QQStr$, Av)
-If AyIsEmp(Av) Then FmtQQAv = QQStr: Exit Function
-Dim O$
-    Dim I, NeedUnEsc As Boolean
-    O = QQStr
-    For Each I In Av
-        If InStr(I, "?") > 0 Then
-            NeedUnEsc = True
-            I = Replace(I, "?", Chr(255))
-        End If
-        O = Replace(O, "?", I, Count:=1)
-    Next
-    If NeedUnEsc Then O = Replace(O, Chr(255), "?")
-FmtQQAv = O
-End Function
-
-Function FmtQQVBar$(QQStr$, ParamArray Ap())
-Dim Av(): Av = Ap
-FmtQQVBar = RplVBar(FmtQQAv(QQStr, Av))
-End Function
-
-Function FmtMacro$(MacroStr$, ParamArray Ap())
-Dim Av(): Av = Ap
-FmtMacro = FmtMacroAv(MacroStr, Av)
-End Function
-
-Function FmtMacroAv$(MacroStr$, Av())
-Dim Ay$(): Ay = MacroStr_Ny(MacroStr)
-Dim O$: O = MacroStr
-Dim J%, I
-For Each I In Ay
-    O = Replace(O, I, Av(J))
-    J = J + 1
-Next
-FmtMacroAv = O
-End Function
-
-Function FmtMacroDic$(MacroStr$, Dic As Dictionary)
-Dim Ay$(): Ay = MacroStr_Ny(MacroStr)
-If Not AyIsEmp(Ay) Then
-    Dim O$: O = MacroStr
-    Dim I, K$
-    For Each I In Ay
-        K = RmvFstLasChr(CStr(I))
-        If Dic.Exists(K) Then
-            O = Replace(O, I, Dic(K))
-        End If
-    Next
+Function ValStr$(A)
+If VarIsPrim(A) Then ValStr = A: Exit Function
+If IsNothing(A) Then ValStr = "#Nothing": Exit Function
+If IsEmpty(A) Then ValStr = "#Empty": Exit Function
+Dim T$
+If IsObject(A) Then
+    T = TypeName(A)
+    Select Case T
+    Case "CodeModule"
+        ValStr = FmtQQ("*Md{?}", CvMdx(A).Nm)
+        Exit Function
+    End Select
+    ValStr = FmtQQ("*?{?}", T, ObjS(A))
+    Exit Function
 End If
-FmtMacroDic = O
+If IsArray(A) Then
+    ValStr = "*Array"
+    Exit Function
+End If
+Stop
+End Function
+Function AlignL$(A, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
+Const CSub$ = "AlignL"
+If ErIfNotEnoughWdt And DoNotCut Then
+    Er CSub, "Both {ErIfNotEnoughWdt} and {DontCut} cannot be True", ErIfNotEnoughWdt, DoNotCut
+End If
+Dim S$: S = ValStr(A)
+AlignL = StrAlignL(S, W, ErIfNotEnoughWdt, DoNotCut)
+End Function
+Function StrAlignL$(S$, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
+Const CSub$ = "StrAlignL"
+Dim L%: L = Len(S)
+If L > W Then
+    If ErIfNotEnoughWdt Then
+        Er CSub, "Len({S)) > {W}", S, W
+    End If
+    If DoNotCut Then
+        StrAlignL = S
+        Exit Function
+    End If
+End If
+
+If W >= L Then
+    StrAlignL = S & Space(W - L)
+    Exit Function
+End If
+If W > 2 Then
+    StrAlignL = Left(S, W - 2) + ".."
+    Exit Function
+End If
+StrAlignL = Left(S, W)
+End Function
+Function AlignR$(S, W%)
+Dim L%: L = Len(S)
+If W > L Then
+    AlignR = Space(W - L) & S
+Else
+    AlignR = S
+End If
 End Function
 
 Function BktPos(A, Optional Bkt$ = "()") As FmToPos
@@ -173,18 +149,20 @@ If P = 0 Then
 End If
 Brk2 = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
-Sub BrkAsg(A, Sep, OS1$, OS2$, Optional NoTrim As Boolean)
-With Brk(A, Sep, NoTrim)
-    OS1 = .S1
-    OS2 = .S2
-End With
-End Sub
+
 Function Brk(A, Sep, Optional NoTrim As Boolean) As S1S2
 Const CSub$ = "Brk"
 Dim P&: P = InStr(A, Sep)
 If P = 0 Then Er CSub, "{S} does not contains {Sep}", A, Sep
 Brk = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
+
+Sub BrkAsg(A, Sep, OS1$, OS2$, Optional NoTrim As Boolean)
+With Brk(A, Sep, NoTrim)
+    OS1 = .S1
+    OS2 = .S2
+End With
+End Sub
 
 Function BrkAt(A, P&, SepLen%, Optional NoTrim As Boolean) As S1S2
 Dim O As S1S2
@@ -198,10 +176,6 @@ With O
     End If
 End With
 BrkAt = O
-End Function
-Function BrkByBkt(A, Optional Bkt$ = "()") As P123
-Dim B As FmToPos: B = BktPos(A, Bkt)
-
 End Function
 
 Function BrkBoth(A, Sep, Optional NoTrim As Boolean) As S1S2
@@ -219,15 +193,11 @@ If P = 0 Then
 End If
 BrkBoth = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
-Function S1S2_IsEmp(A() As S1S2) As Boolean
-S1S2_IsEmp = S1S2_Sz(A) = 0
+
+Function BrkByBkt(A, Optional Bkt$ = "()") As P123
+Dim B As FmToPos: B = BktPos(A, Bkt)
+
 End Function
-Sub S1S2_Push(O() As S1S2, M As S1S2)
-Dim N&
-    N = S1S2_Sz(O)
-ReDim Preserve O(N)
-    O(N) = M
-End Sub
 
 Function BrkQuote(QuoteStr$) As S1S2
 Dim L%: L = Len(QuoteStr)
@@ -255,32 +225,52 @@ If P = 0 Then Err.Raise "BrkRev: Str[" & A & "] does not contains Sep[" & Sep & 
 BrkRev = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
 
-Private Function Brk1__(A, P&, Sep, NoTrim As Boolean) As S1S2
-If P = 0 Then
-    Dim O As S1S2
-    If NoTrim Then
-        O.S1 = A
-    Else
-        O.S1 = Trim(A)
-    End If
-    Brk1__ = O
-    Exit Function
+Function Dft(V, DftV)
+If VarIsEmp(V) Then
+   Dft = DftV
+Else
+   Dft = V
 End If
-Brk1__ = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
 
-Private Sub Brk1Rev__Tst()
-Dim S1$, S2$, ExpS1$, ExpS2$, A$
-A = "aa --- bb --- cc"
-ExpS1 = "aa --- bb"
-ExpS2 = "cc"
-With Brk1Rev(A, "---")
-    S1 = .S1
-    S2 = .S2
-End With
-Ass S1 = ExpS1
-Ass S2 = ExpS2
-End Sub
+Function DftStr(S$, DftV$)
+If S = "" Then
+   DftStr = DftV
+Else
+   DftStr = S
+End If
+End Function
+
+Function Esc$(A, Fm$, ToStr$)
+If InStr(A, "\n") > 0 Then
+    Debug.Print ErMsgLines("Esc", "Warning: escaping a {Str} of {FmStrSub} to {ToSubStr} is found that {Str} contains some {ToSubStr}.  This will make the string chagned after UnEsc", A, Fm, ToStr)
+End If
+Esc = Replace(A, Fm, ToStr)
+End Function
+
+Function EscCr$(A)
+
+End Function
+
+Function EscCrLf$(A)
+EscCrLf = EscCr(EscLf(A))
+End Function
+
+Function EscKey$(A)
+EscKey = EscCrLf(EscSpc(EscTab(A)))
+End Function
+
+Function EscLf$(A)
+EscLf = Esc(A, vbLf, "\n")
+End Function
+
+Function EscSpc$(A)
+EscSpc = Esc(A, " ", "~")
+End Function
+
+Function EscTab$(A)
+EscTab = Esc(A, vbTab, "\t")
+End Function
 
 Sub FmToPosDmp(A As FmToPos)
 Debug.Print FmToPosToStr(A)
@@ -288,6 +278,67 @@ End Sub
 
 Function FmToPosToStr$(A As FmToPos)
 FmToPosToStr = FmtQQ("(FmToPos ? ?)", A.FmPos, A.ToPos)
+End Function
+
+Function FmtMacro$(MacroStr$, ParamArray Ap())
+Dim Av(): Av = Ap
+FmtMacro = FmtMacroAv(MacroStr, Av)
+End Function
+
+Function FmtMacroAv$(MacroStr$, Av())
+Dim Ay$(): Ay = MacroStr_Ny(MacroStr)
+Dim O$: O = MacroStr
+Dim J%, I
+For Each I In Ay
+    O = Replace(O, I, Av(J))
+    J = J + 1
+Next
+FmtMacroAv = O
+End Function
+
+Function FmtMacroDic$(MacroStr$, Dic As Dictionary)
+Dim Ay$(): Ay = MacroStr_Ny(MacroStr)
+If Not AyIsEmp(Ay) Then
+    Dim O$: O = MacroStr
+    Dim I, K$
+    For Each I In Ay
+        K = RmvFstLasChr(CStr(I))
+        If Dic.Exists(K) Then
+            O = Replace(O, I, Dic(K))
+        End If
+    Next
+End If
+FmtMacroDic = O
+End Function
+
+Function FmtQQ$(QQStr$, ParamArray Ap())
+Dim Av(): Av = Ap
+FmtQQ = FmtQQAv(QQStr, Av)
+End Function
+
+Function FmtQQAv$(QQStr$, Av)
+If AyIsEmp(Av) Then FmtQQAv = QQStr: Exit Function
+Dim O$
+    Dim I, NeedUnEsc As Boolean
+    O = QQStr
+    For Each I In Av
+        If InStr(I, "?") > 0 Then
+            NeedUnEsc = True
+            I = Replace(I, "?", Chr(255))
+        End If
+        O = Replace(O, "?", I, Count:=1)
+    Next
+    If NeedUnEsc Then O = Replace(O, Chr(255), "?")
+FmtQQAv = O
+End Function
+
+Function FmtQQVBar$(QQStr$, ParamArray Ap())
+Dim Av(): Av = Ap
+FmtQQVBar = RplVBar(FmtQQAv(QQStr, Av))
+End Function
+
+Function FstChr$(A)
+FstChr = Left(A, 1)
 End Function
 
 Function HasSubStr(S, SubStr) As Boolean
@@ -314,25 +365,48 @@ Next
 InstrN = P
 End Function
 
-Function JnQSngComma$(Ay)
-JnQSngComma = JnComma(AyQuoteSng(Ay))
-End Function
-Function JnQDblComma$(Ay)
-JnQDblComma = JnComma(AyQuoteDbl(Ay))
+Function IsDigit(A) As Boolean
+IsDigit = "0" <= A And A <= "9"
 End Function
 
-Function JnQSqBktComma$(Ay)
-JnQSqBktComma = JnComma(AyQuoteSqBkt(Ay))
+Function IsEqStrOpt(A1 As StrOpt, A2 As StrOpt) As Boolean
+If A1.Som <> A1.Som Then Exit Function
+If A1.Str <> A2.Str Then Exit Function
+IsEqStrOpt = True
 End Function
-Function JnQSqBktSpc$(Ay)
-JnQSqBktSpc = JnSpc(AyQuoteSqBkt(Ay))
+
+Function IsLetter(A) As Boolean
+Dim C1$: C1 = UCase(A)
+IsLetter = ("A" <= C1 And C1 <= "Z")
 End Function
-Function JnQSngSpc$(Ay)
-JnQSngSpc = JnSpc(AyQuoteSng(Ay))
+
+Function IsNeedQuote(A) As Boolean
+IsNeedQuote = True
+If HasSubStr(A, " ") Then Exit Function
+If HasSubStr(A, "#") Then Exit Function
+If HasSubStr(A, ".") Then Exit Function
+IsNeedQuote = False
 End Function
-Function JnQDblSpc$(Ay)
-JnQDblSpc = JnSpc(AyQuoteDbl(Ay))
+
+Function IsNm(A) As Boolean
+If Not IsLetter(FstChr(A)) Then Exit Function
+Dim L%: L = Len(A)
+If L > 64 Then Exit Function
+Dim J%
+For J = 2 To L
+   If Not IsNmChr(Mid(A, J, 1)) Then Exit Function
+Next
+IsNm = True
 End Function
+
+Function IsNmChr(A) As Boolean
+IsNmChr = True
+If IsLetter(A) Then Exit Function
+If A = "_" Then Exit Function
+If IsDigit(A) Then Exit Function
+IsNmChr = False
+End Function
+
 Function JnComma$(Ay)
 JnComma = Join(Ay, ",")
 End Function
@@ -349,6 +423,30 @@ Function JnDblCrLf$(Ay)
 JnDblCrLf = Join(Ay, vbCrLf & vbCrLf)
 End Function
 
+Function JnQDblComma$(Ay)
+JnQDblComma = JnComma(AyQuoteDbl(Ay))
+End Function
+
+Function JnQDblSpc$(Ay)
+JnQDblSpc = JnSpc(AyQuoteDbl(Ay))
+End Function
+
+Function JnQSngComma$(Ay)
+JnQSngComma = JnComma(AyQuoteSng(Ay))
+End Function
+
+Function JnQSngSpc$(Ay)
+JnQSngSpc = JnSpc(AyQuoteSng(Ay))
+End Function
+
+Function JnQSqBktComma$(Ay)
+JnQSqBktComma = JnComma(AyQuoteSqBkt(Ay))
+End Function
+
+Function JnQSqBktSpc$(Ay)
+JnQSqBktSpc = JnSpc(AyQuoteSqBkt(Ay))
+End Function
+
 Function JnSpc$(Ay)
 JnSpc = Join(Ay, " ")
 End Function
@@ -361,12 +459,20 @@ Function JnVBar$(Ay)
 JnVBar = Join(Ay, "|")
 End Function
 
+Function LasChr$(A)
+LasChr = Right(A, 1)
+End Function
+
 Function LvsJnComma$(Lvs$)
 LvsJnComma = JnComma(LvsSy(Lvs))
 End Function
 
 Function LvsJnQuoteComma$(Lvs$)
 LvsJnQuoteComma = JnComma(AyQuote(LvsSy(Lvs), "'"))
+End Function
+
+Function LvsSy(A) As String()
+LvsSy = Split(RmvDblSpc(Trim(A)), " ")
 End Function
 
 Function MacroStr_Ny(MacroStr$, Optional ExclBkt As Boolean, Optional Bkt$ = "{}") As String()
@@ -436,21 +542,6 @@ End Function
 Function RmvFstChr$(A)
 RmvFstChr = Mid(A, 2)
 End Function
-Function Dft(V, DftV)
-If ValIsEmp(V) Then
-   Dft = DftV
-Else
-   Dft = V
-End If
-End Function
-
-Function DftStr(S$, DftV$)
-If S = "" Then
-   DftStr = DftV
-Else
-   DftStr = S
-End If
-End Function
 
 Function RmvFstLasChr$(A)
 RmvFstLasChr = RmvFstChr(RmvLasChr(A))
@@ -468,14 +559,6 @@ Function RmvLasNChr$(A, N%)
 RmvLasNChr = Left(A, Len(A) - 1)
 End Function
 
-Function RmvPfxAy$(A, PfxAy)
-Dim Pfx
-For Each Pfx In PfxAy
-    If HasPfx(A, CStr(Pfx)) Then RmvPfxAy = RmvPfx(A, Pfx): Exit Function
-Next
-RmvPfxAy = A
-End Function
-
 Function RmvPfx$(S, Pfx)
 Dim L%: L = Len(Pfx)
 If Left(S, L) = Pfx Then
@@ -483,6 +566,14 @@ If Left(S, L) = Pfx Then
 Else
     RmvPfx = S
 End If
+End Function
+
+Function RmvPfxAy$(A, PfxAy)
+Dim Pfx
+For Each Pfx In PfxAy
+    If HasPfx(A, CStr(Pfx)) Then RmvPfxAy = RmvPfx(A, Pfx): Exit Function
+Next
+RmvPfxAy = A
 End Function
 
 Function RmvSfx$(A, Sfx$)
@@ -494,44 +585,32 @@ Else
 End If
 End Function
 
+Function RplFstChr$(A, By$)
+RplFstChr = By & RmvFstChr(A)
+End Function
+
+Function RplPfx(A, FmPfx, ToPfx)
+RplPfx = ToPfx & RmvPfx(A, FmPfx)
+End Function
+
 Function RplQ$(A, By$)
 RplQ = Replace(A, "?", By)
 End Function
 
-Function RplFstChr$(A, By$)
-RplFstChr = By & RmvFstChr(A)
-End Function
-Function EscCr$(A)
-
-End Function
-Function Esc$(A, Fm$, ToStr$)
-If InStr(A, "\n") > 0 Then
-    Debug.Print ErMsgLines("Esc", "Warning: escaping a {Str} of {FmStrSub} to {ToSubStr} is found that {Str} contains some {ToSubStr}.  This will make the string chagned after UnEsc", A, Fm, ToStr)
-End If
-Esc = Replace(A, Fm, ToStr)
-End Function
-Function EscLf$(A)
-EscLf = Esc(A, vbLf, "\n")
-End Function
-Function EscTab$(A)
-EscTab = Esc(A, vbTab, "\t")
-End Function
-Function EscKey$(A)
-EscKey = EscCrLf(EscSpc(EscTab(A)))
-End Function
-Function EscCrLf$(A)
-EscCrLf = EscCr(EscLf(A))
-End Function
-Function UnEscTab(A)
-UnEscTab = Replace(A, "\t", "~")
-End Function
-Function EscSpc$(A)
-EscSpc = Esc(A, " ", "~")
+Function RplVBar$(A)
+RplVBar = Replace(A, "|", vbCrLf)
 End Function
 
-Function UnEscSpc$(A)
-UnEscSpc = Replace(A, "~", " ")
+Function S1S2_IsEmp(A() As S1S2) As Boolean
+S1S2_IsEmp = S1S2_Sz(A) = 0
 End Function
+
+Sub S1S2_Push(O() As S1S2, M As S1S2)
+Dim N&
+    N = S1S2_Sz(O)
+ReDim Preserve O(N)
+    O(N) = M
+End Sub
 
 Function SplitComma(A, Optional NoTrim As Boolean) As String()
 If NoTrim Then
@@ -539,10 +618,6 @@ If NoTrim Then
 Else
     SplitComma = AyTrim(Split(A, ","))
 End If
-End Function
-Function SplitLines(A) As String()
-Dim B$: B = Replace(A, vbCrLf, vbLf)
-SplitLines = SplitLf(B)
 End Function
 
 Function SplitCrLf(A) As String()
@@ -553,8 +628,9 @@ Function SplitLf(A) As String()
 SplitLf = Split(A, vbLf)
 End Function
 
-Function LvsSy(A) As String()
-LvsSy = Split(RmvDblSpc(Trim(A)), " ")
+Function SplitLines(A) As String()
+Dim B$: B = Replace(A, vbCrLf, vbLf)
+SplitLines = SplitLf(B)
 End Function
 
 Function SplitSpc(A) As String()
@@ -565,52 +641,81 @@ Function SplitVBar(A) As String()
 SplitVBar = Split(A, "|")
 End Function
 
-Function AlignL$(A, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
-Const CSub$ = "AlignL"
-If ErIfNotEnoughWdt And DoNotCut Then
-    Er CSub, "Both {ErIfNotEnoughWdt} and {DontCut} cannot be True", ErIfNotEnoughWdt, DoNotCut
-End If
-Dim L%
-If IsNull(A) Then
-    L = 0
-Else
-    L = Len(A)
-End If
-
-If L > W Then
-    If ErIfNotEnoughWdt Then
-        Er CSub, "Len({S)) > {W}", A, W
-    End If
-    If DoNotCut Then
-        AlignL = A
-        Exit Function
-    End If
-End If
-If W >= L Then
-    AlignL = A & Space(W - L)
-Else
-    If W > 2 Then
-        AlignL = Left(A, W - 2) + ".."
-    Else
-        AlignL = Left(A, W)
-    End If
-End If
-End Function
-
-Function AlignR$(S, W%)
-Dim L%: L = Len(S)
-If W > L Then
-    AlignR = Space(W - L) & S
-Else
-    AlignR = S
-End If
-End Function
-
 Sub StrBrw(A, Optional Fnn$)
 Dim T$: T = TmpFt("StrBrw", Fnn$)
 StrWrt A, T
 FtBrw T
 End Sub
+
+Function StrDup$(N%, S)
+Dim O$, J%
+For J = 0 To N - 1
+    O = O & S
+Next
+StrDup = O
+End Function
+
+Sub StrOpt_Dmp(A As StrOpt)
+Debug.Print StrOpt_Str(A)
+End Sub
+
+Function StrOptAy_HasNone(A() As StrOpt) As Boolean
+Dim J%
+For J = 0 To StrOpt_UB(A)
+    If Not A(J).Som Then StrOptAy_HasNone = True: Exit Function
+Next
+End Function
+Function StrOpt_UB&(A() As StrOpt)
+StrOpt_UB = StrOpt_Sz(A) - 1
+End Function
+
+Sub StrOpt_Push(O() As StrOpt, A As StrOpt)
+Dim N&: N = StrOpt_Sz(O)
+End Sub
+
+Function StrOpt_Sz&(A() As StrOpt)
+On Error Resume Next
+StrOpt_Sz = UBound(A) - 1
+End Function
+
+Function StrOpt_Str$(A As StrOpt, Optional W% = 50)
+With A
+    If .Som Then
+        If Len(A.Str) < W Then
+            StrOpt_Str = "*SomStr " & A.Str
+        Else
+            StrOpt_Str = "*SomStr " & AlignL(A.Str, 50)
+        End If
+    Else
+        StrOpt_Str = "*NoStr"
+    End If
+End With
+End Function
+
+Function StrPfx$(A, PfxAy$())
+If AyIsEmp(PfxAy) Then Exit Function
+Dim Pfx
+For Each Pfx In PfxAy
+    If HasPfx(A, CStr(Pfx)) Then StrPfx = Pfx: Exit Function
+Next
+End Function
+
+Sub StrWrt(A, FT)
+Fso.CreateTextFile(FT, True).Write A
+End Sub
+
+Function SubStrCnt&(A, SubStr)
+Dim P&: P = 1
+Dim L%: L = Len(SubStr)
+Dim O%
+While P > 0
+    P = InStr(P, A, SubStr)
+    If P = 0 Then SubStrCnt = O: Exit Function
+    O = O + 1
+    P = P + L
+Wend
+SubStrCnt = O
+End Function
 
 Function SubStrPos(A, SubStr$) As FmToPos
 Dim FmPos&: FmPos = InStr(A, SubStr)
@@ -621,9 +726,44 @@ End Function
 
 Function TmpFfn(Ext$, Optional Fdr$, Optional Fnn$)
 Dim mFnn$
-    mFnn = IIf(ValIsEmp(Fnn), TmpNm, Fnn)
+    mFnn = IIf(VarIsEmp(Fnn), TmpNm, Fnn)
 TmpFfn = TmpPth(Fdr) & mFnn & Ext
 End Function
+
+Function UnEscSpc$(A)
+UnEscSpc = Replace(A, "~", " ")
+End Function
+
+Function UnEscTab(A)
+UnEscTab = Replace(A, "\t", "~")
+End Function
+
+Private Function Brk1__(A, P&, Sep, NoTrim As Boolean) As S1S2
+If P = 0 Then
+    Dim O As S1S2
+    If NoTrim Then
+        O.S1 = A
+    Else
+        O.S1 = Trim(A)
+    End If
+    Brk1__ = O
+    Exit Function
+End If
+Brk1__ = BrkAt(A, P, Len(Sep), NoTrim)
+End Function
+
+Private Sub Brk1Rev__Tst()
+Dim S1$, S2$, ExpS1$, ExpS2$, A$
+A = "aa --- bb --- cc"
+ExpS1 = "aa --- bb"
+ExpS2 = "cc"
+With Brk1Rev(A, "---")
+    S1 = .S1
+    S2 = .S2
+End With
+Ass S1 = ExpS1
+Ass S2 = ExpS2
+End Sub
 
 Private Sub InstrN__Tst()
 Dim Act&, Exp&, S, SubStr, N%
@@ -660,55 +800,6 @@ Exp = 0
 Act = InstrN(S, SubStr, N)
 Ass Exp = Act
 End Sub
-
-Function StrDup$(N%, S)
-Dim O$, J%
-For J = 0 To N - 1
-    O = O & S
-Next
-StrDup = O
-End Function
-
-Function FstChr$(A)
-FstChr = Left(A, 1)
-End Function
-
-Function LasChr$(A)
-LasChr = Right(A, 1)
-End Function
-
-Function StrPfx$(A, PfxAy$())
-If AyIsEmp(PfxAy) Then Exit Function
-Dim Pfx
-For Each Pfx In PfxAy
-    If HasPfx(A, CStr(Pfx)) Then StrPfx = Pfx: Exit Function
-Next
-End Function
-
-Function RplPfx(A, FmPfx, ToPfx)
-RplPfx = ToPfx & RmvPfx(A, FmPfx)
-End Function
-
-Function RplVBar$(A)
-RplVBar = Replace(A, "|", vbCrLf)
-End Function
-
-Sub StrWrt(A, FT)
-Fso.CreateTextFile(FT, True).Write A
-End Sub
-
-Function SubStrCnt&(A, SubStr)
-Dim P&: P = 1
-Dim L%: L = Len(SubStr)
-Dim O%
-While P > 0
-    P = InStr(P, A, SubStr)
-    If P = 0 Then SubStrCnt = O: Exit Function
-    O = O + 1
-    P = P + L
-Wend
-SubStrCnt = O
-End Function
 
 Private Sub RmvPfx__Tst()
 Ass RmvPfx("aaBB", "aa") = "BB"

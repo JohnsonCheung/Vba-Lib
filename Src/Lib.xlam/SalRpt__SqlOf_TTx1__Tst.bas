@@ -5,6 +5,24 @@ Type ZZ7_TstDta
    Exp As String
 End Type
 
+Private Function ZZ7_Ay() As ZZ7_TstDta()
+Dim O() As ZZ7_TstDta
+ZZ7_Push O, ZZ7_TstDta1
+ZZ7_Push O, ZZ7_TstDta2
+ZZ7_Ay = O
+End Function
+
+Private Sub ZZ7_Push(O() As ZZ7_TstDta, M As ZZ7_TstDta)
+Dim N%: N = ZZ7_Sz(O)
+ReDim Preserve O(N)
+O(N) = M
+End Sub
+
+Private Function ZZ7_Sz%(A() As ZZ7_TstDta)
+On Error Resume Next
+ZZ7_Sz = UBound(A) + 1
+End Function
+
 Private Function ZZ7_TstDta1() As ZZ7_TstDta
 Dim O As ZZ7_TstDta
 With O
@@ -49,33 +67,15 @@ End Function
 Private Sub ZZ7_Tstr(A As ZZ7_TstDta)
 Dim ECrd$
 With A
-   Ass IsEq(SqlOf_TTx(A.P), .Exp)
+   Ass IsEq(SqLoFmtr_TTx(A.P), .Exp)
 End With
 End Sub
-
-Private Sub ZZ7_Push(O() As ZZ7_TstDta, M As ZZ7_TstDta)
-Dim N%: N = ZZ7_Sz(O)
-ReDim Preserve O(N)
-O(N) = M
-End Sub
-
-Private Function ZZ7_Sz%(A() As ZZ7_TstDta)
-On Error Resume Next
-ZZ7_Sz = UBound(A) + 1
-End Function
 
 Private Function ZZ7_UB%(A() As ZZ7_TstDta)
 ZZ7_UB = ZZ7_Sz(A) - 1
 End Function
 
-Private Function ZZ7_Ay() As ZZ7_TstDta()
-Dim O() As ZZ7_TstDta
-ZZ7_Push O, ZZ7_TstDta1
-ZZ7_Push O, ZZ7_TstDta2
-ZZ7_Ay = O
-End Function
-
-Private Sub ZZ7__SqlOf_TTx__Tst()
+Private Sub ZZ7__SqLoFmtr_TTx__Tst()
 Dim Ay() As ZZ7_TstDta: Ay = ZZ7_Ay
 Dim J%
 For J = 0 To UBound(Ay)

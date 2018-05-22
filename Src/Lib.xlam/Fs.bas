@@ -2,207 +2,15 @@ Attribute VB_Name = "Fs"
 Option Explicit
 Private O$() ' Used by PthEntAyR
 
-Sub FtBrw(FT)
-'Shell "code.cmd """ & Ft & """", vbHide
-Shell "notepad.exe """ & FT & """", vbMaximizedFocus
-End Sub
-
-Function PthIsExist(A) As Boolean
-Ass PthHasPthSfx(A)
-PthIsExist = Fso.FolderExists(A)
-End Function
-
-Private Sub PthEntAy__Tst()
-Dim A$(): A = PthEntAy("C:\users\user\documents\", IsRecursive:=True)
-Debug.Print Sz(A)
-Stop
-AyDmp A
-End Sub
-
-Function PthEntAy(A, Optional FilSpec$ = "*.*", Optional Atr As FileAttribute, Optional IsRecursive As Boolean) As String()
-If Not IsRecursive Then
-    PthEntAy = AyAdd(PthSubPthAy(A), PthFfnAy(A, FilSpec, Atr))
-    Exit Function
-End If
-Erase O
-PthPushEntAyR A
-PthEntAy = O
-Erase O
-End Function
-
-Private Sub PthPushEntAyR(A)
-'Debug.Print "PthPUshEntAyR:" & A
-Dim P$(): P = PthSubPthAy(A)
-If Sz(P) = 0 Then Exit Sub
-If Sz(O) Mod 1000 = 0 Then Debug.Print "PthPushEntAyR: (Each 1000): " & A
-PushAy O, P
-PushAy O, PthFfnAy(A)
-Dim PP
-For Each PP In P
-    PthPushEntAyR PP
-Next
-End Sub
-Function PthIsEmp(A)
-Ass PthIsExist(A)
-If PthHasFil(A) Then Exit Function
-If PthHasSubDir(A) Then Exit Function
-PthIsEmp = True
-End Function
-
-Sub PthBrw(P)
-Shell "Explorer """ & P & """", vbMaximizedFocus
-End Sub
-
-Sub PthClrFil(A$)
-If Not PthIsExist(A) Then Exit Sub
-Dim Ay$(): Ay = PthFfnAy(A)
-Dim F
-On Error Resume Next
-For Each F In Ay
-   Kill F
-Next
-End Sub
-
-Sub PthEns(P$)
-If PthIsExist(P) Then Exit Sub
-MkDir P
-End Sub
-
-Function PthFfnAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
-PthFfnAy = AyAddPfx(PthFnAy(A, Spec, Atr), A)
-End Function
-
-Function PthFnAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
-Ass PthIsExist(A)
-Dim O$()
-Dim M$
-M = Dir(A & Spec)
-If Atr = 0 Then
-    While M <> ""
-       Push O, M
-       M = Dir
-    Wend
-    PthFnAy = O
-End If
-Ass PthHasPthSfx(A)
-While M <> ""
-    If GetAttr(A & M) And Atr Then
-        Push O, M
-    End If
-    M = Dir
-Wend
-PthFnAy = O
-End Function
-
-Function PthHasFil(A) As Boolean
-Ass PthHasPthSfx(A)
-If Not PthIsExist(A) Then Exit Function
-PthHasFil = (Dir(A & "*.*") <> "")
-End Function
-
-Function PthHasSubDir(A) As Boolean
-If Not PthIsExist(A) Then Exit Function
-Ass PthHasPthSfx(A)
-Dim P$: P = Dir(A & "*.*", vbDirectory)
-Dir
-PthHasSubDir = Dir <> ""
-End Function
-
-Function PthSubPthAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
-PthSubPthAy = AyAddPfxSfx(PthSubFdrAy(A, Spec, Atr), A, "\")
-End Function
-
-Sub PthRmvEmpSubDir(A)
-Dim P$(): P = PthSubPthAy(A): If AyIsEmp(A) Then Exit Sub
-Dim I
-For Each I In P
-   PthRmvIfEmp CStr(I)
-Next
-End Sub
-
-Sub PthRmvIfEmp(A$)
-If Not PthIsExist(A) Then Exit Sub
-If PthIsEmp(A) Then Exit Sub
-RmDir A
-End Sub
-
-Function PthSubFdrAy(A, Optional Spec$ = "*.*", Optional Atr As VbFileAttribute) As String()
-'PthSubFdrAy = ItrNy(Fso.GetFolder(A).SubFolders, Spec)
-Ass PthIsExist(A)
-Ass PthHasPthSfx(A)
-Dim O$(), M$, X&, XX&
-X = Atr Or vbDirectory
-M = Dir(A & Spec, vbDirectory)
-While M <> ""
-    If InStr(M, "?") > 0 Then
-        Debug.Print "PthSubFdrAy: Skip -> [" & M & "]"
-        GoTo Nxt
-    End If
-    XX = GetAttr(A & M)
-    If M = "." Then GoTo Nxt
-    If M = ".." Then GoTo Nxt
-    If XX And X Then
-        Push O, M
-    End If
-Nxt:
-    M = Dir
-Wend
-PthSubFdrAy = O
-End Function
-
-Private Sub PthRmvEmpSubDir__Tst()
-TmpPth
-End Sub
-Function DftPth$(Optional Pth0$, Optional Fdr$)
-If Pth0 <> "" Then DftPth = Pth0: Exit Function
-DftPth = TmpPth(Fdr)
-End Function
 Function DftFfn(Ffn0$, Optional Ext$ = ".txt", Optional Pth0$, Optional Fdr$)
 If Ffn0 <> "" Then DftFfn = Ffn0: Exit Function
 Dim Pth$: Pth = DftPth(Pth0)
 DftFfn = Pth & TmpNm & Ext
 End Function
-Sub Tst()
-PthRmvEmpSubDir__Tst
-End Sub
-Function FtLines$(FT)
-FtLines = Fso.GetFile(FT).OpenAsTextStream.ReadAll
-End Function
-Function FtLy(FT) As String()
-Dim F%: F = FtOpnInp(FT)
-Dim L$, O$()
-While Not EOF(F)
-    Line Input #F, L
-    Push O, L
-Wend
-Close #F
-FtLy = O
-End Function
 
-Function FtOpnApp%(FT)
-Dim O%: O = FreeFile(1)
-Open FT For Append As #O
-FtOpnApp = O
-End Function
-
-Function FtOpnInp%(FT)
-Dim O%: O = FreeFile(1)
-Open FT For Input As #O
-FtOpnInp = O
-End Function
-
-Function FtOpnOup%(FT)
-Dim O%: O = FreeFile(1)
-Open FT For Output As #O
-FtOpnOup = O
-End Function
-
-Sub TmpPthBrw()
-PthBrw TmpPth
-End Sub
-
-Function PthHasPthSfx(A) As Boolean
-PthHasPthSfx = LasChr(A) = "\"
+Function DftPth$(Optional Pth0$, Optional Fdr$)
+If Pth0 <> "" Then DftPth = Pth0: Exit Function
+DftPth = TmpPth(Fdr)
 End Function
 
 Function FfnAddFnSfx(A$, Sfx$)
@@ -257,10 +65,176 @@ Function FfnRplExt$(Ffn, NewExt)
 FfnRplExt = FfnRmvExt(Ffn) & NewExt
 End Function
 
+Sub FtBrw(FT)
+'Shell "code.cmd """ & Ft & """", vbHide
+Shell "notepad.exe """ & FT & """", vbMaximizedFocus
+End Sub
+
+Function FtLines$(FT)
+FtLines = Fso.GetFile(FT).OpenAsTextStream.ReadAll
+End Function
+
+Function FtLy(FT) As String()
+Dim F%: F = FtOpnInp(FT)
+Dim L$, O$()
+While Not EOF(F)
+    Line Input #F, L
+    Push O, L
+Wend
+Close #F
+FtLy = O
+End Function
+
+Function FtOpnApp%(FT)
+Dim O%: O = FreeFile(1)
+Open FT For Append As #O
+FtOpnApp = O
+End Function
+
+Function FtOpnInp%(FT)
+Dim O%: O = FreeFile(1)
+Open FT For Input As #O
+FtOpnInp = O
+End Function
+
+Function FtOpnOup%(FT)
+Dim O%: O = FreeFile(1)
+Open FT For Output As #O
+FtOpnOup = O
+End Function
+
+Sub PthBrw(P)
+Shell "Explorer """ & P & """", vbMaximizedFocus
+End Sub
+
+Sub PthClrFil(A$)
+If Not PthIsExist(A) Then Exit Sub
+Dim Ay$(): Ay = PthFfnAy(A)
+Dim F
+On Error Resume Next
+For Each F In Ay
+   Kill F
+Next
+End Sub
+
+Sub PthEns(P$)
+If PthIsExist(P) Then Exit Sub
+MkDir P
+End Sub
+
+Function PthEntAy(A, Optional FilSpec$ = "*.*", Optional Atr As FileAttribute, Optional IsRecursive As Boolean) As String()
+If Not IsRecursive Then
+    PthEntAy = AyAdd(PthSubPthAy(A), PthFfnAy(A, FilSpec, Atr))
+    Exit Function
+End If
+Erase O
+PthPushEntAyR A
+PthEntAy = O
+Erase O
+End Function
+
 Function PthFdr$(A$)
 Ass PthHasPthSfx(A)
 Dim P$: P = RmvLasChr(A)
 PthFdr = TakAftRev(A, "\")
+End Function
+
+Function PthFfnAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
+PthFfnAy = AyAddPfx(PthFnAy(A, Spec, Atr), A)
+End Function
+
+Function PthFnAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
+Ass PthIsExist(A)
+Dim O$()
+Dim M$
+M = Dir(A & Spec)
+If Atr = 0 Then
+    While M <> ""
+       Push O, M
+       M = Dir
+    Wend
+    PthFnAy = O
+End If
+Ass PthHasPthSfx(A)
+While M <> ""
+    If GetAttr(A & M) And Atr Then
+        Push O, M
+    End If
+    M = Dir
+Wend
+PthFnAy = O
+End Function
+
+Function PthHasFil(A) As Boolean
+Ass PthHasPthSfx(A)
+If Not PthIsExist(A) Then Exit Function
+PthHasFil = (Dir(A & "*.*") <> "")
+End Function
+
+Function PthHasPthSfx(A) As Boolean
+PthHasPthSfx = LasChr(A) = "\"
+End Function
+
+Function PthHasSubDir(A) As Boolean
+If Not PthIsExist(A) Then Exit Function
+Ass PthHasPthSfx(A)
+Dim P$: P = Dir(A & "*.*", vbDirectory)
+Dir
+PthHasSubDir = Dir <> ""
+End Function
+
+Function PthIsEmp(A)
+Ass PthIsExist(A)
+If PthHasFil(A) Then Exit Function
+If PthHasSubDir(A) Then Exit Function
+PthIsEmp = True
+End Function
+
+Function PthIsExist(A) As Boolean
+Ass PthHasPthSfx(A)
+PthIsExist = Fso.FolderExists(A)
+End Function
+
+Sub PthRmvEmpSubDir(A)
+Dim P$(): P = PthSubPthAy(A): If AyIsEmp(A) Then Exit Sub
+Dim I
+For Each I In P
+   PthRmvIfEmp CStr(I)
+Next
+End Sub
+
+Sub PthRmvIfEmp(A$)
+If Not PthIsExist(A) Then Exit Sub
+If PthIsEmp(A) Then Exit Sub
+RmDir A
+End Sub
+
+Function PthSubFdrAy(A, Optional Spec$ = "*.*", Optional Atr As VbFileAttribute) As String()
+'PthSubFdrAy = ItrNy(Fso.GetFolder(A).SubFolders, Spec)
+Ass PthIsExist(A)
+Ass PthHasPthSfx(A)
+Dim O$(), M$, X&, XX&
+X = Atr Or vbDirectory
+M = Dir(A & Spec, vbDirectory)
+While M <> ""
+    If InStr(M, "?") > 0 Then
+        Debug.Print "PthSubFdrAy: Skip -> [" & M & "]"
+        GoTo Nxt
+    End If
+    XX = GetAttr(A & M)
+    If M = "." Then GoTo Nxt
+    If M = ".." Then GoTo Nxt
+    If XX And X Then
+        Push O, M
+    End If
+Nxt:
+    M = Dir
+Wend
+PthSubFdrAy = O
+End Function
+
+Function PthSubPthAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
+PthSubPthAy = AyAddPfxSfx(PthSubFdrAy(A, Spec, Atr), A, "\")
 End Function
 
 Function TmpFb$(Optional Fdr$, Optional Fnn$)
@@ -293,8 +267,40 @@ Dim O$
 TmpPth = O
 End Function
 
+Sub TmpPthBrw()
+PthBrw TmpPth
+End Sub
+
 Function TmpPthFix$()
 Static X$
 If X = "" Then X = Fso.GetSpecialFolder(TemporaryFolder) & "\"
 TmpPthFix = X
 End Function
+
+Private Sub PthPushEntAyR(A)
+'Debug.Print "PthPUshEntAyR:" & A
+Dim P$(): P = PthSubPthAy(A)
+If Sz(P) = 0 Then Exit Sub
+If Sz(O) Mod 1000 = 0 Then Debug.Print "PthPushEntAyR: (Each 1000): " & A
+PushAy O, P
+PushAy O, PthFfnAy(A)
+Dim PP
+For Each PP In P
+    PthPushEntAyR PP
+Next
+End Sub
+
+Private Sub PthEntAy__Tst()
+Dim A$(): A = PthEntAy("C:\users\user\documents\", IsRecursive:=True)
+Debug.Print Sz(A)
+Stop
+AyDmp A
+End Sub
+
+Private Sub PthRmvEmpSubDir__Tst()
+TmpPth
+End Sub
+
+Sub Tst()
+PthRmvEmpSubDir__Tst
+End Sub

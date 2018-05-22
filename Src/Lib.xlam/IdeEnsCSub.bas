@@ -135,7 +135,7 @@ End Sub
 Function PjCSubDt(A As VBProject) As Dt
 Dim I, Md As CodeModule
 Dim Dry()
-For Each I In PjMdAy(A)
+For Each I In Pj(A).MdAy
    Set Md = I
    PushAy Dry, MdCSubDry(Md)
 Next
@@ -144,7 +144,7 @@ End Function
 
 Sub PjEnsCSub(A As VBProject)
 Dim I, Md As CodeModule
-For Each I In PjMdAy(A)
+For Each I In Pj(A).MdAy
    Set Md = I
    MdEnsCSub Md
 Next

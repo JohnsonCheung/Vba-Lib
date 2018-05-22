@@ -30,6 +30,83 @@ Type MthSig
     RetTy As PrmTy
 End Type
 
+Function CurMthBdyLines$()
+CurMthBdyLines = MdMth_BdyLines(CurMd, CurMthNm$)
+End Function
+
+Function CurMthNm$()
+CurMthNm = MdCurMthNm(CurMd)
+End Function
+
+Function IsTstMthNm(MthNm$) As Boolean
+IsTstMthNm = HasSfx(MthNm, "__Tst")
+End Function
+
+Function MdMthDic(A As CodeModule) As Dictionary
+Set MdMthDic = SrcDic(MdSrc(A))
+End Function
+
+Function MdMth_BdyLines$(A As CodeModule, MthNm$)
+MdMth_BdyLines = SrcMth_BdyLines(MdBdyLy(A), MthNm)
+End Function
+
+Function MdMth_Lno&(A As CodeModule, MthNm$)
+MdMth_Lno = 1 + SrcMth_Lx(MdSrc(A), MthNm)
+End Function
+
+Function MdMth_LnoAy(A As CodeModule, MthNm$) As Integer()
+MdMth_LnoAy = AyIncNForEachEle(SrcMth_LxAy(MdSrc(A), MthNm), 1)
+End Function
+
+Function MdMth_Mov(A As CodeModule, MthNm$, TarMd As CodeModule)
+Ass Not IsNothing(A)
+Ass Not IsNothing(TarMd)
+
+Dim Bdy$: Bdy = MdMth_BdyLines(A, MthNm)
+If Bdy = "" Then Exit Function
+TarMd.AddFromString Bdy
+'MdMth_Rmv A, MthNm
+End Function
+
+Sub MdMth_SetMdy(A As CodeModule, MthNm$, Mdy$)
+Ass KwIsMdy(Mdy)
+Dim I&
+    I = MdMth_Lno(A, MthNm)
+Dim L$
+    L = MdLin(A, I)
+Dim Old$
+    Old = SrcLin_Mdy(L)
+If Mdy = Old Then Exit Sub
+Dim NewL$
+    Dim B$
+    If Mdy <> "" Then
+        B = Mdy & " "
+    Else
+        B = Mdy
+    End If
+    NewL = B & L
+With A
+    .DeleteLines I, 1
+    .InsertLines I, NewL
+End With
+End Sub
+
+Sub MdMth_SetPrv(A As CodeModule, MthNm$)
+MdMth_SetMdy A, MthNm, "Private"
+End Sub
+
+Sub MdMth_SetPub(A As CodeModule, MthNm$)
+MdMth_SetMdy A, MthNm, ""
+End Sub
+
+Function MthBrk_Str$(A As MthBrk)
+Dim O$()
+PushNonEmp O, A.Mdy
+PushNonEmp O, A.Ty
+PushNonEmp O, A.MthNm
+MthBrk_Str = JnSpc(O)
+End Function
+
 Function MthLinArgStr$(MthLin$)
 MthLinArgStr = TakBetBkt(MthLin)
 End Function
@@ -184,6 +261,19 @@ Dim O$
 PrmTyShtNm = O
 End Function
 
+Private Sub MdMth_BdyLines__Tst()
+Debug.Print Len(MdMth_BdyLines(CurMd, "MdMth_Lines"))
+Debug.Print MdMth_BdyLines(CurMd, "MdMth_Lines")
+End Sub
+
+Sub MdMth_Mov__Tst()
+'MdMth_Mov Md("Mth_"), "XX", Md("A_")
+End Sub
+
+Sub MthDrs_SortingKy__Tst()
+'AyDmp MthDrs_SortingKy(SrcMthDrs(MdSrc(Md("Mth_"))))
+End Sub
+
 Private Sub MthLinRetTy__Tst()
 Dim MthLin$
 Dim A As PrmTy:
@@ -210,95 +300,4 @@ A = MthLinRetTy(MthLin)
 Ass A.TyAsNm = ""
 Ass A.IsAy = False
 Ass A.TyChr = ""
-End Sub
-
-Function MthBrk_Str$(A As MthBrk)
-Dim O$()
-PushNonEmp O, A.Mdy
-PushNonEmp O, A.Ty
-PushNonEmp O, A.MthNm
-MthBrk_Str = JnSpc(O)
-End Function
-
-Function CurMthNm$()
-CurMthNm = MdCurMthNm(CurMd)
-End Function
-
-Function CurMthBdyLines$()
-CurMthBdyLines = MdMth_BdyLines(CurMd, CurMthNm$)
-End Function
-
-Function IsTstMthNm(MthNm$) As Boolean
-IsTstMthNm = HasSfx(MthNm, "__Tst")
-End Function
-
-Function MdMthDic(A As CodeModule) As Dictionary
-Set MdMthDic = SrcDic(MdSrc(A))
-End Function
-
-Function MdMth_BdyLines$(A As CodeModule, MthNm$)
-MdMth_BdyLines = SrcMth_BdyLines(MdBdyLy(A), MthNm)
-End Function
-
-Function MdMth_Lno&(A As CodeModule, MthNm$)
-MdMth_Lno = 1 + SrcMth_Lx(MdSrc(A), MthNm)
-End Function
-
-Function MdMth_LnoAy(A As CodeModule, MthNm$) As Long()
-MdMth_LnoAy = AyIncNForEachEle(SrcMth_LxAy(MdSrc(A), MthNm), 1)
-End Function
-
-Function MdMth_Mov(A As CodeModule, MthNm$, TarMd As CodeModule)
-Ass Not IsNothing(A)
-Ass Not IsNothing(TarMd)
-
-Dim Bdy$: Bdy = MdMth_BdyLines(A, MthNm)
-If Bdy = "" Then Exit Function
-TarMd.AddFromString Bdy
-'MdMth_Rmv A, MthNm
-End Function
-
-Sub MdMth_SetMdy(A As CodeModule, MthNm$, Mdy$)
-Ass KwIsMdy(Mdy)
-Dim I&
-    I = MdMth_Lno(A, MthNm)
-Dim L$
-    L = MdLin(A, I)
-Dim Old$
-    Old = SrcLin_Mdy(L)
-If Mdy = Old Then Exit Sub
-Dim NewL$
-    Dim B$
-    If Mdy <> "" Then
-        B = Mdy & " "
-    Else
-        B = Mdy
-    End If
-    NewL = B & L
-With A
-    .DeleteLines I, 1
-    .InsertLines I, NewL
-End With
-End Sub
-
-Sub MdMth_SetPrv(A As CodeModule, MthNm$)
-MdMth_SetMdy A, MthNm, "Private"
-End Sub
-
-Sub MdMth_SetPub(A As CodeModule, MthNm$)
-MdMth_SetMdy A, MthNm, ""
-End Sub
-
-
-Private Sub MdMth_BdyLines__Tst()
-Debug.Print Len(MdMth_BdyLines(CurMd, "MdMth_Lines"))
-Debug.Print MdMth_BdyLines(CurMd, "MdMth_Lines")
-End Sub
-
-Sub MdMth_Mov__Tst()
-MdMth_Mov Md("Mth_"), "XX", Md("A_")
-End Sub
-
-Sub MthDrs_SortingKeyAy__Tst()
-AyDmp MthDrs_SortingKeyAy(SrcMthDrs(MdSrc(Md("Mth_"))))
 End Sub
