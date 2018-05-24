@@ -1,6 +1,13 @@
 Attribute VB_Name = "A_Ide"
 Option Explicit
 Public Const TyChrLis$ = "!@#$%^&"
+Public Enum eTstLABCs
+    eValidateAsFldVal
+    eValidateAsNm
+    eValidateAsFny
+    eValidateAsBetNum
+    eAll
+End Enum
 Property Get Ide() As Ide
 Static Y As New Ide
 Set Ide = Y
@@ -141,21 +148,14 @@ Sub TstOy()
 Dim O As New Oy: O.Tst
 End Sub
 
-Sub AAA()
-TstP3
-End Sub
-
 Sub TstLoFmtr()
-Dim O As New LoFmtr: O.Tst
+'Dim O As New LoFmtr: O.Tst
 End Sub
-
-Sub TstP3()
-Dim O As New P3: O.Tst
-
+Sub TstLABCs(Optional Opt As eTstLABCs = eValidateAsFldVal)
+Dim O As New LABCs: O.Tst Opt
 End Sub
-
-Sub TstP3LCFVRslt()
-Dim O As New P3LCFVRslt: O.Tst
+Sub TstP3Itm()
+Dim O As New P3Itm: O.Tst
 End Sub
 
 Function WinMdNm$(A As VBIDE.Window)

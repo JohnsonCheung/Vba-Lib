@@ -84,6 +84,3 @@ Else
    Stop
 End If
 End Function
-
-Sub Tst()
-End Sub

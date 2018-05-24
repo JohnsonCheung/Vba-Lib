@@ -117,7 +117,3 @@ Dim CdPanAy() As CodePane
 CdPanAy = OyPrpAy(CurPjx.MdAy, "CodePane", CdPanAy)
 Stop
 End Sub
-
-Private Sub Tst()
-OyPrp__Tst
-End Sub

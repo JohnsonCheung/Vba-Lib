@@ -1,516 +1,472 @@
 Attribute VB_Name = "DtaLxCnoFldVal"
 Option Explicit
-Type VF
-    V As String
-    FldLvs As String
-End Type
-Type LFV
+Type LABC
     Lx As Integer
-    F As String
-    V As String
-End Type
-Type LVF
-    Lx As Integer
-    V As String
-    FldLvs As String
+    A As String
+    B As String
+    C As String
 End Type
 Type LCFV
     Lx As Integer
     Cno As Integer
     F As String
-    V As String
+    V As Variant
 End Type
 Type LCFVRslt
+    Ok() As String
     LCFVAy() As LCFV
-    ErLy() As String
+    Er() As String
+End Type
+Type NmRslt
+    Ok() As String
+    Er() As String
+    Nm As String
+End Type
+Type FnyRslt
+    Ok() As String
+    Er() As String
+    Fny() As String
 End Type
 Const M_Should_Lng$ = "Lx(?) Fld(?) should have val(?) be a long number"
 Const M_Should_Num$ = "Lx(?) Fld(?) should have val(?) be a number"
 Const M_Should_Bet$ = "Lx(?) Fld(?) should have val(?) be between (?) and (?)"
 Const M_Dup$ = _
                       "Lx(?) Fld(?) is found duplicated in Lx(?).  This item is ignored"
-Sub LCFV_Push(O() As LCFV, A As LCFV)
-Dim N%: N = LCFV_Sz(O)
+
+Sub AAA()
+ZZ
+End Sub
+
+Function LABCAy_FnyRslt(A() As LABC) As FnyRslt
+
+End Function
+
+Function LABCAy_LCFVRslt(A() As LABC, Fny$(), Optional IsVF As Boolean) As LCFVRslt
+If LABC_Sz(A) = 0 Then Exit Function
+Dim OEr$()
+Dim A1() As LABC: A1 = ZErOf_InvalidFld(A, Fny, IsVF, OEr) 'All fld in A1 (at B or C by IsVF) are now all valid
+                                                           'Any any error is reported in OEr
+Dim A2() As LABC: A2 = ZErOf_DupFld(A1, IsVF, OEr)         'In A1, any dup fld is removed, A2 is clean, OEr is cummulated
+Dim A3$():        A3 = ZLABCAy_Ly(A2)
+Dim A4() As LCFV: A4 = ZLABCAy_LCFVAy(A2, Fny, IsVF)
+With LABCAy_LCFVRslt
+    .Ok = A3
+    .LCFVAy = A4
+    .Er = OEr
+End With
+End Function
+Private Function ZErOf_BetNum(A() As LABC, FmNum&, ToNum&, OEr$()) As LABC()
+'Assume LABC is always are IsVF=true
+
+End Function
+Function LABCAy_LCFVRslt_OfBetNum(A() As LABC, Fny$(), FmNum&, ToNum&) As LCFVRslt
+Dim OEr$(), IsVF As Boolean 'Always a IsVF=True line
+IsVF = True
+Dim A1() As LABC: A1 = ZErOf_InvalidFld(A, Fny, IsVF, OEr)
+Dim A2() As LABC: A2 = ZErOf_DupFld(A1, IsVF, OEr)
+Dim A3() As LABC: A3 = ZErOf_BetNum(A2, FmNum, ToNum, OEr)
+Dim A4() As LCFV: A4 = ZLABCAy_LCFVAy(A2, Fny, IsVF)
+Dim A5$():        A5 = ZLABCAy_Ly(A3)
+With LABCAy_LCFVRslt_OfBetNum
+    .Ok = A5
+    .LCFVAy = A4
+    .Er = OEr
+End With
+End Function
+
+Function LABCAy_NmRslt(A() As LABC) As NmRslt
+Dim Nm$, Er$(), Ok$()
+With LABCAy_NmRslt
+    .Er = Er
+    .Ok = Ok
+    .Nm = Nm
+End With
+End Function
+
+Function LABC_Push(O() As LABC, A As LABC)
+Dim N%: N = LABC_Sz(O)
 ReDim Preserve O(N)
 O(N) = A
-End Sub
-Sub LCFV_PushAy(O() As LCFV, A() As LCFV)
-Dim J%
-For J = 0 To LCFV_UB(A)
-    LCFV_Push O, A(J)
-Next
-End Sub
-
-Function LVF_Lin$(A As LVF)
-With A
-    LVF_Lin = FmtQQ("? ? ?", .Lx, .V, .FldLvs)
-End With
 End Function
 
-Function LVFAy_Ly(A() As LVF) As String()
-Dim O$(), J%
-For J = 0 To LVF_UB(A)
-    Push O, LVF_Lin(A(J))
-Next
-End Function
-
-Sub LCFVRslt_Dmp(A As LCFVRslt)
-'DsDmp LCFVRslt_Ds(A)
-End Sub
-
-Function LCFVRslt_Dt(A As LCFVRslt) As Dt
-With LCFVRslt_Dt
-    .Dry = LCFVRslt_Dry(A)
-    .Fny = LvsSy("Lx Fld Cno Val")
-    .DtNm = "LCFVRslt"
-End With
-End Function
-
-Function LCFV_Sz%(A() As LCFV)
-On Error Resume Next
-LCFV_Sz = UBound(A) + 1
+Function LABC_UB%(A() As LABC)
+LABC_UB = LABC_Sz(A) - 1
 End Function
 
 Function LCFV_UB%(A() As LCFV)
 LCFV_UB = LCFV_Sz(A) - 1
 End Function
 
-Function LCFV_Has(A() As LCFV, M As LCFV) As Boolean
-Dim J%, F$, V$
-For J = 0 To LCFV_UB(A)
-    If A(J).F = F Then
-        If A(J).V = V Then
-            LCFV_Has = True
-            Exit Function
-        End If
-    End If
-Next
+Private Function LABC_Sz%(A() As LABC)
+On Error Resume Next
+LABC_Sz = UBound(A) + 1
 End Function
 
-Function LCFV_IsEmp(A() As LCFV) As Boolean
-LCFV_IsEmp = LCFV_Sz(A) = 0
-End Function
+Private Sub LCFV_Push(O() As LCFV, A As LCFV)
+Dim N%: N = LCFV_Sz(O)
+ReDim Preserve O(N)
+O(N) = A
+End Sub
 
-Function LCFV_Intersect(A() As LCFV, B() As LCFV) As LCFV()
-If LCFV_IsEmp(A) Then Exit Function
-If LCFV_IsEmp(A) Then Exit Function
-Dim O() As LCFV
+Private Sub LCFV_PushAy(O() As LCFV, A() As LCFV)
 Dim J%
 For J = 0 To LCFV_UB(A)
-    If LCFV_Has(B, A(J)) Then LCFV_Push O, A(J)
+    LCFV_Push O, A(J)
 Next
-LCFV_Intersect = O
-End Function
-
-Function LCFV_Minus(A() As LCFV, B() As LCFV) As LCFV()
-
-End Function
-
-Function LCFVRslt_Dry(A As LCFVRslt) As Variant()
-Dim O(), J%
-For J = 0 To LCFV_UB(A.LCFVAy)
-    Stop
-Next
-End Function
-
-Function ErLy_Dt(ErLy$()) As Dt
-ErLy_Dt = AyDt(ErLy, "Er", "Oup ErLy")
-End Function
-
-Function LCFVAy_CnoAy(A() As LCFV) As Integer()
-Dim O%(), J%
-For J = 0 To LCFV_UB(A)
-    Push O, A(J).Cno
-Next
-LCFVAy_CnoAy = O
-End Function
-
-Function LCFVAy_FldValLy(A As LCFVRslt, T1$) As String()
-
-End Function
-
-Function LCFVAy_Fny(A() As LCFV) As String()
-Dim O$(), J%
-For J = 0 To LCFV_UB(A)
-    With A(J)
-        PushNoDup O, .F
-    End With
-Next
-LCFVAy_Fny = O
-End Function
-Function LCFVAy_ValAy(A() As LCFV, OAy)
-Erase OAy
-Dim J%, O%()
-For J = 0 To LCFV_UB(A)
-    Push OAy, A(J).V
-Next
-LCFVAy_ValAy = OAy
-End Function
-Function LCFVAy_FldLvs$(A() As LCFV, V$)
-Dim O$(), J%
-For J = 0 To LCFV_UB(A)
-    With A(J)
-        If .V = V Then
-            Push O, A(J).F
-        End If
-    End With
-Next
-If Sz(O) = 0 Then Stop
-LCFVAy_FldLvs = JnSpc(O)
-End Function
-
-Function LCFVAy_VFAy(A() As LCFV) As VF()
-Dim V$(): V = LCFVAy_ValAy(A, V)
-Dim V1$(): V1 = AyUniq(V)
-Dim O() As VF, FldLvs$, J%
-For J = 0 To UB(V1)
-    FldLvs = LCFVAy_FldLvs(A, V1(J))
-    VF_PushVF O, V1(J), FldLvs
-Next
-LCFVAy_VFAy = O
-End Function
-Private Function VF(V$, FldLvs$) As VF
-Dim O As VF
-With O
-    .FldLvs = FldLvs
-    .V = V
-End With
-VF = O
-End Function
-Sub VF_PushVF(O() As VF, V$, FldLvs$)
-VF_Push O, VF(V, FldLvs)
 End Sub
-Function VF_UB%(O() As VF)
-VF_UB = VF_Sz(O) - 1
-End Function
 
-Function VF_Sz%(A() As VF)
+Private Function LCFV_Sz%(A() As LCFV)
 On Error Resume Next
-VF_Sz = UBound(A) + 1
+LCFV_Sz = UBound(A) + 1
 End Function
 
-Private Sub VF_Push(O() As VF, A As VF)
-Dim N%: N = VF_Sz(O)
-ReDim Preserve O(N)
-O(N) = A
-End Sub
-Function LCFVAy_ValFldLy(A() As LCFV, T1$) As String()
-Dim J%, O$(), VFAy() As VF
-VFAy = LCFVAy_VFAy(A)
-For J = 0 To VF_UB(VFAy)
-    With VFAy(J)
-        Push O, T1 & " " & .V & " " & .FldLvs
-    End With
+Private Function ZABCLy_LABCAy(Ly$()) As LABC()
+Dim O() As LABC, J%
+For J = 0 To UB(Ly)
+    LABC_Push O, ZLinLABC(Ly(J), J)
 Next
-LCFVAy_ValFldLy = O
+ZABCLy_LABCAy = O
 End Function
 
-Sub LCFVRslt_IODmp(A As LCFVRslt)
-AyDmp LCFVRslt_IOLy(A)
-End Sub
-
-Function LCFVRslt_New(Ay() As LCFV) As LCFVRslt
-LCFVRslt_New.LCFVAy = Ay
-End Function
-
-Function LCFVRslt_Add(A As LCFVRslt, B As LCFVRslt) As LCFVRslt
-Dim O As LCFVRslt: O = A
-With O
-    LCFV_PushAy .LCFVAy, B.LCFVAy
-    PushAy .ErLy, B.ErLy
-End With
-LCFVRslt_Add = O
-End Function
-
-Function LCFVRslt_IOLy(A As LCFVRslt) As String()
-LCFVRslt_IOLy = DtLy(LCFVRslt_Dt(A))
-End Function
-
-Function LCFVRslt_RsltLy(A As LCFVRslt, InpDta() As LFV, InpFny$()) As String()
-Dim O$()
-Push O, "*Inp-Fny ========================================="
-PushAy O, InpFny
-PushAy O, DtLy(LFVAy_Dt(InpDta))
-PushAy O, DtLy(LCFVRslt_Dt(A))
-LCFVRslt_RsltLy = O
-End Function
-
-Function LCFVRslt_VdtIsNum(A As LCFVRslt) As LCFVRslt
-Dim OAy() As LCFV
-Dim OErLy$(), J%, Msg$
-For J = 0 To LCFV_UB(A.LCFVAy)
-    With A.LCFVAy(J)
-        If IsNum(.V) Then
-            LCFV_Push OAy, A.LCFVAy(J)
-        Else
-            Msg = FmtQQ(M_Should_Num, .Lx, .F, .V)
-            Push OErLy, Msg
+Private Function ZErOf_DupFld(A() As LABC, IsVF As Boolean, OEr$()) As LABC()
+Dim J%, O() As LABC, FldLvs$, M As LABC
+If IsVF Then
+    For J = 0 To LABC_UB(A)
+        FldLvs = ""
+        ZErOf_DupFld_1 A, J, _
+            FldLvs, OEr
+        If FldLvs <> "" Then
+            M = A(J)
+            M.C = FldLvs
+            LABC_Push O, M
         End If
-    End With
+    Next
+    ZErOf_DupFld = O
+    Exit Function
+End If
+Stop
+End Function
+Private Function ZErOf_DupFld_1IsDup(Fny$(), I%) As Boolean
+'Check if Fny(I)-element has duplication found in Fny(I+1..)
+Dim F$: F = Fny(I)
+Dim II%
+For II = I + 1 To UB(Fny)
+    If Fny(II) = F Then ZErOf_DupFld_1IsDup = True: Exit Function
 Next
-Dim B As LCFVRslt
-B.LCFVAy = OAy
-B.ErLy = OErLy
-LCFVRslt_VdtIsNum = LCFVRslt_Add(A, B)
 End Function
-
-Function LCFVRslt_VdtValBet(A As LCFVRslt, FmNum&, ToNum&) As LCFVRslt
-Dim V&, J%, Msg$
-Dim OErLy$(), OAy() As LCFV
-For J = 0 To LCFV_UB(A.LCFVAy)
-    With A.LCFVAy(J)
-        V = Val(.V)
-        If FmNum > V Or V > ToNum Then
-            Msg = FmtQQ(M_Should_Bet, .Lx, .F, .V, FmNum, ToNum)
-            Push OErLy, Msg
-        Else
-            LCFV_Push OAy, A.LCFVAy(J)
-        End If
-    End With
-Next
-Dim B As LCFVRslt
-B.LCFVAy = OAy
-B.ErLy = OErLy
-LCFVRslt_VdtValBet = LCFVRslt_Add(A, B)
-End Function
-
-Function LCFVRslt_VdtVarIsLng(A As LCFVRslt) As LCFVRslt
-Dim W%, J%, Msg$, OErLy$()
-Dim OAy() As LCFV
-For J = 0 To LCFV_UB(A.LCFVAy)
-    With VarLngOpt(A.LCFVAy(J).V)
-        If .Som Then
-            LCFV_Push OAy, A.LCFVAy(J)
-        Else
-            With A.LCFVAy(J)
-                Msg = FmtQQ(M_Should_Lng, .Lx, .F, .V)
-            End With
-            Push OErLy, Msg
-        End If
-    End With
-Next
-Dim B As LCFVRslt
-B.ErLy = OErLy
-B.LCFVAy = OAy
-LCFVRslt_VdtVarIsLng = LCFVRslt_Add(A, B)
-End Function
-
-Private Function LFVAy_Dry(A() As LFV) As Variant()
-Dim O(), J%
-For J = 0 To LFV_UB(A)
-    With A(J)
-        Push O, Array(.Lx, .F, .V)
-    End With
-Next
-LFVAy_Dry = O
-End Function
-
-Private Function LFVAy_Dt(A() As LFV) As Dt
-With LFVAy_Dt
-    .Dry = LFVAy_Dry(A)
-    .Fny = LvsSy("Lx Fld Val")
-    .DtNm = "Lx Fld Val"
-End With
-End Function
-
-Function LFVAy_LCFVRslt(A() As LFV, Fny$()) As LCFVRslt
-Dim A1 As LCFVRslt: A1 = LFVAy_VdtErFld(A, Fny)
-LFVAy_LCFVRslt = LCFVRslt_VdtDupFld(A1)
-End Function
-
-Sub LFV_Push(O() As LFV, A As LFV)
-Dim N%: N = LFV_Sz(O)
-ReDim Preserve O(N)
-O(N) = A
-End Sub
-
-Sub LFV_Push3(O() As LFV, Lx%, F$, V$)
-Dim M As LFV
-With M
-    .F = F
-    .Lx = Lx
-    .V = V
-End With
-LFV_Push O, M
-End Sub
-
-Private Function LFV_Sz%(A() As LFV)
-On Error Resume Next
-LFV_Sz = UBound(A) + 1
-End Function
-
-Private Function LFV_UB%(A() As LFV)
-LFV_UB = LFV_Sz(A) - 1
-End Function
-
-Sub LVFAy_Dmp(A() As LVF)
-DrsDmp LVFAy_Drs(A)
-End Sub
-
-Function LVFAy_Drs(A() As LVF) As Drs
-With LVFAy_Drs
-    .Fny = LvsSy("Lx Val FldLvs")
-    .Dry = LVFAy_Dry(A)
-End With
-End Function
-
-Private Function LVFAy_Dry(A() As LVF) As Variant()
-Dim O(), J%
-For J = 0 To LVF_UB(A)
-    With A(J)
-        Push O, Array(.Lx, .V, .FldLvs)
-    End With
-Next
-LVFAy_Dry = O
-End Function
-
-Function LVFAy_FldLvsAy(A() As LVF)
-Dim O$(), J%
-For J = 0 To LVF_UB(A)
-    Push O, A(J).FldLvs
-Next
-LVFAy_FldLvsAy = O
-End Function
-
-Function LVFAy_Fny(A() As LVF) As String()
-Dim O$(), J%
-For J = 0 To LVF_UB(A)
-    PushAy O, LvsSy(A(J).FldLvs)
-Next
-LVFAy_Fny = O
-End Function
-
-Function LVFAy_LCFVRslt(A() As LVF, Fny$()) As LCFVRslt
-Dim A1() As LFV: A1 = LVFAy_LFVAy(A)
-LVFAy_LCFVRslt = LFVAy_LCFVRslt(A1, Fny)
-End Function
-
-Sub LVF_Push(O() As LVF, A As LVF)
-Dim N%: N = LVF_Sz(O)
-ReDim Preserve O(N)
-O(N) = A
-End Sub
-
-Sub LVF_Push3(O() As LVF, Lx%, V$, FldLvs$)
-Dim M As LVF
-With M
-    .FldLvs = FldLvs
-    .Lx = Lx
-    .V = V
-End With
-LVF_Push O, M
-End Sub
-
-Function LCFVAy_WhByCnoAy(A() As LCFV, CnoAy%()) As LCFV()
-Dim J%, O() As LCFV
-For J = 0 To LCFV_UB(A)
-    If AyHas(CnoAy, A(J).Cno) Then
-        LCFV_Push O, A(J)
+Private Function ZErOf_DupFld_2IsDup(A() As LABC, J%, F$, _
+    ODupAtLx%) As Boolean
+'Check if F has duplicated-element found in A(J+1...)
+Dim JJ%, Fny$(), FldLvs$
+ODupAtLx = -1
+For JJ = J + 1 To LABC_UB(A)
+    FldLvs = A(JJ).C
+    Fny = LvsSy(FldLvs)
+    If AyHas(Fny, F) Then
+        ODupAtLx = JJ
+        ZErOf_DupFld_2IsDup = True
+        Exit Function
     End If
 Next
-LCFVAy_WhByCnoAy = O
 End Function
 
-Function LCFVRsltItm_Dry(A As LCFVRslt, Itm$) As Variant()
-Dim O(), J%
-For J = 0 To LCFV_UB(A.LCFVAy)
-    With A.LCFVAy(J)
-        Push O, Array(Itm, .Lx, .Cno, .F, .V)
-    End With
-Next
-LCFVRsltItm_Dry = O
-End Function
-
-Function LVF_Sz%(A() As LVF)
-On Error Resume Next
-LVF_Sz = UBound(A) + 1
-End Function
-
-Function LVF_UB%(A() As LVF)
-LVF_UB = LVF_Sz(A) - 1
-End Function
-
-Private Function LCFVAyIx_DupLxOpt(A() As LCFV, Ix%) As IntOpt
-Dim I%, F$
-F = A(Ix).F
-For I = Ix + 1 To LCFV_UB(A)
-    If F = A(I).F Then LCFVAyIx_DupLxOpt = SomInt(A(I).Lx): Exit Function
-Next
-End Function
-
-Private Function LCFVRslt_VdtDupFld(A As LCFVRslt) As LCFVRslt
-Dim O As LCFVRslt: O = A
-Dim FldLvs$, J%, IntOpt As IntOpt
-Dim OAy() As LCFV, Msg$, Lx2%
-For J = 0 To LCFV_UB(A.LCFVAy) - 1
-    With LCFVAyIx_DupLxOpt(A.LCFVAy, J)
-        If .Som Then
-            Lx2 = .Int
-            With A.LCFVAy(J)
-                Msg = FmtQQ(M_Dup, .Lx, .F, Lx2)
-            End With
-            Push O.ErLy, Msg
+Private Sub ZErOf_DupFld_1(A() As LABC, J%, _
+    OFldLvs$, OEr$())
+'A(J).C is FldLvs
+'Check If it has any duplicated element is same line or following lines
+'if yes, remove it by assigning the no-dup-Fny1 to OFldLvs
+'        and report the duplication in OEr
+OFldLvs = ""
+Dim Fny$()
+    Dim FldLvs$
+    FldLvs = A(J).C
+    Fny = LvsSy(FldLvs) '<--- All Fld to be checked
+Dim Fny1$() '<-- Those Fld has no duplicated
+    Dim I%
+    Dim F$
+    For I = 0 To UB(Fny)
+        F = Fny(I)
+        Dim IsDup As Boolean
+        Dim DupAtLx% ' Duplicated at which line
+            IsDup = ZErOf_DupFld_1IsDup(Fny, I)
+            If IsDup Then
+                DupAtLx = J 'At same line
+            Else
+                IsDup = ZErOf_DupFld_2IsDup(A, J, F, _
+                    DupAtLx) 'DupAtLx at following line of J+1...
+            End If
+        
+        If IsDup Then
+            Dim Lx%, Msg$
+            Lx = A(J).Lx
+            Msg = FmtQQ(M_Fld_IsDup, Lx, F, DupAtLx)
+            Push OEr, Msg   '<== Report duplication in OEr
         Else
-            LCFV_Push OAy, A.LCFVAy(J)
+            Push Fny1, F    '<== Push to Fny1 for no-dup
         End If
-    End With
-Next
-LCFVRslt_VdtDupFld.LCFVAy = OAy
-End Function
+    Next
+OFldLvs = JnSpc(Fny1)
+End Sub
 
-Private Function LFVAy_VdtErFld(A() As LFV, Fny$()) As LCFVRslt
-Dim OAy() As LCFV
-Dim OErLy$(), Cno%
-Dim J%, M As LCFV, F$, L%, Msg$
-For J = 0 To LFV_UB(A)
+Private Function ZErOf_InvalidFld(A() As LABC, Fny$(), IsVF As Boolean, OEr$()) As LABC()
+Dim J%, O() As LABC, FldLvs$, M As LABC, Lx%, C$, F$
+If IsVF Then
+    For J = 0 To LABC_UB(A)
+        With A(J)
+            Lx = .Lx
+            C = .C
+        End With
+
+        ZErOf_InvalidFld_1 Lx, C, Fny, _
+            FldLvs, OEr
+                
+        If FldLvs <> "" Then
+            M = A(J)
+            M.C = FldLvs
+            LABC_Push O, M  '<============
+        End If
+    Next
+    ZErOf_InvalidFld = O
+    Exit Function
+End If
+Dim Msg$
+For J = 0 To LABC_UB(A)
     With A(J)
-        Cno = AyIx(Fny, .F)
-        If Cno >= 0 Then
-           M.Cno = Cno
-           M.F = .F
-           M.Lx = .Lx
-           M.V = .V
-           LCFV_Push OAy, M
+        Lx = .Lx
+        F = .B
+    End With
+    If AyHas(Fny, F) Then
+        LABC_Push O, A(J)       '<======
+    Else
+        Msg = FmtQQ(M_Fld_IsInValid, Lx, F)
+        Push OEr, Msg           '<======
+    End If
+Next
+ZErOf_InvalidFld = O
+End Function
+
+Private Sub ZErOf_InvalidFld_1(Lx%, FldLvs$, Fny$(), _
+    OFldLvs$, OEr$())
+Dim Fny1$(), Fny2$(), J%, F$, Msg$
+Fny1 = LvsSy(FldLvs)
+For J = 0 To UB(Fny1)
+    F = Fny1(J)
+    If Not AyHas(Fny, F) Then
+        Msg = FmtQQ(M_Fld_IsInValid, Lx, F)
+        Push OEr, Msg   '<===================
+    Else
+        Push Fny2, F
+    End If
+Next
+OFldLvs = JnSpc(Fny2)
+End Sub
+
+Private Function ZIOLy1(IsVF As Boolean, ABCLy$(), Fny$()) As String()
+Dim I1$(), I2$(), I3$()
+Dim O1$(), O2$(), O3$()
+Dim LABCAy() As LABC
+Dim O$()
+Dim R As LCFVRslt
+
+    
+LABCAy = ZABCLy_LABCAy(ABCLy)
+R = LABCAy_LCFVRslt(LABCAy, Fny, IsVF) '<========================
+    I1 = ZLABCAy_Ly(LABCAy)
+    I2 = ApSy(JnSpc(Fny))
+    I3 = ApSy(IsVF)
+    O3 = R.Er
+    O1 = R.Ok
+    O2 = ZLCFVAy_Ly(R.LCFVAy)
+
+         Push O, "LABCAy_LCFVRslt=============================="
+    PushItmAy O, "Inp1::LABCAy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I1
+    PushItmAy O, "Inp2::Fny <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I2
+    PushItmAy O, "Inp3::IsVF <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I3
+    PushItmAy O, "Oup1::OK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O1
+    PushItmAy O, "Oup2::LCFVAy >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O2
+    PushItmAy O, "Oup3::Er >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O3
+         Push O, "LABCAy_LCFVRslt)============================="
+         Push O, ""
+ZIOLy1 = O
+End Function
+
+Private Function ZIOLy2(IsVF As Boolean, ABCLy$(), Fny$(), FmNum&, ToNum&) As String()
+Dim LABCAy() As LABC
+Dim R As LCFVRslt
+Dim I1$(), I2$(), I3$()
+Dim O1$(), O2$(), O3$()
+Dim O$()
+    LABCAy = ZABCLy_LABCAy(ABCLy)
+    R = LABCAy_LCFVRslt_OfBetNum(LABCAy, Fny, FmNum, ToNum) '<========================
+    
+    I1 = ZLABCAy_Ly(LABCAy)
+    I2 = ApSy(JnSpc(Fny))
+    I3 = ApSy(IsVF)
+    O1 = R.Ok
+    O2 = ZLCFVAy_Ly(R.LCFVAy)
+    O3 = R.Er
+     
+         Push O, "LABCAy_LCFVRsltOfBetNum======================"
+    PushItmAy O, "Inp1::LABCAy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I1
+    PushItmAy O, "Inp2::Fny <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I2
+    PushItmAy O, "Inp3::FmNum ToNum <<<<<<<<<<<<<<<<<<<<<<<<<<<", I3
+    PushItmAy O, "Oup1::Ok >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O1
+    PushItmAy O, "Oup2::LCFVAy_OfBetNum >>>>>>>>>>>>>>>>>>>>>>>", O2
+    PushItmAy O, "Oup3::Er >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O3
+         Push O, "LABCAy_LCFVRsltOfBetNum======================"
+         Push O, ""
+ZIOLy2 = O
+End Function
+
+Private Function ZIOLy3(ABCLy$())
+Dim LABCAy() As LABC
+Dim R1 As NmRslt
+Dim O$()
+Dim I1$(), O1$(), O2$(), O3$()
+    LABCAy = ZABCLy_LABCAy(ABCLy)
+    R1 = LABCAy_NmRslt(LABCAy) '<========================
+    
+    I1 = ZLABCAy_Ly(LABCAy)
+    O1 = ApSy(R1.Nm)
+    O2 = R1.Ok
+    O3 = R1.Er
+         
+         Push O, "LABCAy_NmRslt ==============================="
+    PushItmAy O, "Inp1::LABCAy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I1
+    PushItmAy O, "Oup1::Nm >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O1
+    PushItmAy O, "Oup2::LABCAy Nm >>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O2
+    PushItmAy O, "Oup3::Er >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", O3
+         Push O, "LABCAy_NmRslt ==============================="
+         Push O, ""
+ZIOLy3 = O
+End Function
+
+Private Function ZIOLy4(ABCLy$()) As String()
+Dim LABCAy() As LABC
+Dim R As FnyRslt
+Dim O$()
+Dim I1$()
+    LABCAy = ZABCLy_LABCAy(ABCLy)
+    R = LABCAy_FnyRslt(LABCAy) '<============
+    
+    I1 = ZLABCAy_Ly(LABCAy)
+         Push O, "LABCAy_FnyRslt =============================="
+    PushItmAy O, "Inp1::LABCAy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", I1
+    PushItmAy O, "Oup1::Fny >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", R.Fny
+    PushItmAy O, "Oup2::Ok::String[]>>>>>>>>>>>>>>>>>>>>>>>>>>>", R.Ok
+    PushItmAy O, "Oup3::Er >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", R.Er
+         Push O, "LABCAy_FnyRslt =============================="
+         Push O, ""
+ZIOLy4 = O
+End Function
+
+Private Function ZLABCAy_LCFVAy(A() As LABC, Fny$(), IsVF As Boolean) As LCFV()
+Dim J%, O() As LCFV
+For J = 0 To LABC_UB(A)
+    With A(J)
+        If IsVF Then
+                    
         Else
-            L = .Lx
-            F = .F
-            Msg = FmtQQ("Lx(?) Fld(?) is invalid", L, F)
-            Push OErLy, Msg
+            
         End If
     End With
 Next
-With LFVAy_VdtErFld
-    .LCFVAy = OAy
-    .ErLy = OErLy
+End Function
+
+Private Function ZLABCAy_Ly(A() As LABC) As String()
+Dim J%, O$()
+For J = 0 To LABC_UB(A)
+    Push O, ZLABC_Lin(A(J))
+Next
+ZLABCAy_Ly = O
+End Function
+
+Private Function ZLABC_Lin$(A As LABC)
+With A
+    ZLABC_Lin = FmtQQ("? ? ? ?", .Lx, .A, .B, .C)
 End With
 End Function
 
-Private Function LVFAy_LFVAy(A() As LVF) As LFV()
-Dim O() As LFV, J%, I%, Fny$(), FldLvs$, M As LFV
-For J = 0 To LVF_UB(A)
-    With A(J)
-        M.Lx = .Lx
-        M.V = .V
-        Fny = LvsSy(.FldLvs)
-    End With
-    For I = 0 To UB(Fny)
-        M.F = Fny(I)
-        LFV_Push O, M
-    Next
-Next
-LVFAy_LFVAy = O
+Private Function ZLCFVAy_LABCAy(A() As LCFV, T1$, IsVF As Boolean) As LABC()
+Dim O() As LABC, M As LABC
+If IsVF Then
+    ZLCFVAy_LABCAy = ZLCFVAy_LABCAy_1(A, T1)
+    Exit Function
+End If
 End Function
 
-Sub ZZ()
-Dim FldAy$(): FldAy = LvsSy("A B C D X W A W")
-Dim ValAy$(): ValAy = LvsSy("VA VB VC VD VX VW VA VW")
-Dim LxAy%(): LxAy = ApIntAy(10, 20, 30, 40, 50, 60, 70, 80)
-Dim A() As LFV, J%
-For J = 0 To UB(FldAy)
-    LFV_Push3 A, LxAy(J), FldAy(J), ValAy(J)
+Private Function ZLCFVAy_LABCAy_1(A() As LCFV, T1$) As LABC()
+Dim J%, Lx%, M As LABC, LxAy%(), V$, FldLvs$, O() As LABC
+LxAy = ZLxAy(A)
+For J = 0 To UB(LxAy)
 Next
-Dim Fny$(): Fny = LvsSy("B D F A F G H I")
-Stop
-Dim R As LCFVRslt: R = LFVAy_LCFVRslt(A, Fny)
-LCFVRslt_IODmp R
+With M
+    .A = T1
+    .B = V
+    .C = FldLvs
+    .Lx = Lx
+End With
+LABC_Push O, M
+End Function
+
+Private Function ZLCFVAy_Ly(A() As LCFV) As String()
+Dim J%, O$()
+For J = 0 To LCFV_UB(A)
+    Push O, ZLCFV_Lin(A(J))
+Next
+ZLCFVAy_Ly = O
+End Function
+
+Private Function ZLCFV_Lin$(A As LCFV)
+With A
+    ZLCFV_Lin = FmtQQ("? ? ? ?", .Lx, .Cno, .F, .V)
+End With
+End Function
+
+Private Function ZLinLABC(Lin$, Lx%) As LABC
+Dim A$, B$, C$
+LinAsgTTRst Lin, A, B, C
+With ZLinLABC
+    .Lx = Lx
+    .A = A
+    .B = B
+    .C = C
+End With
+End Function
+
+Private Function ZLxAy(A() As LCFV) As Integer()
+
+End Function
+
+Private Sub ZZ()
+AyDmp ZZIOLy1
 End Sub
+
+Private Function ZZIOLy1() As String()
+Dim IsVF As Boolean, ABCLy$(), Fny$()
+IsVF = True
+Push ABCLy, "Wdt 10 A B C X"
+Push ABCLy, "Wdt 20 A B D Y A"
+Fny = LvsSy("A B C D E X")
+ZZIOLy1 = ZIOLy1(IsVF, ABCLy, Fny)
+End Function
+
+Private Function ZZIOLy2() As String()
+Dim IsVF As Boolean, ABCLy$(), Fny$()
+IsVF = True
+Push ABCLy, "Wdt 10 A B C"
+Push ABCLy, "Wdt 20 A B D"
+Fny = LvsSy("A B C D E")
+Dim FmNum&, ToNum&
+ZZIOLy2 = ZIOLy2(IsVF, ABCLy, Fny, FmNum, ToNum)
+End Function
+
+Private Function ZZIOLy3() As String()
+Dim R1 As NmRslt
+
+End Function
+
+Private Function ZZIOLy4() As String()
+Dim R2 As FnyRslt
+
+End Function

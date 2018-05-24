@@ -68,8 +68,8 @@ DltMd = True
 End Function
 
 Sub Export()
+FfnCpyToPth A.Filename, SrcPth, OvrWrt:=True
 PthClrFil SrcPth 'Clr SrcPth ---
-FfnCpyToPth A.Filename, SrcPth, OvrWrt:=True 'Cpy
 'Oy(MbrAy).EachSub "Exp"
 Dim I
 For Each I In MbrAy

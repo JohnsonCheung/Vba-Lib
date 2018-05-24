@@ -1151,6 +1151,3 @@ Dim TitS1S2Ay() As S1S2
 SqBrw TitS1S2Ay_Sq(TitS1S2Ay, Fny)
 End Sub
 
-Sub Tst()
-FxRmvWsIfExist__Tst
-End Sub

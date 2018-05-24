@@ -62,6 +62,3 @@ Dim O$(): O = DbDt_SqlAy_OfIns(CurDb, Dt)
 Stop
 End Sub
 
-Sub Tst()
-DbDt_SqlAy_OfIns__Tst
-End Sub

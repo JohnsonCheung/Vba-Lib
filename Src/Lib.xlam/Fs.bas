@@ -301,6 +301,3 @@ Private Sub PthRmvEmpSubDir__Tst()
 TmpPth
 End Sub
 
-Sub Tst()
-PthRmvEmpSubDir__Tst
-End Sub

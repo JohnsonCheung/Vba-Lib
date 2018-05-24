@@ -13,7 +13,9 @@ Private A As Dictionary
 Sub Brw()
 AyBrw FmtLy
 End Sub
+Friend Sub Tst()
 
+End Sub
 Function Dic2(K1) As Dictionary
 Dim mK1$: mK1 = K1
 If A.Exists(mK1) Then
@@ -147,9 +149,3 @@ Private Sub ZZSamplesDDLinesLy__Tst()
 AyBrw ZZSampleDDLinesLy
 End Sub
 
-Sub Tst()
-'KKLines__Tst
-Ky2__Tst
-'FmtLy__Tst
-'ZZSamplesDDLinesLy__Tst
-End Sub

@@ -1177,6 +1177,3 @@ Private Sub ZZSqTp__Tst()
 Debug.Print ZZSqTp
 End Sub
 
-Sub Tst()
-Stop
-End Sub

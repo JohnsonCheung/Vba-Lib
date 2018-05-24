@@ -125,6 +125,18 @@ Next
 AyAsgAy = OIntoAy
 End Function
 
+Function AyMapInto(Ay, Obj, GetNm$, OIntoAy)
+Dim O: O = OIntoAy: Erase O
+Dim J&, U&
+Dim Arg
+U = UB(Ay)
+ReSz O, U
+For J = 0 To U
+    Asg Ay(J), Arg
+    Asg CallByName(Obj, GetNm, VbGet, Arg), O(J)
+Next
+AyMapInto = O
+End Function
 Function AyBoolAy(A) As Boolean()
 AyBoolAy = AyAsgAy(A, EmpBoolAy)
 End Function
@@ -378,6 +390,15 @@ Next
 AyIsAllEleHasVal = True
 End Function
 
+Function AyIsAllEq(A) As Boolean
+If AyIsEmp(A) Then AyIsAllEq = True: Exit Function
+Dim T: T = A(0)
+Dim J&
+For J = 1 To UB(A)
+    If A(J) = T Then Exit Function
+Next
+AyIsAllEq = True
+End Function
 Function AyIsEmp(V) As Boolean
 AyIsEmp = (Sz(V) = 0)
 End Function
@@ -1309,6 +1330,13 @@ Push O, Itm
 PushAy O, Ay
 End Sub
 
+Sub PushAp(O, ParamArray Ap())
+Dim Av(), I: Av = Ap
+For Each I In Av
+    Push O, I
+Next
+End Sub
+
 Sub PushAy(O, A)
 If AyIsEmp(A) Then Exit Sub
 Dim I
@@ -1624,10 +1652,4 @@ End Sub
 
 Private Sub SyTrim__Tst()
 AyDmp SyTrim(ApSy(1, 2, 3, "  a"))
-End Sub
-
-Sub Tst()
-AyAdd__Tst
-AyMinus__Tst
-AyEqChk__Tst
 End Sub

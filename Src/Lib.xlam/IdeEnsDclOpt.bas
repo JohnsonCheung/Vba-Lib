@@ -79,6 +79,3 @@ Case eExplicit: OptLin = "Option Explicit"
 End Select
 End Property
 
-Sub Tst()
-Stop
-End Sub

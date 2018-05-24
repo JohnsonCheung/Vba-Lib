@@ -1,5 +1,9 @@
 Attribute VB_Name = "Vb"
 Option Explicit
+Public Const M_Val_IsNonNum$ = "Lx(?) Fld(?) has Val(?) should be a number"
+Public Const M_Val_ShouldBet$ = "Lx(?) Fld(?) has Val(?) should be between [?] and [?]"
+Public Const M_Fld_IsInValid$ = "Lx(?) Fld(?) is invalid.  Not found in Fny"
+Public Const M_Fld_IsDup$ = "Lx(?) Fld(?) is found dup in Lx(?)."
 Type FmtO
     FmIx As Long
     ToIx As Long
@@ -14,6 +18,15 @@ Type LnoCnt
     Lno As Long
     Cnt As Long
 End Type
+Property Get ABC(Lin) As ABC
+Dim O As New ABC
+Set ABC = O.Init(Lin)
+End Property
+
+Function Oy(ObjAy) As Oy
+Dim O As New Oy
+Set Oy = O.Init(ObjAy)
+End Function
 
 Sub Asg(V, OV)
 If IsObject(V) Then
@@ -311,3 +324,91 @@ Ass VarIsStrAy(B) = True
 Ass VarIsStrAy(C) = False
 Ass VarIsStrAy(D) = False
 End Sub
+Function P3Lin(Lx%, B$, C$) As P3Lin
+Dim O As New P3Lin
+With O
+    .B = B
+    .C = C
+    .Lx = Lx
+End With
+End Function
+Function P3Itm(Nm$, Optional IsVF As Boolean) As P3Itm
+Dim O As New P3Itm
+Set P3Itm = O.Init(Nm, IsVF)
+End Function
+Function P3ItmRslt(A As P3Itm, Er$()) As P3ItmRslt
+Dim O As New P3ItmRslt
+Set P3ItmRslt = O.Init(A, Er)
+End Function
+Function IsStr(V) As Boolean
+IsStr = VarType(V) = vbString
+End Function
+Property Get Cmd() As Cmd
+Static Y As New Cmd
+Set Cmd = Y
+End Property
+Property Get V(A) As V
+Dim O As New V
+O.Init A
+Set V = O
+End Property
+Property Get LABCsRslt(A As LABCs, Optional Er As Er) As LABCsRslt
+Dim O As New LABCsRslt
+Set LABCsRslt = O.Init(A, Er)
+End Property
+Function StrAp_Lines(ParamArray StrAp())
+Dim I, Av(): Av = StrAp
+If AyIsEmp(Av) Then Exit Function
+Dim O$()
+For Each I In Av
+    If I <> "" Then Push O, I
+Next
+StrAp_Lines = JnCrLf(O)
+End Function
+
+Property Get Coll(A As VBA.Collection) As Coll
+Dim O As New Coll
+Set Coll = O.Init(A)
+End Property
+Property Get LABCs(ABCAy() As ABC, IsVF As Boolean) As LABCs
+Dim O As New LABCs
+Set LABCs = O.Init(ABCAy, IsVF)
+End Property
+Function SrcLin(A) As SrcLin
+Dim O As New SrcLin
+O.Init A
+Set SrcLin = O
+End Function
+Sub DtaEr()
+MsgBox "DtaEr"
+Stop
+End Sub
+Function Sy(A$()) As Sy
+Dim O As New Sy
+Set Sy = O.Init(A)
+End Function
+Function ErShow(Er$()) As String()
+ErShow = SyShow("Er", Er)
+End Function
+Function OkShow(Ok$()) As String()
+OkShow = SyShow("Ok", Ok)
+End Function
+Function SyShow(XX$, Sy$()) As String()
+Dim O$()
+Select Case Sz(Sy)
+Case 0
+    Push O, XX & "()"
+Case 1
+    Push O, XX & "(" & Sy(0) & ")"
+Case Else
+    Push O, XX & "("
+    PushAy O, Sy
+    Push O, XX & ")"
+End Select
+SyShow = O
+End Function
+Sub PrmEr()
+MsgBox "Prm Er"
+Stop
+End Sub
+

@@ -814,5 +814,3 @@ Ass SubStrCnt("aaaa", "aa") = 2
 Ass SubStrCnt("aaaa", "a") = 4
 End Function
 
-Sub Tst()
-End Sub

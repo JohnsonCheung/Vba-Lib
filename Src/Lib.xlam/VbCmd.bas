@@ -39,7 +39,7 @@ GoMd "XlsLoFmt"
 End Sub
 
 Sub GoCls(ClsNm$)
-'MdGo Md(ClsNm)
+MdGo IdeMd.Md(ClsNm)
 End Sub
 
 Sub GoMd(MdNm$)

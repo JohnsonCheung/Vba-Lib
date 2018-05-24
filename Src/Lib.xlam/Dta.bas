@@ -962,7 +962,7 @@ TitAy_Sq = O
 End Function
 
 Sub TstDDLines()
-Dim A As New DDLines: A.Tst
+Dim A As New DDLines: A.Brw
 End Sub
 
 Function VblLy_Dry(A$()) As Variant()
@@ -1020,7 +1020,3 @@ Act = VblLy_Dry(VblLy)
 DryBrw Act
 End Sub
 
-Sub Tst()
-DrsSel__Tst
-ItrDrs__Tst
-End Sub

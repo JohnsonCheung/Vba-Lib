@@ -7,41 +7,63 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Private A
+Option Explicit
+Private B_Oy ' each element is an object
+
 Sub DoMth(Mth$)
-If Sz(A) = 0 Then Add = A: Exit Sub
-For J = 0 To UB(A)
-    CallByName A(J), Mth, VbMethod
+Dim J&
+For J = 0 To U
+    CallByName B_Oy(J), Mth, VbMethod
 Next
 End Sub
-Function CatAyPrp(AyPrpNm$)
-Dim O()
-If Sz(A) = 0 Then Exit Function
-O = CallByName(A(0), AyPrpNm, VbGet)
-For J = 1 To UB(A)
-    PushAy O, A(I)
+
+Function MapByObjGet(Obj, GetMthNm$, OIntoAy)
+
+Dim O: O = OIntoAy
+Erase O
+Dim ArgAy(0), J%
+For J = 0 To U
+    Asg Oy(J), ArgAy(0)
+    Push O, CallByName(Obj, GetMthNm, VbGet, ArgAy)
 Next
-CatAyPrp = O
+MapByObjGet = O
 End Function
-Function Add()
-Dim O
-If Sz(A) = 0 Then Add = A: Exit Function
-Set O = A(0)
-For J = 1 To UB(A)
-    Set O = O.Add(A(J))
+Property Get N&()
+N = Sz(B_Oy)
+End Property
+Private Function U&()
+U = N - 1
+End Function
+Property Get IsEmp() As Boolean
+IsEmp = N = 0
+End Property
+Function CatAyPrpAsAy(AyPrpNm$)
+Dim O, J&, I
+If IsEmp Then Exit Function
+O = CallByName(B_Oy(0), AyPrpNm, VbGet)
+If Not IsArray(O) Then PrmEr ' Given AyPrpNm is not of a array-property
+For J = 1 To U  ' from start Ix=1
+    I = CallByName(B_Oy(J), AyPrpNm, VbGet)
+    If Not IsArray(I) Then DtaEr
+    PushAy O, I
 Next
-Set Add = O
+CatAyPrpAsAy = O
 End Function
 
 Function Init(Oy) As Oy
 Ass IsArray(Oy)
-A = Oy
+B_Oy = Oy
 Set Init = Me
 End Function
+Function InitByColl(A As VBA.Collection) As Oy
+B_Oy = Coll(A).Ay
+Set InitByColl = Me
+End Function
+
 Function Sy(PrpNm$) As String()
 If IsEmp Then Exit Function
-Dim O$()
-For Each I In A
+Dim O$(), I
+For Each I In B_Oy
     Push O, CallByName(I, PrpNm, VbGet)
 Next
 Sy = O
@@ -53,40 +75,48 @@ Function SrtedUniqIntAy(PrpNm$) As Integer()
 SrtedUniqIntAy = AySrt(AyUniq(PrpIntAy(PrpNm)))
 End Function
 Function SrtedUniqSy(PrpNm$) As Variant()
-SrtedUniqIntSy = AySrt(AyUniq(Sy(PrpNm)))
+SrtedUniqSy = AySrt(AyUniq(Sy(PrpNm)))
 End Function
 Function Ay(PrpNm$) As Variant()
 If IsEmp Then Exit Function
-Dim O()
-For Each I In A
+Dim O(), I
+For Each I In B_Oy
     Push O, CallByName(I, PrpNm, VbGet)
 Next
 Ay = O
 End Function
 
-
 Function Map(MapMthNm$) As Variant()
-Dim Obj, J&, O(), U&
-U = UB(A)
+Dim Obj, J&, O()
 ReSz O, U
 For J = 0 To U
-    Asg Run(MapMthNm, A(J)), O(J)
+    Asg Run(MapMthNm, B_Oy(J)), O(J)
 Next
 Map = O
 End Function
-Sub EachSubP1(SubNm$, Prm)
-If AyIsEmp(A) Then Exit Sub
+Function MapInto(MapFunNm$, OIntoAy)
+Dim Obj, J&
 Dim O
-For Each O In A
+O = OIntoAy
+ReSz O, U
+For J = 0 To U
+    Asg Run(MapFunNm, B_Oy(J)), O(J)
+Next
+MapInto = O
+End Function
+
+Sub EachSubP1(SubNm$, Prm)
+If IsEmp Then Exit Sub
+Dim O
+For Each O In B_Oy
     CallByName O, SubNm, VbMethod, Prm
 Next
 End Sub
-Sub EachMth(MthNm$)
-Dim Obj, J&, O(), U&
-U = UB(A)
-ReSz O, U
-For J = 0 To U
-    Run MthNm, A(J)
+Sub EachFun(FunNm$)
+If IsEmp Then Exit Sub
+Dim I
+For Each I In B_Oy
+    Run FunNm, I
 Next
 End Sub
 
@@ -106,7 +136,7 @@ Dim O
    End If
    If IsEmp Then GoTo X
    Dim I
-   For Each I In A
+   For Each I In B_Oy
        Push O, CallByName(I, PrpNm, VbGet)
    Next
 X:
@@ -116,7 +146,7 @@ End Function
 Function PrpIntAy(PrpNm$) As Integer()
 If IsEmp Then Exit Function
 Dim O%(), I
-For Each I In A
+For Each I In B_Oy
    Push O, ObjPrp(I, PrpNm)
 Next
 PrpIntAy = O
@@ -131,7 +161,7 @@ WhIxSelIntPrp = WhIxSelPrp(WhIx, PrpNm, EmpIntAy)
 End Function
 
 Function WhIxSelPrp(WhIx, PrpNm$, OupAy)
-Dim Oy1: Oy1 = AyWhIxAy(A, WhIx)  ' Oy1 is subset of Oy
+Dim Oy1: Oy1 = AyWhIxAy(B_Oy, WhIx)  ' Oy1 is subset of Oy
 WhIxSelPrp = Oy(Oy1).PrpAy(PrpNm, OupAy)
 End Function
 
@@ -141,11 +171,11 @@ End Function
 
 Function WhPrp(PrpNm$, PrpVal)
 Dim O
-   O = A
+   O = B_Oy
    Erase O
 If Not IsEmp Then
    Dim I
-   For Each I In A
+   For Each I In B_Oy
        If CallByName(I, PrpNm, VbGet) = PrpVal Then PushObj O, I
    Next
 End If
@@ -153,10 +183,10 @@ WhPrp = O
 End Function
 
 Function WhPrpEqVal(PrpNm$, EqVal)
-Dim O: O = A: Erase O
+Dim O: O = B_Oy: Erase O
 If Not IsEmp Then
     Dim I, IsSel As Boolean
-    For Each I In A
+    For Each I In B_Oy
         IsSel = ObjPrp(I, PrpNm) = EqVal
         If IsSel Then
             Push O, I

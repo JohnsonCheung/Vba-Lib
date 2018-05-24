@@ -19,10 +19,10 @@ Set Init = Me
 End Function
 Property Get Show() As String()
 Dim O$()
-Push O, "P3FnyRslt(-----------------"
+Push O, "P3FnyRslt("
 Push O, FmtQQ("Fny(?)", JnSpc(A_Fny))
-PushAy O, A_Vb.ErShow(A_Er)
-Push O, "P3FnyRslt)-----------------"
+PushAy O, Vb.ErShow(A_Er)
+Push O, "P3FnyRslt)"
 Show = O
 End Property
 Property Get Fny() As String()
