@@ -68,6 +68,13 @@ For Each I In B_Oy
 Next
 Sy = O
 End Function
+Function ToStr$()
+Dim O$(), I
+For Each I In B_Oy
+    Push O, CallByName(I, "ToStr", VbGet)
+Next
+ToStr = JnCrLf(O)
+End Function
 Function SrtedUniqAy(PrpNm$) As Variant()
 SrtedUniqAy = AySrt(AyUniq(Ay(PrpNm)))
 End Function
@@ -112,6 +119,7 @@ For Each O In B_Oy
     CallByName O, SubNm, VbMethod, Prm
 Next
 End Sub
+
 Sub EachFun(FunNm$)
 If IsEmp Then Exit Sub
 Dim I
@@ -208,7 +216,7 @@ End Function
 
 Private Sub PrpAy__Tst()
 Dim CdPanAy() As CodePane
-CdPanAy = Oy(CurPjx.MdAy).PrpAy("CodePane", CdPanAy)
+CdPanAy = Oy(CurPj.MdAy).PrpAy("CodePane", CdPanAy)
 Stop
 End Sub
 

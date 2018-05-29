@@ -1256,3 +1256,15 @@ Dim TitS1S2Ay() As S1S2
 SqBrw TitS1S2Ay_Sq(TitS1S2Ay, Fny)
 End Sub
 
+Property Get Brw() As Brw
+Dim Y As New Brw
+Set Brw = Y
+End Property
+Property Get Tst() As XlsTst
+Dim Y As New XlsTst
+Set Tst = Y
+End Property
+Sub AAA()
+Xls.Tst.LoFmtr
+End Sub
+

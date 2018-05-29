@@ -93,7 +93,8 @@ Next
 Set InitByLines = Init(Ay, IsVF)
 End Function
 
-Function InitByT1(T1$, Optional IsVF As Boolean) As LABCs
+Function InitByT1(T1$, Optional IsVF As Boolean, Optional ABLy0) As LABCs
+Dim ABLy$(): ABLy = DftNy(ABLy0)
 If B_IsInited Then PrmEr
 B_IsInited = True ' Cannot init once
 B_T1 = T1
@@ -109,12 +110,8 @@ Property Get IsVF() As Boolean
 IsVF = B_IsVF
 End Property
 
-Property Get ItemAy() As LABC()
-Dim O() As LABC, I
-For Each I In B_Ay
-    PushObj O, I
-Next
-ItemAy = O
+Property Get Ay() As LABC()
+Ay = B_Ay
 End Property
 
 Property Get N&()
@@ -192,16 +189,6 @@ Dim ToNum&
 AyDmp ValidateAsBetNumIO(ABCLines, FnyStr, FmNum, ToNum)
 End Sub
 
-Sub TstValidateAsFny()
-Dim IsVF As Boolean, ABCLy$(), Fny$()
-Dim ABCLines$
-Push ABCLy, "Wdt 10 A B C"
-Push ABCLy, "Wdt 20 A B D"
-Fny = LvsSy("A B C D E")
-Dim FmNum&, ToNum&
-AyDmp ValidateFnyIO(ABCLines)
-End Sub
-
 Property Get UniqFny() As String()
 Dim I, M As LABC, O$()
 If IsEmp Then Exit Property
@@ -216,7 +203,7 @@ Function ValidateAsBetNum(Fny$(), FmNum&, ToNum&) As LABCsRslt
 Dim OEr$(), IsVF As Boolean 'Always a IsVF=True line
 IsVF = True
 Dim A As LABCsRslt: Set A = ValidateAsFldVal(Fny)
-Dim A1() As LABC:       A1 = A.LABCs.ItemAy   ' To be validated
+Dim A1() As LABC:       A1 = A.LABCs.Ay   ' To be validated
 Dim A2 As New LABCs:         A2.InitByT1 A.LABCs.T1, A.LABCs.IsVF
 Dim Er As New Er
     Dim J%, V&, B$, C$, Lx%, Msg$
@@ -286,7 +273,15 @@ PushAp O, ""
 ValidateAsFldValIO = O
 End Function
 Property Get ValidateAsNm() As NmRslt
-Stop
+Dim O As New NmRslt
+Dim Er As New Er
+Dim Nm$
+
+With O
+    Set .Er = Er.AddErLyAp(NmErNoLin, NmErMultiName, NmErExcessLin)
+    .Nm = Nm
+End With
+Set ValidateAsNm = O
 End Property
 Function ValidateNmIO(ABCLines$)
 Dim O$()
@@ -312,23 +307,14 @@ AyDmp ValidateAsFldValIO(ABCLines, IsVF, FnyStr)
 End Sub
 
 Friend Sub TstValidateAsNm()
-Dim InpStr$
-AyDmp ValidateNmIO(InpStr)
-End Sub
 
-Friend Function ValidateFnyIO(ABCLines$) As String()
-Dim A As LABCs: Set A = LABCs.ByLines(ABCLines, IsVF:=True)
-Dim R As FnyRslt: Set R = A.ValidateAsFny
-Dim O$()
-PushAp O, "LABCAy_FnyRslt =============================="
-PushAp O, "Inp1::LABCAy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", A.ToStr
-PushAp O, "Oup1::Fny >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", JnSpc(R.Fny)
-PushAp O, "Oup2::Lin$ >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", R.Lin
-PushAp O, "Oup3::Er >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", R.Er.ToStr
-PushAp O, "LABCAy_FnyRslt =============================="
-PushAp O, ""
-ValidateFnyIO = O
-End Function
+'AyDmp ValidateNmIO(InpStr)
+End Sub
+Friend Sub TstValidateAsFny()
+Dim A As LABCs: Set A = Me.InitByT1("Lo", IsVF, "")
+Debug.Print A.ToStr
+Debug.Print A.ValidateAsFny.ToStr
+End Sub
 
 Private Property Get Oy() As Oy
 Dim O As New Oy
@@ -399,7 +385,7 @@ End Function
 
 Private Function VdtDupFld(A As LABCsRslt) As LABCsRslt
 Dim LABCAy() As LABC
-    LABCAy = A.LABCs.ItemAy
+    LABCAy = A.LABCs.Ay
 Dim O As New LABCsRslt
     Dim J%, I, M As LABC
     Dim Ok As StrRslt
@@ -450,45 +436,53 @@ OFldLvs = JnSpc(Fny2)
 End Sub
 
 Private Function VdtErFld(Fny$()) As LABCsRslt
-Dim J%, LABCs As New LABCs, Er As New Er, FldLvs$, M As LABC, Lx%, C$, F$
 If IsVF Then
-'    For J = 0 To LABC_UB(A)
-'        With A(J)
-'            Lx = .Lx
-'            C = .C
-'        End With
-'
-'        VdtErFld1 Lx, C, Fny, _
-'            FldLvs, OEr
-'
-'        If FldLvs <> "" Then
-'            M = A(J)
-'            M.C = FldLvs
-'            LABC_Push O, M  '<============
-'        End If
-'    Next
-'    ZErOf_InvalidFld = O
-    Exit Function
+    Set VdtErFld = VdtErFld_IsVF(Fny)
+Else
+    Set VdtErFld = VdtErFld_NonVF(Fny)
 End If
-Dim Msg$
-'For J = 0 To LABC_UB(A)
-'    With A(J)
-'        Lx = .Lx
-'        F = .B
-'    End With
-'    If AyHas(Fny, F) Then
-'        LABC_Push O, A(J)       '<======
-'    Else
-'        Msg = FmtQQ(M_Fld_IsInValid, Lx, F)
-'        Push OEr, Msg           '<======
-'    End If
-'Next
-Dim O As New LABCsRslt
-With O
-    Set .LABCs = LABCs
-    Set .Er = Er
-End With
-Set VdtErFld = O
+End Function
+
+Private Function VdtErFld_NonVF(Fny$()) As LABCsRslt
+Dim F%, O As New LABCs, J%, Lx%, C$, B$, FldLvs$, OEr$(), M As LABC
+O.InitByT1 T1, IsVF
+For J = 0 To U
+    With B_Ay(J)
+        Lx = .Lx
+        C = .C
+    End With
+
+    VdtErFld1 Lx, C, Fny, _
+        FldLvs, OEr
+
+    If FldLvs <> "" Then
+        B = B_Ay(J).B
+        C = FldLvs
+        O.AddLBC Lx, B, C '<============
+    End If
+Next
+VdtErFld_NonVF = O
+End Function
+
+Private Function VdtErFld_IsVF(Fny$()) As LABCsRslt
+Dim F%, O As New LABCs, J%, Lx%, C$, B$, FldLvs$, OEr$(), M As LABC
+O.InitByT1 T1, IsVF
+For J = 0 To U
+    With B_Ay(J)
+        Lx = .Lx
+        C = .C
+    End With
+
+    VdtErFld1 Lx, C, Fny, _
+        FldLvs, OEr
+
+    If FldLvs <> "" Then
+        B = B_Ay(J).B
+        C = FldLvs
+        O.AddLBC Lx, B, C '<============
+    End If
+Next
+VdtErFld_IsVF = O
 End Function
 
 Friend Sub Tst(Optional Opt As eTstOpt = eValidateAsFldVal)

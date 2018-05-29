@@ -9,6 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private B_Ly$()
+Private Type Inp
+    VF As New P3VF
+    FV As New P3FV
+End Type
 Private Type CnoStr
     Cno() As Integer
     Str() As String
@@ -22,26 +26,37 @@ Private Type Bet
     BetA() As String
     BetB() As String
 End Type
-Function Init(Ly$()) As LoFmtr
+
+Friend Function Init(Ly$()) As LoFmtr
 B_Ly = Ly
 Set Init = Me
 End Function
+
+Sub Tst()
+B_Ly = ZZLy
+AyDmp ToStr
+AyDmp Validate.ToStr
+End Sub
+
 Private Function VdtFml(A As LABCsRslt, Fny$()) As LABCsRslt
 
 End Function
+
 Private Function VdtTot(A As P3Tot, Fny$()) As P3TotRslt
 
 End Function
+
 Private Function VdtBdr(A As P3Bdr, Fny$()) As LABCsRslt
 
 End Function
+
 Property Get ToStr$()
 ToStr = "LoFmtr(" & vbCrLf & JnCrLf(B_Ly) & vbCrLf & "LoFmtr)"
 End Property
 
 Property Get Validate() As LoFmtrRslt
 Dim O As New LoFmtrRslt
-Dim I As P3Inp
+Dim I As Inp
 Dim J%, A$, B$, C$
 Dim Er$()
 For J = 0 To UB(B_Ly)
@@ -76,9 +91,11 @@ For J = 0 To UB(B_Ly)
     Case C1_Lvl: I.VF.Lvl.AddLBC J, B, C
     Case C1_Cor: I.VF.Cor.AddLBC J, B, C
     Case Else
+        Stop
         Push Er, FmtQQ("Lx(?) T1(?) should be [Lo Wdt Lbl ...]", J, A)
     End Select
 Next
+Stop
 Dim NamR As NmRslt: Set NamR = I.VF.Nam.ValidateAsNm
 Dim FnyR As FnyRslt: Set FnyR = I.VF.Fny.ValidateAsFny
 Dim Fny$(): Fny = FnyR.Fny
@@ -161,36 +178,35 @@ End Property
 'Init ZZLoFmtrLy
 'ZZIOLy = ZIOLy
 'End Function
-'Private Function ZZLoFmtrLy() As String()
-'ZZLoFmtrLy = MdResLy(IdeMd.Md("LoFmtr"), "LoFmtrLy")
-'End Function
-'Private Sub ZZResLoFmtrLy()
-''Lo Nm ABC
-''Lo Fld A B C D E F G
-''Lo Hid B C
-''Bet A C D
-''Bet B D E
-''Wdt 10 A B X
-''Wdt 20 D C C
-''Wdt 30 E F G C
-''Fmt #,## A B C
-''Fmt #,##.## D E
-''Lvl 2 A C
-''Bdr Left A
-''Bdr Right G
-''Bdr Col F
-''Tot Sum A B
-''Tot Cnt C
-''Tot Avg D
-''Tit A abc | sdf
-''Tit B abc | sdkf | sdfdf
-''Cor 12345 A B
-''Fml F A + B
-''Fml C A * 2
-''Lbl A lksd flks dfj
-''Lbl B lsdkf lksdf klsdj f
-'End Sub
-'
+Private Function ZZLy() As String()
+ZZLy = MdResLy(IdeMd.Md("LoFmtr"), "Ly")
+End Function
+Private Sub ZZResLy()
+'Lo Nm ABC
+'Lo Fld A B C D E F G
+'Lo Hid B C
+'Bet A C D
+'Bet B D E
+'Wdt 10 A B X
+'Wdt 20 D C C
+'Wdt 30 E F G C
+'Fmt #,## A B C
+'Fmt #,##.## D E
+'Lvl 2 A C
+'Bdr Left A
+'Bdr Right G
+'Bdr Col F
+'Tot Sum A B
+'Tot Cnt C
+'Tot Avg D
+'Tit A abc | sdf
+'Tit B abc | sdkf | sdfdf
+'Cor 12345 A B
+'Fml F A + B
+'Fml C A * 2
+'Lbl A lksd flks dfj
+'Lbl B lsdkf lksdf klsdj f
+End Sub
 Private Function ZBet(A As LABCs) As Bet
 Stop
 End Function

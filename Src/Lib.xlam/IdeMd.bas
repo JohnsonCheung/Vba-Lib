@@ -74,7 +74,7 @@ IsMdRRCCOutSideMd = False
 End Function
 
 Function Md(MdNm) As CodeModule
-Set Md = CurPj.VBComponents(MdNm).CodeModule
+Set Md = CurPj.Pj.VBComponents(MdNm).CodeModule
 End Function
 
 Sub MdAppDclLin(A As CodeModule, DclLines$)
@@ -588,7 +588,7 @@ End Sub
 
 Sub MdDftMthNm__Tst()
 Dim I, Md As CodeModule
-For Each I In CurPjx.MbrAy
+For Each I In CurPj.MbrAy
    MdShw CvMd(I)
    Debug.Print MdNm(Md), MdDftMthNm(Md)
 Next
@@ -612,7 +612,7 @@ End Sub
 
 Sub MdOptCmpDbLin__Tst()
 Dim I, Md As CodeModule
-For Each I In CurPjx.MbrAy
+For Each I In CurPj.MbrAy
     Set Md = I
     Debug.Print MdNm(Md), MdOptCmpDbLno(Md)
 Next

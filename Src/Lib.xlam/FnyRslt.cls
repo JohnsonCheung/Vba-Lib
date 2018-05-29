@@ -21,3 +21,6 @@ End Function
 Property Get Lin$()
 Lin = C1_Lo & " " & C2_Lo_Fld & " " & JnSpc(B_Fny)
 End Property
+Property Get ToStr$()
+ToStr = FmtQQ("Fny(?)|?", JnSpc(B_Fny), Er.ToStr)
+End Property

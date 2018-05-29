@@ -7,7 +7,7 @@ Enum eCmpTySelection
 End Enum
 
 Sub AddCls(Nm$)
-CurPjx.CrtMd Nm, vbext_ct_ClassModule
+CurPj.CrtMd Nm, vbext_ct_ClassModule
 'MdGo Nm
 End Sub
 
@@ -29,9 +29,8 @@ Sub AddSub(SubNm$, Optional MdNm$)
 End Sub
 
 Sub DltMd()
-If MsgBox(FmtQQ("Delete this Md[?]", CurMdNm), vbYesNo + vbDefaultButton2) = vbYes Then
-
-End If
+If MsgBox(FmtQQ("Delete this Md[?]", CurMdNm), vbYesNo + vbDefaultButton2) <> vbYes Then Exit Sub
+CurPj.DltMd CurMdNm
 End Sub
 
 Sub GG()
@@ -55,7 +54,7 @@ LisMdMth MthNmPatn
 End Sub
 
 Sub LisPjMth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".")
-AyDmp CurPjx.MthNy(, MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
+AyDmp CurPj.MthNy(, MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
 End Sub
 
 Sub RenMd(NewNm$)

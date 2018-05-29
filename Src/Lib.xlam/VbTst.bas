@@ -58,7 +58,7 @@ End Function
 
 Function TstResPth$()
 Dim O$
-    O = CurPjx.SrcPth & "TstRes\"
+    O = CurPj.SrcPth & "TstRes\"
     PthEns O
 TstResPth = O
 End Function

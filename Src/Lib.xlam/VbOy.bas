@@ -114,6 +114,6 @@ End Function
 
 Private Sub OyPrp__Tst()
 Dim CdPanAy() As CodePane
-CdPanAy = OyPrpAy(CurPjx.MdAy, "CodePane", CdPanAy)
+CdPanAy = OyPrpAy(CurPj.MdAy, "CodePane", CdPanAy)
 Stop
 End Sub

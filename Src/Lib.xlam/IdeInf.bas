@@ -189,7 +189,7 @@ Next
 PjMdLisDt = NewDt("Md", FnyOf_MdLis, O)
 End Function
 Sub ZZ_PjMthNmDrs()
-DrsBrw PjMthNmDrs(CurPj)
+DrsBrw PjMthNmDrs(CurPj.Pj)
 End Sub
 
 Function PjMthNmDrs(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".") As Drs

@@ -16,8 +16,8 @@ End Function
 Function Nm$()
 Nm = A.Name
 End Function
-Function Val() As VBProject
-Set Val = A
+Function Pj() As VBProject
+Set Pj = A
 End Function
 Function Str$()
 Str = Nm

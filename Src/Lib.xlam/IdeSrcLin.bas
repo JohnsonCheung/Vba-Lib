@@ -324,7 +324,7 @@ SyOfSrcTy = Y
 End Function
 
 Sub ZZ_PrjSrcDrs()
-Dim O As Drs: O = CurPjx.SrcDrs
+Dim O As Drs: O = CurPj.SrcDrs
 'DryBrw O
 
 Dim A As SrcLin: Set A = V(O.Dry(2)(1)).SrcLin

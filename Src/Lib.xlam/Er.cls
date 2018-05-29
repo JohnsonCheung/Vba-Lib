@@ -33,11 +33,12 @@ End Sub
 Sub AddErLy(A$())
 PushAy B_Er, A
 End Sub
-Sub AddErLyAp(ParamArray ErLyAp())
+Function AddErLyAp(ParamArray ErLyAp()) As Er
 Dim Av(): Av = ErLyAp
 Dim I, ErLy$()
 For Each I In ErLyAp
     ErLy = I
     AddErLy ErLy
 Next
-End Sub
+Set AddErLyAp = Me
+End Function

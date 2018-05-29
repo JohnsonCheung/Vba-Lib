@@ -300,6 +300,15 @@ If VarIsSy(Ny0) Then
    DftNy = Ny0
 End If
 End Function
+Function DftLy(Ly0) As String()
+If VarIsStr(Ly0) Then
+   DftLy = SplitVBar(Ly0)
+   Exit Function
+End If
+If VarIsSy(Ly0) Then
+   DftLy = Ly0
+End If
+End Function
 
 Function DtaDb() As Database
 Set DtaDb = DBEngine.OpenDatabase(DtaFb)

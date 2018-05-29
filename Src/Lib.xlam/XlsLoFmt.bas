@@ -541,10 +541,3 @@ Public Const C2_Bdr_C$ = "Col"
 '    Stop
 'Next
 'End Sub
-Sub AAA()
-Dim I
-Dim A As New VBA.Collection
-For Each I In A
-Next
-Stop
-End Sub

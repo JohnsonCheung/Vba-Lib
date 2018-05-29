@@ -7,5 +7,5 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Public Sum As New LABCs, Avg As LABCs, Cnt As LABCs
+Public Sum As New LABCs, Avg As New LABCs, Cnt As New LABCs
 

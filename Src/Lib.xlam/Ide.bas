@@ -1,4 +1,4 @@
-Attribute VB_Name = "A_Ide"
+Attribute VB_Name = "Ide"
 Option Explicit
 Public Const TyChrLis$ = "!@#$%^&"
 Public Enum eTstLABCs
@@ -8,10 +8,6 @@ Public Enum eTstLABCs
     eValidateAsBetNum
     eAll
 End Enum
-Property Get Ide() As Ide
-Static Y As New Ide
-Set Ide = Y
-End Property
 Function CurCdPne() As VBIDE.CodePane
 Set CurCdPne = CurVbe.ActiveCodePane
 End Function
@@ -61,7 +57,7 @@ Dim Fxa$
 Dim X As Excel.Application
    Set X = FxaCrt(Fxa)
 Dim Pj As Pj
-Set Pj = A_Ide.Pj(X.VBE.VBProjects(1))
+Set Pj = Ide.Pj(X.VBE.VBProjects(1))
 
 Dim SrcFfnAy$()
    Dim S
@@ -154,9 +150,6 @@ End Function
 Function CvMdx(A) As Md
 CvMdx = A
 End Function
-Function CurPj() As VBProject
-Set CurPj = CurVbe.ActiveVBProject
-End Function
 Property Get Md(A As CodeModule) As Md
 Dim O As New Md
 O.Init A
@@ -167,6 +160,7 @@ Property Get Pj(A As VBProject) As Pj
 Dim O As New Pj
 Set Pj = O.Init(A)
 End Property
-Property Get CurPjx() As Pj
-Set CurPjx = Pj(CurPj)
+Property Get CurPj() As Pj
+Set CurPj = Pj(CurVbe.ActiveVBProject)
 End Property
+

@@ -140,7 +140,7 @@ Dim I, Lin
 Dim Md As CodeModule:
 Dim Lno&
 Dim MNm$
-For Each I In CurPjx.MbrAy
+For Each I In CurPj.MbrAy
     Set Md = I
     MNm = MdNm(Md)
     Lno = 0
