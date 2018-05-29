@@ -39,11 +39,8 @@ Property Get Val$()
 If IsVF Then Val = B Else Val = C
 End Property
 
-Property Get Fld() As String
-If Not IsVF Then Fld = B
-End Property
 Property Get FldLvs() As String
-If IsVF Then FldLvs = C
+FldLvs = IIf(IsVF, C, B)
 End Property
 
 Property Get Fny() As String()

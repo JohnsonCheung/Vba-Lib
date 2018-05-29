@@ -16,6 +16,14 @@ End Function
 Function Nm$()
 Nm = A.Name
 End Function
+Sub Sort()
+Dim M As CodeModule, I
+For Each I In MbrAy
+    Set M = I
+    MdSrt M
+Next
+End Sub
+
 Function Pj() As VBProject
 Set Pj = A
 End Function

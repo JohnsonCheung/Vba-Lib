@@ -41,7 +41,7 @@ Function CatAyPrpAsAy(AyPrpNm$)
 Dim O, J&, I
 If IsEmp Then Exit Function
 O = CallByName(B_Oy(0), AyPrpNm, VbGet)
-If Not IsArray(O) Then PrmEr ' Given AyPrpNm is not of a array-property
+If Not IsArray(O) Then PmEr ' Given AyPrpNm is not of a array-property
 For J = 1 To U  ' from start Ix=1
     I = CallByName(B_Oy(J), AyPrpNm, VbGet)
     If Not IsArray(I) Then DtaEr

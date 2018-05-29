@@ -48,30 +48,30 @@ Function DaoTyToSim(T As DataTypeEnum) As eSimTy
 Dim O As eSimTy
 Select Case T
 Case _
-   dao.DataTypeEnum.dbBigInt, _
-   dao.DataTypeEnum.dbByte, _
-   dao.DataTypeEnum.dbCurrency, _
-   dao.DataTypeEnum.dbDecimal, _
-   dao.DataTypeEnum.dbDouble, _
-   dao.DataTypeEnum.dbFloat, _
-   dao.DataTypeEnum.dbInteger, _
-   dao.DataTypeEnum.dbLong, _
-   dao.DataTypeEnum.dbNumeric, _
-   dao.DataTypeEnum.dbSingle
+   Dao.DataTypeEnum.dbBigInt, _
+   Dao.DataTypeEnum.dbByte, _
+   Dao.DataTypeEnum.dbCurrency, _
+   Dao.DataTypeEnum.dbDecimal, _
+   Dao.DataTypeEnum.dbDouble, _
+   Dao.DataTypeEnum.dbFloat, _
+   Dao.DataTypeEnum.dbInteger, _
+   Dao.DataTypeEnum.dbLong, _
+   Dao.DataTypeEnum.dbNumeric, _
+   Dao.DataTypeEnum.dbSingle
    O = eNbr
 Case _
-   dao.DataTypeEnum.dbChar, _
-   dao.DataTypeEnum.dbGUID, _
-   dao.DataTypeEnum.dbMemo, _
-   dao.DataTypeEnum.dbText
+   Dao.DataTypeEnum.dbChar, _
+   Dao.DataTypeEnum.dbGUID, _
+   Dao.DataTypeEnum.dbMemo, _
+   Dao.DataTypeEnum.dbText
    O = eTxt
 Case _
-   dao.DataTypeEnum.dbBoolean
+   Dao.DataTypeEnum.dbBoolean
    O = eLgc
 Case _
-   dao.DataTypeEnum.dbDate, _
-   dao.DataTypeEnum.dbTimeStamp, _
-   dao.DataTypeEnum.dbTime
+   Dao.DataTypeEnum.dbDate, _
+   Dao.DataTypeEnum.dbTimeStamp, _
+   Dao.DataTypeEnum.dbTime
    O = eDte
 Case Else
    O = eOth
@@ -80,18 +80,18 @@ DaoTyToSim = O
 End Function
 
 Function DbDs(A As Database, Tny0, Optional DsNm$ = "Ds") As Ds
-Dim DtAy() As Dt
+Dim DtAy1() As Dt
     Dim U%, Tny$()
     Tny = DftNy(Tny0)
     U = UB(Tny)
     ReDim DtAy(U)
     Dim J%
     For J = 0 To U
-        DtAy(J) = DbtDt(A, Tny(J))
+        DtAy(J) = Dbt(A, Tny(J)).Dt
     Next
 Dim O As Ds
     O.DsNm = DsNm
-    O.DtAy = DtAy
+    O.DtAy = DtAy1
 DbDs = O
 End Function
 
@@ -992,7 +992,7 @@ Wb.Close False
 End Sub
 
 Sub ItrDrs__Tst()
-DrsBrw ItrDrs(DbtFlds(SampleDb_DutyPrepare, "Permit"), "Name Type Required")
+DrsBrw ItrDrs(Dbt(SampleDb_DutyPrepare, "Permit").Flds, "Name Type Required")
 'DrsBrw ItrDrs(Application.VBE.VBProjects, "Name Type")
 End Sub
 

@@ -8,9 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Public Flds As ADODB.Fields
+Public Flds As AdoDb.Fields
 Function Dr() As Variant()
-Dim I As ADODB.Field
+Dim I As AdoDb.Field
 Dim O()
 For Each I In Flds
    Push O, I.Value
@@ -20,7 +20,7 @@ End Function
 
 Function Fny() As String()
 Dim O$()
-Dim F As ADODB.Field
+Dim F As AdoDb.Field
 For Each F In Flds
     Push O, F.Name
 Next

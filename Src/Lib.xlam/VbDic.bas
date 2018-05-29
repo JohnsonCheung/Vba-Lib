@@ -529,8 +529,8 @@ Dim O As Worksheet
 Set DicWsVis = O
 End Function
 
-Function FtDic(FT) As Dictionary
-Set FtDic = DicLy_Dic(FtLy(FT))
+Function FtDic(Ft) As Dictionary
+Set FtDic = DicLy_Dic(FtLy(Ft))
 End Function
 
 Function IsEqDic(D1 As Dictionary, D2 As Dictionary) As Boolean

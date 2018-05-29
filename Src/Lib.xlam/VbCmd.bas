@@ -66,5 +66,5 @@ MdSrt DftMdByMdNm(MdNm0)
 End Sub
 
 Sub SrtPj()
-PjSrt CurPj
+CurPj.Sort
 End Sub

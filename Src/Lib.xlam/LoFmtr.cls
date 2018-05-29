@@ -34,20 +34,25 @@ End Function
 
 Sub Tst()
 B_Ly = ZZLy
-AyDmp ToStr
-AyDmp Validate.ToStr
+Debug.Print ToStr
+Debug.Print Validate.ToStr
 End Sub
 
 Private Function VdtFml(A As LABCsRslt, Fny$()) As LABCsRslt
-
+Dim O As New LABCsRslt
+Set VdtFml = O
+Stop
 End Function
 
 Private Function VdtTot(A As P3Tot, Fny$()) As P3TotRslt
-
+Dim O As New P3TotRslt
+Set VdtTot = O
+Stop
 End Function
 
-Private Function VdtBdr(A As P3Bdr, Fny$()) As LABCsRslt
-
+Private Function VdtBdr(A As P3Bdr, Fny$()) As P3BdrRslt
+Dim O As New P3BdrRslt
+Set VdtBdr = O
 End Function
 
 Property Get ToStr$()
@@ -95,7 +100,6 @@ For J = 0 To UB(B_Ly)
         Push Er, FmtQQ("Lx(?) T1(?) should be [Lo Wdt Lbl ...]", J, A)
     End Select
 Next
-Stop
 Dim NamR As NmRslt: Set NamR = I.VF.Nam.ValidateAsNm
 Dim FnyR As FnyRslt: Set FnyR = I.VF.Fny.ValidateAsFny
 Dim Fny$(): Fny = FnyR.Fny
@@ -112,11 +116,11 @@ Dim TotR  As P3TotRslt:  Set TotR = VdtTot(I.VF.Tot, Fny)
 Dim WdtR  As LABCsRslt:  Set WdtR = I.VF.Wdt.ValidateAsFldVal(Fny)
 O.Er.PushAp BdrR.Er, BetR.Er, CorR.Er, FmlR.Er, HidR.Er, LblR.Er, LvlR.Er, TitR.Er, TotR.Er, WdtR.Er
 Dim Ok$
-Ok = StrAp_Lines( _
+Ok = Ly0Ap_Lines( _
     NamR.Lin, _
     FnyR.Lin, _
     LvlR.LABCs.Ly, _
-    BdrR.LABCs.Ly, _
+    BdrR.ABCLy, _
     BetR.LABCs.Ly, _
     CorR.LABCs.Ly, _
     FmlR.LABCs.Ly, _
@@ -125,7 +129,7 @@ Ok = StrAp_Lines( _
     LblR.LABCs.Ly, _
     LblR.LABCs.Ly, _
     TitR.LABCs.Ly, _
-    TotR.LABCs.Ly, _
+    TotR.ABCLy, _
     WdtR.LABCs.Ly)
 
 Dim XBdrL%(), XBdrR%()

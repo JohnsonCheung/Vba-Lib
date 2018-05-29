@@ -8,7 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Public Rs As ADODB.Recordset
+Public Rs As AdoDb.Recordset
 Function Drs() As Drs
 Drs.Fny = Fny
 Drs.Dry = Dry
@@ -30,3 +30,12 @@ Set F.Flds = Rs.Fields
 Fny = F.Fny
 End Function
 
+Private Sub Dry__Tst()
+Dim S$
+S = "GRANT SELECT ON MSysObjects TO Admin;"
+'CurrentProject.Connection.Execute S
+DryBrw AdoP.Rs(Fb(SampleFb_DutyPrepare).Cn.Execute("Select * from KE24")).Dry
+End Sub
+Friend Sub Tst()
+Dry__Tst
+End Sub

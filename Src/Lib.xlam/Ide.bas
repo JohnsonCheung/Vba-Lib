@@ -11,7 +11,6 @@ End Enum
 Function CurCdPne() As VBIDE.CodePane
 Set CurCdPne = CurVbe.ActiveCodePane
 End Function
-
 Function CurCdWin() As VBIDE.Window
 Set CurCdWin = VBE.ActiveCodePane.Window
 End Function
@@ -23,7 +22,10 @@ End Function
 Function CurWin() As VBIDE.Window
 Set CurWin = CurVbe.ActiveWindow
 End Function
-
+Property Get Dcl(A$()) As Dcl
+Dim O As New Dcl
+Set Dcl = O.Init(A)
+End Property
 Function DftVbe(A As VBE) As VBE
 If IsNothing(A) Then
    Set DftVbe = CurVbe

@@ -10,5 +10,8 @@ Attribute VB_Exposed = True
 Public Sum As LABCsRslt
 Public Avg As LABCsRslt
 Public Cnt As LABCsRslt
-Public LABCs As LABCs
+Private B_ABCLy() As String
 Public Er As New Er
+Property Get ABCLy() As String()
+ABCLy = B_ABCLy
+End Property

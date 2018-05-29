@@ -18,6 +18,31 @@ Type LnoCnt
     Lno As Long
     Cnt As Long
 End Type
+Property Get Seed(Seed0) As Seed
+Dim O As New Seed
+Set Seed = O.Init(Seed0)
+End Property
+Function DftTpLy(Tp0) As String()
+Select Case True
+Case VarIsStr(Tp0): DftTpLy = SplitVBar(Tp0)
+Case VarIsSy(Tp0):  DftTpLy = Tp0
+Case Else: Stop
+End Select
+End Function
+Property Get StrRslt(S, Er As Er) As StrRslt
+Dim O As New StrRslt
+O.Str = S
+Set O.Er = Er
+If IsNothing(Er) Then PmEr
+Set StrRslt = O
+End Property
+Property Get LyRslt(Ly$(), Er As Er) As LyRslt
+Dim O As New LyRslt
+O.Ly = Ly
+Set O.Er = Er
+If IsNothing(Er) Then PmEr
+Set LyRslt = O
+End Property
 Property Get Lines(A) As Lines
 Dim O As New Lines
 O.Lines = A
@@ -340,6 +365,15 @@ End Function
 Function IsStr(V) As Boolean
 IsStr = VarType(V) = vbString
 End Function
+Property Get Tst() As VbTst
+Static Y As New VbTst
+Set Tst = Y
+End Property
+
+Property Get Lg() As Lg
+Static Y As New Lg
+Set Lg = Y
+End Property
 Property Get Cmd() As Cmd
 Static Y As New Cmd
 Set Cmd = Y
@@ -353,14 +387,14 @@ Property Get LABCsRslt(A As LABCs, Optional Er As Er) As LABCsRslt
 Dim O As New LABCsRslt
 Set LABCsRslt = O.Init(A, Er)
 End Property
-Function StrAp_Lines(ParamArray StrAp())
-Dim I, Av(): Av = StrAp
+Function Ly0Ap_Lines(ParamArray Ly0Ap())
+Dim I, Av(): Av = Ly0Ap
 If AyIsEmp(Av) Then Exit Function
 Dim O$()
 For Each I In Av
-    If I <> "" Then Push O, I
+    PushAy O, DftLy(I)
 Next
-StrAp_Lines = JnCrLf(O)
+Ly0Ap_Lines = JnCrLf(O)
 End Function
 
 Property Get Coll(A As VBA.Collection) As Coll
@@ -403,8 +437,8 @@ Case Else
 End Select
 SyShow = O
 End Function
-Sub PrmEr()
-MsgBox "Prm Er"
+Sub PmEr()
+MsgBox "Parameter Er"
 Stop
 End Sub
 

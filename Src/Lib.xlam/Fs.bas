@@ -65,17 +65,17 @@ Function FfnRplExt$(Ffn, NewExt)
 FfnRplExt = FfnRmvExt(Ffn) & NewExt
 End Function
 
-Sub FtBrw(FT)
+Sub FtBrw(Ft)
 'Shell "code.cmd """ & Ft & """", vbHide
-Shell "notepad.exe """ & FT & """", vbMaximizedFocus
+Shell "notepad.exe """ & Ft & """", vbMaximizedFocus
 End Sub
 
-Function FtLines$(FT)
-FtLines = Fso.GetFile(FT).OpenAsTextStream.ReadAll
+Function FtLines$(Ft)
+FtLines = Fso.GetFile(Ft).OpenAsTextStream.ReadAll
 End Function
 
-Function FtLy(FT) As String()
-Dim F%: F = FtOpnInp(FT)
+Function FtLy(Ft) As String()
+Dim F%: F = FtOpnInp(Ft)
 Dim L$, O$()
 While Not EOF(F)
     Line Input #F, L
@@ -85,21 +85,21 @@ Close #F
 FtLy = O
 End Function
 
-Function FtOpnApp%(FT)
+Function FtOpnApp%(Ft)
 Dim O%: O = FreeFile(1)
-Open FT For Append As #O
+Open Ft For Append As #O
 FtOpnApp = O
 End Function
 
-Function FtOpnInp%(FT)
+Function FtOpnInp%(Ft)
 Dim O%: O = FreeFile(1)
-Open FT For Input As #O
+Open Ft For Input As #O
 FtOpnInp = O
 End Function
 
-Function FtOpnOup%(FT)
+Function FtOpnOup%(Ft)
 Dim O%: O = FreeFile(1)
-Open FT For Output As #O
+Open Ft For Output As #O
 FtOpnOup = O
 End Function
 

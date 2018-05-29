@@ -700,8 +700,8 @@ For Each Pfx In PfxAy
 Next
 End Function
 
-Sub StrWrt(A, FT)
-Fso.CreateTextFile(FT, True).Write A
+Sub StrWrt(A, Ft)
+Fso.CreateTextFile(Ft, True).Write A
 End Sub
 
 Function SubStrCnt&(A, SubStr)

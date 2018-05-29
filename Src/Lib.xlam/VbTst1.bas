@@ -1,4 +1,4 @@
-Attribute VB_Name = "VbTst"
+Attribute VB_Name = "VbTst1"
 Option Explicit
 Type ThowMsgOrStr
     Som As Boolean
@@ -84,5 +84,5 @@ Dim Qvbl$
 Dim Lvs$
 Qvbl = "Sub Tst?()|Dim A As New ?: A.Tst|End Sub"
 'Lvs = JnSpc(PjClsNy(CurPj))
-Debug.Print SeedExp(Qvbl, Lvs)
+Debug.Print Seed(Qvbl).Expand(Lvs)
 End Sub

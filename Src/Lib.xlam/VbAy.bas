@@ -1073,8 +1073,8 @@ Next
 AyWh_ByPfx = O
 End Function
 
-Sub AyWrt(A, FT)
-StrWrt JnCrLf(A), FT
+Sub AyWrt(A, Ft)
+StrWrt JnCrLf(A), Ft
 End Sub
 
 Function AyWs(A, Optional WsNm$, Optional Vis As Boolean) As Worksheet

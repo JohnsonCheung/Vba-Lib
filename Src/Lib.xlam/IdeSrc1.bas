@@ -1,115 +1,6 @@
 Attribute VB_Name = "IdeSrc1"
 Option Explicit
 
-Function DclEnmBdyLy(A$(), EnmNm$) As String()
-Dim B%: B = DclEnmLx(A, EnmNm): If B = -1 Then Exit Function
-Dim O$(), J%
-For J = B To UB(A)
-   Push O, A(J)
-   If HasPfx(A(J), "End Enum") Then DclEnmBdyLy = O: Exit Function
-Next
-Stop
-End Function
-
-Function DclEnmLx%(A$(), EnmNm$)
-Dim U%: U = UB(A)
-Dim O%, L$
-For O = 0 To U
-If SrcLin_IsEmn(A(O)) Then
-    L = A(O)
-    L = SrcLin_RmvMdy(L)
-    With Lin(L)
-         L = .RmvT1
-         If .T1 = EnmNm Then
-            DclEnmLx = O: Exit Function
-         End If
-    End With
-End If
-Next
-DclEnmLx = -1
-End Function
-
-Function DclEnmNy(A$()) As String()
-If AyIsEmp(A) Then Exit Function
-Dim I, O$()
-For Each I In A
-   PushNonEmp O, NewSrcLin(I).EnmNm
-Next
-DclEnmNy = O
-End Function
-
-Function DclHasTy(A$(), TyNm$) As Boolean
-If AyIsEmp(A) Then Exit Function
-Dim I
-For Each I In A
-   If HasPfx(I, "Type") Then If Lin(I).T2 = TyNm Then DclHasTy = True: Exit Function
-Next
-End Function
-
-Function DclNEnm%(A$())
-If AyIsEmp(A) Then Exit Function
-Dim I, O%
-For Each I In A
-   If SrcLin_IsEmn(I) Then O = O + 1
-Next
-DclNEnm = O
-End Function
-
-Function DclTyFmIx&(A$(), TyNm$)
-Dim J%, L$
-For J = 0 To UB(A)
-   If SrcLin_TyNm(A(J)) = TyNm Then DclTyFmIx = J: Exit Function
-Next
-DclTyFmIx = -1
-End Function
-
-Function DclTyFmTo(A$(), TyNm$) As FmtO
-Dim FmI&: FmI = DclTyFmIx(A, TyNm)
-Dim ToI&: ToI = DclTyToIx(A, FmI)
-DclTyFmTo = NewFmTo(FmI, ToI)
-End Function
-
-Function DclTyIx%(A$(), TyNm)
-Dim I%
-   For I = 0 To UB(A)
-       If SrcLin_TyNm(A(I)) = TyNm Then
-           DclTyIx% = I
-           Exit Function
-       End If
-   Next
-DclTyIx = -1
-End Function
-
-Function DclTyLines$(A$(), TyNm$)
-Stop
-DclTyLines = JnCrLf(DclTyLy(A, TyNm))
-End Function
-
-Function DclTyLy(A$(), TyNm$) As String()
-DclTyLy = AyWhFmTo(A, DclTyFmTo(A, TyNm))
-End Function
-
-Function DclTyNy(A$(), Optional TyNmPatn$ = ".") As String()
-If AyIsEmp(A) Then Exit Function
-Dim O$(), L, M$, Re As RegExp
-Set Re = NewRe(TyNmPatn)
-For Each L In A
-   M = SrcLin_TyNm(L)
-   If Re.Test(M) Then
-       PushNonEmp O, M
-   End If
-Next
-DclTyNy = O
-End Function
-
-Function DclTyToIx(A$(), FmI&)
-If 0 > FmI Then DclTyToIx = -1: Exit Function
-Dim O&
-For O = FmI + 1 To UB(A)
-   If HasPfx(A(O), "End Type") Then DclTyToIx = O: Exit Function
-Next
-DclTyToIx = -1
-End Function
 
 Function MthDrs_Ky(A As Drs) As String()
 Dim Ty$, Mdy$, MthNm$, K$, IxAy%(), Dr, O$()
@@ -353,13 +244,13 @@ End Function
 Function SrcMthLx_BdyLy(A$(), MthLx) As String()
 Dim ToLx%: ToLx = SrcMthLx_ToLx(A, MthLx)
 Dim FmLx%: FmLx = SrcMthLx_MthRmkLx(A, MthLx)
-Dim FT As FmtO
-With FT
+Dim Ft As FmtO
+With Ft
    .FmIx = FmLx
    .ToIx = ToLx
 End With
 Dim O$()
-   O = AyWhFmTo(A, FT)
+   O = AyWhFmTo(A, Ft)
 SrcMthLx_BdyLy = O
 If AyLasEle(O) = "" Then Stop
 End Function
@@ -567,7 +458,7 @@ SrcRmvMth = O
 End Function
 
 Function SrcRmvTy(A$(), TyNm$) As String()
-SrcRmvTy = AyRmvFmTo(A, DclTyFmTo(A, TyNm))
+SrcRmvTy = AyRmvFmTo(A, Dcl(A).TyFmTo(TyNm))
 End Function
 
 Function SrcRplMth(A$(), MthNm$, NewMthLy$()) As String()
@@ -591,7 +482,7 @@ Dim Dcl$()
 Dim FmtO As FmtO
 Dim Old$()
    Dcl = SrcDcl(A)
-   FmtO = DclTyFmTo(Dcl, TyNm)
+   FmtO = Ide.Dcl(Dcl).TyFmTo(TyNm)
    Old = AyWhFmTo(Dcl, FmtO)
 If AyIsEq(Old, NewTyLy) Then
    SrcRplTy = A
@@ -700,9 +591,6 @@ Dim Drs As Drs
 DrsBrw Drs
 End Sub
 
-Private Sub DclTyLines__Tst()
-Debug.Print DclTyLines(MdDcl(CurMd), "AA")
-End Sub
 
 Private Sub SrcContLin__Tst()
 ZZ_SrcContLin

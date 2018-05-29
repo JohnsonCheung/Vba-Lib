@@ -63,15 +63,6 @@ With PjMdSrtRpt
 End With
 End Function
 
-Sub PjSrt(A As VBProject)
-Dim I
-'Dim M As CodeModule
-'For Each I In PjMbrAy(A)
-'    Set M = I
-'    MdSrt M
-'Next
-End Sub
-
 Function PjSrtCmpRptWb(A As VBProject, Optional Vis As Boolean) As Workbook
 Dim A1 As MdSrtRpt
 A1 = PjMdSrtRpt(A)

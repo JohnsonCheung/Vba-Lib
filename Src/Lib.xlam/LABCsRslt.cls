@@ -18,6 +18,6 @@ Set Init = Me
 End Function
 
 Property Get ToStr$()
-ToStr = StrAp_Lines(LABCs.ToStr, Er.ToStr)
+ToStr = Ly0Ap_Lines(LABCs.ToStr, Er.ToStr)
 End Property
 

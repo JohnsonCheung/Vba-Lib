@@ -1,31 +1,33 @@
 Attribute VB_Name = "DaoX"
 Option Explicit
 Public Const SampleFb_DutyPrepare$ = "C:\Users\User\Desktop\SAPAccessReports\DutyPrepay5\DutyPrepay5_Data.mdb"
-
 Function DaoTy_Str$(T As DataTypeEnum)
 Dim O$
 Select Case T
-Case dao.DataTypeEnum.dbBoolean: O = "Boolean"
-Case dao.DataTypeEnum.dbDouble: O = "Double"
-Case dao.DataTypeEnum.dbText: O = "Text"
-Case dao.DataTypeEnum.dbDate: O = "Date"
-Case dao.DataTypeEnum.dbByte: O = "Byte"
-Case dao.DataTypeEnum.dbInteger: O = "Int"
-Case dao.DataTypeEnum.dbLong: O = "Long"
-Case dao.DataTypeEnum.dbDouble: O = "Doubld"
-Case dao.DataTypeEnum.dbDate: O = "Date"
-Case dao.DataTypeEnum.dbDecimal: O = "Decimal"
-Case dao.DataTypeEnum.dbCurrency: O = "Currency"
-Case dao.DataTypeEnum.dbSingle: O = "Single"
+Case Dao.DataTypeEnum.dbBoolean: O = "Boolean"
+Case Dao.DataTypeEnum.dbDouble: O = "Double"
+Case Dao.DataTypeEnum.dbText: O = "Text"
+Case Dao.DataTypeEnum.dbDate: O = "Date"
+Case Dao.DataTypeEnum.dbByte: O = "Byte"
+Case Dao.DataTypeEnum.dbInteger: O = "Int"
+Case Dao.DataTypeEnum.dbLong: O = "Long"
+Case Dao.DataTypeEnum.dbDouble: O = "Doubld"
+Case Dao.DataTypeEnum.dbDate: O = "Date"
+Case Dao.DataTypeEnum.dbDecimal: O = "Decimal"
+Case Dao.DataTypeEnum.dbCurrency: O = "Currency"
+Case Dao.DataTypeEnum.dbSingle: O = "Single"
 Case Else: Stop
 End Select
 DaoTy_Str = O
 End Function
-
+Property Get Dbt(Db As Dao.Database, T) As Dbt
+Dim O As New Dbt
+Set Dbt = O.Init(Db, T)
+End Property
 Sub DbBrw(A As Database)
 Dim N$: N = A.Name
 A.Close
-FbBrw N
+Fb(N).Brw
 End Sub
 
 Sub DbCrtTbl(A As Database, T, FldDclAy)
@@ -48,16 +50,15 @@ Ass Sz(Tny) > 0
 Ass AyPair_IsEqSz(Src, Tny)
 Dim J%
 For J = 0 To UB(Tny)
-    DbtLnkFb A, Tny(J), Fb, Src(J)
+    Dbt(A, Tny(J)).LnkFb Fb, Src(J)
 Next
 End Sub
 
 Sub DbLnkFx(A As Database, Fx$, Optional WsNy0)
-Dim WsNy$(): WsNy = DftNy(WsNy0)
-WsNy = DftFxWsNy(Fx, WsNy)
+Dim WsNy$(): WsNy = Xls.Fx(Fx).DftWsNy(WsNy0)
 Dim J%
 For J = 0 To UB(WsNy)
-   DbtLnkFxWs A, WsNy(J), Fx
+   Dbt(A, WsNy(J)).LnkFxWs Fx
 Next
 End Sub
 
@@ -73,12 +74,12 @@ For Each Sql In SqlAy
 Next
 End Sub
 
-Function DbTF_Fld(A As Database, T$, F) As dao.Field
+Function DbTF_Fld(A As Database, T$, F) As Dao.Field
 Set DbTF_Fld = A.TableDefs(T).Fields(F)
 End Function
 
 Function DbTF_FldInfDr(A As Database, T, F) As Variant()
-Dim FF  As dao.Field
+Dim FF  As Dao.Field
 Set FF = A.TableDefs(T).Fields(F)
 With FF
     DbTF_FldInfDr = Array(F, IIf(DbTF_IsPk(A, T, F), "*", ""), DaoTy_Str(.Type), .Size, .DefaultValue, .Required, FldDes(FF))
@@ -86,7 +87,7 @@ End With
 End Function
 
 Function DbTF_IsPk(A As Database, T, F) As Boolean
-DbTF_IsPk = AyHas(DbtPk(A, T), F)
+DbTF_IsPk = AyHas(Dbt(A, T).Pk, F)
 End Function
 
 Function DbTF_NxtId&(A As Database, T, Optional F)
@@ -94,10 +95,6 @@ Dim S$: S = FmtQQ("select Max(?) from ?", Dft(F, T), T)
 DbTF_NxtId = DbqV(A, S) + 1
 End Function
 
-Function DbT_HasFld(A As Database, T, F) As Boolean
-Ass DbtExist(A, T)
-DbT_HasFld = TblHasFld(A.TableDefs(T), F)
-End Function
 
 Function DbTny(A As Database) As String()
 DbTny = DbqSy(A, "Select Name from MSysObjects where Type in (1,6) and Left(Name,4)<>'MSYS'")
@@ -135,127 +132,7 @@ With A.OpenRecordset(Sql)
 End With
 End Function
 
-Sub DbtAddFld(A As Database, T, F, Ty As DataTypeEnum)
-Dim FF As New dao.Field
-FF.Name = F
-FF.Type = Ty
-DbtFlds(A, T).Append FF
-End Sub
 
-Sub DbtBrw(A As Database, T)
-DtBrw DbtDt(A, T)
-End Sub
-
-Function DbtDes$(A As Database, T)
-DbtDes = PrpVal(A.TableDefs(T).Properties, "Description")
-End Function
-
-Sub DbtDrp(A As Database, T)
-If DbHasTbl(A, T) Then A.Execute FmtQQ("Drop Table [?]", T)
-End Sub
-
-Function DbtDt(A As Database, T) As Dt
-Dim O As Dt
-O.DtNm = T
-O.Dry = RsDry(A.TableDefs(T).OpenRecordset)
-O.Fny = DbtFny(A, T)
-DbtDt = O
-End Function
-
-Function DbtExist(A As Database, T) As Boolean
-DbtExist = A.OpenRecordset("Select Name from MSysObjects where Type in (1,6) and Name='?'").EOF
-End Function
-
-Function DbtFlds(A As Database, T) As dao.Fields
-Set DbtFlds = A.TableDefs(T).Fields
-End Function
-
-Function DbtFny(A As Database, T) As String()
-DbtFny = FldsFny(A.TableDefs(T).Fields)
-End Function
-
-Function DbtFxOfLnkTbl$(A As Database, T)
-DbtFxOfLnkTbl = TakBet(A.TableDefs(T).Connect, "Database=", ";")
-End Function
-
-Sub DbtLnkFb(A As Database, T, Fb$, Optional SrcT0$)
-Dim Src$: Src = Dft(SrcT0, T)
-Dim Tbl  As TableDef
-Set Tbl = A.CreateTableDef(T)
-Tbl.SourceTableName = Src
-Tbl.Connect = ";DATABASE=?" & Fb
-DbtDrp A, T
-A.TableDefs.Append Tbl
-End Sub
-
-Sub DbtLnkFxWs(A As Database, T$, Fx$, Optional WsNm0)
-Const CSub$ = "ATLnkFxWs"
-Dim WsNm$: WsNm = Dft(WsNm0, T)
-On Error GoTo X
-   Dim Tbl  As TableDef
-   Set Tbl = A.CreateTableDef(T)
-   Tbl.SourceTableName = WsNm & "$"
-   Tbl.Connect = FmtQQ("Excel 8.0;HDR=YES;IMEX=2;DATABASE=?", Fx)
-   DbtDrp A, T
-   A.TableDefs.Append Tbl
-Exit Sub
-X: Er CSub, "{Er} found in Creating {T} in {Db} by Linking {WsNm} in {Fx}", Err.Description, T, A.Name, WsNm0, Fx
-End Sub
-
-Function DbtPk(A As Database, T) As String()
-Dim I  As Index, O$(), F
-On Error GoTo X
-If A.TableDefs(T).Indexes.Count = 0 Then Exit Function
-On Error GoTo 0
-For Each I In A.TableDefs(T).Indexes
-   If I.Primary Then
-       For Each F In I.Fields
-           Push O, F.Name
-       Next
-       DbtPk = O
-       Exit Function
-   End If
-Next
-X:
-End Function
-
-Function DbtRecCnt&(A As Database, T)
-DbtRecCnt = DbqV(A, FmtQQ("Select Count(*) from [?]", T))
-End Function
-
-Function DbtSimTyAy(A As Database, T$, Optional Fny0) As eSimTy()
-Dim Fny$(): Fny = DftFny(A, T, Fny0)
-Dim O() As eSimTy
-   Dim U%
-   ReDim O(U)
-   Dim J%, F
-   J = 0
-   For Each F In Fny
-       O(J) = NewSimTy(DbTF_Fld(A, T, F).Type)
-       J = J + 1
-   Next
-DbtSimTyAy = O
-End Function
-
-Function DbtTblFInfDry(A As Database, T) As Variant()
-Dim O(), F, Dr(), Fny$()
-Fny = DbtFny(A, T)
-If AyIsEmp(Fny) Then Exit Function
-Dim SeqNo%
-SeqNo = 0
-For Each F In Fny
-    Erase Dr
-    Push Dr, T
-    Push Dr, SeqNo: SeqNo = SeqNo + 1
-    PushAy Dr, DbTF_FldInfDr(A, T, CStr(F))
-    Push O, Dr
-Next
-DbtTblFInfDry = O
-End Function
-
-Function DbtWs(A As Database, T) As Worksheet
-Set DbtWs = DtWs(DbtDt(A, T))
-End Function
 
 Function DftDb(A As Database) As Database
 If IsNothing(A) Then
@@ -268,28 +145,13 @@ End Function
 Function DftFb$(A$)
 If A = "" Then
    Dim O$: O = TmpFb
-   dao.DBEngine.CreateDatabase(O, dbLangGeneral).Close
+   Dao.DBEngine.CreateDatabase(O, dbLangGeneral).Close
    DftFb = O
 Else
    DftFb = A
 End If
 End Function
 
-Function DftFny(A As Database, T$, Fny) As String()
-If IsMissing(Fny) Then
-   DftFny = DbtFny(A, T)
-Else
-   DftFny = Fny
-End If
-End Function
-
-Function DftFxWsNy(Fx$, WsNy$()) As String()
-If AyIsEmp(WsNy) Then
-   DftFxWsNy = FxWsNy(Fx)
-   Exit Function
-End If
-DftFxWsNy = WsNy
-End Function
 
 Function DftNy(Ny0) As String()
 If VarIsStr(Ny0) Then
@@ -318,30 +180,11 @@ Function DtaFb$()
 DtaFb = FfnRplExt(FfnAddFnSfx(CurFb, "_Data"), ".mdb")
 End Function
 
-Function FbAcnStr$(A$)
-FbAcnStr = FmtQQ("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=?;", A)
-End Function
-
-Sub FbBrw(Fb$)
-CurAcs.OpenCurrentDatabase Fb
-CurAcs.Visible = True
-End Sub
-
-Function FbCn(A$) As ADODB.Connection
-Dim O As New ADODB.Connection
-O.Open FbAcnStr(A)
-Set FbCn = O
-End Function
-
-Function FbDb(A$) As Database
-Set FbDb = dao.DBEngine.OpenDatabase(A)
-End Function
-
-Function FldDes$(A As dao.Field)
+Function FldDes$(A As Dao.Field)
 FldDes = PrpVal(A.Properties, "Description")
 End Function
 
-Function FldsDr(A As dao.Fields) As Variant()
+Function FldsDr(A As Dao.Fields) As Variant()
 Dim O(), J%
 ReDim O(A.Count - 1)
 For J = 0 To A.Count - 1
@@ -350,7 +193,7 @@ Next
 FldsDr = O
 End Function
 
-Function FldsFny(A As dao.Fields) As String()
+Function FldsFny(A As Dao.Fields) As String()
 Dim O$(), J%
 ReDim O(A.Count - 1)
 For J = 0 To A.Count - 1
@@ -359,8 +202,8 @@ Next
 FldsFny = O
 End Function
 
-Function FldsHasFld(A As dao.Fields, F) As Boolean
-Dim I  As dao.Field
+Function FldsHasFld(A As Dao.Fields, F) As Boolean
+Dim I  As Dao.Field
 For Each I In A
    If I.Name = F Then FldsHasFld = True: Exit Function
 Next
@@ -407,14 +250,14 @@ Dim O As Database
 Set FxTmpDb = O
 End Function
 
-Function NewDb(Optional Fb0$, Optional Lang$ = dao.LanguageConstants.dbLangGeneral) As Database
+Function NewDb(Optional Fb0$, Optional Lang$ = Dao.LanguageConstants.dbLangGeneral) As Database
 Dim Fb$
     Fb = DftFb(Fb0)
 Ass Not FfnIsExist(Fb)
-Set NewDb = dao.DBEngine.CreateDatabase(Fb, Lang)
+Set NewDb = Dao.DBEngine.CreateDatabase(Fb, Lang)
 End Function
 
-Function PrpVal(A As dao.Properties, PrpNm$)
+Function PrpVal(A As Dao.Properties, PrpNm$)
 On Error Resume Next
 PrpVal = A(PrpNm).Value
 End Function
@@ -449,9 +292,12 @@ With A
 End With
 RsSy = O
 End Function
-
-Function SampleDb_DutyPrepare() As Database
-Set SampleDb_DutyPrepare = FbDb(SampleFb_DutyPrepare)
+Property Get DbEng() As Dao.DBEngine
+Static Y As New Dao.DBEngine
+Set DbEng = Y
+End Property
+Function SampleDb_DutyPrepare() As Dao.Database
+Set SampleDb_DutyPrepare = DbEng.OpenDatabase(SampleFb_DutyPrepare)
 End Function
 
 Function TblHasFld(T As TableDef, F) As Boolean
@@ -459,36 +305,18 @@ Function TblHasFld(T As TableDef, F) As Boolean
 End Function
 
 Function TmpDb(Optional Fnn$) As Database
-Set TmpDb = DBEngine.CreateDatabase(TmpFb("TmpDb", Fnn), dao.LanguageConstants.dbLangGeneral)
+Set TmpDb = DBEngine.CreateDatabase(TmpFb("TmpDb", Fnn), Dao.LanguageConstants.dbLangGeneral)
 End Function
-
-Sub Tst__DaoDb()
-DbtPk__Tst
-End Sub
-
+Property Get DbInf() As DbInf
+Set DbInf = New DbInf
+End Property
 Private Sub DbQny__Tst()
 AyDmp DbQny(CurDb)
 End Sub
+Property Get Tst() As DaoTst
+Set Tst = New DaoTst
+End Property
 
-Private Sub DbtPk__Tst()
-Dim Dr(), Dry(), T
-Dim Db As Database
-Set Db = CurDb
-For Each T In DbTny(Db)
-    Erase Dr
-    Push Dr, T
-    PushAy Dr, DbtPk(Db, CStr(T))
-    Push Dry, Dr
-Next
-DryBrw Dry
-End Sub
-
-Private Sub FbSql_Arun__Tst()
-Const Fb$ = "N:\SapAccessReports\DutyPrepay5\tmp.accdb"
-Const Sql$ = "Select * into [#a] from Permit"
-FbSql_Arun Fb, "Drop Table [#a]"
-FbSql_Arun Fb, Sql
-End Sub
 
 Private Sub FxTmpDb__Tst()
 Dim Db As Database: Set Db = FxTmpDb("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls")

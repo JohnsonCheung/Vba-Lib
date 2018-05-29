@@ -191,7 +191,7 @@ End If
 End Function
 
 Function MdEnmBdyLy(A As CodeModule, EnmNm$) As String()
-MdEnmBdyLy = DclEnmBdyLy(MdDcl(A), EnmNm)
+MdEnmBdyLy = Dcl(MdDcl(A)).EnmBdyLy(EnmNm)
 End Function
 
 'Function MdMthDrs(Optional WithBdyLy As Boolean, _
@@ -224,7 +224,7 @@ MdEnmMbrLy = O
 End Function
 
 Function MdEnmNy(A As CodeModule) As String()
-MdEnmNy = DclEnmNy(MdDcl(A))
+MdEnmNy = Dcl(MdDcl(A)).EnmNy
 End Function
 
 Function MdEnsMth(A As CodeModule, MthNm$, NewMthLines$)
@@ -350,7 +350,7 @@ MdRmvLnoCntAy A, M
 End Sub
 
 Function MdNEnm%(A As CodeModule)
-MdNEnm = DclNEnm(MdDcl(A))
+MdNEnm = Dcl(MdDcl(A)).NEnm
 End Function
 
 Function MdNLin%(A As CodeModule)
@@ -540,7 +540,7 @@ MdTyNm = CmpTy_Str(MdTy(A))
 End Function
 
 Function MdTyNy(A As CodeModule, Optional TyNmPatn$ = ".") As String()
-MdTyNy = AySrt(DclTyNy(MdDcl(A), TyNmPatn))
+MdTyNy = AySrt(Dcl(MdDcl(A)).TyNy(TyNmPatn))
 End Function
 
 Function MdTyRRCC(A As CodeModule, TyNm$) As RRCC

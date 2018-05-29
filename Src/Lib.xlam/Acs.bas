@@ -21,9 +21,10 @@ CurDbPth = FfnPth(CurFb)
 End Function
 
 Function CurFb$()
+On Error Resume Next
 CurFb = CurrentDb.Name
 End Function
 
 Function WrkPth$()
-WrkPth = CurDbPth & "WorkingDir\"
+WrkPth = CurPj.Pth & "WorkingDir\"
 End Function

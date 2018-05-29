@@ -449,10 +449,10 @@ FfnDlt SrpNm_Ft(SrpNm)
 End Sub
 
 Sub SrpNm_Dmp(Optional A$)
-Dim FT$: FT = SrpNm_Ft(A)
+Dim Ft$: Ft = SrpNm_Ft(A)
 Debug.Print "**PrmNm=" & A
-Debug.Print "**PrmFt=" & FT
-AyDmp FtLy(FT)
+Debug.Print "**PrmFt=" & Ft
+AyDmp FtLy(Ft)
 End Sub
 
 Sub SrpNm_Edt(Optional A$)
@@ -460,10 +460,10 @@ FtBrw SrpNm_Ft(A)
 End Sub
 
 Sub SrpNm_Ens(Optional A$)
-Dim FT$
-FT = SrpNm_Ft(A)
-If FfnIsExist(FT) Then Exit Sub
-AyWrt DicLy(DftSrpDic), FT
+Dim Ft$
+Ft = SrpNm_Ft(A)
+If FfnIsExist(Ft) Then Exit Sub
+AyWrt DicLy(DftSrpDic), Ft
 End Sub
 
 Function SrpNm_Ft$(Optional A$)
