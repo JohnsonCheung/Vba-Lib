@@ -10,6 +10,9 @@ Attribute VB_Exposed = True
 Option Explicit
 Private B_Items As New VBA.Collection
 
+Property Get ToStr$()
+Stop
+End Property
 Function Add(A As LCFVs) As LCFVs
 Dim J%
 'For J = 0 To A.U

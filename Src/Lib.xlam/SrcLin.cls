@@ -12,7 +12,7 @@ Private A$
 Private A_IsMth As Boolean
 
 Function EnmNm$()
-If IsEmn Then EnmNm = LinNm(NoEnm)
+If IsEmn Then EnmNm = Lin(NoEnm).Nm
 End Function
 
 Function FriendMthLin$()
@@ -50,7 +50,7 @@ MthBrk = O
 End Property
 
 Property Get MthNm$()
-If IsMth Then MthNm = LinNm(NoMthTy)
+If IsMth Then MthNm = Lin(NoMthTy).Nm
 End Property
 
 Property Get MthTy$()
@@ -67,7 +67,7 @@ If IsMth Then PrivateMthLin = "Private " & NoMdy
 End Property
 
 Property Get PrpTy$()
-If IsPrpLin Then PrpTy = LinT1(NoFunTy)
+If IsPrpLin Then PrpTy = Lin(NoFunTy).T1
 End Property
 Function InfDrs(Optional MdNm$, Optional Lno) As Drs
 With InfDrs
@@ -108,7 +108,7 @@ Property Get IsTy() As Boolean
 IsTy = HasPfx(NoMdy, C_Ty)
 End Property
 Function TyNm$()
-If IsTy Then TyNm = LinNm(NoTy)
+If IsTy Then TyNm = Lin(NoTy).Nm
 End Function
 
 Private Function NoEnm$()

@@ -223,10 +223,6 @@ If FxHasWs(A, WsNm) Then
 End If
 End Sub
 
-Sub FxSql_Arun(A$, Sql$)
-FxCn(A).Execute Sql
-End Sub
-
 Function FxWsFny(A$, WsNm$) As String()
 Dim Cat As ADOX.Catalog: Set Cat = FxCat(A)
 Dim C As ADOX.Column
@@ -1069,21 +1065,19 @@ A_VBarColAy = O
 End Function
 
 Private Sub FxAqlDrs__Tst()
-Const Fx$ = "N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls"
 Const Sql$ = "Select * from [Sheet1$]"
-DrsBrw FxSql_Drs(Fx, Sql)
+DrsBrw FxSql_Drs(SampleFx_KE24, Sql)
 End Sub
 
 Private Sub FxCat__Tst()
 Dim A As ADOX.Catalog
-Set A = FxCat("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls")
+Set A = FxCat(SampleFx_KE24)
 Stop
 End Sub
 
 Private Sub FxCn__Tst()
 Dim A As ADODB.Connection
-Set A = FxCn("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls")
-Stop
+Set A = FxCn(SampleFx_KE24)
 End Sub
 
 Private Sub FxRmvWsIfExist__Tst()
@@ -1101,18 +1095,129 @@ Dim Exp$()
 AyPair_EqChk Exp, WsNyAft
 End Sub
 
+Sub CnSqlAy_Run(A As ADODB.Connection, SqlAy$())
+If AyIsEmp(SqlAy) Then Exit Sub
+Dim Sql
+For Each Sql In SqlAy
+   A.Execute CStr(Sql)
+Next
+End Sub
+
+Function CnSql_Drs(A As ADODB.Connection, Sql) As Drs
+CnSql_Drs = ARs(A.Execute(Sql)).Drs
+End Function
+
+Function DftWsNmByFxFstWs$(WsNm0, Fx)
+Dim O$
+If WsNm0 = "" Then O = FxFstWsNm(Fx) Else O = WsNm0
+DftWsNmByFxFstWs = O
+End Function
+
+Function FbSql_Ars(A$, Sql) As ADODB.Recordset
+Set FbSql_Ars = FbCn(A).Execute(Sql)
+End Function
+
+Sub FbSql_Arun(A$, Sql$)
+FbCn(A).Execute Sql
+End Sub
+
+Function FbSql_Drs(A$, Sql$) As Drs
+FbSql_Drs = ARs(FbSql_Ars(A, Sql)).Drs
+End Function
+
+Function FxCat(A) As Catalog
+Dim O As New Catalog
+Set O.ActiveConnection = FxCn(A)
+Set FxCat = O
+End Function
+
+Sub ArsDry__Tst()
+'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
+'CurrentProject.Connection.Execute strDdlEnd Sub
+DryBrw ARs(FbCn(SampleFb_DutyPrepare).Execute("Select * from KE24")).Dry
+End Sub
+
+Private Sub CnSql_Drs__Tst()
+Dim Cn As ADODB.Connection: Set Cn = FxCn(SampleFx_KE24)
+Dim Sql$: Sql = "Select * from [Sheet1$]"
+Dim Drs As Drs: Drs = CnSql_Drs(Cn, Sql)
+DrsBrw Drs
+End Sub
+
+Private Sub FbAqlDrs__Tst()
+Const Fb$ = "N:\SapAccessReports\DutyPrepay5\DutyPrepay5.accdb"
+Const Sql$ = "Select * from Permit"
+'DrsBrw FbAqlDrs(Fb, Sql)
+End Sub
+
+Private Sub FbCn__Tst()
+Dim A As ADODB.Connection
+Set A = FbCn("N:\SapAccessReports\DutyPrepay5\DutyPrepay5_data.mdb")
+Stop
+End Sub
+
 Private Sub FxSql_Arun__Tst()
-Const Fx$ = "N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls"
+Const Fx$ = SampleFx_KE24
 Const Sql$ = "Select * into [Sheet21] from [Sheet1$]"
 FxSql_Arun Fx, Sql
 End Sub
 
-Private Sub FxWsFny__Tst()
-AyDmp FxWsFny("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls", "Sheet1")
+Private Sub FxSql_Drs__Tst()
+Const Fx$ = "N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls"
+Const Sql$ = "Select * from [Sheet1$]"
+DrsBrw FxSql_Drs(Fx, Sql)
 End Sub
 
-Private Sub FxWsNy__Tst()
-AyDmp FxWsNy("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls")
+Sub FxWsNy__Tst()
+AyDmp FxWsNy(SampleFx_KE24)
+End Sub
+
+Sub FxWs_Dt__Tst()
+DtBrw FxWs_Dt(SampleFx_KE24)
+End Sub
+
+Sub FxWs_Fny__Tst()
+AyDmp FxWs_Fny(SampleFx_KE24)
+End Sub
+
+
+
+Function FxFstWsNm$(A)
+Dim T As ADOX.Table
+Dim O$()
+For Each T In FxCat(A).Tables
+    FxFstWsNm = RmvLasChr(T.Name)
+    Exit Function
+Next
+End Function
+
+Sub FxSql_Arun(A$, Sql)
+FxCn(A).Execute CStr(Sql)
+End Sub
+
+Function FxSql_Drs(A$, Sql) As Drs
+FxSql_Drs = ARs(FxCn(A).Execute(Sql)).Drs
+End Function
+
+Function FxWsNy(A) As String()
+FxWsNy = SyRmvLasChr(ItrNy(FxCat(A).Tables))
+End Function
+
+Function FxWs_Dt(A$, Optional WsNm0$) As Dt
+Dim WsNm$
+If WsNm0 = "" Then WsNm = FxFstWsNm(A) Else WsNm = WsNm0
+Dim Sql$: Sql = FmtQQ("Select * from [?$]", WsNm)
+FxWs_Dt = DtNmDrs_Dt(WsNm, CnSql_Drs(FxCn(A), Sql))
+End Function
+
+Function FxWs_Fny(A, Optional WsNm0$) As String()
+Dim WsNm$: WsNm = DftWsNmByFxFstWs(WsNm, A)
+FxWs_Fny = ItrNy(FxCat(A).Tables(WsNm & "$").Columns)
+End Function
+
+
+Private Sub FxWsFny__Tst()
+AyDmp FxWsFny("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls", "Sheet1")
 End Sub
 
 Sub FxaCrt__Tst()

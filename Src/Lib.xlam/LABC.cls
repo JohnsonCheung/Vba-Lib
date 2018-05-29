@@ -6,7 +6,8 @@ Attribute VB_Name = "LABC"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Exposed = True
+Option Explicit
 Public Par As LABCs, Lx%, B$, C$
 Property Get ToStr$()
 ToStr = A & " " & B & " " & C
@@ -17,7 +18,7 @@ Dim T1$: T1 = Par.T1
 If T1 = "" Then
     A = "?"
 Else
-    T1 = A
+    A = T1
 End If
 End Property
 Property Get LCFVs(Fny$()) As LCFVs

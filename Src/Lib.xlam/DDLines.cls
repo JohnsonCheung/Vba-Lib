@@ -83,9 +83,9 @@ Else
 End If
 End Sub
 
-Private Sub AddLin(Lin)
-Dim K1$, K2$, L$: LinAsgTTRst Lin, K1, K2, L
-AddKKLin K1, K2, L
+Private Sub AddLin(L)
+Dim K1$, K2$, Ln$: Lin(L).AsgTTRst K1, K2, Ln
+AddKKLin K1, K2, Ln
 End Sub
 
 Private Sub Class_Initialize()

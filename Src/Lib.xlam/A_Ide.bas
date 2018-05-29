@@ -144,20 +144,6 @@ Function WinCnt&()
 WinCnt = Application.VBE.Windows.Count
 End Function
 
-Sub TstOy()
-Dim O As New Oy: O.Tst
-End Sub
-
-Sub TstLoFmtr()
-'Dim O As New LoFmtr: O.Tst
-End Sub
-Sub TstLABCs(Optional Opt As eTstLABCs = eValidateAsFldVal)
-Dim O As New LABCs: O.Tst Opt
-End Sub
-Sub TstP3Itm()
-Dim O As New P3Itm: O.Tst
-End Sub
-
 Function WinMdNm$(A As VBIDE.Window)
 WinMdNm = TakBet(A.Caption, " - ", " (Code)")
 End Function

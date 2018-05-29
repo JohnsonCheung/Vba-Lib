@@ -9,20 +9,35 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Private B_Er$()
 Sub Add(A As Er)
-PushAy B_Er, A.Val
+PushAy B_Er, A.ErLy
+End Sub
+Sub PushAp(ParamArray ErAp())
+Stop
 End Sub
 Property Get HasEr() As Boolean
 HasEr = Sz(B_Er) > 0
 End Property
 Property Get ToStr$()
-ToStr = JnCrLf(B_Er)
+If HasEr Then
+    ToStr = "Er(" & vbCrLf & JnCrLf(B_Er) & vbCrLf & "Er)"
+Else
+    ToStr = "Er()"
+End If
 End Property
-Property Get Val() As String()
-Val = B_Er
-End Property
-Property Let Val(A$())
-B_Er = A
+Property Get ErLy() As String()
+ErLy = B_Er
 End Property
 Sub AddMsg(Msg$)
 Push B_Er, Msg
+End Sub
+Sub AddErLy(A$())
+PushAy B_Er, A
+End Sub
+Sub AddErLyAp(ParamArray ErLyAp())
+Dim Av(): Av = ErLyAp
+Dim I, ErLy$()
+For Each I In ErLyAp
+    ErLy = I
+    AddErLy ErLy
+Next
 End Sub

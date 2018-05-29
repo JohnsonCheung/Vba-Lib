@@ -542,11 +542,9 @@ Public Const C2_Bdr_C$ = "Col"
 'Next
 'End Sub
 Sub AAA()
+Dim I
 Dim A As New VBA.Collection
-A.Add "skdl", "A"
-A.Add "lskdfj, 1"
-Debug.Print A.Count
-Debug.Print A("A")
-Debug.Print A("1")
+For Each I In A
+Next
 Stop
 End Sub

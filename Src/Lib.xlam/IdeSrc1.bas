@@ -15,14 +15,16 @@ Function DclEnmLx%(A$(), EnmNm$)
 Dim U%: U = UB(A)
 Dim O%, L$
 For O = 0 To U
-   If SrcLin_IsEmn(A(O)) Then
-       L = A(O)
-       L = SrcLin_RmvMdy(L)
-       L = LinRmvT1(L)
-       If LinT1(L) = EnmNm Then
-           DclEnmLx = O: Exit Function
-       End If
-   End If
+If SrcLin_IsEmn(A(O)) Then
+    L = A(O)
+    L = SrcLin_RmvMdy(L)
+    With Lin(L)
+         L = .RmvT1
+         If .T1 = EnmNm Then
+            DclEnmLx = O: Exit Function
+         End If
+    End With
+End If
 Next
 DclEnmLx = -1
 End Function
@@ -40,7 +42,7 @@ Function DclHasTy(A$(), TyNm$) As Boolean
 If AyIsEmp(A) Then Exit Function
 Dim I
 For Each I In A
-   If HasPfx(I, "Type") Then If LinT2(I) = TyNm Then DclHasTy = True: Exit Function
+   If HasPfx(I, "Type") Then If Lin(I).T2 = TyNm Then DclHasTy = True: Exit Function
 Next
 End Function
 

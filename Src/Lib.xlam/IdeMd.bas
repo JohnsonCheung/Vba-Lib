@@ -94,8 +94,8 @@ End If
 Dim Aft%
     Aft = A.CountOfLines
 Dim Exp%
-    Exp = Bef + LinesLinCnt(Lines)
-If Exp <> Aft Then Debug.Print FmtQQ("MdAppLines Er(LinCnt Added is not expected): Bef[?] LinCnt[?]: Exp(Bef+LinCnt)[?] <> Aft[?] AftBdyLinCnt[?]", Bef, LinesLinCnt(Lines), Exp, Aft, LinesLinCnt(MdBdyLines(A)))
+    Exp = Bef + Vb.Lines(Lines).LinCnt
+If Exp <> Aft Then Debug.Print FmtQQ("MdAppLines Er(LinCnt Added is not expected): Bef[?] LinCnt[?]: Exp(Bef+LinCnt)[?] <> Aft[?] AftBdyLinCnt[?]", Bef, Vb.Lines(Lines).LinCnt, Exp, Aft, Vb.Lines(MdBdyLines(A)).LinCnt)
 End Sub
 
 Sub MdAppLy(A As CodeModule, Ly$())
@@ -212,10 +212,10 @@ Function MdEnmMbrLy(A As CodeModule, EnmNm$) As String()
 Dim Ly$(), O$(), J%
 Ly = MdEnmBdyLy(A, EnmNm)
 If AyIsEmp(Ly) Then Exit Function
-Dim Lin
-For Each Lin In Ly
-   If Not SrcLin_IsRmk(Lin) Then
-       If Not LinIsEmp(Lin) Then
+Dim L
+For Each L In Ly
+   If Not SrcLin_IsRmk(L) Then
+       If Not Lin(L).IsEmp Then
            Push O, Ly(J)
        End If
    End If

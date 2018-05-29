@@ -1,7 +1,7 @@
 Attribute VB_Name = "Vb"
 Option Explicit
-Public Const M_Val_IsNonNum$ = "Lx(?) Fld(?) has Val(?) should be a number"
-Public Const M_Val_ShouldBet$ = "Lx(?) Fld(?) has Val(?) should be between [?] and [?]"
+Public Const M_Val_IsNonNum$ = "Lx(?) has Val(?) should be a number"
+Public Const M_Val_ShouldBet$ = "Lx(?) has Val(?) should be between [?] and [?]"
 Public Const M_Fld_IsInValid$ = "Lx(?) Fld(?) is invalid.  Not found in Fny"
 Public Const M_Fld_IsDup$ = "Lx(?) Fld(?) is found dup in Lx(?)."
 Type FmtO
@@ -18,6 +18,16 @@ Type LnoCnt
     Lno As Long
     Cnt As Long
 End Type
+Property Get Lines(A) As Lines
+Dim O As New Lines
+O.Lines = A
+Set Lines = O
+End Property
+Property Get Lin(A) As Lin
+Dim O As New Lin
+O.Lin = A
+Set Lin = O
+End Property
 Property Get ABC(Lin) As ABC
 Dim O As New ABC
 Set ABC = O.Init(Lin)
@@ -324,21 +334,8 @@ Ass VarIsStrAy(B) = True
 Ass VarIsStrAy(C) = False
 Ass VarIsStrAy(D) = False
 End Sub
-Function P3Lin(Lx%, B$, C$) As P3Lin
-Dim O As New P3Lin
-With O
-    .B = B
-    .C = C
-    .Lx = Lx
-End With
-End Function
-Function P3Itm(Nm$, Optional IsVF As Boolean) As P3Itm
-Dim O As New P3Itm
-Set P3Itm = O.Init(Nm, IsVF)
-End Function
-Function P3ItmRslt(A As P3Itm, Er$()) As P3ItmRslt
-Dim O As New P3ItmRslt
-Set P3ItmRslt = O.Init(A, Er)
+Function AyIsEqSz(A, B) As Boolean
+AyIsEqSz = Sz(A) = Sz(B)
 End Function
 Function IsStr(V) As Boolean
 IsStr = VarType(V) = vbString
@@ -370,9 +367,8 @@ Property Get Coll(A As VBA.Collection) As Coll
 Dim O As New Coll
 Set Coll = O.Init(A)
 End Property
-Property Get LABCs(ABCAy() As ABC, IsVF As Boolean) As LABCs
-Dim O As New LABCs
-Set LABCs = O.Init(ABCAy, IsVF)
+Property Get LABCs() As LABCsBy
+Set LABCs = New LABCsBy
 End Property
 Function SrcLin(A) As SrcLin
 Dim O As New SrcLin

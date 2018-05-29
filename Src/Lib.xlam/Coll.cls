@@ -13,6 +13,14 @@ Function Init(A As VBA.Collection) As Coll
 Set B_Coll = A
 Set Init = Me
 End Function
+Function AyAs(OAsAy)
+Dim O: O = OAsAy: Erase O
+Dim I
+For Each I In B_Coll
+    Push O, I
+Next
+AyAs = O
+End Function
 Function Ay() As Variant()
 Dim O(), I
 For Each I In B_Coll

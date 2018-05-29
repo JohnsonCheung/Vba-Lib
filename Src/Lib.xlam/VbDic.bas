@@ -573,18 +573,18 @@ KeyVal.V = V
 End Function
 
 Function LinesDicLy_LinesDic(A$()) As Dictionary
-Dim FstTermAy$(), RstAy$()
-    With LyBrkFstTermAyRstAy(A)
-        FstTermAy = .FstTermAy
+Dim T1Ay$(), RstAy$()
+    With LyT1AyRstAy(A)
+        T1Ay = .T1Ay
         RstAy = .RstAy
     End With
 Dim Ny$()
-    Ny = AyNoDupAy(FstTermAy)
+    Ny = AyNoDupAy(T1Ay)
 Dim O As Dictionary
     Dim Lines$, J&
     Set O = New Dictionary
     For J = 0 To UB(Ny)
-        Lines = LinesDicLy_LinesDic__Lines(FstTermAy, RstAy, Ny(J))
+        Lines = LinesDicLy_LinesDic__Lines(T1Ay, RstAy, Ny(J))
         O.Add Ny(J), Lines
     Next
 Set LinesDicLy_LinesDic = O

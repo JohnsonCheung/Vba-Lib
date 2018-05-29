@@ -1236,10 +1236,10 @@ End Function
 
 Function LyEndTrim(A$()) As String()
 If AyIsEmp(A) Then Exit Function
-If Not LinIsEmp(AyLasEle(A)) Then LyEndTrim = A: Exit Function
+If Not Lin(AyLasEle(A)).IsEmp Then LyEndTrim = A: Exit Function
 Dim J%
 For J = UB(A) To 0 Step -1
-    If Not LinIsEmp(A(J)) Then
+    If Not Lin(A(J)).IsEmp Then
         Dim O$()
         O = A
         ReDim Preserve O(J)

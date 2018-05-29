@@ -10,6 +10,9 @@ Attribute VB_Exposed = True
 Option Explicit
 Public A$, B$, C$
 Function Init(Lin) As ABC
-LinAsgTTRst Lin, A, B, C
+Vb.Lin(Lin).AsgTTRst A, B, C
 Set Init = Me
 End Function
+Property Get ToStr$()
+ToStr = FmtQQ("A(?) B(?) C(?)", A, B, C)
+End Property

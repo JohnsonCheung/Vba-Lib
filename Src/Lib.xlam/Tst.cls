@@ -10,3 +10,7 @@ Attribute VB_Exposed = True
 Sub LABCs()
 Dim O As New LABCs: O.Tst
 End Sub
+Sub TstDDLines()
+Dim A As New DDLines: A.Brw
+End Sub
+

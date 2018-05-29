@@ -157,7 +157,7 @@ End Function
 
 Function SqLin_OptChk$(SqLin)
 If HasPfx(SqLin, "$") Then Exit Function
-Dim T1$: T1 = LinT1(SqLin)
+Dim T1$: T1 = Lin(SqLin).T1
 Dim O$
     Select Case RmvPfx(T1, "?")
     Case "Gp", "Sel", "SelDis", "AndInStrLis", "AndInNbrLis"
@@ -825,11 +825,12 @@ Private Function SwLnx_SwBrk(A As Lnx) As SwBrk
 Dim Z As SwBrk
 'If SrcLin_IsRmk(SwLin) Then Exit Function 'assume SwLnx has remark removed
     Dim L$, NTerm%, TermAy$()
-    L = A.Lin
-    Z.Nm = LinShiftTerm(L)
-    Z.OpStr = UCase(LinShiftTerm(L))
-    Z.TermAy = LvsSy(L)
-    Z.Lx = A.Lx
+    With Lin(A.Lin)
+        Z.Nm = .ShiftTerm
+        Z.OpStr = UCase(.ShiftTerm)
+        Z.TermAy = LvsSy(.Lin)
+        Z.Lx = A.Lx
+    End With
 SwLnx_SwBrk = Z
 End Function
 

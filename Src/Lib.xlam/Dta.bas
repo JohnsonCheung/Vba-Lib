@@ -961,9 +961,6 @@ Dim O()
 TitAy_Sq = O
 End Function
 
-Sub TstDDLines()
-Dim A As New DDLines: A.Brw
-End Sub
 
 Function VblLy_Dry(A$()) As Variant()
 If AyIsEmp(A) Then Exit Function

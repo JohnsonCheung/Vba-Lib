@@ -66,7 +66,7 @@ Dim J%
 For J% = 1 To A_Md.CountOfDeclarationLines
    Dim L$
    L = A_Md.Lines(J, 1)
-   If LinIsEmp(L) Then Ix = J
+   If Lin(L).IsEmp Then Ix = J
    If Not SrcLin_IsRmk(L) Then Ix = J
 Next
 Ix = J

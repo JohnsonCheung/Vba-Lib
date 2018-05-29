@@ -130,7 +130,7 @@ End Function
 Function ParseNm(A As Parse) As Parse
 If Not A.IsOk Then ParseNm = A: Exit Function
 Dim B$
-   B = LinNm(A.Lin)
+   B = Lin(A.Lin).Nm
 
 Dim L&: L = Len(B)
 If L = 0 Then
@@ -213,7 +213,7 @@ End Function
 
 Function SrcLin_EndLinPfx$(A)
 Ass SrcLin_IsMth(A)
-SrcLin_EndLinPfx = "End " & LinT1(SrcLin_MthTy(A))
+SrcLin_EndLinPfx = "End " & Lin(SrcLin_MthTy(A)).T1
 End Function
 
 Function SrcLin_EnmNm$(A)
@@ -221,7 +221,7 @@ Function SrcLin_EnmNm$(A)
 End Function
 
 Function SrcLin_IsCd(A) As Boolean
-If LinIsEmp(A) Then Exit Function
+If Lin(A).IsEmp Then Exit Function
 If SrcLin_IsRmk(A) Then Exit Function
 SrcLin_IsCd = True
 End Function
@@ -232,7 +232,7 @@ End Function
 
 Function SrcLin_IsMth(A) As Boolean
 'If HasPfx(A, "Function") Then Stop
-SrcLin_IsMth = KwIsFunTy(LinT1(SrcLin_RmvMdy(A)))
+SrcLin_IsMth = KwIsFunTy(Lin(SrcLin_RmvMdy(A)).T1)
 End Function
 
 Function SrcLin_IsRmk(Lin) As Boolean

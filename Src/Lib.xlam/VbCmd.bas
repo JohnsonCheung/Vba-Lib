@@ -55,7 +55,7 @@ LisMdMth MthNmPatn
 End Sub
 
 Sub LisPjMth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".")
-'AyDmp PjMthNy(CurPj, , MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
+AyDmp CurPjx.MthNy(, MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
 End Sub
 
 Sub RenMd(NewNm$)
