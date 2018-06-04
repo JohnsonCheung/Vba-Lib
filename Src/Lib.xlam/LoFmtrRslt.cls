@@ -7,7 +7,26 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Public LoFmtr As New LoFmtr, Er As New Er, FmtWs As New FmtWs
+Private B_Ly$(), B_Er As New Er, B_FmtWs As New FmtWs
+Friend Property Get Init(Ly$(), Er As Er, FmtWs As FmtWs) As LoFmtrRslt
+B_Ly = Ly
+Set B_Er = Er
+Set B_FmtWs = FmtWs
+Set Init = Me
+End Property
+
+Property Get Ly() As String()
+Ly = B_Ly
+End Property
+
+Property Get FmtWs() As FmtWs
+Set FmtWs = B_FmtWs
+End Property
+
+Property Get Er() As Er
+Set Er = B_Er
+End Property
+
 Property Get ToStr$()
-ToStr = Oy(Array(LoFmtr, FmtWs, Er)).ToStr
+ToStr = Tag_NyStr_ObjAp("LoFmtrRslt", "Ly FmtWs Er", SyObj(B_Ly), B_FmtWs, B_Er)
 End Property

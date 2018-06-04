@@ -26,5 +26,5 @@ CurFb = CurrentDb.Name
 End Function
 
 Function WrkPth$()
-WrkPth = CurPj.Pth & "WorkingDir\"
+WrkPth = CurPjx.Pth & "WorkingDir\"
 End Function

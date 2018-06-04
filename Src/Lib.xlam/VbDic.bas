@@ -574,7 +574,7 @@ End Function
 
 Function LinesDicLy_LinesDic(A$()) As Dictionary
 Dim T1Ay$(), RstAy$()
-    With LyT1AyRstAy(A)
+    With Ly(A).T1AyRstAy
         T1Ay = .T1Ay
         RstAy = .RstAy
     End With
@@ -744,7 +744,7 @@ SomKeyVal.Som = True
 SomKeyVal.KeyVal = KeyVal(K, V)
 End Function
 
-Sub ZZ_DicCmp()
+Private Sub ZZ_DicCmp()
 Dim A As Dictionary: Set A = DicVbl_Dic("X AA|A BBB|A Lines1|A Line3|B Line1|B line2|B line3..")
 Dim B As Dictionary: Set B = DicVbl_Dic("X AA|C Line|D Line1|D line2|B Line1|B line2|B line3|B Line4")
 DicCmp A, B

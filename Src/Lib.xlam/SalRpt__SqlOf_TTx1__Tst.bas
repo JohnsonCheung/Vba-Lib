@@ -67,7 +67,7 @@ End Function
 Private Sub ZZ7_Tstr(A As ZZ7_TstDta)
 Dim ECrd$
 With A
-   Ass IsEq(SqLoFmtr_TTx(A.P), .Exp)
+   Ass IsEq(Srp_TTx(A.P), .Exp)
 End With
 End Sub
 
@@ -75,7 +75,7 @@ Private Function ZZ7_UB%(A() As ZZ7_TstDta)
 ZZ7_UB = ZZ7_Sz(A) - 1
 End Function
 
-Private Sub ZZ7__SqLoFmtr_TTx__Tst()
+Private Sub ZZ7__Srp_TTx__Tst()
 Dim Ay() As ZZ7_TstDta: Ay = ZZ7_Ay
 Dim J%
 For J = 0 To UBound(Ay)

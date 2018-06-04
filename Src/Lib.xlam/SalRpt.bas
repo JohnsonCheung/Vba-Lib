@@ -130,11 +130,11 @@ End If
 DryOf_CrdPfxTy = Y
 End Function
 
-Function SqLoFmtr_OCnt$()
+Function Srp_OCnt$()
 
 End Function
 
-Function SqLoFmtr_OMbrWsOpt$( _
+Function Srp_OMbrWsOpt$( _
     BrkMbr As Boolean, _
     InclNm As Boolean, _
     InclAdr As Boolean, _
@@ -193,19 +193,19 @@ Dim Sel$, Into$, Fm$, Wh$
     Into = SqpInto("#MbrDta")
     Fm = SqpFm("JCMember")
     Wh = SqpWh("JCMDCode in (Select Mbr From #TxMbr)")
-SqLoFmtr_OMbrWsOpt = Sel & Into & Fm & Wh
+Srp_OMbrWsOpt = Sel & Into & Fm & Wh
 End Function
 
-Function SqLoFmtr_OOup$()
+Function Srp_OOup$()
 Const L$ = _
 "Sel " & _
 "|Into #Oup" & _
 "|Fm #Tx x" & _
 "|Left #TxMbr a on x.Mbr = a.JCMMCode"
-SqLoFmtr_OOup = RplVBar(L)
+Srp_OOup = RplVBar(L)
 End Function
 
-Function SqLoFmtr_TCrd$(BrkCrd As Boolean, InCrd$)
+Function Srp_TCrd$(BrkCrd As Boolean, InCrd$)
 Const FldLvs$ = "Crd CrdNm"
 Const ECrd$ = "CrdTyId"
 Const ECrdNm$ = "CrdTyNm"
@@ -223,10 +223,10 @@ Dim Sel$, Into$, Fm$, Wh$
     Into = SqpInto("#Crd")
     Fm = SqpFm("JR_FrqMbrLis_#CrdTy()")
     Wh = IIf(InCrd = "", "", SqpWh(FmtQQ("? in (?)", ECrd, InCrd)))
-SqLoFmtr_TCrd = Sel & Into & Fm & Wh
+Srp_TCrd = Sel & Into & Fm & Wh
 End Function
 
-Function SqLoFmtr_TDiv$(BrkDiv As Boolean, InDiv$)
+Function Srp_TDiv$(BrkDiv As Boolean, InDiv$)
 If Not BrkDiv Then Exit Function
 Const FldLvs$ = "Div DivNm DivSeq DivSts"
 Const EDiv$ = "Dept + Division"
@@ -241,10 +241,10 @@ Dim Sel$, Into$, Fm$, Wh$
     Into = SqpInto("#Div")
     Fm = SqpFm("Division")
     Wh = "": If InDiv <> "" Then Wh = SqpWh(FmtQQ("? in (?)", EDiv, InDiv))
-SqLoFmtr_TDiv = Sel & Into & Fm & Wh
+Srp_TDiv = Sel & Into & Fm & Wh
 End Function
 
-Function SqLoFmtr_TSto$(BrkSto As Boolean, InSto$)
+Function Srp_TSto$(BrkSto As Boolean, InSto$)
 'Sql.X.T.Sto
 '    Sel  # Sto Nm CNm
 '    Fm   # LocTbl
@@ -263,10 +263,10 @@ Dim Sel$, Into$, Fm$, Wh$
     Into = SqpInto("#Sto")
     Fm = SqpFm("Location")
     Wh = IIf(InSto = "", "", SqpWh(FmtQQ("? in (?)", ESto, InSto)))
-SqLoFmtr_TSto = Sel & Into & Fm & Wh
+Srp_TSto = Sel & Into & Fm & Wh
 End Function
 
-Function SqLoFmtr_TTx$(P As SrPm)
+Function Srp_TTx$(P As SrPm)
 Dim O$()
 Const ECnt$ = "Count(SHInvoice + SHSDate + SHRef)"
 Const EAmt$ = "Sum(SHAmount)"
@@ -341,19 +341,19 @@ Dim Sel$, Into$, Fm$, Wh$, AndCrd$, AndSto$, AndDiv$, Gp$
     AndDiv = SqpAnd(DivIn)
     AndSto = SqpAnd(StoIn)
     Gp = SqpGp(GpExprAy)
-SqLoFmtr_TTx = Sel & Into & Fm & Wh & AndCrd & AndDiv & AndSto & Gp
+Srp_TTx = Sel & Into & Fm & Wh & AndCrd & AndDiv & AndSto & Gp
 End Function
 
-Function SqLoFmtr_TTxMbr$(BrkMbr As Boolean)
+Function Srp_TTxMbr$(BrkMbr As Boolean)
 If Not BrkMbr Then Exit Function
-SqLoFmtr_TTxMbr = "Select Distinct Mbr From #Tx Into #TxMbr"
+Srp_TTxMbr = "Select Distinct Mbr From #Tx Into #TxMbr"
 End Function
 
-Function SqLoFmtr_TTxSel$(Fny$(), ExprAy$())
-SqLoFmtr_TTxSel = SqpSel(Fny, ExprAy)
+Function Srp_TTxSel$(Fny$(), ExprAy$())
+Srp_TTxSel = SqpSel(Fny, ExprAy)
 End Function
 
-Function SqLoFmtr_TUpdTx$(InclFldTxDte As Boolean)
+Function Srp_TUpdTx$(InclFldTxDte As Boolean)
 Const SR_TUpdTxETxWD$ = _
 "CASE WHEN TxWD1 = 1 then 'Sun'" & _
 "|ELSE WHEN TxWD1 = 2 THEN 'Mon'" & _
@@ -365,7 +365,7 @@ Const SR_TUpdTxETxWD$ = _
 "|ELSE Null" & _
 "|END END END END END END END"
 If Not InclFldTxDte Then Exit Function
-SqLoFmtr_TUpdTx = SqpUpd("#Tx") & SqpSet("TxWD", ApSy(SR_TUpdTxETxWD))
+Srp_TUpdTx = SqpUpd("#Tx") & SqpSet("TxWD", ApSy(SR_TUpdTxETxWD))
 End Function
 
 Function SrPm_Dic(P As SrPm) As Dictionary
@@ -489,9 +489,9 @@ Dim InclPhone As Boolean
     InclPhone = P.InclPhone
 Dim O$(), ECrd$
     ECrd = CrdTyLvs_CrdExpr(P.LisCrd, DryOf_CrdPfxTy)
-Push O, SqLoFmtr_Drp
-Push O, SqLoFmtr_T(P, ECrd)
-Push O, SqLoFmtr_O(BrkMbr, InclNm, InclAdr, InclEmail, InclPhone)
+Push O, Srp_Drp
+Push O, Srp_T(P, ECrd)
+Push O, Srp_O(BrkMbr, InclNm, InclAdr, InclEmail, InclPhone)
 SrpNm_Sql = RplVBar(JnCrLf(O))
 End Function
 
@@ -569,37 +569,37 @@ End With
 SampleSrPm = O
 End Function
 
-Private Function SqLoFmtr_Drp$()
-SqLoFmtr_Drp = TnLvs_DrpSql("#Tx #TxMbr #MbrDta #Div #Sto #Crd #Cnt #Oup #MbrWs")
+Private Function Srp_Drp$()
+Srp_Drp = TblNms("#Tx #TxMbr #MbrDta #Div #Sto #Crd #Cnt #Oup #MbrWs").DrpStmts
 End Function
 
-Private Function SqLoFmtr_O$( _
+Private Function Srp_O$( _
     BrkMbr As Boolean, _
     InclNm As Boolean, _
     InclAdr As Boolean, _
     InclEmail As Boolean, _
     InclPhone As Boolean)
 Dim O$()
-Push O, SqLoFmtr_OCnt
-Push O, SqLoFmtr_OOup
-Push O, SqLoFmtr_OMbrWsOpt(BrkMbr, InclNm, InclAdr, InclEmail, InclEmail)
+Push O, Srp_OCnt
+Push O, Srp_OOup
+Push O, Srp_OMbrWsOpt(BrkMbr, InclNm, InclAdr, InclEmail, InclEmail)
 O = AyRmvEmp(O)
-SqLoFmtr_O = JnDblCrLf(O)
+Srp_O = JnDblCrLf(O)
 End Function
 
-Private Function SqLoFmtr_T$(P As SrPm, ECrd$)
+Private Function Srp_T$(P As SrPm, ECrd$)
 Dim O$()
 Dim Px As SrPmx
     Px = SrPm_SrPmx(P, ECrd)
 With P
-Push O, SqLoFmtr_TTx(P)
-Push O, SqLoFmtr_TUpdTx(Px.InclFldTxD)
-Push O, SqLoFmtr_TTxMbr(.BrkMbr)
-Push O, SqLoFmtr_TDiv(.BrkDiv, .LisDiv)
-Push O, SqLoFmtr_TSto(.BrkSto, .LisSto)
-Push O, SqLoFmtr_TCrd(.BrkCrd, .LisCrd)
+Push O, Srp_TTx(P)
+Push O, Srp_TUpdTx(Px.InclFldTxD)
+Push O, Srp_TTxMbr(.BrkMbr)
+Push O, Srp_TDiv(.BrkDiv, .LisDiv)
+Push O, Srp_TSto(.BrkSto, .LisSto)
+Push O, Srp_TCrd(.BrkCrd, .LisCrd)
 End With
-SqLoFmtr_T = JnCrLf(O)
+Srp_T = JnCrLf(O)
 End Function
 
 Sub SrpNm_Sql__Tst()

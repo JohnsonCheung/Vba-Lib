@@ -149,7 +149,34 @@ If P = 0 Then
 End If
 Brk2 = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
-
+Function RTrimWhite$(S)
+Dim J%
+    Dim A$
+    For J = Len(S) To 1 Step -1
+        If Not IsWhite(Mid(S, J, 1)) Then Exit For
+    Next
+    If J = 0 Then Exit Function
+RTrimWhite = Mid(S, J)
+End Function
+Function IsWhite(A) As Boolean
+Dim B$: B = Left(A, 1)
+IsWhite = True
+If B = " " Then Exit Function
+If B = vbCr Then Exit Function
+If B = vbLf Then Exit Function
+If B = vbTab Then Exit Function
+IsWhite = False
+End Function
+Function LTrimWhite$(A)
+Dim J%
+    For J = 1 To Len(A)
+        If Not IsWhite(Mid(A, J, 1)) Then Exit For
+    Next
+LTrimWhite = Left(A, J)
+End Function
+Function TrimWhite$(A)
+TrimWhite = RTrimWhite(LTrimWhite(A))
+End Function
 Function Brk(A, Sep, Optional NoTrim As Boolean) As S1S2
 Const CSub$ = "Brk"
 Dim P&: P = InStr(A, Sep)
@@ -286,7 +313,7 @@ FmtMacro = FmtMacroAv(MacroStr, Av)
 End Function
 
 Function FmtMacroAv$(MacroStr$, Av())
-Dim Ay$(): Ay = MacroStr_Ny(MacroStr)
+Dim Ay$(): Ay = Macro(MacroStr).Ny
 Dim O$: O = MacroStr
 Dim J%, I
 For Each I In Ay
@@ -297,7 +324,7 @@ FmtMacroAv = O
 End Function
 
 Function FmtMacroDic$(MacroStr$, Dic As Dictionary)
-Dim Ay$(): Ay = MacroStr_Ny(MacroStr)
+Dim Ay$(): Ay = Macro(MacroStr).Ny
 If Not AyIsEmp(Ay) Then
     Dim O$: O = MacroStr
     Dim I, K$
@@ -311,16 +338,16 @@ End If
 FmtMacroDic = O
 End Function
 
-Function FmtQQ$(QQStr$, ParamArray Ap())
+Function FmtQQ$(QQVbl$, ParamArray Ap())
 Dim Av(): Av = Ap
-FmtQQ = FmtQQAv(QQStr, Av)
+FmtQQ = FmtQQAv(QQVbl, Av)
 End Function
 
-Function FmtQQAv$(QQStr$, Av)
-If AyIsEmp(Av) Then FmtQQAv = QQStr: Exit Function
+Function FmtQQAv$(QQVbl$, Av)
+If AyIsEmp(Av) Then FmtQQAv = QQVbl: Exit Function
 Dim O$
     Dim I, NeedUnEsc As Boolean
-    O = QQStr
+    O = RplVBar(QQVbl)
     For Each I In Av
         If InStr(I, "?") > 0 Then
             NeedUnEsc = True
@@ -415,8 +442,16 @@ Function JnCommaSpc(Ay)
 JnCommaSpc = Join(Ay, ", ")
 End Function
 
-Function JnCrLf$(Ay)
-JnCrLf = Join(Ay, vbCrLf)
+Function JnCrLf$(Ay, Optional WithIx As Boolean)
+If WithIx Then
+    Dim O$(), J%
+    For J = 0 To UB(Ay)
+        Push O, J & ": " & Ay(J)
+    Next
+    JnCrLf = Join(O, vbCrLf)
+Else
+    JnCrLf = Join(AySy(Ay), vbCrLf)
+End If
 End Function
 
 Function JnDblCrLf$(Ay)
@@ -475,26 +510,6 @@ Function LvsSy(A) As String()
 LvsSy = Split(RmvDblSpc(Trim(A)), " ")
 End Function
 
-Function MacroStr_Ny(MacroStr$, Optional ExclBkt As Boolean, Optional Bkt$ = "{}") As String()
-Dim Q1$, Q2$
-With BrkQuote(Bkt)
-    Q1 = .S1
-    Q2 = .S2
-End With
-If Q1 = Q2 Then Stop
-If Len(Q1) <> 1 Then Stop
-If Len(Q2) <> 1 Then Stop
-
-Dim Ay$(): Ay = Split(MacroStr, Q1)
-Dim O$(), J%
-For J = 1 To UB(Ay)
-    Push O, TakBef(Ay(J), Q2)
-Next
-If Not ExclBkt Then
-    O = AyAddPfxSfx(O, Q1, Q2)
-End If
-MacroStr_Ny = O
-End Function
 
 Function NewFmToPos(FmPos&, ToPos&) As FmToPos
 Dim O As FmToPos
@@ -637,8 +652,12 @@ Function SplitSpc(A) As String()
 SplitSpc = Split(A, " ")
 End Function
 
-Function SplitVBar(A) As String()
-SplitVBar = Split(A, "|")
+Function SplitVBar(A, Optional Trim As Boolean) As String()
+If Trim Then
+    SplitVBar = AyTrim(Split(A, "|"))
+Else
+    SplitVBar = Split(A, "|")
+End If
 End Function
 
 Sub StrBrw(A, Optional Fnn$)

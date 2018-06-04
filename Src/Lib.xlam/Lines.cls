@@ -9,7 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Lines$
-
 Property Get LinCnt&()
 LinCnt = Sz(SplitCrLf(Lines))
 End Property

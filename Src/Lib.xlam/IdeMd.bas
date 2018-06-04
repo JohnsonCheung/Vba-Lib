@@ -1,5 +1,10 @@
 Attribute VB_Name = "IdeMd"
 Option Explicit
+Private Type MdMth
+    Md As CodeModule
+    MthNm As String
+End Type
+
 Type DicPair
     A As Dictionary
     B As Dictionary
@@ -19,13 +24,16 @@ Enum eReportSortingOption
     eBothDifAndSam = 3
 End Enum
 
-Function CurMd() As VBIDE.CodeModule
+Property Get CurMdx() As Mdx
+Set CurMdx = Mdx(CurMd)
+End Property
+Property Get CurMd() As VBIde.CodeModule
 Set CurMd = CurCdPne.CodeModule
-End Function
+End Property
 
-Function CurMdNm$()
+Property Get CurMdNm$()
 CurMdNm = MdNm(CurMd)
-End Function
+End Property
 
 Function DftCmpTyAy(A) As vbext_ComponentType()
 If VarIsLngAy(A) Then DftCmpTyAy = A
@@ -71,10 +79,6 @@ With MdRRCC
    If .C2 > Len(Md.Lines(.R2, 1)) + 1 Then Exit Function
 End With
 IsMdRRCCOutSideMd = False
-End Function
-
-Function Md(MdNm) As CodeModule
-Set Md = CurPj.Pj.VBComponents(MdNm).CodeModule
 End Function
 
 Sub MdAppDclLin(A As CodeModule, DclLines$)
@@ -133,6 +137,31 @@ With A
 End With
 End Sub
 
+Function MdDclLinCnt%(A As CodeModule)
+MdDclLinCnt = SrcDclLinCnt(MdSrc(A))
+End Function
+
+Function MdDclLy(A As CodeModule) As String()
+MdDclLy = SrcDclLy(MdSrc(A))
+End Function
+
+Function MdBdyLno%(A As CodeModule)
+MdBdyLno = MdDclLinCnt(A) + 1
+End Function
+Sub MdClrBdy(A As CodeModule, Optional IsSilent As Boolean)
+Stop
+With A
+    If .CountOfLines = 0 Then Exit Sub
+    Dim N%, Lno%
+        Lno = MdBdyLno(A)
+        N = .CountOfLines - Lno + 1
+    If N > 0 Then
+        If Not IsSilent Then Debug.Print FmtQQ("MdClrBdy: Md(?) of lines(?) from Lno(?) is cleared", MdNm(A), N, Lno)
+        .DeleteLines Lno, N
+    End If
+End With
+End Sub
+
 Function MdCmp(A As CodeModule) As VBComponent
 Set MdCmp = A.Parent
 End Function
@@ -156,7 +185,7 @@ End Function
 Sub MdCpy(A As CodeModule, ToMdNm$)
 Dim Pj As VBProject
 Set Pj = MdPj(A)
-If Pj(A).HasMdNm(ToMdNm) Then
+If Pjx(A).HasMdNm(ToMdNm) Then
     Er "MdCpy", "{Pj} already contains {ToMdNm}.  {Md} cannot be copied", MdPjNm(A), ToMdNm, MdNm(A)
 End If
 Dim Ty As vbext_ComponentType: Ty = MdTy(A)
@@ -174,12 +203,8 @@ Dim K As vbext_ProcKind
 MdCurMthNm = A.ProcOfLine(L, K)
 End Function
 
-Function MdDcl(A As CodeModule) As String()
-MdDcl = SrcDcl(MdSrc(A))
-End Function
-
 Function MdDclLines$(A As CodeModule)
-MdDclLines = JnCrLf(MdDcl(A))
+MdDclLines = JnCrLf(MdDclLy(A))
 End Function
 
 Function MdDftMthNm$(Optional A As CodeModule, Optional MthNm$)
@@ -191,7 +216,7 @@ End If
 End Function
 
 Function MdEnmBdyLy(A As CodeModule, EnmNm$) As String()
-MdEnmBdyLy = Dcl(MdDcl(A)).EnmBdyLy(EnmNm)
+MdEnmBdyLy = Dcl(MdDclLy(A)).EnmBdyLy(EnmNm)
 End Function
 
 'Function MdMthDrs(Optional WithBdyLy As Boolean, _
@@ -224,7 +249,7 @@ MdEnmMbrLy = O
 End Function
 
 Function MdEnmNy(A As CodeModule) As String()
-MdEnmNy = Dcl(MdDcl(A)).EnmNy
+MdEnmNy = Dcl(MdDclLy(A)).EnmNy
 End Function
 
 Function MdEnsMth(A As CodeModule, MthNm$, NewMthLines$)
@@ -350,7 +375,7 @@ MdRmvLnoCntAy A, M
 End Sub
 
 Function MdNEnm%(A As CodeModule)
-MdNEnm = Dcl(MdDcl(A)).NEnm
+MdNEnm = Dcl(MdDclLy(A)).NEnm
 End Function
 
 Function MdNLin%(A As CodeModule)
@@ -362,7 +387,7 @@ MdNMth = SrcNMth(MdSrc(A))
 End Function
 
 Function MdNTy%(A As CodeModule)
-MdNTy = SrcNTy(MdDcl(A))
+MdNTy = SrcNTy(MdDclLy(A))
 End Function
 
 Function MdNm$(A As CodeModule)
@@ -370,7 +395,7 @@ MdNm = A.Parent.Name
 End Function
 
 Function MdOptCmpDbLno%(A As CodeModule)
-Dim Ay$(): Ay = MdDcl(A)
+Dim Ay$(): Ay = MdDclLy(A)
 Dim J%
 For J = 0 To UB(Ay)
     If HasPfx(Ay(J), "Option Compare Database") Then MdOptCmpDbLno = J + 1: Exit Function
@@ -501,15 +526,32 @@ End Sub
 
 Sub MdRpl(A As CodeModule, NewMdLines$)
 MdClr A
-A.InsertLines 1, NewMdLines
+MdAppLines A, NewMdLines
 End Sub
 
+Sub MdRplBdy(A As CodeModule, NewMdBdy$)
+MdClrBdy A
+MdAppLines A, NewMdBdy
+End Sub
 Sub MdRplLin(A As CodeModule, Lno%, NewLin$)
 With A
     .DeleteLines Lno
     .InsertLines Lno, NewLin
 End With
 End Sub
+Sub MdMthDotNm_Go(A$)
+With MdMthDotNm_Brk(A)
+    MdMth_Go .Md, .MthNm
+End With
+End Sub
+Private Function MdMthDotNm_Brk(A$) As MdMth
+Dim O As MdMth
+With Brk(A, ".")
+    Set O.Md = Md(.S1)
+    O.MthNm = .S2
+End With
+MdMthDotNm_Brk = O
+End Function
 
 Sub MdShw(A As CodeModule)
 A.CodePane.Show
@@ -520,7 +562,7 @@ MdSrc = MdLy(A)
 End Function
 
 Function MdSrcFfn$(A As CodeModule)
-MdSrcFfn = Pj(MdPj(A)).SrcPth & MdSrcFn(A)
+MdSrcFfn = Pjx(MdPj(A)).SrcPth & MdSrcFn(A)
 End Function
 
 Function MdSrcFn$(A As CodeModule)
@@ -529,6 +571,9 @@ End Function
 
 Function MdTy(A As CodeModule) As vbext_ComponentType
 MdTy = A.Parent.Type
+End Function
+Function MdTyStr$(A As CodeModule)
+MdTyStr = CmpTy_Str(MdTy(A))
 End Function
 
 Function MdTyLno$(A As CodeModule, TyNm$)
@@ -540,7 +585,7 @@ MdTyNm = CmpTy_Str(MdTy(A))
 End Function
 
 Function MdTyNy(A As CodeModule, Optional TyNmPatn$ = ".") As String()
-MdTyNy = AySrt(Dcl(MdDcl(A)).TyNy(TyNmPatn))
+MdTyNy = AySrt(Dcl(MdDclLy(A)).TyNy(TyNmPatn))
 End Function
 
 Function MdTyRRCC(A As CodeModule, TyNm$) As RRCC
@@ -555,7 +600,7 @@ End If
 MdTyRRCC = NewRRCC(R, R, C1, C2)
 End Function
 
-Function MdWin(A As CodeModule) As VBIDE.Window
+Function MdWin(A As CodeModule) As VBIde.Window
 Set MdWin = A.CodePane.Window
 End Function
 
@@ -588,7 +633,7 @@ End Sub
 
 Sub MdDftMthNm__Tst()
 Dim I, Md As CodeModule
-For Each I In CurPj.MbrAy
+For Each I In CurPjx.MbrAy
    MdShw CvMd(I)
    Debug.Print MdNm(Md), MdDftMthNm(Md)
 Next
@@ -612,7 +657,7 @@ End Sub
 
 Sub MdOptCmpDbLin__Tst()
 Dim I, Md As CodeModule
-For Each I In CurPj.MbrAy
+For Each I In CurPjx.MbrAy
     Set Md = I
     Debug.Print MdNm(Md), MdOptCmpDbLno(Md)
 Next

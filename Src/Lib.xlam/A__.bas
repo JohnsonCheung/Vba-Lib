@@ -37,12 +37,12 @@ For J = 1 To Md.CountOfLines
 Next
 IsAllRemarked = True
 End Function
-Private Function Pj() As VBProject
-Set Pj = Application.VBE.ActiveVBProject
+Private Function CurPj() As VBProject
+Set CurPj = Application.VBE.ActiveVBProject
 End Function
 Private Property Get MbrAy() As CodeModule()
 Dim O() As CodeModule, I, Cmp As VBComponent
-For Each I In Pj.VBComponents
+For Each I In CurPj.VBComponents
     Set Cmp = I
     If Not Cmp.Name = "A__" Then
         PushObj O, Cmp.CodeModule

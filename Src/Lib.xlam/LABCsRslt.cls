@@ -11,13 +11,12 @@ Option Explicit
 Public LABCs As New LABCs
 Public Er As New Er
 
-Function Init(A As LABCs, Optional Er As Er) As LABCsRslt
+Property Get Init(A As LABCs, Optional Er As Er) As LABCsRslt
 Set LABCs = A
 If Not IsNothing(Er) Then Set Me.Er = Er
 Set Init = Me
-End Function
-
-Property Get ToStr$()
-ToStr = Ly0Ap_Lines(LABCs.ToStr, Er.ToStr)
 End Property
 
+Property Get ToStr$()
+ToStr = Tag_NyStr_ObjAp("LABCsRslt", "LABCs Er", LABCs, Er)
+End Property

@@ -9,34 +9,31 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private B_SeedSy$()
-Friend Function Init(Seed0) As Seed
-B_SeedSy = DftNy(Seed0)
+Friend Property Get Init(Seed0) As Seed
+B_SeedSy = DftLy(Seed0)
 Set Init = Me
-End Function
-Function Expand$(Tp0)
-Dim TpLy$(): TpLy = DftTpLy(Tp0)
-Expand = Expand1(TpLy)
+End Property
+
+Function Expand$(Ny0)
+Dim O$()
+Dim Ny$(), J%, I%
+Ny = DftNy(Ny0)
+For J = 0 To UB(Ny)
+    For I = 0 To UB(B_SeedSy)
+       Push O, Replace(B_SeedSy(I), "?", Ny(J))
+    Next
+Next
+Expand = JnCrLf(O)
 End Function
 
-Private Function Expand1$(Ly$())
-Dim O$(), J%, I%
-Stop
-For I = 0 To UB(B_SeedSy)
-   For J = 0 To UB(Ly)
-       Push O, Replace(Ly(J), "?", B_SeedSy(I))
-   Next
-Next
-Expand1 = JnCrLf(O)
-End Function
 Friend Sub Tst()
-Expand1__Tst
+Expand__Tst
 End Sub
-Private Sub Expand1__Tst()
+
+Private Sub Expand__Tst()
 Dim Tp$
 Dim Seed0$
 Tp = "Sub Tst?()|Dim A As New ?: A.Tst|End Sub"
 Seed0 = "Xws Xwb Xfx Xrg"
 Debug.Print Vb.Seed(Seed0).Expand(Tp)
 End Sub
-
-

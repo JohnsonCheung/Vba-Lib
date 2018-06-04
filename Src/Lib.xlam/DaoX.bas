@@ -167,8 +167,8 @@ If VarIsStr(Ly0) Then
    DftLy = SplitVBar(Ly0)
    Exit Function
 End If
-If VarIsSy(Ly0) Then
-   DftLy = Ly0
+If IsArray(Ly0) Then
+   DftLy = AySy(Ly0)
 End If
 End Function
 

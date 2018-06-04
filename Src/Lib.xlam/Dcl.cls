@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private A$()
-Friend Function Init(Dcl$()) As Dcl
+Friend Property Get Init(Dcl$()) As Dcl
 A = Dcl
 Set Init = Me
-End Function
+End Property
 Property Get N%()
 N = Sz(A)
 End Property
@@ -63,7 +63,7 @@ For Each I In A
 Next
 End Function
 Private Sub TyLines__Tst()
-Debug.Print Ide.Dcl(MdDcl(CurMd)).TyLines("AA")
+Debug.Print Ide.Dcl(MdDclLy(CurMd)).TyLines("AA")
 End Sub
 
 Property Get NEnm%()
@@ -83,7 +83,7 @@ Next
 TyFmIx = -1
 End Function
 
-Function TyFmTo(TyNm$) As FmtO
+Function TyFmTo(TyNm$) As FmTo
 Dim FmI&: FmI = TyFmIx(TyNm)
 Dim ToI&: ToI = TyToIx(FmI)
 TyFmTo = NewFmTo(FmI, ToI)
@@ -111,11 +111,11 @@ End Function
 
 Property Get TyNy(Optional TyNmPatn$ = ".") As String()
 If AyIsEmp(A) Then Exit Property
-Dim O$(), L, M$, Re As RegExp
-Set Re = NewRe(TyNmPatn)
+Dim O$(), L, M$, R As Re
+Set R = Re(TyNmPatn)
 For Each L In A
    M = SrcLin_TyNm(L)
-   If Re.Test(M) Then
+   If R.Tst(M) Then
        PushNonEmp O, M
    End If
 Next

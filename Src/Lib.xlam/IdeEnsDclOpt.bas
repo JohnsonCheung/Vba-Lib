@@ -52,7 +52,7 @@ End Sub
 
 Private Property Get HasLin() As Boolean
 Dim Dcl$()
-   Dcl = MdDcl(A_Md)
+   Dcl = MdDclLy(A_Md)
 Dim A$
    A = OptLin
 Dim J%

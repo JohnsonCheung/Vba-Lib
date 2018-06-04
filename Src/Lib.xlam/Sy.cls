@@ -19,10 +19,10 @@ End Function
 Function UB&()
 UB = Sz - 1
 End Function
-Function Init(Sy$()) As Sy
+Property Get Init(Sy$()) As Sy
 A = Sy
 Set Init = Me
-End Function
+End Property
 Function IxLy() As String()
 'It is 2 line first line is 0 ...
 'first line is x0 x1 of A$()

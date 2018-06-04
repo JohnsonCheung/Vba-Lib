@@ -10,8 +10,9 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Par As LABCs, Lx%, B$, C$
 Property Get ToStr$()
-ToStr = A & " " & B & " " & C
+ToStr = FmtQQ("IsVF(?) LABC(? ? ? ?)", Par.IsVF, Lx, A, B, C)
 End Property
+
 Property Get A$()
 If IsNothing(Par) Then A = "?": Exit Property
 Dim T1$: T1 = Par.T1
@@ -21,16 +22,9 @@ Else
     A = T1
 End If
 End Property
-Property Get LCFVs(Fny$()) As LCFVs
-Dim O As New LCFVs
-If IsVF Then
-'    O.Add
-Else
-'        .Cno = AyIx(Fny, Par)
-End If
-Set LCFVs = O
+Property Get Lin$()
+Lin = A & " " & B & " " & C
 End Property
-
 Property Get IsVF() As Boolean
 IsVF = Par.IsVF
 End Property

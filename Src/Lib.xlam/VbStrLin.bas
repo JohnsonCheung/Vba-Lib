@@ -41,21 +41,6 @@ End Function
 Function LnxUB%(A() As Lnx)
 LnxUB = LnxSz(A) - 1
 End Function
-
-Function LyT1AyRstAy(A$()) As T1AyRstAy
-Dim J&, T1Ay$(), RstAy$()
-For J = 0 To UB(A)
-    With Lin(A(J)).T1Rslt
-        Push T1Ay, .T1
-        Push RstAy, .Rst
-    End With
-Next
-With LyT1AyRstAy
-    .T1Ay = T1Ay
-    .RstAy = RstAy
-End With
-End Function
-
 Function LyHasMajPfx(A$(), MajPfx$) As Boolean
 Dim Cnt%, J%
 For J = 0 To UB(A)
@@ -80,15 +65,3 @@ With NewLnx
 End With
 End Function
 
-Private Sub LinRmvT1__Tst()
-Ass Lin("  df dfdf  ").RmvT1 = "dfdf"
-End Sub
-
-Private Sub LyBrkFstTermAyRstAy__Tst()
-Dim A$()
-Push A, "lskdfj sldkfj sldfj sldkfj sldf j"
-Push A, "lksj flskdj flsdjk fsldjkf"
-Dim Act As T1AyRstAy
-Act = LyT1AyRstAy(A)
-Stop
-End Sub

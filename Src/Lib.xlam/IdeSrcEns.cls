@@ -79,7 +79,7 @@ End Sub
 Private Function PjDrs(A As VBProject) As Drs
 Dim ODry()
 Dim I
-For Each I In Pj(A).MdAy
+For Each I In Pjx(A).MdAy
     PushAy ODry, MdDry(CvMd(I))
 Next
 PjDrs = NewDrs(C_FldLvs, ODry)

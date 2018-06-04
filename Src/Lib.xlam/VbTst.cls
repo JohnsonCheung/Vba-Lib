@@ -11,3 +11,9 @@ Option Explicit
 Sub Seed()
 Dim O As New Seed: O.Tst
 End Sub
+Sub Ly()
+Dim O As New Ly: O.Tst
+End Sub
+Sub Re()
+Dim O As New Re: O.Tst1
+End Sub

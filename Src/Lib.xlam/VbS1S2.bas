@@ -4,6 +4,16 @@ Type SyPair
     Sy1() As String
     Sy2() As String
 End Type
+
+Type V2
+    V1 As Variant
+    V2 As Variant
+End Type
+Type V3
+    V1 As Variant
+    V2 As Variant
+    V3 As Variant
+End Type
 Type S1S2
     S1 As String
     S2 As String

@@ -1,5 +1,17 @@
 Attribute VB_Name = "Sql"
 Option Explicit
+Public Const M_$ = ""
+
+
+Property Get Tst() As SqlTst
+Static Y As New SqlTst
+Set Tst = Y
+End Property
+
+Property Get SqTp2(Optional SqTpStr) As SqTp2
+Dim O As New SqTp2
+Set SqTp2 = O.Init(SqTpStr)
+End Property
 
 Function SqpAnd$(Expr$)
 If Expr = "" Then Exit Function
@@ -87,10 +99,6 @@ End Function
 
 Function SqpWhBetStr$(FldNm$, FmStr$, ToStr$)
 SqpWhBetStr = FmtQQ("|  Where ? Between '?' and '?'", FldNm, FmStr, ToStr)
-End Function
-
-Function TnLvs_DrpSql$(TnLvs$)
-Stop
 End Function
 
 Private Function ZZExprVblAy() As String()

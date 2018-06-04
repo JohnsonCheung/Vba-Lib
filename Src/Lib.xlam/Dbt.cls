@@ -13,11 +13,11 @@ Private T$
 Friend Sub Tst()
 Pk__Tst
 End Sub
-Friend Function Init(Db As Database, TblNm) As Dbt
+Friend Property Get Init(Db As Database, TblNm) As Dbt
 Set A = Db
 T = TblNm
 Set Init = Me
-End Function
+End Property
 Function StruLin$(Optional SkipTn As Boolean)
 Dim O$(): O = Me.Fny: If AyIsEmp(O) Then Exit Function
 O = FnyQuote(O, Me.Pk)

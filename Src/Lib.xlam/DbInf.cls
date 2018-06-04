@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private A As Dao.Database
-Friend Function Init(Db As Database) As DbInf
+Friend Property Get Init(Db As Database) As DbInf
 Set A = Db
 Set Init = Me
-End Function
+End Property
 
 Friend Sub Tst()
 Brw__Tst
@@ -48,7 +48,7 @@ LnkDt = NewDt("Lnk", DftNy("Tbl Connect"), Dry)
 End Function
 
 Private Function PrpDt() As Dt
-PrpDt = NewDt("DbPrp", SplitSpc("A A"), EmpAy)
+PrpDt = NewDt("DbPrp", SplitSpc("A A"), Emp.Ay)
 End Function
 
 Private Function StruDt() As Dt
@@ -88,8 +88,7 @@ Sub Brw__Tst()
 'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
 'CurrentProject.Connection.Execute strDdlDim A As DBEngine: Set A = dao.DBEngine
 'not work: dao.DBEngine.Workspaces(1).Databases(1).Execute "GRANT SELECT ON MSysObjects TO Admin;"
-Me.Init SampleDb_DutyPrepare
-Brw
+DbInf(SampleDb_DutyPrepare).Brw
 End Sub
 
 

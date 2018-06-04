@@ -52,7 +52,7 @@ Function CmdPopOfWin() As CommandBarPopup
 Set CmdPopOfWin = CmdBarCap_CmdPop(CmdBarOfMnu, "&Window")
 End Function
 
-Function CvWin(V) As VBIDE.Window
+Function CvWin(V) As VBIde.Window
 Set CvWin = V
 End Function
 
@@ -70,7 +70,7 @@ End Function
 Function MdMdLisDr(A As CodeModule) As Variant()
 Dim O(), N$
 N = MdNm(A)
-Push O, Pj(MdPj(A)).Nm
+Push O, Pjx(MdPj(A)).Nm
 Push O, TakBef(N, "_")
 Push O, N
 Push O, MdTyNm(A)
@@ -122,11 +122,11 @@ MdMthCnt = NewSrcItmCnt(N, NPub, NPrv)
 End Function
 
 Function MdMthDrs(A As CodeModule, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Drs
-MdMthDrs = SrcMthDrs(MdSrc(A), MdNm(A), WithBdyLy, WithBdyLines)
+MdMthDrs = SrcMthDrs(MdSrc(A), MdNm(A), MdTy(A), WithBdyLy, WithBdyLines)
 End Function
 
 Function MdMthDry(A As CodeModule, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Variant()
-MdMthDry = SrcMthDry(MdSrc(A), MdNm(A), WithBdyLy, WithBdyLines)
+MdMthDry = SrcMthDry(MdSrc(A), MdNm(A), MdTyStr(A), WithBdyLy, WithBdyLines)
 End Function
 
 Function MdMth_RRCC(A As CodeModule, MthNm$) As RRCC
@@ -173,7 +173,7 @@ End Function
 
 Function PjMdLisDry(A As VBProject) As Variant()
 Dim I, O()
-For Each I In Pj(A).MdAy
+For Each I In Pjx(A).MdAy
    Push O, MdMdLisDr(CvMd(I))
 Next
 PjMdLisDry = O
@@ -182,18 +182,18 @@ End Function
 Function PjMdLisDt(A As VBProject, Optional MdNmPatn$ = ".") As Dt
 Dim I, Md As CodeModule
 Dim O()
-For Each I In Pj(A).MdAy(MdNmPatn)
+For Each I In Pjx(A).MdAy(MdNmPatn)
    Set Md = I
    Push O, MdMdLisDr(Md)
 Next
 PjMdLisDt = NewDt("Md", FnyOf_MdLis, O)
 End Function
-Sub ZZ_PjMthNmDrs()
-DrsBrw PjMthNmDrs(CurPj.Pj)
+Private Sub ZZ_PjMthNmDrs()
+DrsBrw PjMthNmDrs(CurPj)
 End Sub
 
 Function PjMthNmDrs(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".") As Drs
-Dim O(): O = DotNy_Dry(Pj(A).MthNy(CmpTyAy0, MthNmPatn, MdNmPatn))
+Dim O(): O = DotNy_Dry(Pjx(A).MthNy(CmpTyAy0, MthNmPatn, MdNmPatn))
 Stop
 PjMthNmDrs = NewDrs("Md Mth", O)
 End Function
@@ -260,7 +260,7 @@ WinAy_Keep Av
 End Sub
 
 Sub WinAy_Keep(A)
-Dim W As VBIDE.Window
+Dim W As VBIde.Window
 Dim P&(): P = AyMap_Lng(A, "ObjPointer")
 For Each W In CurVbe.Windows
     If Not AyHas(P, ObjPtr(W)) Then
@@ -273,11 +273,11 @@ For Each I In A
 Next
 End Sub
 
-Function WinOfBrwObj() As VBIDE.Window
+Function WinOfBrwObj() As VBIde.Window
 Set WinOfBrwObj = WinTy_Win(vbext_wt_Browser)
 End Function
 
-Function WinOfImm() As VBIDE.Window
+Function WinOfImm() As VBIde.Window
 Set WinOfImm = WinTy_Win(vbext_wt_Immediate)
 End Function
 
@@ -292,7 +292,7 @@ WinOfBrwObj.SetFocus
 'DoEvents
 End Sub
 
-Function WinTy_Win(A As vbext_WindowType) As VBIDE.Window
+Function WinTy_Win(A As vbext_WindowType) As VBIde.Window
 Set WinTy_Win = ItrItmByPrp(CurVbe.Windows, "Type", A)
 End Function
 

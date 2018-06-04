@@ -31,10 +31,10 @@ End With
 End Function
 
 Private Sub ZZ5_Tstr(A As ZZ5_TstDta)
-Ass IsEq(SqLoFmtr_TSto(A.BrkSto, A.LisSto), A.Exp)
+Ass IsEq(Srp_TSto(A.BrkSto, A.LisSto), A.Exp)
 End Sub
 
-Private Sub SqLoFmtr_TSto__Tst()
+Private Sub Srp_TSto__Tst()
 ZZ5_Tstr ZZ5_TstDta1
 ZZ5_Tstr ZZ5_TstDta2
 ZZ5_Tstr ZZ5_TstDta3

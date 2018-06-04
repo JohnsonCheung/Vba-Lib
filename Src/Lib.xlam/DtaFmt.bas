@@ -38,8 +38,7 @@ Dim Fny$():
 Dim Ix%
     Ix = AyIx(Fny, ColNm)
 Dim DryLy$()
-    DryLy = TblLy
-    AyWhExclAtCnt DryLy, 0, 2
+    DryLy = AyWhExclAtCnt(TblLy, 0, 2)
 Dim O$()
     Push O, TblLy(0)
     Push O, TblLy(1)

@@ -2,17 +2,17 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "Pj"
+Attribute VB_Name = "Pjx"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A As VBProject
-Function Init(Pj As VBProject) As Pj
+Property Get Init(Pj As VBProject) As Pjx
 Set A = Pj
 Set Init = Me
-End Function
+End Property
 Function Nm$()
 Nm = A.Name
 End Function
@@ -27,6 +27,7 @@ End Sub
 Function Pj() As VBProject
 Set Pj = A
 End Function
+
 Function Str$()
 Str = Nm
 End Function
@@ -47,17 +48,17 @@ ClsAy = MdAy(NmPatn, CmpTyAyOfCls)
 End Function
 
 Function ClsNy(Optional NmPatn$ = ".") As String()
-ClsNy = OyNy(ClsAy(NmPatn))
+ClsNy = Oy(ClsAy(NmPatn)).Ny
 End Function
 
 Sub CpyToSrc()
 FfnCpyToPth A.Filename, SrcPth, OvrWrt:=True
 End Sub
 
-Function CrtMd(Optional MdNm$, Optional Ty As vbext_ComponentType = vbext_ct_StdModule) As CodeModule
+Function CrtMd(Optional MdNm$, Optional Ty As vbext_ComponentType = vbext_ct_StdModule, Optional RplBdy As Boolean) As CodeModule
 If MdNm <> "" Then
     If HasMd(MdNm) Then
-        Er "NewMd", "Given {MdNm} exist", MdNm
+        Er "Pj.CrtMd", "Given {MdNm} exist", MdNm
         Exit Function
     End If
 End If
@@ -128,7 +129,7 @@ Next
 End Function
 
 Function HasRf(RfNm)
-Dim RF As VBIDE.Reference
+Dim RF As VBIde.Reference
 For Each RF In A.References
     If RF.Name = RfNm Then HasRf = True: Exit Function
 Next
@@ -152,7 +153,7 @@ MbrAy = ZMbrAy(Ay, NmPatn)
 End Function
 
 Function MbrNy(Optional NmPatn$ = ".") As String()
-MbrNy = OyNy(MdAy(NmPatn))
+MbrNy = Oy(MdAy(NmPatn)).Ny
 End Function
 
 Function MdAy(Optional NmPatn$ = ".", Optional CmpTyAy0) As CodeModule()
@@ -166,7 +167,7 @@ MdAyOfStd = MdAy(NmPatn, CmpTyAyOfStd)
 End Function
 
 Function MdNy(Optional NmPatn$ = ".", Optional CmpTyAy0) As String()
-MdNy = OyNy(MdAy(NmPatn, CmpTyAy0))
+MdNy = Oy(MdAy(NmPatn, CmpTyAy0)).Ny
 End Function
 
 Function MdNyOfStd(Optional NmPatn$ = ".") As String()
@@ -203,7 +204,7 @@ MthLinDry = O
 End Function
 
 Sub ZZ_MthNy()
-AyBrw Pj(CurPj).MthNy
+AyBrw Pjx(CurPj).MthNy
 End Sub
 Function MthNy(Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = ".") As String()
 Dim CmpTyAy() As vbext_ComponentType
@@ -256,8 +257,8 @@ Dim I%, U%
     Next
 End Sub
 
-Function RfAy() As VBIDE.Reference()
-Dim RF As VBIDE.Reference, O() As VBIDE.Reference
+Function RfAy() As VBIde.Reference()
+Dim RF As VBIde.Reference, O() As VBIde.Reference
 For Each RF In A.References
     Push O, RF
 Next
@@ -278,9 +279,9 @@ End Sub
 
 Function RfLy() As String()
 Dim O$()
-Dim R() As VBIDE.Reference
+Dim R() As VBIde.Reference
 R = RfAy
-Dim Ny$(): Ny = OyNy(R)
+Dim Ny$(): Ny = Oy(R).Ny
 Ny = AyAlignL(Ny)
 Dim J%
 For J = 0 To UB(Ny)
@@ -335,9 +336,10 @@ End Function
 Private Function ZMbrAy(MbrTyAy() As vbext_ComponentType, Optional NmPatn$ = ".") As CodeModule()
 Dim O() As CodeModule
 Dim Cmp As VBComponent
+Dim NmRe As Re: Set NmRe = Re(NmPatn)
 Dim Sel As Boolean: Sel = Sz(MbrTyAy) > 0
 For Each Cmp In A.VBComponents
-    If Not ReTst(Cmp.Name, NmPatn) Then GoTo X
+    If Not NmRe.Tst(Cmp.Name) Then GoTo X
     If Sel Then
         If AyHas(MbrTyAy, Cmp.Type) Then
             PushObj O, Cmp.CodeModule

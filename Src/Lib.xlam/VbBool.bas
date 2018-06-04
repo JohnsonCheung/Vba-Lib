@@ -15,10 +15,6 @@ Enum e_AndOrOp
     e_OpAND = e_BoolOp.e_OpAND
     e_OpOR = e_BoolOp.e_OpOR
 End Enum
-Enum e_BoolAyOp
-    e_And = 1
-    e_Or = 2
-End Enum
 Type IntOpt
     Int As Integer
     Som As Boolean
@@ -28,42 +24,18 @@ Type BoolOpt
    Som As Boolean
 End Type
 Type BoolAyOpt
-   BoolAy() As Boolean
+   Bools As New Bools
    Som As Boolean
 End Type
 
 Function BoolAyOpt_And(A As BoolAyOpt) As BoolOpt
 If Not A.Som Then Exit Function
-BoolAyOpt_And = SomBool(BoolAy_And(A.BoolAy))
+BoolAyOpt_And = SomBool(A.Bools.AndVal)
 End Function
 
 Function BoolAyOpt_Or(A As BoolAyOpt) As BoolOpt
 If Not A.Som Then Exit Function
-BoolAyOpt_Or = SomBool(False)
-End Function
-
-Function BoolAy_And(A() As Boolean) As Boolean
-Dim I
-For Each I In A
-   If Not I Then Exit Function
-Next
-BoolAy_And = True
-End Function
-
-Function BoolAy_Or(A() As Boolean) As Boolean
-Dim I
-If AyIsEmp(A) Then Exit Function
-For Each I In A
-   If I Then BoolAy_Or = True: Exit Function
-Next
-End Function
-
-Function BoolAy_Val(A() As Boolean, Op As e_BoolAyOp) As Boolean
-Select Case Op
-Case e_BoolAyOp.e_And: BoolAy_Val = BoolAy_And(A)
-Case e_BoolAyOp.e_Or: BoolAy_Val = BoolAy_Or(A)
-Case Else: Stop
-End Select
+BoolAyOpt_Or = SomBool(A.Bools.OrVal)
 End Function
 
 Function BoolOpStr_BoolOp(A$) As e_BoolOp
@@ -98,9 +70,9 @@ SomBool.Som = True
 SomBool.Bool = Bool
 End Function
 
-Function SomBoolAy(A() As Boolean) As BoolAyOpt
+Function SomBoolAy(A As Bools) As BoolAyOpt
 SomBoolAy.Som = True
-SomBoolAy.BoolAy = A
+Set SomBoolAy.Bools = A
 End Function
 
 Function SomInt(I%) As IntOpt
@@ -114,7 +86,7 @@ Function SyOfBoolOp() As String()
 Static Y$(), X As Boolean
 If Not X Then
     X = True
-    Y = LvsSy("AND OR EQ NE")
+    Y = LvsSy("AND OR")
 End If
 SyOfBoolOp = Y
 End Function

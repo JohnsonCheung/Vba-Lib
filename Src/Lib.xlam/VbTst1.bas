@@ -58,7 +58,7 @@ End Function
 
 Function TstResPth$()
 Dim O$
-    O = CurPj.SrcPth & "TstRes\"
+    O = CurPjx.SrcPth & "TstRes\"
     PthEns O
 TstResPth = O
 End Function
@@ -77,12 +77,3 @@ Sub TstResFdrBrw(Fdr$)
 PthBrw TstResFdr(Fdr)
 End Sub
 
-
-
-Sub ZGenTstXXX()
-Dim Qvbl$
-Dim Lvs$
-Qvbl = "Sub Tst?()|Dim A As New ?: A.Tst|End Sub"
-'Lvs = JnSpc(PjClsNy(CurPj))
-Debug.Print Seed(Qvbl).Expand(Lvs)
-End Sub

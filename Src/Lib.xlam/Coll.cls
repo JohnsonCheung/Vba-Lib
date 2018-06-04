@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private B_Coll As VBA.Collection
-Function Init(A As VBA.Collection) As Coll
+Property Get Init(A As VBA.Collection) As Coll
 Set B_Coll = A
 Set Init = Me
-End Function
+End Property
 Function AyAs(OAsAy)
 Dim O: O = OAsAy: Erase O
 Dim I

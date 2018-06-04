@@ -8,3 +8,9 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
+Sub MdMth(Optional MthNmPatn$ = ".")
+AyDmp AyAddPfx(MdMthNy(CurMd, MthNmPatn), CurMdNm & ".")
+End Sub
+Sub PjMth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".")
+AyDmp CurPj.MthNy(, MthNmPatn:=MthNmPatn, MdNmPatn:=MdNmPatn)
+End Sub

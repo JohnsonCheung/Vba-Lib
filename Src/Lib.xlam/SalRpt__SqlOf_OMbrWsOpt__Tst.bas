@@ -167,7 +167,7 @@ Private Sub ZZ2_TstDtaDmp(CasNo%)
 'Dim Exp$
 'Dim Act$
 '    Exp = M.Exp
-'    Act = SqLoFmtr_OMbrWsOpt(
+'    Act = Srp_OMbrWsOpt(
 'D.Add "**", IIf(Act = Exp, "Pass", "Fail")
 'DicDmp DicSrt(D)
 'If Act = Exp Then
@@ -184,11 +184,11 @@ End Sub
 
 Private Sub ZZ2_Tstr(A As ZZ2_TstDta)
 With A
-    Ass IsEq(SqLoFmtr_OMbrWsOpt(.BrkMbr, .InclNm, .InclAdr, .InclEmail, .InclPhone), .Exp)
+    Ass IsEq(Srp_OMbrWsOpt(.BrkMbr, .InclNm, .InclAdr, .InclEmail, .InclPhone), .Exp)
 End With
 End Sub
 
-Private Sub ZZ2__SqLoFmtr_MbrWsOpt__Tst()
+Private Sub ZZ2__Srp_MbrWsOpt__Tst()
 Dim Ay()  As ZZ2_TstDta
     Ay = ZZ2_TstDtaAy
 Dim J%

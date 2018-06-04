@@ -25,7 +25,7 @@ Function ErMsgLyByAv(CSub$, MacroStr$, Av()) As String()
 Dim O$()
    Push O, "Subr-" & CSub & " : " & RplVBar(MacroStr)
 If Not AyIsEmp(Av) Then
-   Dim Ny$(): Ny = MacroStr_Ny(MacroStr)
+   Dim Ny$(): Ny = Macro(MacroStr).Ny
    Dim I, J%
    If Not AyIsEmp(Ny) Then
        For Each I In Ny
@@ -42,6 +42,20 @@ Function NowStr$()
 NowStr = Format(Now(), "YYYY-MM-DD HH:MM:SS")
 End Function
 
+Function ObjPth(Obj, Pth$)
+'Ret the Obj's Get-Property-Value using Pth, which is dot-separated-string
+Dim Ny$()
+    Ny = Split(Pth, ".")
+Dim O
+    Dim J%, U%
+    Set O = Obj
+    U = UB(Ny)
+    For J = 0 To U - 1      ' U-1 is to skip the last Pth-Seg
+        Set O = CallByName(O, Ny(J), VbGet) ' in the middle of each path-seg, they must be object, so use [Set O = ...] is OK
+    Next
+
+ObjPth = CallByName(O, Ny(U), VbGet) ' Last Prp may be non-object, so must use 'Asg'
+End Function
 Function ObjPrp(Obj, PrpNm$)
 ObjPrp = CallByName(Obj, PrpNm, VbGet)
 End Function

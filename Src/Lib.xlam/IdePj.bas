@@ -12,7 +12,7 @@ Attribute VB_Name = "IdePj"
 '
 'Function DftPjByPjNm(A$) As VBProject
 'If A = "" Then
-'   Set DftPjByPjNm = CurPj
+'   Set DftPjByPjNm = CurPjx
 '   Exit Function
 'End If
 'Dim I As VBProject
@@ -192,7 +192,7 @@ Attribute VB_Name = "IdePj"
 'End Function
 '
 'Sub ZZ_PjMthNy()
-'AyBrw PjMthNy(CurPj)
+'AyBrw PjMthNy(CurPjx)
 'End Sub
 'Function PjMthNy(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = ".") As String()
 'Dim CmpTyAy() As vbext_ComponentType
@@ -344,7 +344,7 @@ Attribute VB_Name = "IdePj"
 'ZPjMbrAy = O
 'End Function
 '
-'Private Sub CurPj__Tst()
+'Private Sub CurPjx__Tst()
 'Ass CurPj.Name = "lib1"
 'End Sub
 '

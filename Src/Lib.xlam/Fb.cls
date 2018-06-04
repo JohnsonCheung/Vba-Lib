@@ -9,10 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private A$
-Friend Function Init(Fb$) As Fb
+Friend Property Get Init(Fb$) As Fb
 A = Fb
 Set Init = Me
-End Function
+End Property
 Function ACnStr$()
 ACnStr = FmtQQ("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=?;", A)
 End Function
@@ -32,10 +32,9 @@ Set Db = Dao.DBEngine.OpenDatabase(A)
 End Property
 
 Private Sub SqlARun__Tst()
-Init SampleFb_DutyPrepare
 Const Sql$ = "Select * into [#a] from Permit"
 If HasTbl("#a") Then SqlArun "Drop Table [#a]"
-SqlArun Sql
+Fb(SampleFb_DutyPrepare).SqlArun Sql
 End Sub
 Function HasTbl(T) As Boolean
 HasTbl = Dbt(Db, T).Exist
@@ -43,14 +42,13 @@ End Function
 Private Sub SqlADrs__Tst()
 Const Fb$ = SampleFb_DutyPrepare
 Const Sql$ = "Select * from Permit"
-Init Fb
-DrsBrw SqlADrs(Sql)
+DrsBrw Ado.Fb(Fb).SqlADrs(Sql)
 End Sub
 
 Private Sub Cn__Tst()
 Dim A As AdoDb.Connection
-Init SampleFb_DutyPrepare
-Set A = Cn
+Set A = Init(SampleFb_DutyPrepare).Cn
+Stop
 End Sub
 
 Function SqlARs(Sql) As AdoDb.Recordset

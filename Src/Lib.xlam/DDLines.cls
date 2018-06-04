@@ -32,13 +32,13 @@ Next
 FmtLy = O
 End Function
 
-Function Init(Ly$()) As DDLines
+Property Get Init(Ly$()) As DDLines
 Dim J&
 For J = 0 To UB(Ly)
     AddLin Ly(J)
 Next
 Set Init = Me
-End Function
+End Property
 
 Function K1_S1S2Ay(K1) As S1S2()
 Dim Ky2$(): Ky2 = Me.Ky2(K1)

@@ -19,12 +19,12 @@ Function FriendMthLin$()
 If IsMth Then FriendMthLin = "Friend " & NoMdy
 End Function
 
-Function Init(Lin) As SrcLin
+Property Get Init(Lin) As SrcLin
 A = Lin
 Dim NoMdy$: NoMdy = LTrim(RmvPfxAy(A, SyOfMdy))
 A_IsMth = HasOneOfPfx(NoMdy, SyOfMthTy)
 Set Init = Me
-End Function
+End Property
 
 Property Get IsPrpLin() As Boolean
 IsPrpLin = HasPfx(NoMdy, C_Prp)
@@ -139,15 +139,15 @@ Dim O$()
 Dim I, Lin
 Dim Md As CodeModule:
 Dim Lno&
-Dim MNm$
-For Each I In CurPj.MbrAy
+Dim MNm$, X As SrcLin
+For Each I In CurPjx.MbrAy
     Set Md = I
     MNm = MdNm(Md)
     Lno = 0
     For Each Lin In MdSrc(Md)
         Lno = Lno + 1
-        Init Lin
-        Push Dry, InfDr(MNm, Lno)
+        Set X = Ide.SrcLin(Lin)
+        Push Dry, X.InfDr(MNm, Lno)
     Next
 Next
 Drs.Dry = Dry
@@ -169,9 +169,9 @@ Ass IsMth = True
 End Sub
 
 Sub Tst()
-Init ZZMthLin
+'Init ZZMthLin
 AllSrcCode__Tst
-MthBrk__Tst
-IsMth__Tst
+'MthBrk__Tst
+'IsMth__Tst
 End Sub
 

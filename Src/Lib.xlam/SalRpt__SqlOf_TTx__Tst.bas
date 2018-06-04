@@ -7,7 +7,7 @@ Private Type ZZ6_TstDta
 End Type
 
 Private Function Act$(A As ZZ6_TstDta)
-Act = SqLoFmtr_TTx(A.P)
+Act = Srp_TTx(A.P)
 End Function
 
 Private Function ActOpt(A As ZZ6_TstDta) As StrOpt
@@ -92,7 +92,7 @@ Private Function ZZ6_UB%(A() As ZZ6_TstDta)
 ZZ6_UB = ZZ6_Sz(A) - 1
 End Function
 
-Sub SqLoFmtr_TTx__Tst()
+Sub Srp_TTx__Tst()
 Dim J%
 Dim Ay() As ZZ6_TstDta: Ay = ZZ6_TstDtaAy
 For J = 0 To ZZ6_UB(Ay)

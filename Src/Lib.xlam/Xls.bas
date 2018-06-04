@@ -1,7 +1,14 @@
 Attribute VB_Name = "Xls"
 Option Explicit
 Public Const SampleFx_KE24 = "C:\Users\User\Desktop\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls"
-
+Property Get Fml(A$) As Fml
+Dim O As New Fml
+Set Fml = O.Init(A)
+End Property
+Property Get XlsX() As XlsPrivateClassCreator
+Dim Y As New XlsPrivateClassCreator
+Set XlsX = Y
+End Property
 Function AyRgH(Ay, At As Range) As Range
 Set AyRgH = SqRg(AySqH(Ay), At)
 End Function
@@ -244,7 +251,10 @@ Next
 Fnd:
 If Fnd Then Set HBar_SamValRg = RgRCC(A, 1, C1, C2)
 End Function
-
+Function IsLng(A) As Boolean
+On Error Resume Next
+IsLng = CLng(A) = Val(A)
+End Function
 Function IsNum(A) As Boolean
 Dim J%
 For J = 1 To Len(A)
@@ -268,11 +278,19 @@ DrsBrw LoDrs(A)
 End Sub
 
 Function LoC(A As ListObject, C, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
-Dim mC%, R1&, R2&
-R1 = LoR1(A, InclHdr)
-R2 = LoR2(A, InclTot)
-C = LoWsCno(A, C)
-Set LoC = WsCRR(LoWs(A), mC, R1, R2)
+Dim R As Range
+Set R = A.ListColumns(C).DataBodyRange
+If Not InclTot And Not InclHdr Then
+    Set LoC = R
+    Exit Function
+End If
+
+Dim R1&, R2&
+    R1 = 1
+    R2 = R.Rows.Count
+    If InclTot Then R2 = R2 + 1
+    If InclHdr Then R1 = R1 - 1
+Set LoC = RgRR(R, R1, R2)
 End Function
 
 Function LoCC(A As ListObject, C1, C2, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
@@ -323,7 +341,6 @@ With LoDrs
     .Fny = LoFny(A)
 End With
 End Function
-
 Function LoDry(A As ListObject) As Variant()
 LoDry = SqDry(LoSq(A))
 End Function
@@ -396,7 +413,15 @@ Static C%
 If C = 0 Then
     Dim Ws As Worksheet
     Set Ws = ActiveSheet
+    Dim Cls As Boolean
+    If IsNothing(Ws) Then
+        Set Ws = NewWs
+        Cls = True
+    End If
     C = Ws.Cells.Columns.Count
+    If Cls Then
+        WsWb(Ws).Close
+    End If
 End If
 MaxCol = C
 End Function
@@ -406,7 +431,15 @@ Static R&
 If R = 0 Then
     Dim Ws As Worksheet
     Set Ws = ActiveSheet
+    Dim Cls As Boolean
+    If IsNothing(Ws) Then
+        Set Ws = NewWs
+        Cls = True
+    End If
     R = Ws.Cells.Rows.Count
+    If Cls Then
+        WsWb(Ws).Close
+    End If
 End If
 MaxRow = R
 End Function
@@ -495,7 +528,7 @@ End Sub
 Sub RgBdrLeft(A As Range)
 RgBdr A, xlEdgeLeft
 If A.Column > 1 Then
-    RgBdr RgC(A, A.Column - 1), xlEdgeRight
+    RgBdr RgC(A, 0), xlEdgeRight
 End If
 End Sub
 
@@ -641,7 +674,7 @@ End With
 End Function
 
 Function SampleDrsFny() As String()
-SampleDrsFny = LvsSy("A B C D")
+SampleDrsFny = LvsSy("A B C D E F G")
 End Function
 
 Function SampleDry() As Variant()
@@ -649,14 +682,15 @@ SampleDry = SqDry(SampleSq)
 End Function
 
 Function SampleLo() As ListObject
-Set SampleLo = WsLo(SampleWs)
+Dim Ws As Worksheet: Set Ws = SampleWs
+Set SampleLo = Ws.ListObjects(1)
 End Function
 
 Function SampleSq()
 Dim O()
-ReDim O(1 To 10, 1 To 4)
+ReDim O(1 To 10, 1 To 7)
 Dim J%, I%
-For J = 1 To 4
+For J = 1 To 7
     For I = 1 To 10
         O(I, J) = I * 10 + J
     Next
@@ -667,7 +701,7 @@ End Function
 Function SampleWs() As Worksheet
 Dim O As Worksheet
 Set O = NewWs
-DrsLo SampleDrs, WsA1(O)
+DrsLo SampleDrs, WsRC(O, 2, 2)
 Set SampleWs = O
 WsVis O
 End Function
@@ -675,7 +709,19 @@ End Function
 Sub SqBrw(A)
 DryBrw SqDry(A)
 End Sub
-
+Function SqTranspose(A) As Variant()
+Dim NRow&, NCol&
+NRow = UBound(A, 1)
+NCol = UBound(A, 2)
+Dim O(), J&, I&
+ReDim O(1 - NCol, 1 To NRow)
+For J = 1 To NRow
+    For I = 1 To NCol
+        O(I, J) = A(J, I)
+    Next
+Next
+SqTranspose = O
+End Function
 Function SqCol(A, C%) As Variant()
 Dim O()
 Dim NR&, J&
@@ -1077,15 +1123,11 @@ Dim TitS1S2Ay() As S1S2
 SqBrw TitS1S2Ay_Sq(TitS1S2Ay, Fny)
 End Sub
 
-Property Get Brw() As Brw
-Dim Y As New Brw
-Set Brw = Y
-End Property
 Property Get Tst() As XlsTst
 Dim Y As New XlsTst
 Set Tst = Y
 End Property
 Sub AAA()
-Xls.Tst.LoFmtr
+Xls.Tst.FmtWs
 End Sub
 

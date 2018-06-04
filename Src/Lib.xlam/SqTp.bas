@@ -220,7 +220,7 @@ Dim StmtsRslt As StmtsRslt:    StmtsRslt = SqGpAy_StmtsRslt(SqGpAy, Pm, Sw)
 Dim ErBlkEr As TpEr:             ErBlkEr = BlkAy_ErBlkEr(B)
 Dim ExcessSwBlkEr As TpEr: ExcessSwBlkEr = BlkAy_ExcessSwBlkEr(B)
 Dim ExcessPmBlkEr As TpEr: ExcessPmBlkEr = BlkAy_ExcessPmBlkEr(B)
-   
+
 Dim Er As TpEr:                       Er = TpErAp_Add6 _
                                             (PmRslt.Er, _
                                              SwRslt.Er, _
@@ -394,7 +394,7 @@ Dim ErIx2%()
 Dim ErIx%()
     PushAy ErIx, ErIx1
     PushAy ErIx, ErIx2
-    
+
 Dim Er As TpEr
 Dim ValidatedPmLy$()
     ValidatedPmLy = LnxAy_WhByExclErIxAy(A, ErIx)
@@ -536,7 +536,7 @@ Private Function SqLnxAy_DrpStmtRslt(SqLnxAy() As Lnx, Ty As e_StmtTy) As StmtRs
 If Ty = e_DrpStmt Then Exit Function
 Dim TnLvs$
 With SqLnxAy_DrpStmtRslt
-    .Stmt = TnLvs_DrpSql(TnLvs)
+    .Stmt = TblNms(TnLvs).DrpStmts
 End With
 End Function
 
@@ -853,18 +853,6 @@ End Select
 SwT1T2_BoolOpt = O
 End Function
 
-Private Function SwTermAy_BoolOpt(A$(), Op As e_AndOrOp, Pm As Dictionary, Sw As Dictionary) As BoolOpt
-Dim BoolAy() As Boolean
-    Dim I
-    For Each I In A
-        With SwTerm_VarOpt(I, Pm, Sw)
-            If Not .Som Then Exit Function
-            Push BoolAy, CBool(.V)
-        End With
-    Next
-SwTermAy_BoolOpt = SomBool(BoolAy_Val(BoolAy, Op))
-End Function
-
 Private Function SwTerm_VarOpt(A, Pm As Dictionary, Sw As Dictionary) As VarOpt
 'switch-term begins with % or ? or it is *Blank.  % is for parameter & ? is for switch
 '  If %, it will evaluated to str by lookup from Pm
@@ -889,6 +877,18 @@ Dim O As VarOpt
         O = SomVar(A)
     End Select
 SwTerm_VarOpt = O
+End Function
+
+Private Function SwTermAy_BoolOpt(A$(), Op As e_BoolAyOp, Pm As Dictionary, Sw As Dictionary) As BoolOpt
+Dim B As New Bools
+    Dim I
+    For Each I In A
+        With SwTerm_VarOpt(I, Pm, Sw)
+            If Not .Som Then Exit Function
+            B.Push CBool(.V)
+        End With
+    Next
+SwTermAy_BoolOpt = SomBool(B.Val(Op))
 End Function
 
 Private Function SwWrkDic_Sw(A As Dictionary) As Sw

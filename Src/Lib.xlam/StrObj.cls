@@ -2,19 +2,18 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "Md"
+Attribute VB_Name = "StrObj"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Private A As CodeModule
-Function Init(Md As CodeModule) As Md
-Set A = Md
+Option Explicit
+Private A$
+Friend Property Get Init(Str) As StrObj
+A = Str
 Set Init = Me
-End Function
-Function Nm$()
+End Property
 
-End Function
-Function Val() As CodeModule
-Set Val = A
-End Function
+Property Get ToStr$()
+ToStr = Tag("StrObj", A)
+End Property

@@ -50,15 +50,15 @@ Next
 CatAyPrpAsAy = O
 End Function
 
-Function Init(Oy) As Oy
+Property Get Init(Oy) As Oy
 Ass IsArray(Oy)
 B_Oy = Oy
 Set Init = Me
-End Function
-Function InitByColl(A As VBA.Collection) As Oy
+End Property
+Property Get InitByColl(A As VBA.Collection) As Oy
 B_Oy = Coll(A).Ay
 Set InitByColl = Me
-End Function
+End Property
 
 Function Sy(PrpNm$) As String()
 If IsEmp Then Exit Function
@@ -132,6 +132,7 @@ Function Ny() As String()
 Ny = PrpSy("Name")
 End Function
 Function Dry() As Variant()
+'Assume each object has Dr-prp
 Dry = PrpAy("Dr")
 End Function
 Function PrpAy(PrpNm$, Optional Oup)
@@ -140,7 +141,7 @@ Dim O
        O = Oup
        Erase O
    Else
-       O = EmpAy
+       O = Emp.Ay
    End If
    If IsEmp Then GoTo X
    Dim I
@@ -161,11 +162,11 @@ PrpIntAy = O
 End Function
 
 Function PrpSy(PrpNm$) As String()
-PrpSy = PrpAy(PrpNm, EmpSy)
+PrpSy = PrpAy(PrpNm, Emp.Sy)
 End Function
 
 Function WhIxSelIntPrp(WhIx, PrpNm$) As Integer()
-WhIxSelIntPrp = WhIxSelPrp(WhIx, PrpNm, EmpIntAy)
+WhIxSelIntPrp = WhIxSelPrp(WhIx, PrpNm, Emp.IntAy)
 End Function
 
 Function WhIxSelPrp(WhIx, PrpNm$, OupAy)
@@ -174,17 +175,17 @@ WhIxSelPrp = Oy(Oy1).PrpAy(PrpNm, OupAy)
 End Function
 
 Function WhIxSelSyPrp(WhIx, PrpNm$) As String()
-WhIxSelSyPrp = WhIxSelPrp(WhIx, PrpNm, EmpSy)
+WhIxSelSyPrp = WhIxSelPrp(WhIx, PrpNm, Emp.Sy)
 End Function
 
-Function WhPrp(PrpNm$, PrpVal)
+Function WhPrp(PrpNm$, PrpEqToVal)
 Dim O
    O = B_Oy
    Erase O
 If Not IsEmp Then
    Dim I
    For Each I In B_Oy
-       If CallByName(I, PrpNm, VbGet) = PrpVal Then PushObj O, I
+       If CallByName(I, PrpNm, VbGet) = PrpEqToVal Then PushObj O, I
    Next
 End If
 WhPrp = O
@@ -216,11 +217,13 @@ End Function
 
 Private Sub PrpAy__Tst()
 Dim CdPanAy() As CodePane
-CdPanAy = Oy(CurPj.MdAy).PrpAy("CodePane", CdPanAy)
+CdPanAy = Oy(CurPjx.MdAy).PrpAy("CodePane", CdPanAy)
 Stop
 End Sub
 
 Sub Tst()
 PrpAy__Tst
 End Sub
+'=======================================================================================
+
 

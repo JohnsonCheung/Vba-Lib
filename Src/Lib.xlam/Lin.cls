@@ -8,7 +8,15 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Public Lin$
+Public A$
+Friend Property Get Init(Lin) As Lin
+A = Lin
+Set Init = Me
+End Property
+Private Sub ZZ_RmvT1()
+Ass Vb.Lin("  df dfdf  ").RmvT1 = "dfdf"
+End Sub
+
 Property Get PfxErMsg$(Pfx$)
 If HasPfx(Lin, Pfx) Then Exit Property
 PfxErMsg = FmtQQ("First Char must be [?]", Pfx)
@@ -17,11 +25,13 @@ End Property
 Property Get RmvT1$()
 RmvT1 = Brk1(Trim, " ").S2
 End Property
-
+Property Get Lin$()
+Lin = A
+End Property
 Property Get ShiftTerm$()
-With Brk1(Lin, " ")
+With Brk1(A, " ")
     ShiftTerm = .S1
-    Lin = .S2
+    A = .S2
 End With
 End Property
 
@@ -33,18 +43,18 @@ Property Get T2$()
 Dim L$: L = RmvT1
 T2 = Vb.Lin(L).T1
 End Property
-Sub AsgTRst(OTerm, ORest)
-With Vb.Lin(Lin)
+Sub AsgTRst(OTerm, ORst)
+With Vb.Lin(A)
     OTerm = .ShiftTerm
-    ORest = .Lin
+    ORst = .Lin
 End With
 End Sub
 
-Sub AsgTTRst(OTerm1, OTerm2, ORest)
-With Vb.Lin(Lin)
-    OTerm1 = ShiftTerm
-    OTerm2 = ShiftTerm
-    ORest = .Lin
+Sub AsgTTRst(OTerm1, OTerm2, ORst)
+With Vb.Lin(A)
+    OTerm1 = .ShiftTerm
+    OTerm2 = .ShiftTerm
+    ORst = .Lin
 End With
 End Sub
 
@@ -57,7 +67,7 @@ End Property
 
 Property Get T1Rst() As T1Rst
 Dim O As T1Rst
-With Brk1(Lin, " ")
+With Brk1(A, " ")
     O.T1 = .S1
     O.Rst = .S2
 End With
@@ -71,7 +81,15 @@ End Property
 Property Get Trim$()
 Trim = VBA.Trim(Lin)
 End Property
-
+Property Get RmvDDRmk() As Lin
+Dim S$
+If HasDDRmk Then
+    S = ""
+Else
+    S = Lin
+End If
+Set RmvDDRmk = Vb.Lin(S)
+End Property
 Property Get HasDDRmk() As Boolean
 HasDDRmk = HasPfx(LTrim, "--")
 End Property

@@ -46,7 +46,7 @@ End Function
 Function PjMdSrtRpt(A As VBProject) As MdSrtRpt
 'SrtCmpDic is a LyDic with Key as MdNm and value is SrtCmpLy
 Dim MdAy() As CodeModule: 'MdAy = PjMdAy(A)
-Dim MdNy$(): MdNy = OyNy(MdAy)
+Dim MdNy$(): MdNy = Oy(MdAy).Ny
 Dim LyAy()
 Dim IsSam$(), IsDif$(), Sam As Boolean
     Dim J%, R As DCRslt
@@ -120,7 +120,7 @@ Function SrcSrtedLy(A$()) As String()
 SrcSrtedLy = SplitCrLf(SrcSrtedLines(A))
 End Function
 
-Sub ZZ_Dcl_BefAndAft_Srt()
+Private Sub ZZ_Dcl_BefAndAft_Srt()
 Const MdNm$ = "VbStrRe"
 Dim A$() ' Src
 Dim B$() ' Src->Srt
@@ -128,21 +128,21 @@ Dim A1$() 'Src->Dcl
 Dim B1$() 'Src->Src->Dcl
 'A = MdSrc(Md(MdNm))
 B = SrcSrtedLy(A)
-A1 = SrcDcl(A)
-B1 = SrcDcl(B)
+A1 = SrcDclLy(A)
+B1 = SrcDclLy(B)
 Stop
 End Sub
 
-Sub ZZ_PjSrtCmpRptWb()
-Dim O As Workbook: Set O = PjSrtCmpRptWb(CurPj, Vis:=True)
+Private Sub ZZ_PjSrtCmpRptWb()
+Dim O As Workbook: Set O = PjSrtCmpRptWb(CurPjx, Vis:=True)
 Stop
 End Sub
 
-Sub ZZ_SrcSrtCmpLy()
+Private Sub ZZ_SrcSrtCmpLy()
 AyBrw SrcSrtCmpLy(ZZSrc)
 End Sub
 
-Sub ZZ_SrcSrted()
+Private Sub ZZ_SrcSrted()
 'Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
 'Dim Src1$(): Src1 = SrcSrtedLy(Src)
 Stop
@@ -158,7 +158,7 @@ GoSub X0
 Exit Sub
 X0:
     Dim I
-'    For Each I In PjMdAy(CurPj)
+'    For Each I In PjMdAy(CurPjx)
         Set Md = I
         If MdNm(Md) = "Str_" Then
             GoSub Ass

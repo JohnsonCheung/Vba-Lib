@@ -22,6 +22,3 @@ Function IsStr() As Boolean
 IsStr = VarIsStr(A_V)
 End Function
 
-Function SrcLin(A) As SrcLin
-Set SrcLin = A_V
-End Function

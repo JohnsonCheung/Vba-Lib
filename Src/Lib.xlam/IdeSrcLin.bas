@@ -254,7 +254,7 @@ P = ParseKwMthTy(P):         If P.IsOk Then SrcLin_MthBrk.Ty = P.Er_or_Ok Else E
 P = ParseNm(P):              If P.IsOk Then SrcLin_MthBrk.MthNm = P.Er_or_Ok
 End Function
 
-Function SrcLin_MthDr(A, Lno&, Optional MdNm$) As Variant()
+Function SrcLin_MthDr(A, Lno&, Optional MdNm$, Optional MdTy$) As Variant()
 With SrcLin_MthBrk(A)
    SrcLin_MthDr = Array(MdNm, Lno, .Mdy, .Ty, .MthNm)
 End With
@@ -323,8 +323,8 @@ End If
 SyOfSrcTy = Y
 End Function
 
-Sub ZZ_PrjSrcDrs()
-Dim O As Drs: O = CurPj.SrcDrs
+Private Sub ZZ_PrjSrcDrs()
+Dim O As Drs: O = CurPjx.SrcDrs
 'DryBrw O
 
 Dim A As SrcLin: Set A = V(O.Dry(2)(1)).SrcLin

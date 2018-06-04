@@ -8,20 +8,34 @@ Public Enum eTstLABCs
     eValidateAsBetNum
     eAll
 End Enum
-Function CurCdPne() As VBIDE.CodePane
+
+Property Get Md(MdNm) As CodeModule
+Dim A As VBComponents: Set A = CurPj.VBComponents
+Dim I, Cmp As VBComponent
+Set Md = CurPj.VBComponents(MdNm).CodeModule
+End Property
+
+Property Get SrcLin(A) As SrcLin
+Dim O As New SrcLin
+Set SrcLin = O.Init(A)
+End Property
+
+Property Get CurCdPne() As VBIde.CodePane
 Set CurCdPne = CurVbe.ActiveCodePane
-End Function
-Function CurCdWin() As VBIDE.Window
+End Property
+
+Property Get CurCdWin() As VBIde.Window
 Set CurCdWin = VBE.ActiveCodePane.Window
-End Function
+End Property
 
-Function CurVbe() As VBE
+Property Get CurVbe() As VBE
 Set CurVbe = Application.VBE
-End Function
+End Property
 
-Function CurWin() As VBIDE.Window
+Property Get CurWin() As VBIde.Window
 Set CurWin = CurVbe.ActiveWindow
-End Function
+End Property
+
 Property Get Dcl(A$()) As Dcl
 Dim O As New Dcl
 Set Dcl = O.Init(A)
@@ -39,13 +53,12 @@ If Len(S) <> 1 Then Exit Function
 IsTyChr = HasSubStr(TyChrLis, S)
 End Function
 
-
-Function RfPth$(A As VBIDE.Reference)
+Function RfPth$(A As VBIde.Reference)
 On Error Resume Next
 RfPth = A.FullPath
 End Function
 
-Function RfToStr$(A As VBIDE.Reference)
+Function RfToStr$(A As VBIde.Reference)
 With A
    RfToStr = .Name & " " & RfPth(A)
 End With
@@ -58,17 +71,17 @@ Dim Fxa$
    Fxa = SrcPth & Fnn & ".xlam"
 Dim X As Excel.Application
    Set X = FxaCrt(Fxa)
-Dim Pj As Pj
-Set Pj = Ide.Pj(X.VBE.VBProjects(1))
+Dim P As Pjx
+Set P = Pjx(X.VBE.VBProjects(1))
 
 Dim SrcFfnAy$()
    Dim S
    SrcFfnAy = AyWhLikAy(PthFfnAy(SrcPth), LvsSy("*.bas *.cls"))
    For Each S In SrcFfnAy
-       Pj.ImpSrcFfn S
+       P.ImpSrcFfn S
    Next
-   Pj.RmvOptCmpDbLin
-   Pj.ImpRf SrcPth
+   P.RmvOptCmpDbLin
+   P.ImpRf SrcPth
 Dim Wb As Workbook
    Set Wb = X.Workbooks(1)
 Wb.SaveAs Fxa, FileFormat:=XlFileFormat.xlOpenXMLAddIn
@@ -105,31 +118,31 @@ Function VbeCmdBarNy(A As VBE) As String()
 VbeCmdBarNy = ItrNy(A.CommandBars)
 End Function
 
-Function WinAy() As VBIDE.Window()
-Dim O() As VBIDE.Window, W As VBIDE.Window
+Function WinAy() As VBIde.Window()
+Dim O() As VBIde.Window, W As VBIde.Window
 For Each W In VBE.Windows
    PushObj O, W
 Next
 WinAy = O
 End Function
 
-Function WinAyOfCd() As VBIDE.Window()
+Function WinAyOfCd() As VBIde.Window()
 WinAyOfCd = WinAyOfTy(vbext_wt_CodeWindow)
 End Function
 
-Function WinAyOfTy(T As vbext_WindowType) As VBIDE.Window()
-WinAyOfTy = OyWhPrp(WinAy, "Type", T)
+Function WinAyOfTy(T As vbext_WindowType) As VBIde.Window()
+WinAyOfTy = Oy(WinAy).WhPrp("Type", T)
 End Function
 
 Sub WinClsAll()
-Dim W As VBIDE.Window
+Dim W As VBIde.Window
 For Each W In Application.VBE.Windows
    W.Close
 Next
 End Sub
 
 Sub WinClsCd(Optional ExceptMdNm$)
-Dim I, W As VBIDE.Window
+Dim I, W As VBIde.Window
 For Each I In WinAyOfCd
    Set W = I
    If WinMdNm(W) <> ExceptMdNm Then
@@ -142,27 +155,30 @@ Function WinCnt&()
 WinCnt = Application.VBE.Windows.Count
 End Function
 
-Function WinMdNm$(A As VBIDE.Window)
+Function WinMdNm$(A As VBIde.Window)
 WinMdNm = TakBet(A.Caption, " - ", " (Code)")
 End Function
-
+Sub TstSrcLin()
+Dim A As New SrcLin: A.Tst
+End Sub
 Function CvMd(A) As CodeModule
 Set CvMd = A
 End Function
-Function CvMdx(A) As Md
+Function CvMdx(A) As Mdx
 CvMdx = A
 End Function
-Property Get Md(A As CodeModule) As Md
-Dim O As New Md
-O.Init A
-Md.Nm
-Set Md = O
+Property Get Mdx(A As CodeModule) As Mdx
+Dim O As New Mdx
+Set Mdx = O.Init(A)
 End Property
-Property Get Pj(A As VBProject) As Pj
-Dim O As New Pj
-Set Pj = O.Init(A)
+Property Get Pjx(A As VBProject) As Pjx
+Dim O As New Pjx
+Set Pjx = O.Init(A)
 End Property
-Property Get CurPj() As Pj
-Set CurPj = Pj(CurVbe.ActiveVBProject)
+Property Get CurPj() As VBProject
+Set CurPj = CurVbe.ActiveVBProject
+End Property
+Property Get CurPjx() As Pjx
+Set CurPjx = Pjx(CurPj)
 End Property
 
