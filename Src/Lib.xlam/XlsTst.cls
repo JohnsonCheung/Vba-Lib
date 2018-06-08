@@ -35,4 +35,6 @@ End Sub
 Sub FmtWs()
 Dim A As New FmtWs: A.Tst
 End Sub
-
+Sub Fxa()
+Dim A As New Fxa: A.Tst
+End Sub

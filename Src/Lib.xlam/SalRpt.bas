@@ -187,7 +187,8 @@ Dim ExprAy$()
         If InclPhone Then .Add "Phone", EPhone
         If InclEmail Then .Add "Email", EEmail
     End With
-    ExprAy = DicSelIntoSy(Dic, Fny)
+    Stop
+'    ExprAy = DicSelIntoSy(Dic, Fny)
 Dim Sel$, Into$, Fm$, Wh$
     Sel = SqpSel(Fny, ExprAy)
     Into = SqpInto("#MbrDta")
@@ -433,7 +434,8 @@ Function SrPmx_Dic(A As SrPmx) As Dictionary
 End Function
 
 Function SrpDic_IsVdt(A As Dictionary) As Boolean
-SrpDic_IsVdt = DicHasKeyLvs(A, SrpKeyLvs)
+Stop
+'SrpDic_IsVdt = DicHasKeyLvs(A, SrpKeyLvs)
 End Function
 
 Function SrpNm_Dic(SrpNm$) As Dictionary
@@ -463,7 +465,8 @@ Sub SrpNm_Ens(Optional A$)
 Dim Ft$
 Ft = SrpNm_Ft(A)
 If FfnIsExist(Ft) Then Exit Sub
-AyWrt DicLy(DftSrpDic), Ft
+Stop
+'AyWrt DicLy(DftSrpDic), Ft
 End Sub
 
 Function SrpNm_Ft$(Optional A$)
@@ -497,7 +500,8 @@ End Function
 
 Function SrpNm_SrPm(Optional SrpNm$) As SrPm
 Dim D As Dictionary
-    Set D = DicLy_Dic(SrpNm_Ly(SrpNm))
+Stop
+'    Set D = DicLy_Dic(SrpNm_Ly(SrpNm))
 Ass SrpDic_IsVdt(D)
 Dim O As SrPm
 With O

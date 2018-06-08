@@ -18,26 +18,6 @@ Const C_LvsOf_3$ = "whExpr whBetStr whBetNbr whInStrLis whInNbrLis"
 Const QItmLvs4$ = "andExpr andBetStr andBetNbr andInStrLis andInNbrLis"
 'Const QItmLvs$ = QItmLvs0 & QItmLvs1 & QItmLvs2 & QItmLvs3 & QItmLvs4
 Const OptionalQItm$ = "sel selDis wh* and*"
-Private Type Sw
-    Tbl As New Dictionary
-    Fld As New Dictionary
-End Type
-Private Type SwRslt
-    Sw As Sw
-    ErLy() As String
-End Type
-Private Type StmtRslt
-    ErLy() As String
-    Stmt As String
-End Type
-Private Type StmtsRslt
-    ErLy() As String
-    Stmts As String
-End Type
-Private Type PmRslt
-    Pm As Dictionary
-    ErLy() As String
-End Type
 '============
 Private Type Blk
     BlkTyStr As String
@@ -113,29 +93,6 @@ If L <> "" Then
 End If
 End Function
 
-Private Function LnxAy_SwRslt(A() As Lnx1, Pm As Dictionary) As SwRslt
-Stop
-Dim E$()
-Dim Sw As Sw
-'Set A_Pm = Pm
-'Dim Brk     As SwBrk:     Brk = LnxAy_SwRslt(A)
-'Dim B1      As BrkRslt:    B1 = Z1_TpEr(Brk)
-'Dim B2      As BrkRslt:    B2 = Z1_DupNmEr(B1.Rslt)
-'Dim W       As WrkDicRslt:  W = Z1_WrkDicRslt(B2.Rslt)
-'Dim Er      As TpEr:       Er = W.Er
-'                                TpEr_Push Er, B1.Er
-'                                TpEr_Push Er, B2.Er
-'Dim Sw      As Sw:         Sw = Z1_Sw(W.Rslt)
-With LnxAy_SwRslt
-    .ErLy = E
-    .Sw = Sw
-End With
-End Function
-
-Private Function LyIsSw(A$()) As Boolean
-LyIsSw = LyHasMajPfx(A, "?")
-End Function
-
 Private Function SqFldExprAy_SelPhrase$(A() As FldExpr)
 Dim B() As S1S2
     Dim B1() As S1S2
@@ -183,13 +140,13 @@ End If
 SqLin_OptChk = O
 End Function
 
-Private Function SqLnxs_StmtRslt(A As Lnx1s, Pm As Dictionary, Sw As Sw) As StmtRslt
+Private Function SqLnxs_StmtRslt(A As Lnx1s, Pm As Dictionary, Sw As Sw) As StmtRslt1
 Dim Ly$(): Ly = A.Ly
 Dim Ty As e_StmtTy: Ty = SqLy_Ty(Ly)
 Dim IsSkip As Boolean: IsSkip = SqLy_IsSkip(Ly, Ty, Sw.Tbl)
-Dim DrpStmt As StmtRslt: DrpStmt = SqLnxs_DrpStmtRslt(A, Ty)
-Dim UpdStmt As StmtRslt: UpdStmt = SqLnxs_UpdStmtRslt(A, Ty, Pm, Sw.Fld)
-Dim SelStmt As StmtRslt: SelStmt = SqLnxs_SelStmtRslt(A, Ty, Pm, Sw.Fld)
+Dim DrpStmt As StmtRslt1: DrpStmt = SqLnxs_DrpStmtRslt(A, Ty)
+Dim UpdStmt As StmtRslt1: UpdStmt = SqLnxs_UpdStmtRslt(A, Ty, Pm, Sw.Fld)
+Dim SelStmt As StmtRslt1: SelStmt = SqLnxs_SelStmtRslt(A, Ty, Pm, Sw.Fld)
 Dim Stmt$: Stmt = UpdStmt.Stmt + SelStmt.Stmt + DrpStmt.Stmt
 Dim E$(): E = Ly0Ap_Ly(UpdStmt.ErLy, DrpStmt.ErLy, SelStmt.ErLy)
 With SqLnxs_StmtRslt
@@ -203,7 +160,8 @@ Private Function SqRst_Sel$(A$, EDic As Dictionary)
 Dim Fny$()
 Dim ExprAy$()
     Fny = LvsSy(A)
-    ExprAy = DicSelIntoSy(EDic, Fny)
+Stop
+'    ExprAy = DicSelIntoSy(EDic, Fny)
 SqRst_Sel = SqpSel(Fny, ExprAy)
 End Function
 
@@ -220,113 +178,50 @@ Property Get Validate() As SqTpRslt
 Dim L$():                              L = SplitCrLf(B_SqTp)
 Dim L1 As Lnx1s:                  Set L1 = Ly(L).Lnxs.RmvDDRmk
 Dim L2() As Lnx1s:                    L2 = L1.LnxsAy("==")
-Dim B() As Blk:                        B = LnxsAy_BlkAy(L2)
+Dim B As Blk1s:                    Set B = LnxsAy_BlkAy(L2)
 
-Dim PmLnxAy() As Lnx1:           PmLnxAy = BlkAy_SelLnxAy(B, "PM")
-Dim PmRslt As PmRslt:             PmRslt = PmLnxAy_PmRslt(PmLnxAy)
+Dim PmRslt As PmRslt:      Set PmRslt = B.PmRslt
 Dim Pm As Dictionary:             Set Pm = PmRslt.Pm
 
-Dim SwLnxAy() As Lnx1:           SwLnxAy = BlkAy_SelLnxAy(B, "SW")
-Dim SwRslt As SwRslt:             SwRslt = LnxAy_SwRslt(SwLnxAy, Pm)
-Dim Sw As Sw:                         Sw = SwRslt.Sw
+Dim SwRslt As SwRslt:         Set SwRslt = B.SwRslt
+Dim Sw As Sw:                     Set Sw = SwRslt.Sw
 
-Dim SqLnxsAy() As Lnx1s:        SqLnxsAy = BlkAy_SqLnxsAy(B)
-Dim StmtsRslt As StmtsRslt:    StmtsRslt = SqLnxsAy_StmtsRslt(SqLnxsAy, Pm, Sw)
+Dim StmtsRslt As StmtsRslt:    StmtsRslt = B.StmtsRslt
+Dim Stmts$:                        Stmts = StmtsRslt.Stmts
 
-Dim ErBlkEr As TpEr:             ErBlkEr = BlkAy_ErBlkEr(B)
-Dim ExcessSwBlkEr As TpEr: ExcessSwBlkEr = BlkAy_ExcessSwBlkEr(B)
-Dim ExcessPmBlkEr As TpEr: ExcessPmBlkEr = BlkAy_ExcessPmBlkEr(B)
-Dim Sql$: Stop
-Dim Tp$: Stop
-Dim Er As New Er: Stop:                       Er.PushAp _
-'                                             PmRslt.Er, _
-                                             SwRslt.Er, _
-                                             StmtsRslt.Er, _
-                                             ExcessPmBlkEr, _
-                                             ExcessSwBlkEr, _
-                                             ErBlkEr
-
+Dim Tp$: '                            Tp = S
+Dim Er1$():                            Er1 = Ly0Ap_Ly( _
+                                             B.ErLy, _
+                                             PmRslt.ErLy, _
+                                             SwRslt.ErLy, _
+                                             StmtsRslt.ErLy)
+                                             
 Dim O As New SqTpRslt
-Set O.Er = Er
-O.Sql = Sql
+O.Er = Er1
+O.Stmts = Stmts
 O.Tp = Tp
 Set Validate = O
 End Property
 
-Private Function BlkAy_ErBlkEr(A() As Blk) As TpEr
-'?
-End Function
 
-Private Function BlkAy_ExcessPmBlkEr(A() As Blk) As TpEr
-'?
-End Function
-
-Private Function BlkAy_ExcessSwBlkEr(A() As Blk) As TpEr
-'?
-End Function
-
-Private Function BlkAy_SelLnxAy(A() As Blk, BlkTyStr$) As Lnx1()
-Dim J%
-For J = 0 To BlkUB(A)
-    If A(J).BlkTyStr = BlkTyStr Then BlkAy_SelLnxAy = A(J).Lnxs.LnxAy: Exit Function
-Next
-End Function
-
-Private Function BlkAy_SqLnxsAy(A() As Blk) As Lnx1s()
-Dim J%, O() As Lnx1s
-For J = 0 To BlkUB(A)
-    If A(J).BlkTyStr = "SQ" Then
-        PushObj O, A(J).Lnxs
-    End If
-Next
-BlkAy_SqLnxsAy = O
-End Function
-
-Private Function BlkSz%(A() As Blk)
-On Error Resume Next
-BlkSz = UBound(A) + 1
-End Function
-
-Private Function BlkUB%(A() As Blk)
-BlkUB = BlkSz(A) - 1
-End Function
-
-
-Private Function LnxsAy_BlkAy(A() As Lnx1s) As Blk()
-Dim O() As Blk
+Private Function LnxsAy_BlkAy(A() As Lnx1s) As Blk1s
+Dim Ay() As Blk1
 Dim U&
     U = UB(A)
 If U = -1 Then Exit Function
-ReDim O(U)
+ReDim Ay(U)
 Dim J%
 For J = 0 To U
-    O(J) = LnxsBlk(A(J))
+    Dim M As New Blk1
+    Set Ay(J) = M.Init(A(J))
 Next
-LnxsAy_BlkAy = O
+Dim O As New Blk1s
+Set LnxsAy_BlkAy = O.Init(Ay)
 End Function
 
-Private Function LnxsBlk(A As Lnx1s) As Blk
-Dim Ay() As Lnx1: Ay = A.LnxAy
-With LnxsBlk
-    .BlkTyStr = LnxsBlkTyStr(A)
-    Set .Lnxs = A
-End With
-End Function
 
-Private Function LnxsBlkTyStr$(A As Lnx1s)
-Dim Ly$(): Ly = A.Ly
-Dim O$
-Select Case True
-Case LyIsPm(Ly): O = "PM"
-Case LyIsSw(Ly): O = "SW"
-Case LyIsRm(Ly): O = "RM"
-Case LyIsSq(Ly): O = "SQ"
-Case Else: O = "ER"
-End Select
-LnxsBlkTyStr = O
-End Function
 
-Private Function LnxAy_ErIx_OfDupKey(A() As Lnx1) As Integer()
+Private Function LnxAy_ErIx_OfDupKey1(A() As Lnx1) As Integer()
 
 End Function
 
@@ -344,37 +239,7 @@ Next
 LnxAy_WhByExclErIxAy = O
 End Function
 
-Private Function LyIsPm(A$()) As Boolean
-LyIsPm = LyHasMajPfx(A, "%")
-End Function
-
-Private Function LyIsRm(A$()) As Boolean
-LyIsRm = AyIsEmp(A)
-End Function
-
-Private Function LyIsSq(A$()) As Boolean
-If AyIsEmp(A) Then Exit Function
-Dim L$: L = A(0)
-If HasOneOfPfxIgnCas(L, SyOf_SqBlkLinOnePfx) Then LyIsSq = True: Exit Function
-End Function
-
 Private Function PmLnxAy_PmRslt(A() As Lnx1) As PmRslt
-Dim ErIx1%()
-Dim ErIx2%()
-    ErIx1 = LnxAy_ErIx_OfDupKey(A)
-    ErIx2 = LnxAy_ErIx_OfPfxPercent(A)
-
-Dim ErIx%()
-    PushAy ErIx, ErIx1
-    PushAy ErIx, ErIx2
-    
-Dim E$()
-Dim ValidatedPmLy$()
-    ValidatedPmLy = LnxAy_WhByExclErIxAy(A, ErIx)
-Dim O As PmRslt
-O.ErLy = E
-Set O.Pm = LinesDicLy_LinesDic(ValidatedPmLy)
-PmLnxAy_PmRslt = O
 End Function
 
 Private Function SqFldExprAy_RmvEmpExprItm(A() As S1S2) As S1S2()
@@ -441,7 +306,8 @@ Dim OStmtAy$()
     Next
 Dim Z As StmtsRslt
     Z.Stmts = JnDblCrLf(OStmtAy)
-    Z.ErLy = OEr
+    Stop
+    '    Z.ErLy = OEr
 SqLnxsAy_StmtsRslt = Z
 End Function
 
@@ -505,7 +371,7 @@ SqLin = Pfx & Rst
 
 End Function
 
-Private Function SqLnxs_DrpStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy) As StmtRslt
+Private Function SqLnxs_DrpStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy) As StmtRslt1
 If Ty = e_DrpStmt Then Exit Function
 Dim TnLvs$
 With SqLnxs_DrpStmtRslt
@@ -513,11 +379,11 @@ With SqLnxs_DrpStmtRslt
 End With
 End Function
 
-Private Function SqLnxs_SelStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy, Pm As Dictionary, FldSw As Dictionary) As StmtRslt
+Private Function SqLnxs_SelStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy, Pm As Dictionary, FldSw As Dictionary) As StmtRslt1
 If Ty = e_SelStmt Then Exit Function
 End Function
 
-Private Function SqLnxs_UpdStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy, Pm As Dictionary, FldSw As Dictionary) As StmtRslt
+Private Function SqLnxs_UpdStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy, Pm As Dictionary, FldSw As Dictionary) As StmtRslt1
 If Ty <> e_UpdStmt Then Exit Function
 End Function
 
@@ -545,7 +411,8 @@ End Function
 
 Private Function SqRst_Gp$(A$, EDic As Dictionary)
 Dim ExprAy$(), Ay$()
-    ExprAy = DicSelIntoSy(EDic, Ay)
+Stop
+'    ExprAy = DicSelIntoSy(EDic, Ay)
 SqRst_Gp = SqpGp(ExprAy)
 End Function
 
@@ -557,9 +424,6 @@ Dim L$, E$
 SqRst_InLis = FmtQQ("? in ( ? )", E, L)
 End Function
 
-Private Function SyOf_SqBlkLinOnePfx() As String()
-SyOf_SqBlkLinOnePfx = LvsSy("?SEL SEL ?SELDIS SELDIS UPD DRP")
-End Function
 
 Private Function TpEr_Add3(A1 As TpEr, A2 As TpEr, A3 As TpEr) As TpEr
 Dim O As TpEr
@@ -571,7 +435,8 @@ Private Function ZZMd() As CodeModule
 End Function
 
 Private Function ZZPm() As Dictionary
-Set ZZPm = NewLyDic(ZZPmLy)
+Stop
+'Set ZZPm = NewLyDic(ZZPmLy)
 End Function
 
 Private Function ZZPmLy() As String()

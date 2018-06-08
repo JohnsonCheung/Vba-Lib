@@ -203,19 +203,6 @@ Set DtWs = O
 If Vis Then WsVis O
 End Function
 
-
-Function FxaCrt(Optional Fxa0$) As Excel.Application
-Dim Fxa$: Fxa = DftFfn(Fxa0, ".xlam")
-Dim Wb As Workbook, X As Excel.Application
-   Set X = New Excel.Application
-   Set Wb = X.Workbooks.Add
-X.VBE.VBProjects(1).Name = FfnFnn(Fxa)
-Wb.SaveAs Fxa, XlFileFormat.xlOpenXMLAddIn
-Wb.Close
-X.AddIns.Add Fxa
-Set FxaCrt = X
-End Function
-
 Sub HBar_MgeSamValCell(A As Range)
 Ass RgIsHBar(A)
 Dim R As Range
@@ -1084,15 +1071,6 @@ Dim O$
 If WsNm0 = "" Then O = Xls.Fx(Fx).FstWsNm Else O = WsNm0
 DftWsNmByFxFstWs = O
 End Function
-
-
-
-Sub FxaCrt__Tst()
-Dim Act As Excel.Application
-Set Act = FxaCrt
-Act.Visible = True
-Stop
-End Sub
 
 Sub LoAdjColWdt__Tst()
 Dim Ws As Worksheet: Set Ws = NewWs(Vis:=True)

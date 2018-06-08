@@ -125,7 +125,7 @@ Function LnxAy_SwRslt(A() As Lnx, Pm As Dictionary) As SwRslt
 'End With
 End Function
 
-Function LyIsSw(A$()) As Boolean
+Private Function LyIsSw(A$()) As Boolean
 LyIsSw = LyHasMajPfx(A, "?")
 End Function
 
@@ -196,7 +196,8 @@ Function SqRst_Sel$(A$, EDic As Dictionary)
 Dim Fny$()
 Dim ExprAy$()
     Fny = LvsSy(A)
-    ExprAy = DicSelIntoSy(EDic, Fny)
+Stop
+'    ExprAy = DicSelIntoSy(EDic, Fny)
 SqRst_Sel = SqpSel(Fny, ExprAy)
 End Function
 
@@ -300,13 +301,6 @@ Next
 GpAy_RmvRmk = O
 End Function
 
-Private Function GpBlk(A As Gp) As Blk
-With GpBlk
-    .BlkTyStr = GpBlkTyStr(A)
-    .Gp = A
-End With
-End Function
-
 Private Function GpBlkTyStr$(A As Gp)
 Dim Ly$(): Ly = GpLy(A)
 Dim O$
@@ -318,6 +312,13 @@ Case LyIsSq(Ly): O = "SQ"
 Case Else: O = "ER"
 End Select
 GpBlkTyStr = O
+End Function
+
+Private Function GpBlk(A As Gp) As Blk
+With GpBlk
+    .BlkTyStr = GpBlkTyStr(A)
+    .Gp = A
+End With
 End Function
 
 Private Function GpRmvRmk(A As Gp) As Gp
@@ -382,7 +383,8 @@ End Function
 Private Function LyIsSq(A$()) As Boolean
 If AyIsEmp(A) Then Exit Function
 Dim L$: L = A(0)
-If HasOneOfPfxIgnCas(L, SyOf_SqBlkLinOnePfx) Then LyIsSq = True: Exit Function
+Dim X$(): X = LvsSy("?SEL SEL ?SELDIS SELDIS UPD DRP")
+If HasOneOfPfxIgnCas(L, X) Then LyIsSq = True: Exit Function
 End Function
 
 Private Function PmLnxAy_PmRslt(A() As Lnx) As PmRslt
@@ -400,7 +402,8 @@ Dim ValidatedPmLy$()
     ValidatedPmLy = LnxAy_WhByExclErIxAy(A, ErIx)
 Dim O As PmRslt
 O.Er = Er
-Set O.Pm = LinesDicLy_LinesDic(ValidatedPmLy)
+Stop
+'Set O.Pm = LinesDicLy_LinesDic(ValidatedPmLy)
 PmLnxAy_PmRslt = O
 End Function
 
@@ -572,7 +575,8 @@ End Function
 
 Private Function SqRst_Gp$(A$, EDic As Dictionary)
 Dim ExprAy$(), Ay$()
-    ExprAy = DicSelIntoSy(EDic, Ay)
+Stop
+'    ExprAy = DicSelIntoSy(EDic, Ay)
 SqRst_Gp = SqpGp(ExprAy)
 End Function
 
@@ -895,9 +899,6 @@ Private Function SwWrkDic_Sw(A As Dictionary) As Sw
 
 End Function
 
-Private Function SyOf_SqBlkLinOnePfx() As String()
-SyOf_SqBlkLinOnePfx = LvsSy("?SEL SEL ?SELDIS SELDIS UPD DRP")
-End Function
 
 Private Function TpEr_Add3(A1 As TpEr, A2 As TpEr, A3 As TpEr) As TpEr
 Dim O As TpEr
@@ -913,7 +914,8 @@ Private Function ZZMd() As CodeModule
 End Function
 
 Private Function ZZPm() As Dictionary
-Set ZZPm = NewLyDic(ZZPmLy)
+Stop
+'Set ZZPm = NewLyDic(ZZPmLy)
 End Function
 
 Private Function ZZPmLy() As String()

@@ -56,7 +56,7 @@ B_Oy = Oy
 Set Init = Me
 End Property
 Property Get InitByColl(A As VBA.Collection) As Oy
-B_Oy = Coll(A).Ay
+B_Oy = Collx(A).Ay
 Set InitByColl = Me
 End Property
 

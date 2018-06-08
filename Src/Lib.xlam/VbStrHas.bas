@@ -7,7 +7,10 @@ For Each I In PfxAy
    If HasPfx(A, I) Then HasOneOfPfx = True: Exit Function
 Next
 End Function
-
+Function HasOneOfPfxIgnCas_PfxLvs(A, PfxLvs$) As Boolean
+Dim Sy$(): Sy = LvsSy(PfxLvs)
+If HasOneOfPfxIgnCas(A, Sy) Then HasOneOfPfxIgnCas_PfxLvs = True: Exit Function
+End Function
 Function HasOneOfPfxIgnCas(A, PfxAy) As Boolean
 Dim I
 For Each I In PfxAy

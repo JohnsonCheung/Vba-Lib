@@ -26,6 +26,9 @@ End Property
 Property Get LnxAy() As Lnx1()
 LnxAy = B_Ay
 End Property
+Property Get Dic() As Dictionary
+Set Dic = Vb.Ly(Me.Ly).Dic
+End Property
 Property Get LnxsAy(LinPfx$) As Lnx1s()
 Dim O() As Lnx1s, J&, M As New Lnx1s
 For J = 0 To U
@@ -42,6 +45,9 @@ For J = 0 To U
 Next
 LnxsAy = O
 End Property
+Function ValidatePfxAndDupT1(Pfx$) As LnxsRslt
+Stop
+End Function
 Friend Property Get Init(Ay() As Lnx1) As Lnx1s
 B_Ay = Ay
 Set Init = Me

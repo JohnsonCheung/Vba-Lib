@@ -2,7 +2,7 @@ Attribute VB_Name = "Fs"
 Option Explicit
 Private O$() ' Used by PthEntAyR
 
-Function DftFfn(Ffn0$, Optional Ext$ = ".txt", Optional Pth0$, Optional Fdr$)
+Function DftFfn(Ffn0, Optional Ext$ = ".txt", Optional Pth0$, Optional Fdr$)
 If Ffn0 <> "" Then DftFfn = Ffn0: Exit Function
 Dim Pth$: Pth = DftPth(Pth0)
 DftFfn = Pth & TmpNm & Ext
@@ -72,6 +72,9 @@ End Sub
 
 Function FtLines$(Ft)
 FtLines = Fso.GetFile(Ft).OpenAsTextStream.ReadAll
+End Function
+Function FtDic(Ft) As Dictionary
+Set FtDic = Ly(FtLy(Ft)).Dic
 End Function
 
 Function FtLy(Ft) As String()
@@ -247,6 +250,9 @@ End Function
 
 Function TmpFx$(Optional Fdr$, Optional Fnn$)
 TmpFx = TmpFfn(".xlsx", Fdr, Fnn)
+End Function
+Function TmpFxa$(Optional Fdr$, Optional Fnn$)
+TmpFxa = TmpFfn(".xlam", Fdr, Fnn)
 End Function
 
 Function TmpNm$()

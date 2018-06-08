@@ -8,8 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Public FldDic As New Dic, TblDic As New Dic
-
+Public Fld As New Dictionary, Tbl As New Dictionary
 Property Get ToStr$()
-ToStr = Tag_NyStr_ObjAp("Sw", "FldDic TblDic", FldDic, TblDic)
+ToStr = Tag_NyStr_ObjAp("Sw", "Fld Tbl", Dix(Fld), Dix(Tbl))
 End Property

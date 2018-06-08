@@ -42,7 +42,7 @@ End Function
 Function SrcCmpLy(A1$(), A2$()) As String()
 Dim D1 As Dictionary: Set D1 = SrcDic(A1)
 Dim D2 As Dictionary: Set D2 = SrcDic(A2)
-Dim Rslt As DCRslt: Rslt = DicCmpRslt(D1, D2)
+Dim Rslt As DCRslt: Rslt = Dix(D1).Cmp(D2)
 SrcCmpLy = DCRsltLy(Rslt, "Bef-Srt", "Aft-Srt")
 End Function
 
@@ -583,7 +583,7 @@ End Sub
 
 Private Sub ZZ_SrcDic()
 Dim Act() As S1S2
-Act = DicS1S2Ay(SrcDic(ZZSrc))
+Act = Dix(SrcDic(ZZSrc)).S1S2Ay
 AyBrw S1S2Ay_FmtLy(Act)
 'LinesDic_Brw SrcDic(ZZSrc)
 End Sub

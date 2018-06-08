@@ -20,10 +20,31 @@ Property Get LnxAy() As Lnx1()
 Dim O() As Lnx1
 Dim J%
 For J = 0 To U
-    PushObj O, Lnx(B_Ly(J), J)
+    PushObj O, Vb.Lnx(B_Ly(J), J)
 Next
 LnxAy = O
 End Property
+
+Property Get Dic(Optional JnSep$ = vbCrLf) As Dictionary
+Const CSub$ = "Ly.Dic"
+Dim O As New Dictionary
+   If AyIsEmp(B_Ly) Then Set Dic = O: Exit Property
+   Dim I
+   For Each I In B_Ly
+       If Trim(I) = "" Then GoTo Nxt
+       If FstChr(I) = "#" Then GoTo Nxt
+       With Brk(I, " ")
+           If O.Exists(.S1) Then
+               O(.S1) = O(.S1) & JnSep & .S2
+           Else
+               O.Add .S1, .S2
+           End If
+       End With
+Nxt:
+   Next
+Set Dic = O
+End Property
+
 Property Get Init(Ly$()) As Ly
 B_Ly = Ly
 Set Init = Me

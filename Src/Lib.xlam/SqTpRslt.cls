@@ -8,7 +8,14 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
-Public Sql$, Er As New Er, Tp$
+Public Stmts$, Tp$
+Private B_Er$()
+Property Let Er(V$())
+B_Er = V
+End Property
+Property Get Er() As String()
+Er = B_Er
+End Property
 Property Get ToStr$()
-ToStr = Tag_NyStr_ObjAp("SqTpRslt", "Sql Tp Er", StrObj(Sql), StrObj(Tp), Er)
+ToStr = Tag_NyStr_ObjAp("SqTpRslt", "Stmts Tp Er", StrObj(Stmts), StrObj(Tp), SyObj(Er))
 End Property

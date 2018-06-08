@@ -66,7 +66,7 @@ End Function
 Function PjSrtCmpRptWb(A As VBProject, Optional Vis As Boolean) As Workbook
 Dim A1 As MdSrtRpt
 A1 = PjMdSrtRpt(A)
-Dim O As Workbook: Set O = LyDic_Wb(A1.RptDic)
+Dim O As Workbook: Set O = Dix(A1.RptDic).Wb
 Dim Ws As Worksheet
 Set Ws = WbAddWs(O, "Md Idx", IsBeg:=True)
 Dim Lo As ListObject: Set Lo = DtLo(A1.MdIdxDt, WsA1(Ws))
@@ -86,7 +86,7 @@ Dim A1 As Dictionary
 Dim B1 As Dictionary
 Set A1 = SrcDic(A)
 Set B1 = SrcDic(B)
-SrcSrtCmpRslt = DicCmpRslt(A1, B1)
+SrcSrtCmpRslt = Dix(A1).Cmp(B1)
 End Function
 
 Function SrcSrtedBdyLines$(A$())

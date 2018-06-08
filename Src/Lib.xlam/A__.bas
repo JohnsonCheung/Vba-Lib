@@ -38,7 +38,7 @@ Next
 IsAllRemarked = True
 End Function
 Private Function CurPj() As VBProject
-Set CurPj = Application.VBE.ActiveVBProject
+Set CurPj = Application.Vbe.ActiveVBProject
 End Function
 Private Property Get MbrAy() As CodeModule()
 Dim O() As CodeModule, I, Cmp As VBComponent

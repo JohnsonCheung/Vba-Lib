@@ -193,7 +193,8 @@ DrsBrw PjMthNmDrs(CurPj)
 End Sub
 
 Function PjMthNmDrs(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".") As Drs
-Dim O(): O = DotNy_Dry(Pjx(A).MthNy(CmpTyAy0, MthNmPatn, MdNmPatn))
+Dim MthNy$(): MthNy = Pjx(A).MthNy(CmpTyAy0, MthNmPatn, MdNmPatn)
+Dim O(): O = DotNy_Dry(MthNy)
 Stop
 PjMthNmDrs = NewDrs("Md Mth", O)
 End Function

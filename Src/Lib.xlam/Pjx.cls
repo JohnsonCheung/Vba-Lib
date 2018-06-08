@@ -9,13 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A As VBProject
-Property Get Init(Pj As VBProject) As Pjx
+Property Get Init(Pj) As Pjx
 Set A = Pj
 Set Init = Me
 End Property
-Function Nm$()
+Property Get Nm$()
 Nm = A.Name
-End Function
+End Property
 Sub Sort()
 Dim M As CodeModule, I
 For Each I In MbrAy
@@ -24,32 +24,40 @@ For Each I In MbrAy
 Next
 End Sub
 
-Function Pj() As VBProject
+Property Get Pj() As VBProject
 Set Pj = A
-End Function
+End Property
 
-Function Str$()
-Str = Nm
-End Function
-Function AddMd(MdNm$) As CodeModule
+Property Get ToStr$()
+ToStr = Nm
+End Property
+Property Get IsFxa() As Boolean
+IsFxa = LCase(FfnExt(Me.Ffn)) = ".xlam"
+End Property
+Property Get IsUsrLib() As Boolean
+IsUsrLib = True
+If IsFxa Then Exit Property
+IsUsrLib = True
+End Property
+Property Get AddMd(MdNm$) As CodeModule
 Dim O As VBComponent
 Set O = A.VBComponents.Add(vbext_ct_StdModule)
 O.Name = MdNm
 Set AddMd = O.CodeModule
-End Function
+End Property
 
 Sub AddRf(RfNm, PjFfn)
 If HasRf(RfNm) Then Exit Sub
 A.References.AddFromFile PjFfn
 End Sub
 
-Function ClsAy(Optional NmPatn$ = ".") As CodeModule()
+Property Get ClsAy(Optional NmPatn$ = ".") As CodeModule()
 ClsAy = MdAy(NmPatn, CmpTyAyOfCls)
-End Function
+End Property
 
-Function ClsNy(Optional NmPatn$ = ".") As String()
+Property Get ClsNy(Optional NmPatn$ = ".") As String()
 ClsNy = Oy(ClsAy(NmPatn)).Ny
-End Function
+End Property
 
 Sub CpyToSrc()
 FfnCpyToPth A.Filename, SrcPth, OvrWrt:=True
@@ -94,10 +102,10 @@ Private Sub ExpSrc()
 'CpyToSrc A
 End Sub
 
-Function Ffn$()
+Property Get Ffn$()
 On Error Resume Next
 Ffn = A.Filename
-End Function
+End Property
 
 Sub ImpSrcFfn(SrcFfn)
 A.VBComponents.Import SrcFfn
@@ -109,31 +117,31 @@ For Each I In MdAy
    MdRmvOptCmpDb CvMd(I)
 Next
 End Sub
-Function HasMd(MdNm$) As Boolean
+Property Get HasMd(MdNm$) As Boolean
 Dim Cmp As VBComponent
 For Each Cmp In A.VBComponents
     If MdNm = Cmp.Name Then
         HasMd = True
-        Exit Function
+        Exit Property
     End If
 Next
-End Function
+End Property
 
-Function HasMdNm(MdNm$) As Boolean
+Property Get HasMdNm(MdNm$) As Boolean
 Dim I
 Dim Cmp As VBComponent
 For Each I In A.VBComponents
     Set Cmp = I
-    If Cmp.Name = MdNm Then HasMdNm = True: Exit Function
+    If Cmp.Name = MdNm Then HasMdNm = True: Exit Property
 Next
-End Function
+End Property
 
-Function HasRf(RfNm)
+Property Get HasRf(RfNm)
 Dim RF As VBIde.Reference
 For Each RF In A.References
-    If RF.Name = RfNm Then HasRf = True: Exit Function
+    If RF.Name = RfNm Then HasRf = True: Exit Property
 Next
-End Function
+End Property
 
 Sub ImpRf(RfCfgPth$)
 Dim B As Dictionary: Set B = FtDic(RfCfgPth & "PjRf.Cfg")
@@ -143,45 +151,45 @@ For Each K In B.Keys
 Next
 End Sub
 
-Function IsUnderSrcPth() As Boolean
+Property Get IsUnderSrcPth() As Boolean
 If PthFdr(Pth) = "Src" Then Stop
-End Function
+End Property
 
-Function MbrAy(Optional NmPatn$ = ".") As CodeModule()
+Property Get MbrAy(Optional NmPatn$ = ".") As CodeModule()
 Dim Ay() As vbext_ComponentType
 MbrAy = ZMbrAy(Ay, NmPatn)
-End Function
+End Property
 
-Function MbrNy(Optional NmPatn$ = ".") As String()
+Property Get MbrNy(Optional NmPatn$ = ".") As String()
 MbrNy = Oy(MdAy(NmPatn)).Ny
-End Function
+End Property
 
-Function MdAy(Optional NmPatn$ = ".", Optional CmpTyAy0) As CodeModule()
+Property Get MdAy(Optional NmPatn$ = ".", Optional CmpTyAy0) As CodeModule()
 Dim Ay() As vbext_ComponentType
 Ay = DftCmpTyAy(CmpTyAy0)
 MdAy = ZMbrAy(Ay, NmPatn)
-End Function
+End Property
 
-Function MdAyOfStd(Optional NmPatn$ = ".") As CodeModule()
+Property Get MdAyOfStd(Optional NmPatn$ = ".") As CodeModule()
 MdAyOfStd = MdAy(NmPatn, CmpTyAyOfStd)
-End Function
+End Property
 
-Function MdNy(Optional NmPatn$ = ".", Optional CmpTyAy0) As String()
+Property Get MdNy(Optional NmPatn$ = ".", Optional CmpTyAy0) As String()
 MdNy = Oy(MdAy(NmPatn, CmpTyAy0)).Ny
-End Function
+End Property
 
-Function MdNyOfStd(Optional NmPatn$ = ".") As String()
+Property Get MdNyOfStd(Optional NmPatn$ = ".") As String()
 MdNyOfStd = MdNy(NmPatn, CmpTyAyOfStd)
-End Function
+End Property
 
-Function MthDrs(Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Drs
+Property Get MthDrs(Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Drs
 Dim Fny$()
     Fny = FnyOfMthDrs(WithBdyLy, WithBdyLines)
 MthDrs.Fny = Fny
 MthDrs.Dry = MthDry(WithBdyLy, WithBdyLines)
-End Function
+End Property
 
-Function MthDry(Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Variant()
+Property Get MthDry(Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Variant()
 Dim Dry()
     Dim I, Md As CodeModule
     For Each I In MdAy
@@ -189,9 +197,9 @@ Dim Dry()
         PushAy Dry, MdMthDry(Md, WithBdyLy, WithBdyLines)
     Next
 MthDry = Dry
-End Function
+End Property
 
-Function MthLinDry() As Variant()
+Property Get MthLinDry() As Variant()
 Dim I, Md As CodeModule, O()
 For Each I In MbrAy
     Set Md = I
@@ -201,43 +209,43 @@ For Each I In MbrAy
     PushAy O, Dry
 Next
 MthLinDry = O
-End Function
+End Property
 
 Sub ZZ_MthNy()
 AyBrw Pjx(CurPj).MthNy
 End Sub
-Function MthNy(Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = ".") As String()
+Property Get MthNy(Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = ".") As String()
 Dim CmpTyAy() As vbext_ComponentType
     CmpTyAy = DftCmpTyAy(CmpTyAy0)
 Dim O$(), I, M As CodeModule, Ay$(), Ny$()
 Ny = AySrt(MdNy(MdNmPatn))
-If AyIsEmp(Ny) Then Exit Function
+If AyIsEmp(Ny) Then Exit Property
 For Each I In Ny
     Set M = Md(CStr(I))
     PushAy O, AyAddPfx(MdMthNy(M, MthNmPatn), MdNm(M) & Sep)
 Next
 MthNy = O
-End Function
+End Property
 
-Function PatnLy(Patn$) As String()
+Property Get PatnLy(Patn$) As String()
 Dim I, Md As CodeModule, O$()
 For Each I In MdAy
    Set Md = I
    PushAy O, MdPatnLy(Md, Patn)
 Next
 PatnLy = O
-End Function
+End Property
 
-Function Pth$()
+Property Get Pth$()
 Pth = FfnPth(A.Filename)
-End Function
+End Property
 
-Function ReadRfCfg() As String()
+Property Get ReadRfCfg() As String()
 Const CSub$ = "PjReadRfCfg"
 Dim B$: B = RfCfgFfn
 If Not FfnIsExist(B) Then Er CSub, "{Pj-Rf-Cfg-Fil} not found", B
 ReadRfCfg = FtLy(B)
-End Function
+End Property
 
 Sub RenMdByPfx(FmMdPfx$, ToMdPfx$)
 Dim DftNy$()
@@ -257,27 +265,27 @@ Dim I%, U%
     Next
 End Sub
 
-Function RfAy() As VBIde.Reference()
+Property Get RfAy() As VBIde.Reference()
 Dim RF As VBIde.Reference, O() As VBIde.Reference
 For Each RF In A.References
     Push O, RF
 Next
 RfAy = O
-End Function
+End Property
 
 Sub RfBrw()
 AyBrw RfLy
 End Sub
 
-Function RfCfgFfn$()
+Property Get RfCfgFfn$()
 RfCfgFfn = SrcPth & "PjRf.Cfg"
-End Function
+End Property
 
 Sub RfDmp()
 AyDmp RfLy
 End Sub
 
-Function RfLy() As String()
+Property Get RfLy() As String()
 Dim O$()
 Dim R() As VBIde.Reference
 R = RfAy
@@ -288,7 +296,7 @@ For J = 0 To UB(Ny)
     Push O, Ny(J) & " " & RfPth(R(J))
 Next
 RfLy = O
-End Function
+End Property
 
 Sub RmvMdNmPfx(Pfx$)
 Dim I, Md As CodeModule
@@ -298,42 +306,42 @@ For Each I In MdAy("^" & Pfx)
 Next
 End Sub
 
-Function SrcPth$()
+Property Get SrcPth$()
 Dim Fn$: Fn = FfnFn(Ffn)
 Dim O$:
 O = FfnPth(A.Filename) & "Src\": PthEns O
 O = O & Fn & "\":                PthEns O
 SrcPth = O
-End Function
+End Property
 
 Sub SrcPthBrw()
 PthBrw SrcPth
 End Sub
 
-Function TyNy(Optional TyNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = vbTab) As String()
+Property Get TyNy(Optional TyNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = vbTab) As String()
 Dim O$(), I, M As CodeModule, Ay$(), Ny$()
 Ny = AySrt(MdNy(MdNmPatn))
-If AyIsEmp(Ny) Then Exit Function
+If AyIsEmp(Ny) Then Exit Property
 For Each I In Ny
     Set M = Md(CStr(I))
     PushAy O, AyAddPfx(MdTyNy(M, TyNmPatn), MdNm(M) & Sep)
 Next
 TyNy = O
-End Function
+End Property
 
-Private Function CmpTyAyOfCls() As vbext_ComponentType()
+Private Property Get CmpTyAyOfCls() As vbext_ComponentType()
 Dim T(0) As vbext_ComponentType
 T(0) = vbext_ct_ClassModule
 CmpTyAyOfCls = T
-End Function
+End Property
 
-Private Function CmpTyAyOfStd() As vbext_ComponentType()
+Private Property Get CmpTyAyOfStd() As vbext_ComponentType()
 Dim Ay(0) As vbext_ComponentType
 Ay(0) = vbext_ct_StdModule
 CmpTyAyOfStd = Ay
-End Function
+End Property
 
-Private Function ZMbrAy(MbrTyAy() As vbext_ComponentType, Optional NmPatn$ = ".") As CodeModule()
+Private Property Get ZMbrAy(MbrTyAy() As vbext_ComponentType, Optional NmPatn$ = ".") As CodeModule()
 Dim O() As CodeModule
 Dim Cmp As VBComponent
 Dim NmRe As Re: Set NmRe = Re(NmPatn)
@@ -350,17 +358,17 @@ For Each Cmp In A.VBComponents
 X:
 Next
 ZMbrAy = O
-End Function
+End Property
 
-Function EnsMd(MdNm$, Optional Ty As vbext_ComponentType = vbext_ct_StdModule) As CodeModule
+Property Get EnsMd(MdNm$, Optional Ty As vbext_ComponentType = vbext_ct_StdModule) As CodeModule
 If Not HasMd(MdNm) Then
     Set EnsMd = CrtMd(MdNm, Ty)
 Else
     Set EnsMd = Md(MdNm)
 End If
-End Function
+End Property
 
-Function SrcDrs() As Drs
+Property Get SrcDrs() As Drs
 'PjSrcDry is 2 col dry with columns MdNm and SrcLin-Class
 Dim O(), L%, I, N$, M As CodeModule, S
 For Each I In MdAy
@@ -373,14 +381,14 @@ For Each I In MdAy
     Next
 Next
 SrcDrs = NewDrs("Md Lx Src", O)
-End Function
+End Property
 
 Sub GoMdNm(MdNm$, Optional ClsOth As Boolean)
 If ClsOth Then WinClsCd
 Md(MdNm).CodePane.Show
 End Sub
 
-Function Md(MdNm) As CodeModule
+Property Get Md(MdNm) As CodeModule
 Set Md = A.VBComponents(MdNm).CodeModule
-End Function
+End Property
 

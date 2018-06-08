@@ -208,7 +208,7 @@ Set ParseToDic = O
 End Function
 
 Function ParseToLy(A As Parse) As String()
-ParseToLy = DicToLy(ParseToDic(A))
+ParseToLy = Dix(ParseToDic(A)).Ly
 End Function
 
 Function SrcLin_EndLinPfx$(A)

@@ -13,7 +13,7 @@ Private B_Nm As String
 Private B_OpStr As String
 Private B_TermAy() As String
 Private B_Pm As Dictionary
-Friend Property Get Init(A As Lnx, Pm As Dictionary) As SwLnx
+Friend Property Get Init(A As Lnx1, Pm As Dictionary) As SwLnx
 B_Lx = A.Lx
 Set B_Pm = Pm
 With ABC(A.Lin)

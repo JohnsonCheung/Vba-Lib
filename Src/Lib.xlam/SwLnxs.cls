@@ -24,9 +24,9 @@ End Type
 Private B_Ay() As SwLnx
 Private B_Pm As Dictionary
 
-Property Get Init(A() As Lnx, Pm As Dictionary) As SwLnxs
+Property Get Init(A() As Lnx1, Pm As Dictionary) As SwLnxs
 Dim M As SwLnx, J%
-For J = 0 To LnxUB(A)
+For J = 0 To UB(A)
     Set M = New SwLnx
     PushObj B_Ay, M.Init(A(J), Pm)
 Next
@@ -99,11 +99,11 @@ Dim E1$(), E2$(), E3$()
     E1 = R1.ErLy
     E2 = R2.ErLy
     E3 = R3.ErLy
-Dim Er As New Er
-    Er.PushErLy0Ap E1, E2, E3
+Dim E$()
+    E = Ly0Ap_Ly(E1, E2, E3)
 Dim O As New SwRslt
 With O
-    Set .Er = Er
+    .ErLy = E
     Set .Sw = R3.Sw
 End With
 Set Rslt = O
@@ -131,7 +131,7 @@ End With
 End Function
 
 Private Function Rslt_2(A() As SwLnx) As SwErLy
-Dim Sw As New Sw
+Dim Sw As New Dictionary
 Dim Ay() As SwLnx
     Dim M As Evl
     Dim J%
@@ -147,8 +147,12 @@ Dim Ay() As SwLnx
     Wend
 With Rslt_2
     .ErLy = Rslt_4(Ay)
-    Set .Sw = Sw
+    Set .Sw = Rslt_5(Sw)
 End With
+End Function
+Private Function Rslt_5(A As Dictionary) As Sw
+Stop
+Set Rslt_5 = New Sw
 End Function
 Private Function Rslt_4(LeftOvr() As SwLnx) As String()
 'Return ErLy for each of the LeftOvr
@@ -158,7 +162,8 @@ Private Function Rslt_3(A() As SwLnx, Sw As Dictionary) As Evl
 Dim OAy() As SwLnx
 Dim OHasEvl As Boolean
 Dim OSw As New Dictionary
-    Set OSw = DicClone(Sw)
+Stop
+'    Set OSw = DicClone(Sw)
     Dim I%, J%, SomLinEvaluated As Boolean
     SomLinEvaluated = True
     While SomLinEvaluated

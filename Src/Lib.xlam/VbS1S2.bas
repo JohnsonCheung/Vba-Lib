@@ -65,6 +65,15 @@ With NewS1S2Opt
 End With
 End Function
 
+Function S1S2Ay_Dic(A() As S1S2) As Dictionary
+Dim J&, O As New Dictionary
+For J = 0 To S1S2_UB(A)
+    With A(J)
+        O.Add .S1, .S2
+    End With
+Next
+Set S1S2Ay_Dic = O
+End Function
 Function S1S2AyStr_Dic(A$) As Dictionary
 Set S1S2AyStr_Dic = S1S2Ay_Dic(S1S2AyStr_S1S2Ay(A))
 End Function

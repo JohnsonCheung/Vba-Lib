@@ -139,19 +139,19 @@ DrLin = Quote(Join(O, " | "), "| * |")
 End Function
 
 Sub DrecBrw(A As Drec)
-DicBrw DrecDic(A)
+DrecDix(A).Brw
 End Sub
 
-Function DrecDic(A As Drec) As Dictionary
+Function DrecDix(A As Drec) As Dix
 Dim J%, O As New Dictionary
 For J = 0 To UB(A.Fny)
    O.Add A.Fny(J), A.Dr(J)
 Next
-Set DrecDic = O
+Set DrecDix = Dix(O)
 End Function
 
 Sub DrecDmp(A As Drec)
-DicDmp DrecDic(A)
+DrecDix(A).Dmp
 End Sub
 
 Function DrsAddConstCol(A As Drs, ColNm$, ConstVal) As Drs

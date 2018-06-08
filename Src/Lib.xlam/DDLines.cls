@@ -27,7 +27,8 @@ Function FmtLy() As String()
 Dim O$(), K1, D2 As Dictionary
 For Each K1 In A
     Set D2 = Dic2(K1)
-    PushAy O, AyAddPfx(DicLy(D2, Opt:=e_KeyLinesFmt), K1 & " ")
+    Stop
+'    PushAy O, AyAddPfx(DicLy(D2, Opt:=e_KeyLinesFmt), K1 & " ")
 Next
 FmtLy = O
 End Function
@@ -51,13 +52,15 @@ End Function
 
 Function KKLines$(K1, K2)
 Dim D2 As Dictionary: Set D2 = Dic2(K1): If IsNothing(D2) Then Exit Function
-KKLines = DicVal(D2, CStr(K2))
+Stop
+'KKLines = DicVal(D2, CStr(K2))
 End Function
 
 Function Ky2(K1) As String()
 Dim D2 As Dictionary: Set D2 = Dic2(K1)
 If IsNothing(D2) Then Exit Function
-Ky2 = DicKeySy(D2)
+Stop
+'Ky2 = DicKeySy(D2)
 End Function
 
 Private Sub AddKKLin(K1$, K2$, Lin$)
@@ -77,7 +80,8 @@ If A.Exists(K1) Then
         D2.Add K2, Lin
     End If
 Else
-    Set D2 = NewDic
+Stop
+'    Set D2 = NewDic
     D2.Add K2, Lin
     A.Add K1, D2
 End If

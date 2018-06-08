@@ -75,13 +75,13 @@ Function Oy(ObjAy) As Oy
 Dim O As New Oy
 Set Oy = O.Init(ObjAy)
 End Function
-Property Get Dic(A As Dictionary) As Dic
-Dim O As New Dic
-Set Dic = O.Init(A)
+Property Get Dix(A As Dictionary) As Dix
+Dim O As New Dix
+Set Dix = O.Init(A)
 End Property
-Property Get Coll(A As VBA.Collection) As Coll
-Dim O As New Coll
-Set Coll = O.Init(A)
+Property Get Collx(A As VBA.Collection) As Collx
+Dim O As New Collx
+Set Collx = O.Init(A)
 End Property
 
 Function Tag$(TagNm$, S)
@@ -135,18 +135,6 @@ Sub Ass(A As Boolean)
 Debug.Assert A
 End Sub
 
-Function CmpTy_Str$(A As vbext_ComponentType)
-Dim O$
-Select Case A
-Case vbext_ComponentType.vbext_ct_ActiveXDesigner: O = "ActiveXDesigner"
-Case vbext_ComponentType.vbext_ct_ClassModule: O = "Class"
-Case vbext_ComponentType.vbext_ct_Document: O = "Doc"
-Case vbext_ComponentType.vbext_ct_MSForm: O = "MsForm"
-Case vbext_ComponentType.vbext_ct_StdModule: O = "Md"
-Case Else: O = "Unknown(" & A & ")"
-End Select
-CmpTy_Str = O
-End Function
 
 Function CollObjAy(Coll) As Object()
 Dim O() As Object
@@ -244,7 +232,7 @@ Property Get TblNm(A) As TblNm
 Dim O As New TblNm
 Set TblNm = O.Init(A)
 End Property
-Property Get TblNms(Ny0) As TblNms
+Property Get TblNms(Ny0) As TblNm
 Dim O As New TblNms
 Set TblNms = O.Init(Ny0)
 End Property
