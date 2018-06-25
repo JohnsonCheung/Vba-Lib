@@ -1,0 +1,13 @@
+Attribute VB_Name = "M_Const"
+Option Explicit
+Public Const M_Val_IsNonNum$ = "Lx(?) has Val(?) should be a number"
+Public Const M_Val_IsNonLng$ = "Lx(?) has Val(?) should be a 'Long' number"
+Public Const M_Val_ShouldBet$ = "Lx(?) has Val(?) should be between [?] and [?]"
+Public Const M_Fld_IsInValid$ = "Lx(?) Fld(?) is invalid.  Not found in Fny"
+Public Const M_Fld_IsDup$ = "Lx(?) Fld(?) is found duplicated in Lx(?).  This item is ignored"
+Public Const M_Nm_LinHasNoVal$ = "Lx(?) is Nm-Lin, it has no value"
+Public Const M_Nm_NoNmLin$ = "Nm-Lin is missing"
+Public Const M_Nm_ExcessLin$ = "LX(?) is excess due to Nm-Lin is found above"
+Public Const M_Should_Lng$ = "Lx(?) Fld(?) should have val(?) be a long number"
+Public Const M_Should_Num$ = "Lx(?) Fld(?) should have val(?) be a number"
+Public Const M_Should_Bet$ = "Lx(?) Fld(?) should have val(?) be between (?) and (?)"
