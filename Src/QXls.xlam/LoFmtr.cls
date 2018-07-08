@@ -20,6 +20,53 @@ Private A_Lvl() As CnoVal
 Private A_Tit() As CnoVal
 Private A_Wdt() As CnoVal
 
+Property Get AvgCny() As String()
+AvgCny = A_AvgCny
+End Property
+
+Property Get BdrCnoAy() As Integer()
+BdrCnoAy = A_BdrCnoAy
+End Property
+
+Property Get CntCny() As String()
+CntCny = A_CntCny
+End Property
+
+Property Get HidCnoAy() As Integer()
+HidCnoAy = A_HidCnoAy
+End Property
+
+Property Get SumCny() As String()
+SumCny = A_SumCny
+End Property
+
+Property Get ToStr$()
+Stop '
+'Dim O$()
+'Push O, Tag("SumCny", SyObj(ASumCny))
+'Push O, Tag("AvgCny", SyObj(A_AvgCny))
+'Push O, Tag("CntCny", SyObj(A_CntCny))
+'Push O, Tag("BdrCnoAy", IntAyObj(A_BdrCnoAy))
+'Push O, Tag("HidCnoAy", IntAyObj(A_HidCnoAy))
+'Push O, Tag("Bet", Bet)
+'Push O, Tag("Cor", Cor)
+'Push O, Tag("Fml", Fml)
+'Push O, Tag("Fmt", Fmt)
+'Push O, Tag("Lbl", Lbl)
+'Push O, Tag("Lvl", Lvl)
+'Push O, Tag("Tit", Tit)
+'Push O, Tag("Wdt", Wdt)
+'Const A$ = "SumCny AvgCny CntCny " & _
+'"BdrCnoAy HidCnoAy " & _
+'"Bet Cor Fml Fmt " & _
+'"Lbl Lvl Tit Wdt"
+'ToStr = Tag_NyStr_ObjAp("FmtWs", A, _
+'SyObj(A_SumCny), SyObj(A_SumCny), SyObj(A_CntCny), _
+'IntAyObj(A_BdrCnoAy), IntAyObj(A_HidCnoAy), _
+'Bet, Cor, Fml, Fmt, _
+'Lbl, Lvl, Tit, Wdt)
+End Property
+
 Friend Property Get Init(SumCny$(), AvgCny$(), _
 CntCny$(), BdrCnoAy%(), HidCnoAy%(), _
 Bet() As CnoVal, Cor() As CnoVal, _
@@ -41,44 +88,3 @@ A_Tit = Tit
 A_Wdt = Wdt
 Set Init = Me
 End Property
-Property Get SumCny() As String()
-SumCny = A_SumCny
-End Property
-Property Get AvgCny() As String()
-AvgCny = A_AvgCny
-End Property
-Property Get CntCny() As String()
-CntCny = A_CntCny
-End Property
-Property Get BdrCnoAy() As Integer()
-BdrCnoAy = A_BdrCnoAy
-End Property
-Property Get HidCnoAy() As Integer()
-HidCnoAy = A_HidCnoAy
-End Property
-Property Get ToStr$()
-Dim O$()
-Push O, Tag("SumCny", SyObj(ASumCny))
-Push O, Tag("AvgCny", SyObj(A_AvgCny))
-Push O, Tag("CntCny", SyObj(A_CntCny))
-Push O, Tag("BdrCnoAy", IntAyObj(A_BdrCnoAy))
-Push O, Tag("HidCnoAy", IntAyObj(A_HidCnoAy))
-Push O, Tag("Bet", Bet)
-Push O, Tag("Cor", Cor)
-Push O, Tag("Fml", Fml)
-Push O, Tag("Fmt", Fmt)
-Push O, Tag("Lbl", Lbl)
-Push O, Tag("Lvl", Lvl)
-Push O, Tag("Tit", Tit)
-Push O, Tag("Wdt", Wdt)
-Const A$ = "SumCny AvgCny CntCny " & _
-"BdrCnoAy HidCnoAy " & _
-"Bet Cor Fml Fmt " & _
-"Lbl Lvl Tit Wdt"
-ToStr = Tag_NyStr_ObjAp("FmtWs", A, _
-SyObj(A_SumCny), SyObj(A_SumCny), SyObj(A_CntCny), _
-IntAyObj(A_BdrCnoAy), IntAyObj(A_HidCnoAy), _
-Bet, Cor, Fml, Fmt, _
-Lbl, Lvl, Tit, Wdt)
-End Property
-

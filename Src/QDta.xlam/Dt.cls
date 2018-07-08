@@ -13,7 +13,7 @@ Private A_Dry() As Variant
 
 Friend Property Get Init(DtNm$, Fny0, Dry()) As Dt
 A_Dry = Dry
-A_Fny = DftFny(Fny0)
+A_Fny = DftNy(Fny0)
 A_DtNm = DtNm
 Set Init = Me
 End Property

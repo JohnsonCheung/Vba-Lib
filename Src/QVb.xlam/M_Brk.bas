@@ -130,12 +130,6 @@ If P = 0 Then Err.Raise "BrkRev: Str[" & A & "] does not contains Sep[" & Sep & 
 BrkRev = BrkAt(A, P, Len(Sep), NoTrim)
 End Property
 
-Property Get Quote$(A, QuoteStr$)
-With BrkQuote(QuoteStr)
-    Quote = .S1 & A & .S2
-End With
-End Property
-
 Sub BrkAsg(A, Sep, O1$, O2$, Optional NoTrim As Boolean)
 Brk(A, Sep, NoTrim).Asg O1, O2
 End Sub

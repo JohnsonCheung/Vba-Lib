@@ -20,16 +20,8 @@ Property Get Sy1() As String()
 Sy1 = A_Sy1
 End Property
 
-Property Let Sy1(V$())
-A_Sy1 = V
-End Property
-
 Property Get Sy2() As String()
 Sy2 = A_Sy2
-End Property
-
-Property Let Sy2(V$())
-A_Sy2 = V
 End Property
 
 Property Get ToStr$()

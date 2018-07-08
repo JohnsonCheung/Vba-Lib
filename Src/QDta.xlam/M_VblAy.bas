@@ -5,7 +5,7 @@ If AyIsEmp(VblLy) Then Exit Property
 Dim O()
    Dim I
    For Each I In VblLy
-       Push O, SyTrim(SplitVBar(CStr(I)))
+       Push O, AyTrim(SplitVBar(CStr(I)))
    Next
 VblLy_Dry = O
 End Property

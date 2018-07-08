@@ -19,7 +19,7 @@ Lx = A_Lx
 End Property
 
 Property Get ToStr$()
-ToStr = FmtQQ("Lnx(?: ?", A_Lx, A_Lin)
+ToStr = FmtQQ("Lnx(?: ?)", A_Lx, A_Lin)
 End Property
 
 Friend Property Get Init(Lin, Lx%) As Lnx

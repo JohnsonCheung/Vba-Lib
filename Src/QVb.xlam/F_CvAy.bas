@@ -1,4 +1,4 @@
-Attribute VB_Name = "M_Ay_Cv"
+Attribute VB_Name = "F_CvAy"
 Option Explicit
 
 Property Get AyBoolAy(Ay) As Boolean()

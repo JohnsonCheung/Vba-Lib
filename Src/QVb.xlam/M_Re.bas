@@ -24,14 +24,14 @@ Property Get ReTst(A As RegExp, S) As Boolean
 ReTst = A.Test(S)
 End Property
 
-Sub ZZ_ReMatch()
+Private Sub ZZ_ReMatch()
 Dim A As MatchCollection
 Dim R  As RegExp: Set R = Re("m[ae]n")
 Set A = ReMatch(R, "alskdflfmensdklf")
 Stop
 End Sub
 
-Sub ZZ_ReRpl()
+Private Sub ZZ_ReRpl()
 Dim R As RegExp: Set R = Re("(.+)(m[ae]n)(.+)")
 Dim Act$: Act = ReRpl(R, "a men is male", "$1male$3")
 Ass Act = "a male is male"

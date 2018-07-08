@@ -20,51 +20,13 @@ Case Else: Stop
 End Select
 DaoTy_Str = O
 End Function
-Property Get Dbt(Db As Dao.Database, T) As Dbt
-Dim O As New Dbt
-Set Dbt = O.Init(Db, T)
-End Property
 Sub DbBrw(A As Database)
 Dim N$: N = A.Name
 A.Close
-Fb(N).Brw
+Stop '
+'FbBrw N
 End Sub
 
-Sub DbCrtTbl(A As Database, T, FldDclAy)
-A.Execute FmtQQ("Create Table [?] (?)", T, JnComma(FldDclAy))
-End Sub
-
-Sub DbEnsTmp1Tbl(A As Database)
-If DbHasTbl(A, "Tmp1") Then Exit Sub
-DbqRun A, "Create Table Tmp1 (AA Int, BB Text 10)"
-End Sub
-
-Function DbHasTbl(A As Database, T) As Boolean
-DbHasTbl = A.OpenRecordset("Select Name from MSysObjects where Type in (1,6) and Name='?'").EOF
-End Function
-
-Sub DbLnkFb(A As Database, Fb$, Tny0, Optional SrcTny0)
-Dim Tny$(): Tny = DftNy(Tny0)              ' Src_Tny
-Dim Src$(): Src = DftNy(Dft(SrcTny0, Tny0)) ' Tar_Tny
-Ass Sz(Tny) > 0
-Ass AyPair_IsEqSz(Src, Tny)
-Dim J%
-For J = 0 To UB(Tny)
-    Dbt(A, Tny(J)).LnkFb Fb, Src(J)
-Next
-End Sub
-
-Sub DbLnkFx(A As Database, Fx$, Optional WsNy0)
-Dim WsNy$(): WsNy = Xls.Fx(Fx).DftWsNy(WsNy0)
-Dim J%
-For J = 0 To UB(WsNy)
-   Dbt(A, WsNy(J)).LnkFxWs Fx
-Next
-End Sub
-
-Function DbQny(A As Database) As String()
-DbQny = DbqSy(A, "Select Name from MSysObjects where Type=5 and Left(Name,4)<>'MSYS' and Left(Name,4)<>'~sq_'")
-End Function
 
 Sub DbSqlAy_Run(A As Database, SqlAy$())
 If AyIsEmp(A) Then Exit Sub
@@ -87,7 +49,7 @@ End With
 End Function
 
 Function DbTF_IsPk(A As Database, T, F) As Boolean
-DbTF_IsPk = AyHas(Dbt(A, T).Pk, F)
+DbTF_IsPk = AyHas(DbtPk(A, T), F)
 End Function
 
 Function DbTF_NxtId&(A As Database, T, Optional F)

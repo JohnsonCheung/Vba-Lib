@@ -1,12 +1,12 @@
 Attribute VB_Name = "M_Ds"
 Option Explicit
 
-Function Wb(Optional Vis As Boolean) As Workbook
+Property Get DsWb(A As Ds, Optional Vis As Boolean) As Workbook
 Dim O As Workbook
 Set O = NewWb
 With WbFstWs(O)
    .Name = "Ds"
-   .Range("A1").Value = B_DsNm
+   .Range("A1").Value = A.DsNm
 End With
 Stop '
 'If Not DsIsEmp(A) Then
@@ -16,8 +16,8 @@ Stop '
 '   Next
 'End If
 If Vis Then WbVis O
-Set Wb = O
-End Function
+Set DsWb = O
+End Property
 
 Function Ws(Optional Hid As Boolean) As Worksheet
 Dim O As Worksheet: Set O = NewWs(Vis:=Not Hid)
@@ -57,21 +57,20 @@ Sub DsDmp(A As Ds)
 AyDmp DsLy(A)
 End Sub
 
-Function DsHasDt(A As Ds, DtNm) As Boolean
-If DsIsEmp(A) Then Exit Function
+Property Get DsHasDt(A As Ds, DtNm) As Boolean
+If DsIsEmp(A) Then Exit Property
+Dim Ay() As Dt: Ay = A.DtAy
 Dim J%
-Stop '
-'For J = 0 To UBound(A.DtAy)
-'    If A.DtAy(J).DtNm = DtNm Then DsHasDt = True: Exit Function
-'Next
-End Function
+For J = 0 To UB(Ay)
+    If Ay(J).DtNm = DtNm Then DsHasDt = True: Exit Property
+Next
+End Property
 
-Function DsIsEmp(A As Ds) As Boolean
-Stop '
-'DsIsEmp = DtAy_IsEmp(A.DtAy)
-End Function
+Property Get DsIsEmp(A As Ds) As Boolean
+DsIsEmp = Sz(A.DtAy) = 0
+End Property
 
-Function DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As String()
+Property Get DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As String()
 Dim O$()
 Stop '
 '    Push O, "*Ds " & A.DsNm & "=================================================="
@@ -88,6 +87,6 @@ Stop
 '    Next
 'End If
 'DsLy = O
-End Function
+End Property
 
 

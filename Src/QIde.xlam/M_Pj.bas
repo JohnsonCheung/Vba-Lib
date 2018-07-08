@@ -15,28 +15,24 @@ For Each I In MbrAy
 Next
 End Sub
 
-Property Get Pj() As VBProject
-Set Pj = A
+Property Get PjIsFxa(A As VBProject) As Boolean
+PjIsFxa = LCase(FfnExt(PjFfn(A))) = ".xlam"
 End Property
 
-Property Get ToStr$()
-ToStr = Nm
+Property Get PjIsUsrLib(A As VBProject) As Boolean
+PjIsUsrLin = PjIsFxa(A)
 End Property
-Property Get IsFxa() As Boolean
-Stop '
-'IsFxa = LCase(FfnExt(Me.Ffn)) = ".xlam"
-End Property
-Property Get IsUsrLib() As Boolean
-IsUsrLib = True
-If IsFxa Then Exit Property
-IsUsrLib = True
-End Property
-Property Get AddMd(MdNm$) As CodeModule
+Sub PjCrtMd(A As VBProject, Nm$)
+PjCrtCmp A, Nm, vbext_ct_StdModule
+End Sub
+
+Sub PjCrtCmp(A As VBProject, Nm$, Ty As vbext_ComponentType)
+If PjHasCmp(A, Nm) Then Stop
 Dim O As VBComponent
 Set O = A.VBComponents.Add(vbext_ct_StdModule)
-O.Name = MdNm
-Set AddMd = O.CodeModule
-End Property
+O.Name = Nm
+O.CodeModule.InsertLines 1, "Option Explicit"
+End Sub
 
 Sub AddRf(RfNm, PjFfn)
 If HasRf(RfNm) Then Exit Sub
@@ -375,9 +371,7 @@ Else
     Set EnsMd = Md(MdNm)
 End If
 End Property
-Property Get MdxAy() As Mdx()
-'Stop
-End Property
+
 Property Get SrcDrs() As Drs
 'PjSrcDry is 2 col dry with columns MdNm and SrcLin-Class
 Dim O(), L%, I, N$, M As Mdx, S
@@ -424,8 +418,8 @@ Next
 Stop
 End Function
 
-Function Pjx(PjNm$) As Pjx
-Set Pj1 = Application.Vbe.VBProjects(PjNm)
+Function Pj(PjNm$) As VBProject
+Set Pj = CurVbe.VBProjects(PjNm)
 End Function
 
 Function PjAddMd(A As VBProject, MdNm$) As CodeModule
@@ -451,21 +445,6 @@ End Function
 Sub PjCpyToSrc(A As VBProject)
 FfnCpyToPth A.Filename, PjSrcPth(A), OvrWrt:=True
 End Sub
-
-Function PjCrtMd(A As VBProject, Optional MdNm$, Optional Ty As vbext_ComponentType = vbext_ct_StdModule) As CodeModule
-If MdNm <> "" Then
-    If PjHasMd(A, MdNm) Then
-        Er "NewMd", "Given {MdNm} exist", MdNm
-        Exit Function
-    End If
-End If
-Dim O As VBComponent: Set O = A.VBComponents.Add(Ty)
-EnsMdExplicit O.Name
-If MdNm <> "" Then
-    O.Name = MdNm
-End If
-Set PjCrtMd = O.CodeModule
-End Function
 
 Function PjDltMd(A As VBProject, MdNm$) As Boolean
 If Not PjHasMd(A, MdNm) Then Exit Function

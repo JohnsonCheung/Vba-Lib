@@ -1,9 +1,8 @@
 Attribute VB_Name = "M_Dt"
 Option Explicit
 
-
 Sub DtBrw(A As Dt, Optional Fnn$)
-AyBrw DtLy(A), Dft(Fnn, DtNm)
+AyBrw DtLy(A), Dft(Fnn, A.DtNm)
 End Sub
 
 Property Get DtCsvLy(A As Dt) As String()
@@ -21,66 +20,57 @@ AyDmp DtLy(A)
 End Sub
 
 Property Get DtDrpCol(A As Dt, ColNy0, Optional DtNm$) As Dt
-Dim A As Drs: Set A = DrsDrpCol(ColNy0)
-DrpCol = Dt(Dft(DtNm, Me.DtNm), A.Fny, A.Dry)
+Dim A1 As Drs: Set A1 = DrsDrpCol(DtDrs(A), ColNy0)
+Set DtDrpCol = Dt(Dft(DtNm, A.DtNm), A1.Fny, A1.Dry)
 End Property
 Property Get DtLy(A As Dt, Optional MaxColWdt& = 100, Optional BrkColNm$, Optional ShwZer As Boolean) As String()
 Dim O$()
-   Push O, "*Tbl " & DtNm
-   PushAy O, Drs.Ly(MaxColWdt, BrkColNm, ShwZer)
-Ly = O
+   Push O, "*Tbl " & A.DtNm
+   PushAy O, DrsLy(DtDrs(A), MaxColWdt, BrkColNm, ShwZer)
+DtLy = O
 End Property
 Function DtAt_NxtAt(A As Dt, At As Range, J%) As Range
 At.Value = "(" & J & ") " & A.DtNm
 Set At = RgRC(At, 2, 1)
-Dim Ly$(): Ly = A.Drs.Ly
+Dim Ly$(): Ly = DrsLy(DtDrs(A))
 AyRgV Ly, At
 Set At = RgRC(At, 1 + Sz(Ly), 1)
 Set DtAt_NxtAt = At
 End Function
-Function PutWb(A As Workbook) As Worksheet
+Function DtPutWb(A As Dt, Wb As Workbook) As Worksheet
 Dim O As Worksheet
-Set O = WbAddWs(A, DtNm)
-Drs.Lo WsA1(O), DtNm
-Set WbAddDt = O
+Set O = WbAddWs(Wb, A.DtNm)
+DrsLo DtDrs(A), WsA1(O), A.DtNm
+Set DtPutWb = O
 End Function
 
-Property Get Lo(At As Range) As ListObject
+Property Get DtLo(A As Dt, At As Range) As ListObject
 Dim R As Range
 If At.Row = 1 Then
     Set R = RgRC(At, 2, 1)
 Else
     Set R = At
 End If
-Set Lo = Drs.Lo(R, A.DtNm)
+Set DtLo = DrsLo(DtDrs(A), R, A.DtNm)
 RgRC(R, 0, 1).Value = A.DtNm
 End Property
 
-Property Get Ws(Optional Vis As Boolean) As Worksheet
+Property Get DtWs(A As Dt, Optional Vis As Boolean) As Worksheet
 Dim O As Worksheet
 Set O = NewWs(A.DtNm)
-Drs.Lo WsA1(O)
-Set Ws = O
+DrsLo DtDrs(A), WsA1(O)
+Set DtWs = O
 If Vis Then WsVis O
 End Property
 
-Function DtNmDrs_Dt(A$, Drs As Drs) As Dt
-With DtNmDrs_Dt
-    .DtNm = A
-    .Fny = Drs.Fny
-    .Dry = Drs.Dry
-End With
-End Function
-Property Get ReOrd(ColNy0) As Dt
+Property Get DtReOrd(A As Dt, ColNy0) As Dt
 Dim ReOrdFny$(): ReOrdFny = DftNy(ColNy0)
 Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
 Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
-Dim ODry(): ODry = Drx.ReOrd(IxAy)
-Dim O As New Dt
-Set ReOrd = O.Init(DtNm, OFny, ODry)
+Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
+Set DtReOrd = Dt(A.DtNm, OFny, ODry)
 End Property
 
-Property Get Srt(ColNm$, Optional IsDes As Boolean) As Dt
-Set Srt = DtByDrs(DtNm, Drs.Srt(ColNm, IsDes))
+Property Get DtSrt(A As Dt, ColNm$, Optional IsDes As Boolean) As Dt
+Set DtSrt = Dt(A.DtNm, A.Fny, DrsSrt(DtDrs(A), ColNm, IsDes).Dry)
 End Property
-

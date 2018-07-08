@@ -26,6 +26,11 @@ Dim O As New FmToPos
 Set FmToPos = O.Init(FmPos, ToPos)
 End Property
 
+Property Get Gp(A() As Lnx) As Gp
+Dim O As New Gp
+Set Gp = O.Init(A)
+End Property
+
 Property Get IntAyObj(Ay%()) As IntAyObj
 Dim O As New IntAyObj
 Set IntAyObj = O.Init(Ay)
@@ -41,7 +46,7 @@ Dim O As New LABCAyRslt
 Set LABCAyRslt = O.Init(A, ErLy)
 End Property
 
-Property Get Lnx(Lin$, Lx%) As Lnx
+Property Get Lnx(Lin, Lx%) As Lnx
 Dim O As New Lnx
 Set Lnx = O.Init(Lin, Lx)
 End Property
@@ -127,11 +132,6 @@ End Property
 Property Get StrRslt(S, ErLy$()) As StrRslt
 Dim O As New StrRslt
 Set StrRslt = O.Init(S, ErLy)
-End Property
-
-Property Get Sy(A$()) As Sy
-Dim O As New Sy
-Set Sy = O.Init(A)
 End Property
 
 Property Get SyObj(Sy$()) As SyObj

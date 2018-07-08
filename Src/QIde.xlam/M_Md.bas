@@ -1,19 +1,8 @@
 Attribute VB_Name = "M_Md"
 Option Explicit
-
-Property Get CurMd() As VBIDE.CodeModule
-Set CurMd = CurCdPne.CodeModule
-End Property
-
-Property Get CurMdNm$()
-Stop '
-'CurMdNm = MdNm(CurMd)
-End Property
-
-Private A As CodeModule
-Private Type MdMth
+Private Type Mth
     Md As CodeModule
-    MthNm As String
+    Nm As String
 End Type
 
 Private Type DicPair
@@ -519,12 +508,8 @@ With A
     .InsertLines Lno, NewLin
 End With
 End Sub
-Sub MdMthDotNm_Go(A$)
-With MdMthDotNm_Brk(A)
-    MdMth_Go .Md, .MthNm
-End With
-End Sub
-Private Function MdMthDotNm_Brk(A$) As MdMth
+
+Private Function MthDotNm_Mth(A$) As Mth
 Dim O As MdMth
 With Brk(A, ".")
     Stop
@@ -658,24 +643,5 @@ Stop
 'A = MdMth_LnoCntAy(Md("Md_"), "XXX")
 'MdRmvLnoCntAy Md("Md_"), A
 End Sub
-
-
-
-Property Get Init(Md As CodeModule) As Mdx
-Set A = Md
-Set Init = Me
-End Property
-
-Property Get Nm$()
-Nm = A.Parent.Name
-End Property
-
-Property Get Md() As CodeModule
-Set Md = A
-End Property
-
-Function Search$(RegExpStr)
-Stop
-End Function
 
 

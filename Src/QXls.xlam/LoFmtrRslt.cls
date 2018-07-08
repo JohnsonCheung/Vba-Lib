@@ -10,22 +10,25 @@ Attribute VB_Exposed = True
 Option Explicit
 Private A_Ly$()
 Private A_ErLy$()
-Public WsFmtr As WsFmtr
-Friend Property Get Init(Ly$(), ErLy$(), WsFmtr As WsFmtr) As LoFmtrRslt
-A_Ly = Ly
-Set A_ErLy = ErLy
-Set A_WsFmtr = WsFmtr
-Set Init = Me
+Public LoFmtr As LoFmtr
+
+Property Get ErLy() As String()
+ErLy = A_ErLy
 End Property
 
 Property Get Ly() As String()
 Ly = A_Ly
 End Property
 
-Property Get ErLy() As String()
-ErLy = A_ErLy
+Property Get ToStr$()
+Stop '
+'ToStr = Tag_NyStr_ObjAp("LoFmtrRslt", "Ly LoFmtr Er", SyObj(A_Ly), A_LoFmtr, SyObj(A_ErLy))
 End Property
 
-Property Get ToStr$()
-ToStr = Tag_NyStr_ObjAp("LoFmtrRslt", "Ly WsFmtr Er", SyObj(A_Ly), A_WsFmtr, SyObj(A_ErLy))
+Friend Property Get Init(Ly$(), ErLy$(), LoFmtr As LoFmtr) As LoFmtrRslt
+Stop '
+'A_Ly = Ly
+'Set A_ErLy = ErLy
+'Set A_LoFmtr = LoFmtr
+'Set Init = Me
 End Property

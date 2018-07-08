@@ -26,13 +26,6 @@ End Select
 SimTyStr_SimTy = O
 End Property
 
-Property Get SampleDt() As Dt
-Dim O As Dt
-O.DtNm = "Sample"
-Dim Dry(): Dry = Array(Array(1, 2, 3), Array(3, 4, 5))
-O.Dry = Dry
-O.Fny = SslSy("A B C")
-End Property
 
 Sub SetPush(A As Dictionary, K)
 If A.Exists(K) Then Exit Sub

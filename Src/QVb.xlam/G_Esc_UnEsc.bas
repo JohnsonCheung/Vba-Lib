@@ -1,4 +1,4 @@
-Attribute VB_Name = "M_Esc"
+Attribute VB_Name = "G_Esc_UnEsc"
 Option Explicit
 
 Property Get Esc$(A, Fm$, ToStr$)

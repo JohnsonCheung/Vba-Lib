@@ -1,13 +1,18 @@
 Attribute VB_Name = "M_Is"
-Function IsSimTyLvs(A$) As Boolean
+Option Explicit
+Property Get IsSimTySsl(A) As Boolean
 Dim Ay$(): Ay = SslSy(A)
-If AyIsEmp(Ay) Then Exit Function
+If AyIsEmp(Ay) Then Exit Property
 Dim I
 For Each I In Ay
-    Stop '
-'   If Not IsSimTyStr(Ay) Then Exit Function
+    If Not IsSimTyStr(Ay) Then Exit Function
 Next
-IsSimTyLvs = True
-End Function
+IsSimTySsl = True
+End Property
 
+Property Get IsSimTyStr(A) As Boolean
+Select Case UCase(A)
+Case "TXT", "NBR", "LGC", "DTE", "OTH": IsSimTyStr = True
+End Select
+End Property
 

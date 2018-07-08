@@ -1,25 +1,8 @@
-VERSION 1.0 CLASS
-BEGIN
-  MultiUse = -1  'True
-END
-Attribute VB_Name = "Dbt"
-Attribute VB_GlobalNameSpace = False
-Attribute VB_Creatable = False
-Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = False
+Attribute VB_Name = "M_Dbt"
 Option Explicit
-Private A As Dao.Database
-Private T$
-Friend Sub Tst()
-Pk__Tst
-End Sub
-Friend Property Get Init(Db As Database, TblNm) As Dbt
-Set A = Db
-T = TblNm
-Set Init = Me
-End Property
-Function StruLin$(Optional SkipTn As Boolean)
-Dim O$(): O = Me.Fny: If AyIsEmp(O) Then Exit Function
+
+Property Get DbtStruLin$(A As Database, T, Optional SkipTn As Boolean)
+Dim O$(): O = Me.Fny: If AyIsEmp(O) Then Exit Property
 O = FnyQuote(O, Me.Pk)
 O = FnyQuoteIfNeed(O)
 Dim J%, V
@@ -33,25 +16,25 @@ If SkipTn Then
 Else
    StruLin = T & " = " & JnSpc(O)
 End If
-End Function
+End Property
 
-Function Exist() As Boolean
+Property Get DbtExist(A As Database, T) As Boolean
 Exist = Not A.OpenRecordset("Select Name from MSysObjects where Type in (1,6) and Name='?'").EOF
-End Function
+End Property
 
-Function Flds() As Dao.Fields
+Property Get DbtFlds(A As Database, T) As Dao.Fields
 Set Flds = A.TableDefs(T).Fields
-End Function
+End Property
 
-Function Fny() As String()
+Property Get DbtFny(A As Database, T) As String()
 Fny = FldsFny(A.TableDefs(T).Fields)
-End Function
+End Property
 
-Function FxOfLnkTbl$()
+Property Get DbtFxOfLnkTbl$(A As Database, T)
 FxOfLnkTbl = TakBet(A.TableDefs(T).Connect, "Database=", ";")
-End Function
+End Property
 
-Sub LnkFb(Fb$, Optional SrcT0$)
+Sub DbtLnkFb(A As Database, T, Fb$, Optional SrcT0$)
 Dim Src$: Src = Dft(SrcT0, T)
 Dim Tbl  As TableDef
 Set Tbl = A.CreateTableDef(T)
@@ -60,45 +43,38 @@ Tbl.Connect = ";DATABASE=?" & Fb
 Drp
 A.TableDefs.Append Tbl
 End Sub
-Sub Brw()
+Sub DbtBrw(A As Database, T)
 DtBrw Dt
 End Sub
-Property Get IsExist() As Property
-IsExist = A.OpenRecordset("Select Name from MSysObjects where Type in (1,6) and Name='?'").EOF
+
+Property Get DbtDes$(A As Database, T)
+Des = PrpVal(A.TableDefs(T).Properties, "Description")
 End Property
 
-Function Des$()
-Des = PrpVal(A.TableDefs(T).Properties, "Description")
-End Function
-
-Sub Drp()
-If IsExist Then A.Execute FmtQQ("Drop Table [?]", T)
+Sub DbtDrp(A As Database, T)
+If DbtIsExist(A, T) Then A.Execute FmtQQ("Drop Table [?]", T)
 End Sub
-Private Sub Pk__Tst()
+Private Sub ZZ_DbtPk()
 Set A = SampleDb_DutyPrepare
 Dim Dr(), Dry(), T
 For Each T In DbTny(A)
     Erase Dr
     Push Dr, T
-    PushAy Dr, DaoX.Dbt(A, CStr(T)).Pk
+    PushAy Dr, DbtPk(A, T)
     Push Dry, Dr
 Next
 DryBrw Dry
 End Sub
-Function HasFld(F) As Boolean
-Ass Dbt(A, T).IsExist
-HasFld = TblHasFld(A.TableDefs(T), F)
-End Function
+Property Get DbtHasFld(A As Database, T, F) As Boolean
+Ass DbtIsExist(A, T)
+DbtHasFld = TblHasFld(A.TableDefs(T), F)
+End Property
 
-Function Dt() As Dt
-Dim O As Dt
-O.DtNm = T
-O.Dry = RsDry(A.TableDefs(T).OpenRecordset)
-O.Fny = Fny
-Dt = O
-End Function
+Property Get DbtDt(A As Database, T) As Dt
+Set DbtDt = Dt(T, DbtFny(A, T), RsDry(A.TableDefs(T).OpenRecordset))
+End Property
 
-Sub LnkFxWs(Fx$, Optional WsNm0)
+Sub DbtLnkFxWs(Fx$, Optional WsNm0)
 Const CSub$ = "ATLnkFxWs"
 Dim WsNm$: WsNm = Dft(WsNm0, T)
 On Error GoTo X
@@ -112,10 +88,10 @@ Exit Sub
 X: Er CSub, "{Er} found in Creating {T} in {Db} by Linking {WsNm} in {Fx}", Err.Description, T, A.Name, WsNm0, Fx
 End Sub
 
-Function Pk() As String()
+Property Get DbtPk(A As Database, T) As String()
 Dim I  As Index, O$(), F
 On Error GoTo X
-If A.TableDefs(T).Indexes.Count = 0 Then Exit Function
+If A.TableDefs(T).Indexes.Count = 0 Then Exit Property
 On Error GoTo 0
 For Each I In A.TableDefs(T).Indexes
    If I.Primary Then
@@ -123,16 +99,16 @@ For Each I In A.TableDefs(T).Indexes
            Push O, F.Name
        Next
        Pk = O
-       Exit Function
+       Exit Property
    End If
 Next
 X:
-End Function
+End Property
 
-Function TblFInfDry() As Variant()
+Property Get DbtTblFInfDry() As Variant()
 Dim O(), F, Dr(), Fny$()
 Fny = Me.Fny
-If AyIsEmp(Fny) Then Exit Function
+If AyIsEmp(Fny) Then Exit Property
 Dim SeqNo%
 SeqNo = 0
 For Each F In Fny
@@ -143,28 +119,28 @@ For Each F In Fny
     Push O, Dr
 Next
 TblFInfDry = O
-End Function
+End Property
 
-Function RecCnt&()
+Property Get DbtRecCnt&()
 RecCnt = DbqV(A, FmtQQ("Select Count(*) from [?]", T))
-End Function
-Function DftFny(Optional Fny0) As String()
+End Property
+Property Get DbtDftFny(Optional Fny0) As String()
 If IsMissing(Fny0) Then
    DftFny = Me.Fny
 Else
    DftFny = DftNy(Fny0)
 End If
-End Function
+End Property
 
 
-Sub AddFld(F, Ty As DataTypeEnum)
+Sub DbtAddFld(F, Ty As DataTypeEnum)
 Dim FF As New Dao.Field
 FF.Name = F
 FF.Type = Ty
 Flds.Append FF
 End Sub
 
-Function SimTyAy(Optional Fny0) As eSimTy()
+Property Get DbtSimTyAy(Optional Fny0) As eSimTy()
 Dim Fny$(): Fny = DftFny(Fny0)
 Dim O() As eSimTy
    Dim U%
@@ -176,9 +152,10 @@ Dim O() As eSimTy
        J = J + 1
    Next
 SimTyAy = O
-End Function
+End Property
 
-Function Ws() As Worksheet
+Property Get DbtWs() As Worksheet
 Set Ws = DtWs(Me.Dt)
-End Function
+End Property
+
 

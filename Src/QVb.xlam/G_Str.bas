@@ -1,4 +1,4 @@
-Attribute VB_Name = "M_Str"
+Attribute VB_Name = "G_Str"
 Option Explicit
 
 Property Get AlignL$(A, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
@@ -19,19 +19,6 @@ If W > L Then
 Else
     AlignR = S
 End If
-End Property
-
-Property Get AyTrim(A) As String()
-If AyIsEmp(A) Then Exit Property
-Dim U&
-    U = UB(A)
-Dim O$()
-    Dim J&
-    ReDim O(U)
-    For J = 0 To U
-        O(J) = Trim(A(J))
-    Next
-AyTrim = O
 End Property
 
 Property Get FstChr$(A)
@@ -80,6 +67,12 @@ End Property
 
 Property Get PrependDash$(S)
 PrependDash = Prepend(S, "-")
+End Property
+
+Property Get Quote$(A, QuoteStr$)
+With BrkQuote(QuoteStr)
+    Quote = .S1 & A & .S2
+End With
 End Property
 
 Property Get RTrimWhite$(S)

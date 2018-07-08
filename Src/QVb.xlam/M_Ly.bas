@@ -36,6 +36,26 @@ For J = UB(A) To 0 Step -1
 Next
 End Property
 
+Property Get LyGpAy(A$(), LinPfx$) As Gp()
+Dim J%, O() As Lnx, M() As Lnx
+For J = 0 To UB(A)
+    Dim Lin$
+    Lin = A(J)
+    If HasPfx(Lin, LinPfx) Then
+        If Sz(M) > 0 Then
+            PushObjAy O, M
+        End If
+        Erase M
+    Else
+        PushObj M, Lnx(Lin, J)
+    End If
+Next
+If Sz(M) > 0 Then
+    PushObjAy O, M
+End If
+LyGpAy = Gp(O)
+End Property
+
 Property Get LyHasMajPfx(A$(), MajPfx$) As Boolean
 Dim Cnt%, J%
 For J = 0 To UB(A)
@@ -44,26 +64,12 @@ Next
 LyHasMajPfx = Cnt > (Sz(A) \ 2)
 End Property
 
-Property Get LyLnxsAy(A$(), LinPfx$) ' As Lnxs()
-Stop '
-'Dim J%, O() As Lnxs, LnxAy() As Lnx
-'For J = 0 To UB(A)
-'    Dim Lin$
-'    Lin = A(J)
-'    If HasPfx(Lin, LinPfx) Then
-'        If Sz(LnxAy) > 0 Then
-'            'PushObj O, Lnxs(LnxAy)
-'        End If
-'        Erase LnxAy
-'    Else
-'        PushObj LnxAy, Lnx(Lin, J)
-'    End If
-'Next
-'If Sz(LnxAy) > 0 Then
-'Stop '
-''    PushObj O, Lnxs(LnxAy)
-'End If
-'LyLnxsAy = O
+Property Get LyLnxAy(A$()) As Lnx()
+Dim O() As Lnx, J%
+For J = 0 To UB(A)
+    PushObj O, Lnx(A(J), J)
+Next
+LyLnxAy = O
 End Property
 
 Property Get LyRmv2Dash(A$()) As String()
@@ -91,10 +97,6 @@ Else
 End If
 End Property
 
-Property Get Ly_LABCLy(A$())
-
-End Property
-
 Property Get Ly_T1Rst_SyPair(A$()) As SyPair
 Dim J&, T1$(), Rst$()
 For J = 0 To UB(A)
@@ -103,8 +105,5 @@ For J = 0 To UB(A)
         Push Rst, .Rst
     End With
 Next
-With Ly_T1Rst_SyPair
-    .Sy1 = T1
-    .Sy2 = Rst
-End With
+Set Ly_T1Rst_SyPair = SyPair(T1, Rst)
 End Property

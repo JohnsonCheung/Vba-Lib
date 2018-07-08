@@ -588,11 +588,11 @@ AyBrw S1S2Ay_FmtLy(Act)
 'LinesDic_Brw SrcDic(ZZSrc)
 End Sub
 
-Sub ZZ_SrcMthDry1()
+Private Sub ZZ_SrcMthDry1()
 DryBrw SrcMthDry(ZZSrc, "IdeSrc")
 End Sub
 
-Sub ZZ_SrcMthLxAy1()
+Private Sub ZZ_SrcMthLxAy1()
 Dim Src$(): Src = MdSrc(Md("DaoDb"))
 Dim Ay$(): Ay = AyWhIxAy(Src, SrcMthLxAy(Src))
 AyBrw Ay
@@ -604,7 +604,7 @@ Dim Act$()
    AyBrw Act
 End Sub
 
-Sub SrcMth_BdyLy__Tst()
+Private Sub ZZ_SrcMth_BdyLy()
 Dim Src$(): Src = ZZSrc
 Dim MthNm$: MthNm = "A"
 Dim Act$()

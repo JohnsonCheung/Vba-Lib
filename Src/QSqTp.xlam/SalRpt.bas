@@ -65,7 +65,7 @@ Const ElseCaseWhen$ = "|Else Case When"
 Dim CrdTyAy%()
     CrdTyAy = AyIntAy(SslSy(CrdTyLvs))
     Dim StdCrdTyAy%()
-    StdCrdTyAy = Dry_Sel_DisIntCol(CrdPfxTyDry, 1) ' 1 is colIx which is CrdTyId
+    StdCrdTyAy = DryBy_Ay_and_Const(CrdPfxTyDry, 1) ' 1 is colIx which is CrdTyId
     Dim NotExistIdAy%()
         NotExistIdAy = AyMinus(CrdTyAy, StdCrdTyAy)
         If Not AyIsEmp(NotExistIdAy) Then

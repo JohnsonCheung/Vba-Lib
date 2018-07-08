@@ -1,9 +1,17 @@
 Attribute VB_Name = "M_Sq"
 Option Explicit
-Property Get SqTranspose() As Variant()
+Property Get SqNRow&(A)
+On Error Resume Next
+SqNRow = UBound(A, 1)
+End Property
+Property Get SqNCol&(A)
+On Error Resume Next
+SqNCol = UBound(A, 2)
+End Property
+Property Get SqTranspose(A) As Variant()
 Dim NRow&, NCol&
-NRow = Me.NRow
-NCol = Me.NCol
+NRow = SqNRow(A)
+NCol = SqNCol(A)
 Dim O(), J&, I&
 ReDim O(1 - NCol, 1 To NRow)
 For J = 1 To NRow
@@ -11,27 +19,19 @@ For J = 1 To NRow
         O(I, J) = A(J, I)
     Next
 Next
-Transpose = Sqx(O).Sq
+SqTranspose = O
 End Property
-Sub SqBrw()
-Stop '
+Sub SqBrw(A)
+DryBrw SqDry(A)
 End Sub
-Property Get SqNCol%(A)
-On Error Resume Next
-NCol = UBound(A, 2)
-End Property
 Property Get SqRg(A, At As Range, Optional LoNm$) As Range
-If IsEmp Then Set Rg = At.Cells(1, 1): Exit Property
+If Sz(A) = 0 Then Set SqRg = At.Cells(1, 1): Exit Property
 Dim O As Range
-Set O = RgReSz(At, Sq)
-O.Value = Sq
-Set Rg = O
+Set O = RgReSz(At, A)
+O.Value = A
+Set SqRg = O
 End Property
 
-Property Get SqNRow&(A)
-On Error Resume Next
-NRow = UBound(A, 1)
-End Property
 Property Get TitAy_Sq(TitAy$()) As Variant()
 Dim UFld%: UFld = UB(TitAy)
 Dim ColVBar()
@@ -64,50 +64,37 @@ Push A, "ksdf | skdfj  |skldf jf"
 Push A, "skldf|sdkfl|lskdf|slkdfj"
 Push A, "askdfj|sldkf"
 Push A, "fskldf"
-SqxByTitAy(A).Brw
+SqBrw TitAy_Sq(A)
 End Sub
 
-Property Get SqSel(Optional MapStr$) As Drs
-Stop '
-Dim Fny$(), Fm$() 'MapStr
-   If MapStr = "" Then
-       Fny = AySy(SqDr(Sq, 1))
-       Fm = Fny
-   Else
-        Stop '
-'       With S1S2AyStr_SyPair(MapStr)
-'           Fny = .Sy1
-'           Fm = .Sy2
-'       End With
-   End If
-Dim SqCnoAy%() 'Fm,Sq
-   Dim A&()
+Property Get DrsSel(A As Drs, SelFny0, Optional AsFny0) As Drs
+Dim SelFny$()
+Dim AsFny$()
+    SelFny = DftNy(SelFny0)
+    AsFny = DftNy(AsFny0)
+    If Sz(AsFny) = 0 Then
+        AsFny = SelFny
+    Else
+        If Sz(SelFny) <> Sz(AsFny) Then Stop
+    End If
+
+Dim CIxAy%()
+Dim Dry()
+   Dry = A.Dry
+   Dim Ay&()
    Dim U%
    Dim J%
-   A = AyIxAy(SqDr(Sq, 1), Fm)
+   Stop '
+'   Ay = AyIxAy(Dry(0), Fm)
    U = UB(A)
-   ReDim SqCnoAy(U)
+   ReDim CIxAy(U)
    For J = 0 To U
-       SqCnoAy(J) = A(J) + 1
+       CIxAy(J) = Ay(J)
    Next
-Dim Dry() 'Sq,SqIxAy
-   Dim R&, Cno%, C%
-   Dim UFld%
-   Dim Ix%
-   Dim Dr()
-   UFld = UB(SqCnoAy)
-   For R = 2 To UBound(Sq, 1)
-       ReDim Dr(UFld)
-       For C = 0 To UFld
-           Cno = SqCnoAy(C)
-           If Cno > 0 Then
-               Dr(C) = A(R, Cno)
-           End If
-       Next
-       Push Dry, Dr
-   Next
-SqSel.Dry = Dry
-SqSel.Fny = Fny
+Dim O()
+    Dim R&
+    For R = 0 To UBound(Dry)
+        Push O, AyWhIxAy(Dry(R), CIxAy)
+    Next
+Set DrsSel = Drs(AsFny, O)
 End Property
-
-

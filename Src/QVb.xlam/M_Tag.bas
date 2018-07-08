@@ -8,23 +8,20 @@ If HasPfx(S, TagNm & "(") Then
         Exit Property
     End If
 End If
-Stop
 If Has(S, vbCrLf) Then
-'    Tag = FmtQQ("?(|?|?)", TagNm, S, TagNm)
+    Tag = FmtQQ("?(|?|?)", TagNm, S, TagNm)
 Else
-'    Tag = FmtQQ("?(?)", TagNm, S)
+    Tag = FmtQQ("?(?)", TagNm, S)
 End If
 End Property
 
 Property Get Tag_NyStr_ObjAp$(TagNm$, NyStr$, ParamArray ObjAp())
 Dim Av(): Av = ObjAp
-Stop
-'Tag_NyStr_ObjAp = Tag_Ny_ObjAv(TagNm, SslSy(NyStr), Av)
+Tag_NyStr_ObjAp = Tag_Ny_ObjAv(TagNm, SslSy(NyStr), Av)
 End Property
 
 Private Property Get Tag_Ny_ObjAv$(TagNm$, Ny$(), ObjAv())
-Stop
-'Ass AyIsSamSz(Ny, ObjAv)
+Ass AyIsSamSz(Ny, ObjAv)
 Dim S$
     Dim O$()
     Dim A$, N%
@@ -37,7 +34,6 @@ Dim S$
         End Select
         Push O, Tag(Ny(J), A)
     Next
-Stop
-'    S = JnCrLf(O)
+    S = JnCrLf(O)
 Tag_Ny_ObjAv = Tag(TagNm, S)
 End Property

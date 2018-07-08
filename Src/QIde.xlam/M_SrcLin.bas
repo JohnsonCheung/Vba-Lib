@@ -11,13 +11,6 @@ Function FriendMthLin$()
 If IsMth Then FriendMthLin = "Friend " & NoMdy
 End Function
 
-Property Get Init(Lin) As SrcLin
-A = Lin
-Dim NoMdy$: NoMdy = LTrim(RmvPfxAy(A, SyOfMdy))
-A_IsMth = HasOneOfPfx(NoMdy, SyOfMthTy)
-Set Init = Me
-End Property
-
 Property Get IsPrpLin() As Boolean
 IsPrpLin = HasPfx(NoMdy, C_Prp)
 End Property
@@ -182,11 +175,6 @@ Public Const C_Frd$ = "Friend"
 Public Const C_PrpGet$ = C_Prp + " " + C_Get
 Public Const C_PrpLet$ = C_Prp + " " + C_Let
 Public Const C_PrpSet$ = C_Prp + " " + C_Set
-Type Parse
-    Lin As String
-    IsOk As Boolean
-    Er_or_Ok As String
-End Type
 
 Function KwIsFunTy(S) As Boolean
 KwIsFunTy = AyHas(SyOfFunTy, S)
@@ -214,172 +202,6 @@ With SrcLin_MthBrk(A)
     MthLin_Key = FmtQQ("?:?:?", .Mdy, .Ty, .MthNm)
 End With
 End Function
-
-Function NewErParse(Er$, Lin$) As Parse
-NewErParse.Er_or_Ok = Er
-NewErParse.Lin = Lin
-End Function
-
-Function NewOkParse(Ok$, Lin$) As Parse
-Dim O As Parse
-With O
-    .Er_or_Ok = Ok
-    .IsOk = True
-    .Lin = Lin
-End With
-NewOkParse = O
-End Function
-
-Function NewParse(Lin) As Parse
-NewParse.Lin = Lin
-NewParse.IsOk = True
-End Function
-
-Function NewSrcLin(A) As SrcLin
-Dim O As New SrcLin
-Set NewSrcLin = O.Init(A)
-End Function
-
-Function ParOneTerm(A As Parse, TermAy$()) As Parse
-If Not A.IsOk Then ParOneTerm = A: Exit Function
-Dim F$: F = StrPfx(A.Lin, TermAy)
-If F = "" Then
-   Dim Msg$: Msg = FmtQQ("These Terms[?] not found", JnVBar(TermAy))
-   ParOneTerm = NewErParse(Msg, A.Lin)
-Else
-   ParOneTerm = NewOkParse(F, LTrim(RmvPfx(A.Lin, F)))
-End If
-End Function
-
-Sub ParseBrw(A As Parse)
-AyBrw ParseToLy(A)
-End Sub
-
-Sub ParseDmp(A As Parse)
-AyDmp ParseToLy(A)
-End Sub
-
-Function ParseKwBktPair(A As Parse) As Parse
-ParseKwBktPair = ParseStr(A, "()")
-End Function
-
-Function ParseKwEnm(A As Parse) As Parse
-ParseKwEnm = ParseTerm(A, "Enum")
-End Function
-
-Function ParseKwMdy(A As Parse) As Parse
-ParseKwMdy = ParseOptOneTerm(A, SyOfMdy)
-End Function
-
-Function ParseKwMthTy(A As Parse) As Parse
-ParseKwMthTy = ParseOneTerm(A, SyOfMthTy)
-End Function
-
-Function ParseKwOptBktPair(A As Parse) As Parse
-ParseKwOptBktPair = ParseOpt(ParseKwBktPair(A))
-End Function
-
-Function ParseKwOptional(A As Parse) As Parse
-ParseKwOptional = ParseTerm(A, "Optional")
-End Function
-
-Function ParseKwPrmAy(A As Parse) As Parse
-ParseKwPrmAy = ParseTerm(A, "ParamArray")
-End Function
-
-Function ParseKwTy(A As Parse) As Parse
-ParseKwTy = ParseTerm(A, "Type")
-End Function
-
-Function ParseKwTyChr(A As Parse) As Parse
-ParseKwTyChr = ParseOptOneChr(A, TyChrLis)
-End Function
-
-Function ParseNm(A As Parse) As Parse
-If Not A.IsOk Then ParseNm = A: Exit Function
-Dim B$
-Stop
-'   B = Lin(A.Lin).Nm
-
-Dim L&: L = Len(B)
-If L = 0 Then
-   ParseNm = NewErParse("No name", A.Lin)
-Else
-   ParseNm = NewOkParse(B, Mid(A.Lin, L + 1))
-End If
-End Function
-
-Function ParseOneChr(A As Parse, ChrLis$) As Parse
-If Not A.IsOk Then ParseOneChr = A: Exit Function
-Dim C$: C = FstChr(A.Lin)
-If HasSubStr(ChrLis, C) Then
-   ParseOneChr = NewOkParse(C, RmvFstChr(A.Lin))
-Else
-   ParseOneChr = NewErParse(FmtQQ("One of ChrLis[?] not found", ChrLis), A.Lin)
-End If
-End Function
-
-Function ParseOneTerm(A As Parse, TermAy$()) As Parse
-Dim O As Parse
-Dim J%
-For J = 0 To UB(TermAy)
-   O = ParseTerm(A, TermAy(J))
-   If O.IsOk Then ParseOneTerm = O: Exit Function
-Next
-Dim Msg$
-   Msg = FmtQQ("These Term[?] not found", JnSpc(TermAy))
-ParseOneTerm = NewErParse(Msg, A.Lin)
-End Function
-
-Function ParseOpt(A As Parse) As Parse
-If A.IsOk Then ParseOpt = A: Exit Function
-A.IsOk = True
-A.Er_or_Ok = ""
-ParseOpt = A
-End Function
-
-Function ParseOptOneChr(A As Parse, ChrLis$) As Parse
-ParseOptOneChr = ParseOpt(ParseOneChr(A, ChrLis))
-End Function
-
-Function ParseOptOneTerm(A As Parse, TermAy$()) As Parse
-ParseOptOneTerm = ParseOpt(ParOneTerm(A, TermAy))
-End Function
-
-Function ParseRet$(A As Parse)
-If A.IsOk Then ParseRet = A.Er_or_Ok
-End Function
-
-Function ParseRmvSpc(A As Parse) As Parse
-If Not A.IsOk Then ParseRmvSpc = A: Exit Function
-A.Lin = LTrim(A.Lin)
-ParseRmvSpc = A
-End Function
-
-Function ParseStr(A As Parse, Str$) As Parse
-If Not A.IsOk Then ParseStr = A: Exit Function
-If Not HasPfx(A.Lin, Str) Then ParseStr = NewErParse(FmtQQ("[?] not found", Str), A.Lin): Exit Function
-ParseStr = NewOkParse(Str, RmvPfx(A.Lin, Str))
-End Function
-
-Function ParseTerm(A As Parse, Term$) As Parse
-ParseTerm = ParseRmvSpc(ParseStr(A, Term))
-End Function
-
-Function ParseToDic(A As Parse) As Dictionary
-Dim O As New Dictionary
-With O
-   .Add "NewParse", A.Lin
-   .Add "Is", IIf(A.IsOk, "Ok", "Er")
-   .Add IIf(A.IsOk, "Rslt", "Er"), A.Er_or_Ok
-End With
-Set ParseToDic = O
-End Function
-
-Function ParseToLy(A As Parse) As String()
-ParseToLy = Dix(ParseToDic(A)).Ly
-End Function
-
 Function SrcLin_EndLinPfx$(A)
 Ass SrcLin_IsMth(A)
 Stop '

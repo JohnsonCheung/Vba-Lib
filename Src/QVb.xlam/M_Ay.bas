@@ -7,12 +7,16 @@ PushAy O, Ay2
 AyAdd = O
 End Property
 
-Property Get AyAddAp(Ay, ParamArray AyAp())
-Dim Av(): Av = AyAp
-Dim A
-Dim O: O = Ay
-For Each A In Av
-    PushAy O, A
+Property Get AyAddAp(Ay, ParamArray Itm_or_Ay_Ap())
+Dim Av(): Av = Itm_or_Ay_Ap
+Dim O, I
+O = Ay
+For Each I In Av
+    If IsArray(I) Then
+        PushAy O, I
+    Else
+        Push O, I
+    End If
 Next
 AyAddAp = O
 End Property
@@ -65,10 +69,6 @@ End Property
 
 Property Get AyBrk3ByIx(Ay, FmIx&, ToIx&)
 AyBrk3ByIx = AyFmTo_Brk(Ay, FmTo(FmIx, ToIx))
-End Property
-
-Property Get AyBytAy(Ay) As Byte()
-AyBytAy = AyCast(Ay, EmpBytAy)
 End Property
 
 Property Get AyCellSy(Ay, Optional ShwZer As Boolean) As String()
@@ -272,6 +272,15 @@ For Each V In Ay1
 Next
 X:
 AyIntersect = O
+End Property
+
+Property Get AyIsAllEleHasPfx(A, Pfx$) As Boolean
+If AyIsEmp(A) Then Exit Property
+Dim I
+For Each I In A
+   If Not HasPfx(I, Pfx) Then Exit Property
+Next
+AyIsAllEleHasPfx = True
 End Property
 
 Property Get AyIsAllEleHasVal(Ay) As Boolean
@@ -582,6 +591,14 @@ Property Get AyRmvFstEle(Ay)
 AyRmvFstEle = AyRmvEleAt(Ay)
 End Property
 
+Property Get AyRmvLasChr(A) As String()
+Dim O$(), I
+For Each I In A
+    Push O, RmvLasChr(I)
+Next
+AyRmvLasChr = O
+End Property
+
 Property Get AyRmvLasEle(Ay)
 AyRmvLasEle = AyRmvEleAt(Ay, UB(Ay))
 End Property
@@ -659,6 +676,19 @@ For J = 1 To UB(Ay)
     O = AyIns(O, J, AySrtInToIxAy_Ix(O, Ay, Ay(J), Des))
 Next
 AySrtInToIxAy = O
+End Property
+
+Property Get AyTrim(A) As String()
+If AyIsEmp(A) Then Exit Property
+Dim U&
+    U = UB(A)
+Dim O$()
+    Dim J&
+    ReDim O(U)
+    For J = 0 To U
+        O(J) = Trim(A(J))
+    Next
+AyTrim = O
 End Property
 
 Property Get AyUniq(Ay)
@@ -774,7 +804,7 @@ ReDim Preserve O(N - 1)
 AyWhFstNEle = O
 End Property
 
-Property Get AyWhIxAy(Ay, IxAy, Optional CrtEmpColIfReqFldNotFound As Boolean)
+Property Get AyWhIxAy(Ay, IxAy, Optional CrtEmpEle_IfReqEleNotFound As Boolean)
 'Return a subset of {Ay} by {IxAy}
 Ass IsArray(Ay)
 Ass IsArray(IxAy)
@@ -791,7 +821,7 @@ Dim O
     For J = 0 To U
         Ix = IxAy(J)
         If Ix = -1 Then
-            If Not CrtEmpColIfReqFldNotFound Then
+            If Not CrtEmpEle_IfReqEleNotFound Then
                 Er "AyWhIxAy", "Given {IxAy} contains -1", IxAy
             End If
         Else
@@ -1000,14 +1030,6 @@ Dim ODry()
 AyZipAp = ODry
 End Property
 
-Property Get CvAy(V) As Variant()
-CvAy = V
-End Property
-
-Property Get CvSy(V) As String()
-CvSy = V
-End Property
-
 Property Get FnyIxAy(A$(), SubFny0) As Integer()
 Dim SubFny$(): SubFny = DftNy(SubFny0)
 If AyIsEmp(SubFny) Then Stop
@@ -1018,17 +1040,6 @@ For J = 0 To U
     O(J) = AyIx(A, SubFny(J))
     If O(J) = -1 Then Stop
 Next
-End Property
-
-Property Get IntAy_ByU(U&) As Integer()
-If 0 > U Then Exit Property
-Dim O%()
-ReDim O(U)
-Dim J&
-For J = 0 To U
-    O(J) = J
-Next
-IntAy_ByU = O
 End Property
 
 Property Get IxAy_IsAllGE0(IxAy&()) As Boolean
@@ -1059,37 +1070,6 @@ Next
 IxAy_IsParitial_of_0toU = True
 End Property
 
-Property Get NewIntSeq(N&, Optional IsFmOne As Boolean) As Integer()
-Dim O%(): ReDim O(N - 1)
-Dim J&
-If IsFmOne Then
-    For J = 0 To N - 1
-        O(J) = J + 1
-    Next
-Else
-    For J = 0 To N - 1
-        O(J) = J
-    Next
-End If
-NewIntSeq = O
-End Property
-
-Property Get NewIxAy(U&) As Long()
-Dim O&()
-    ReDim O(U)
-    Dim J&
-    For J = 0 To U
-        O(J) = J
-    Next
-NewIxAy = O
-End Property
-
-Property Get NewSy(U&) As String()
-Dim O$()
-If U > 0 Then ReDim O(U)
-NewSy = O
-End Property
-
 Property Get PartialIxAy_CompleteIxAy(PartialIxAy&(), U&) As Long()
 'Des:Make a complete-IxAy-of-U by partialIxAy
 'Des:A complete-IxAy-Of-U is defined as
@@ -1097,7 +1077,7 @@ Property Get PartialIxAy_CompleteIxAy(PartialIxAy&(), U&) As Long()
 'Des:it does not have dup element
 'Des:it has all element of value between 0 and U
 Ass IxAy_IsParitial_of_0toU(PartialIxAy, U)
-Dim I&(): I = NewIxAy(U)
+Dim I&(): I = ULngSeq(U)
 PartialIxAy_CompleteIxAy = AyAddAp(PartialIxAy, AyMinus(I, PartialIxAy))
 End Property
 
@@ -1113,6 +1093,37 @@ End Property
 
 Property Get UB&(Ay)
 UB = Sz(Ay) - 1
+End Property
+
+Property Get UIntSeq(U&, Optional IsFmOne As Boolean) As Integer()
+Dim O%(): ReDim O(U)
+Dim J&
+If IsFmOne Then
+    For J = 0 To U
+        O(J) = J + 1
+    Next
+Else
+    For J = 0 To U
+        O(J) = J
+    Next
+End If
+UIntSeq = O
+End Property
+
+Property Get ULngSeq(U&, Optional IsFmOne As Boolean) As Long()
+Dim O&()
+ReDim O(U)
+Dim J&
+If IsFmOne Then
+    For J = 0 To U
+        O(J) = J + 1
+    Next
+Else
+    For J = 0 To U
+        O(J) = J
+    Next
+End If
+ULngSeq = O
 End Property
 
 Sub AyBrw(Ay, Optional Fnn$)
@@ -1280,23 +1291,7 @@ AySrt__Ix = O
 End Property
 
 Sub ZZ__Tst()
-ZZ_AyAdd
-ZZ_AyEqChk
-ZZ_AyFmTo_Brk
-ZZ_AyGpDry
-ZZ_AyHasDupEle
-ZZ_AyIntAy
-ZZ_AyMap
-ZZ_AyMap_Sy
-ZZ_AyMinus
-ZZ_AyRmvEmpEleAtEnd
-ZZ_AyRmvFmTo
-ZZ_AySrt
-ZZ_AySrtInToIxAy
-ZZ_AySy
-ZZ_AyWhExclAtCnt
-ZZ_AyWhExclIxAy
-ZZ_IxAy_IsParitial_of_0toU
+ZZ_AyTrim
 End Sub
 
 Private Property Get AySrtInToIxAy_Ix&(Ix&(), A, V, Des As Boolean)
@@ -1450,6 +1445,10 @@ Ass Sz(Act) = 3
 Ass Act(0) = 1
 Ass Act(1) = 2
 Ass Act(2) = 3
+End Sub
+
+Private Sub ZZ_AyTrim()
+AyDmp AyTrim(Array(1, 2, 3, "  a"))
 End Sub
 
 Private Sub ZZ_AyWhExclAtCnt()

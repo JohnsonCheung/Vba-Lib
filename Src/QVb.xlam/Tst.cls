@@ -53,10 +53,6 @@ Sub M_Str()
 QVb.M_Str.ZZ__Tst
 End Sub
 
-Sub M_Sy()
-QVb.M_Sy.ZZ__Tst
-End Sub
-
 Sub M_Tak()
 QVb.M_Tak.ZZ__Tst
 End Sub
