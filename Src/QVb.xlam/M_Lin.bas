@@ -79,10 +79,10 @@ OTerm2 = LinShiftTerm(A)
 ORst = A
 End Sub
 
-Private Sub ZZ_LinRmvT1()
-Ass LinRmvT1("  df dfdf  ") = "dfdf"
-End Sub
-
 Sub ZZ__Tst()
 ZZ_LinRmvT1
+End Sub
+
+Private Sub ZZ_LinRmvT1()
+Ass LinRmvT1("  df dfdf  ") = "dfdf"
 End Sub

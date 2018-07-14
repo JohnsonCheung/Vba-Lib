@@ -36,14 +36,6 @@ For J = UB(A) To 0 Step -1
 Next
 End Property
 
-Property Get LyHasMajPfx(A$(), MajPfx$) As Boolean
-Dim Cnt%, J%
-For J = 0 To UB(A)
-    If HasPfx(A(J), MajPfx) Then Cnt = Cnt + 1
-Next
-LyHasMajPfx = Cnt > (Sz(A) \ 2)
-End Property
-
 Property Get LyGpAy(A$(), LinPfx$) As Gp()
 Dim J%, O() As Lnx, M() As Lnx
 For J = 0 To UB(A)
@@ -63,6 +55,15 @@ If Sz(M) > 0 Then
 End If
 LyGpAy = Gp(O)
 End Property
+
+Property Get LyHasMajPfx(A$(), MajPfx$) As Boolean
+Dim Cnt%, J%
+For J = 0 To UB(A)
+    If HasPfx(A(J), MajPfx) Then Cnt = Cnt + 1
+Next
+LyHasMajPfx = Cnt > (Sz(A) \ 2)
+End Property
+
 Property Get LyLnxAy(A$()) As Lnx()
 Dim O() As Lnx, J%
 For J = 0 To UB(A)
@@ -70,6 +71,7 @@ For J = 0 To UB(A)
 Next
 LyLnxAy = O
 End Property
+
 Property Get LyRmv2Dash(A$()) As String()
 If Sz(A) = 0 Then Exit Property
 Dim O$(), I

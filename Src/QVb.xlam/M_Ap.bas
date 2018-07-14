@@ -20,4 +20,3 @@ Property Get ApSy(ParamArray Ap()) As String()
 Dim Av(): Av = Ap
 ApSy = AySy(Av)
 End Property
-
