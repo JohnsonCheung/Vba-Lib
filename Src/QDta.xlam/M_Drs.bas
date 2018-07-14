@@ -195,14 +195,6 @@ Stop '
 'LoFmt Lo, LoFmtrLy
 End Function
 
-Property Get DrsReOrd(A As Drs, Partial_Fny0) As Drs
-Dim ReOrdFny$(): ReOrdFny = DftNy(Partial_Fny0)
-Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
-Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
-Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
-Set DrsReOrd = Drs(OFny, ODry)
-End Property
-
 Property Get DrsRowCnt&(A As Drs, ColNm$, EqVal)
 DrsRowCnt = DryRowCnt(A.Dry, AyIx(A.Fny, ColNm), EqVal)
 End Property

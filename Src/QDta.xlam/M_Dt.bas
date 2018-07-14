@@ -19,6 +19,18 @@ Sub DtDmp(A As Dt)
 AyDmp DtLy(A)
 End Sub
 
+Property Get DtSel(A As Dt, ColNy0) As Dt
+Dim ReOrdFny$(): ReOrdFny = DftNy(ColNy0)
+Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
+Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
+Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
+Set DtSel = Dt(A.DtNm, OFny, ODry)
+End Property
+
+Property Get DtSrt(A As Dt, ColNm$, Optional IsDes As Boolean) As Dt
+Set DtSrt = Dt(A.DtNm, A.Fny, DrsSrt(DtDrs(A), ColNm, IsDes).Dry)
+End Property
+
 Property Get DtDrpCol(A As Dt, ColNy0, Optional DtNm$) As Dt
 Dim A1 As Drs: Set A1 = DrsDrpCol(DtDrs(A), ColNy0)
 Set DtDrpCol = Dt(Dft(DtNm, A.DtNm), A1.Fny, A1.Dry)
@@ -63,14 +75,3 @@ Set DtWs = O
 If Vis Then WsVis O
 End Property
 
-Property Get DtReOrd(A As Dt, ColNy0) As Dt
-Dim ReOrdFny$(): ReOrdFny = DftNy(ColNy0)
-Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
-Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
-Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
-Set DtReOrd = Dt(A.DtNm, OFny, ODry)
-End Property
-
-Property Get DtSrt(A As Dt, ColNm$, Optional IsDes As Boolean) As Dt
-Set DtSrt = Dt(A.DtNm, A.Fny, DrsSrt(DtDrs(A), ColNm, IsDes).Dry)
-End Property

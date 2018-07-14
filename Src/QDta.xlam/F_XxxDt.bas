@@ -1,11 +1,11 @@
 Attribute VB_Name = "F_XxxDt"
 Option Explicit
 Property Get AyDt(A, Optional FldNm$ = "Itm", Optional DtNm$ = "Ay") As Dt
-Dim ODry(), J&
+Dim O(), J&
 For J = 0 To UB(A)
-    Push ODry, Array(A(J))
+    Push O, Array(A(J))
 Next
-AyDt = Dt(DtNm, FldNm, ODry)
+AyDt = Dt(DtNm, FldNm, O)
 End Property
 
 Property Get DicDt(A As Dictionary, Optional DtNm$ = "Dic", Optional InclDicValTy As Boolean) As Dt

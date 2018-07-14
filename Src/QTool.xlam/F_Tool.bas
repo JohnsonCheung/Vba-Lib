@@ -1,5 +1,9 @@
 Attribute VB_Name = "F_Tool"
 Option Explicit
+Private Type Drs
+    Dry() As Variant
+    Fny() As String
+End Type
 Private Type Mth
     Nm As String
     Md As CodeModule
@@ -94,6 +98,10 @@ Sub Brw_Md_MthKy()
 ZAyBrw ZMd_MthKy(ZCurMd, IsSngLinFmt:=True)
 End Sub
 
+Sub Brw_Md_Mth()
+ZS1S2Ay_Brw ZMd_MthS1S2Ay(ZCurMd)
+End Sub
+
 Sub Brw_Pj_FFunNy()
 ZAyBrw ZPj_FFunNy(ZCurPj)
 End Sub
@@ -106,16 +114,114 @@ Sub Brw_Pj_MthKy()
 ZAyBrw ZPj_MthKy(ZCurPj, IsSngLinFmt:=True)
 End Sub
 
-Sub Brw_Pj_SrcPth()
-ZPj_SrcPthBrw ZCurPj
+Sub Brw_Vbe_SrcPth()
+ZVbe_SrcPthBrw ZCurVbe
 End Sub
 
 Sub Brw_Pj_SrtRpt()
 ZAyBrw ZPj_SrtRptLy(ZCurPj)
 End Sub
+Sub AAA()
+Stop
+Brw_Vbe_DupFFunDrs
+End Sub
+Sub Brw_Vbe_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
+ZAyBrw ZVbe_DupFFunNy(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+End Sub
+Sub Dmp_Vbe_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
+ZAyDmp ZVbe_DupFFunNy(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+End Sub
+Private Property Get ZVbe_DupFFunDrs(A As Vbe, Optional IsNoSrt As Boolean, Optional ExclPjNy0, Optional IsSamMthBdyOnly As Boolean) As Drs
+With ZVbe_DupFFunDrs
+    .Fny = ZSplitSsl("Nm Mdy-1 Ty-1 Pj-1 Md-1 Mdy-2 Ty-2 Pj-2 Md-2 Src-1 Src-2 IsSam-Pj IsSam-Md IsSam-Src")
+    .Dry = ZVbe_DupFFunDry(A, IsSamMthBdyOnly:=IsSamMthBdyOnly)
+End With
+End Property
+Private Property Get ZVbe_DupFFunDry(A As Vbe, Optional IsNoSrt As Boolean, Optional ExclPjNy0, Optional IsSamMthBdyOnly As Boolean) As Variant()
+Dim N$(): N = ZVbe_FFunNy(A, IsNoSrt:=IsNoSrt, ExclPjNy0:=ExclPjNy0)
+Dim N1$(): N1 = ZFFunNy_DupFFunNy(N)
+    If IsSamMthBdyOnly Then
+        N1 = ZDupFFunNy_SamMthBdyFFunNy(N1, A)
+    End If
+Dim GpAy()
+    GpAy = ZDupFFunNy_GpAy(N1)
+    If ZSz(GpAy) = 0 Then Exit Property
+Dim O()
+    Dim Gp, Ny$()
+    For Each Gp In GpAy
+        Ny = Gp
+        ZPushAy O, ZDupFFunNyGp_Dry(Ny)
+    Next
+ZVbe_DupFFunDry = O
+End Property
+Private Sub ZFFunNm_BrkAsg(A$, OFunNm$, OPjNm$, OMdNm$)
+Stop '
+End Sub
+Private Property Get ZDupFFunNyGp_Dry(Ny$()) As Variant()
+'Given Ny: Each Nm in Ny is FunNm:PjNm.MdNm
+'          It has at least 2 ele
+'          Each FunNm is same
+'Return: N-Dr of Fields {Nm Mdy-1 Ty-1 Pj-1 Md-1 Mdy-2 Ty-2 Pj-2 Md-2 Src-1 Src-2 IsSam-Pj IsSam-Md IsSam-Src}
+'        where N = Sz(Ny)-1
+'        where each-field-(*-1)-of-Dr comes from Ny(0)
+'        where each-field-(*-2)-of-Dr comes from Ny(1..)
 
-Sub Brw_Vbe_DupFFunNy()
-ZAyBrw ZVbe_DupFFunNy(ZCurVbe)
+Dim Md1$, Pj1$, Nm$
+    ZFFunNm_BrkAsg Ny(0), Nm, Pj1, Md1
+Dim Mth1 As Mth
+    Mth1.Nm = Nm
+    Set Mth1.Md = ZMd(Pj1 & "." & Md1)
+Dim Src1$
+    Src1 = ZMth_Lines(Mth1)
+Dim Mdy1$, Ty1$
+    ZMth_BrkAsg Mth1, Mdy1, Ty1
+Dim O()
+    Dim J%
+    For J = 1 To ZUB(Ny)
+        Dim Pj2$, Nm2$, Md2$
+            ZFFunNm_BrkAsg Ny(J), Nm2, Pj2, Md2: If Nm2 <> Nm Then Stop
+        Dim Mth2 As Mth
+            Mth2.Nm = Nm
+            Set Mth1.Md = ZMd(Pj2 & "." & Md2)
+        Dim Src2$
+            Src2 = ZMth_Lines(Mth2)
+        Dim Mdy2$, Ty2$
+            ZMth_BrkAsg Mth2, Mdy2, Ty2
+            
+        ZPush O, Array(Nm, _
+                    Mdy1, Ty1, Pj1, Md1, _
+                    Mdy2, Ty2, Pj2, Md2, Src1, Src2, Pj1 = Pj2, Md1 = Md2, Src1 = Src2)
+    Next
+ZDupFFunNyGp_Dry = O
+End Property
+
+Sub ZDrsBrw(A As Drs)
+Stop '
+End Sub
+Sub Brw_Vbe_DupFFunDrs(Optional IsSamMthBdyOnly As Boolean)
+ZDrsBrw ZVbe_DupFFunDrs(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+End Sub
+Property Get ZAyDblQuote(A) As String()
+Const C$ = """"
+ZAyDblQuote = ZAyAddPfxSfx(A, C, C)
+End Property
+Property Get ZAyAddPfxSfx(A, P$, S$) As String()
+Dim I, O$()
+If ZSz(A) = 0 Then Exit Property
+For Each I In A
+    ZPush O, P & I & S
+Next
+ZAyAddPfxSfx = O
+End Property
+Private Property Get ZDupFFunGpNy_Dr(A$()) As Variant()
+Dim Ny$(): Ny = A
+Stop '
+End Property
+
+Sub Lis_Vbe_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
+Dim A$(): A = ZVbe_DupFFunNy(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+Dim A1$(): A1 = ZAyDblQuote(A)
+ZAyDmp ZAyAddPfxSfx(A1, "Go_Mth ", ",IsMthPjMdNm:=True")
 End Sub
 
 Sub Brw_Vbe_FFunNy()
@@ -204,11 +310,23 @@ For Each I In Ny
     Debug.Print "Go_Mbr """; I; "."; PjMbrDotNm
 Next
 End Sub
+Property Get ZMthPjMdNm_Mth(Nm$) As Mth
+Dim O As Mth
+With ZBrk(Nm, ":")
+    O.Nm = .S1
+    Set O.Md = ZMd(.S2)
+End With
+ZMthPjMdNm_Mth = O
+End Property
 
-Sub Go_Mth(PjMdMthDotNm$)
+Sub Go_Mth(Nm$, Optional IsMthPjMdNm As Boolean)
 Dim M As Mth
+    If IsMthPjMdNm Then
+        M = ZMthPjMdNm_Mth(Nm)
+    Else
+        M = ZPjMdMthDotNm_Mth(Nm)
+    End If
 Dim L As LCCOpt
-    M = ZPjMdMthDotNm_Mth(PjMdMthDotNm)
     L = ZMth_LCCOpt(M)
 ZMd_GoLCCOpt M.Md, L
 End Sub
@@ -273,15 +391,25 @@ If ZCurPjNm = ToPjNm Then
 End If
 ZMd_Mov_ToPj ZCurMd, ZPj(ToPjNm)
 End Sub
+Sub Mov_CurFun_Pj(ToPjNm$)
 
-Sub Mov_Mth()
-'Move CurMd method to is property "M_XXX"
+End Sub
+
+Sub Mov_Fun_ToProperMd()
+'Move all Inproper-Fun in CurMd to its proper module in same Pj
+'If non-exist-inproper-module will be created
+'If a Fun in a module of name of format M_XXX,
+'   if the Fun-name-pfx is not XXX, => it is inproper-fun
+'else
+'   => it is proper-fun
 Dim I, M As Mth, Ny$(), ToMd As CodeModule
 Set M.Md = ZCurMd
-Ny = ZCurMd_MthNy_INPROPER
+Ny = ZCurMd_MthNy_OfInproper
 If ZSz(Ny) = 0 Then Exit Sub
 For Each I In Ny
     M.Nm = I
+'    Set ToMd = 1
+    Stop '
     ZMth_Mov_ToMd M, ToMd
 Next
 End Sub
@@ -770,6 +898,10 @@ A.References.AddFromFile RfFfn
 ZPj_Sav A
 End Sub
 
+Sub Dmp_CurMth()
+Debug.Print ZMth_Lines(ZCurMth)
+End Sub
+
 Sub ZPj_Add_Cls(A As VBProject, Nm$)
 ZPj_Add_Mbr A, Nm, vbext_ct_ClassModule
 End Sub
@@ -777,19 +909,19 @@ Sub Brw_InproperMth()
 Brw_Pj_InproperMth
 End Sub
 Sub Brw_Md_InproperMth()
-ZAyBrw ZMd_MthNy_INPROPER(ZCurMd)
+ZAyBrw ZMd_MthNy_OfInproper(ZCurMd)
 End Sub
 Sub Dmp_Md_InproperMth()
-ZAyDmp ZMd_MthNy_INPROPER(ZCurMd)
+ZAyDmp ZMd_MthNy_OfInproper(ZCurMd)
 End Sub
 Sub Dmp_Pj_InproperMth()
-ZAyDmp ZPj_MthNy_INPROPER(ZCurPj)
+ZAyDmp ZPj_MthNy_OfInproper(ZCurPj)
 End Sub
 Sub Brw_Pj_InproperMth()
-ZAyBrw ZPj_MthNy_INPROPER(ZCurPj)
+ZAyBrw ZPj_MthNy_OfInproper(ZCurPj)
 End Sub
 Sub Brw_Vbe_InproperMth()
-ZAyBrw ZVbe_MthNy_INPROPER(ZCurVbe)
+ZAyBrw ZVbe_MthNy_OfInproper(ZCurVbe)
 End Sub
 Sub ZPj_Add_Mbr(A As VBProject, Nm$, Ty As vbext_ComponentType, Optional IsGoMbr As Boolean)
 If ZPj_HasCmp(A, Nm) Then
@@ -892,6 +1024,10 @@ End Sub
 
 Sub ZPj_SrcPthBrw(A As VBProject)
 ZPth_Brw ZPj_SrcPth(A)
+End Sub
+
+Sub ZVbe_SrcPthBrw(A As Vbe)
+ZPth_Brw ZVbe_SrcPth(A)
 End Sub
 
 Sub ZPj_Srt(A As VBProject)
@@ -997,11 +1133,39 @@ Dim N&
 ReDim Preserve O(N)
 Set O(N) = M
 End Sub
-
+Sub Brw_Vbe_DupFun()
+ZAyBrw ZVbe_DupFunLy(ZCurVbe)
+End Sub
 Sub ZS1S2Ay_Brw(A() As S1S2)
 ZAyBrw ZS1S2Ay_FmtLy(A)
 End Sub
+Property Get ZDic_Add(A As Dictionary, B As Dictionary) As Dictionary
+Dim O  As New Dictionary, I
+For Each I In A.Keys
+    O.Add I, A(I)
+Next
+For Each I In B.Keys
+    O.Add I, B(I)
+Next
+Set ZDic_Add = O
+End Property
+Property Get ZPj_FunBdyDic(A As VBProject) As Dictionary
+Stop '
+End Property
 
+Property Get ZDupFunDic_Add(DupFunDic As Dictionary, FunDic As Dictionary) As Dictionary
+
+End Property
+Property Get ZVbe_DupFunLy(A As Vbe) As String()
+Dim I, O As New Dictionary
+For Each I In ZVbe_PjAy(A)
+    Set O = ZDupFunDic_Add(O, ZPj_FunBdyDic(ZCvPj(I)))
+Next
+ZVbe_DupFunLy = ZDupFunDic_Ly(O)
+End Property
+Property Get ZDupFunDic_Ly(A As Dictionary) As String()
+Stop '
+End Property
 Sub ZS1S2_Push(O() As S1S2, M As S1S2)
 Dim N&
 N = ZS1S2_Sz(O)
@@ -1021,7 +1185,7 @@ Sub ZStr_Wrt(A, Ft$, Optional IsNotOvrWrt As Boolean)
 ZFso.CreateTextFile(Ft, Overwrite:=Not IsNotOvrWrt).Write A
 End Sub
 
-Sub ZVbe_Export(A As VBE)
+Sub ZVbe_Export(A As Vbe)
 ZOy_Do ZVbe_PjAy(A), "ZPj_Export"
 End Sub
 
@@ -1345,10 +1509,7 @@ If Not IsNoTrim Then
     S1 = Trim(S1)
     S2 = Trim(S2)
 End If
-With ZBrk
-    .S1 = S1
-    .S2 = S2
-End With
+ZBrk = ZS1S2(S1, S2)
 End Property
 
 Private Property Get ZCmpTyAy_Of_Cls() As vbext_ComponentType()
@@ -1404,8 +1565,8 @@ Private Property Get ZCurMd_MthNy(Optional MthNmPatn$ = ".") As String()
 ZCurMd_MthNy = ZMd_MthNy(ZCurMd, MthNmPatn)
 End Property
 
-Private Property Get ZCurMd_MthNy_INPROPER() As String()
-ZCurMd_MthNy_INPROPER = ZMd_MthNy_INPROPER(ZCurMd)
+Private Property Get ZCurMd_MthNy_OfInproper() As String()
+ZCurMd_MthNy_OfInproper = ZMd_MthNy_OfInproper(ZCurMd)
 End Property
 
 Private Property Get ZCurMth() As Mth
@@ -1459,8 +1620,8 @@ Private Property Get ZCurPj_Pth$()
 ZCurPj_Pth = ZPj_Pth(ZCurPj)
 End Property
 
-Private Property Get ZCurVbe() As VBE
-Set ZCurVbe = Excel.Application.VBE
+Private Property Get ZCurVbe() As Vbe
+Set ZCurVbe = Excel.Application.Vbe
 End Property
 
 Private Property Get ZCurVbe_DupMdNy() As String()
@@ -1627,11 +1788,11 @@ End Property
 Private Property Get ZEmp_RfAy() As Reference()
 End Property
 
-Private Property Get ZFFunNm_Nm(A$)
+Private Property Get ZFFunNm_Nm$(A$)
 ZFFunNm_Nm = ZBrk(A, ":").S1
 End Property
 
-Private Property Get ZFFunNy_DupFFunNy(A$()) As String()
+Private Property Get ZFFunNy_DupFFunNy(A$(), Optional IsSamMthBdyOnly As Boolean) As String()
 If ZSz(A) = 0 Then Exit Property
 Dim A1$(): A1 = ZAySrt(A)
 Dim O$(), M$(), J&, Nm$
@@ -2096,7 +2257,7 @@ Else
 End If
 End Property
 
-Private Property Get ZMd_MthNy_INPROPER(A As CodeModule) As String()
+Private Property Get ZMd_MthNy_OfInproper(A As CodeModule) As String()
 Dim MdNm$: MdNm = ZMd_Nm(A)
     If Left(MdNm, 2) <> "M_" Then Exit Property
 Dim P$: P = Mid(MdNm, 3) ' MthPfx
@@ -2109,23 +2270,23 @@ For Each I In Ny
         If Not ZIs_Pfx(I, P) Then ZPush O, Pfx & I
     End If
 Next
-ZMd_MthNy_INPROPER = O
+ZMd_MthNy_OfInproper = O
 End Property
 
-Private Property Get ZVbe_MthNy_INPROPER(A As VBE) As String()
+Private Property Get ZVbe_MthNy_OfInproper(A As Vbe) As String()
 Dim I, O$()
 For Each I In ZVbe_PjAy(A)
-    ZPushAy O, ZPj_MthNy_INPROPER(ZCvPj(I))
+    ZPushAy O, ZPj_MthNy_OfInproper(ZCvPj(I))
 Next
-ZVbe_MthNy_INPROPER = O
+ZVbe_MthNy_OfInproper = O
 End Property
 
-Private Property Get ZPj_MthNy_INPROPER(A As VBProject) As String()
+Private Property Get ZPj_MthNy_OfInproper(A As VBProject) As String()
 Dim I, O$()
 For Each I In ZPj_MdAy(A)
-    ZPushAy O, ZMd_MthNy_INPROPER(ZCvMd(I))
+    ZPushAy O, ZMd_MthNy_OfInproper(ZCvMd(I))
 Next
-ZPj_MthNy_INPROPER = ZAyAddPfx(O, A.Name & ".")
+ZPj_MthNy_OfInproper = ZAyAddPfx(O, A.Name & ".")
 End Property
 
 Private Property Get ZMd_MthS1S2Ay(A As CodeModule) As S1S2()
@@ -2544,7 +2705,7 @@ Dim Ay() As CodeModule: Ay = ZPj_MbrAy(A, MbrNmPatn)
 If ZSz(Ay) = 0 Then Exit Property
 Dim I, O$()
 For Each I In Ay
-    ZPushAy O, ZMd_MthNy(ZCvMd(I), MthNmPatn, Mdy)
+    ZPushAy O, ZMd_MthNy(ZCvMd(I), MthNmPatn, Mdy:=Mdy)
 Next
 O = ZAyAddPfx(O, A.Name & ".")
 ZPj_MthNy = O
@@ -2585,6 +2746,13 @@ For J = 0 To ZUB(Ny)
     ZPush O, Ny(J) & " " & ZRf_Ffn(RfAy(J))
 Next
 ZPj_RfLy = O
+End Property
+Private Property Get ZVbe_SrcPth(A As Vbe)
+Dim Pj As VBProject:
+Set Pj = ZVbe_FstQPj(A)
+Dim Ffn$: Ffn = ZPj_Ffn(Pj)
+If Ffn = "" Then Exit Property
+ZVbe_SrcPth = ZFfn_Pth(Pj.Filename)
 End Property
 
 Private Property Get ZPj_SrcPth(A As VBProject)
@@ -2760,8 +2928,10 @@ ZRpl_VBar = Replace(A, "|", vbCrLf)
 End Property
 
 Private Property Get ZS1S2(S1$, S2$) As S1S2
-ZS1S2.S1 = S1
-ZS1S2.S2 = S2
+Dim O As S1S2
+O.S1 = S1
+O.S2 = S2
+ZS1S2 = O
 End Property
 
 Private Property Get ZS1S2Ay_Add(A() As S1S2, B() As S1S2) As S1S2()
@@ -2910,7 +3080,23 @@ A = "Public ":  If ZIs_Pfx(L, A) Then ZSrcLin_RmvMdy = ZRmvPfx(L, A): Exit Prope
 A = "Friend ":  If ZIs_Pfx(L, A) Then ZSrcLin_RmvMdy = ZRmvPfx(L, A): Exit Property
 ZSrcLin_RmvMdy = L
 End Property
-
+Private Sub ZZ_ZMth_MthLin()
+Debug.Print ZMth_MthLin(ZZMth("ZZMth"))
+End Sub
+Private Property Get ZZMth(MthNm$) As Mth
+Set ZZMth.Md = ZZMd
+ZZMth.Nm = MthNm
+End Property
+Private Property Get ZMth_MthLin$(A As Mth)
+Dim Src$(): Src = ZMd_Src(A.Md)
+Dim Lno%: Lno = ZSrc_MthFmLno(Src, A.Nm)
+ZMth_MthLin = Src(Lno - 1)
+End Property
+Private Sub ZMth_BrkAsg(A As Mth, OMdy$, OFunTy$)
+Dim L$: L = ZMth_MthLin(A)
+OMdy = ZSrcLin_Mdy(L)
+OFunTy = ZSrcLin_FunTy(L)
+End Sub
 Private Property Get ZSrcLin_Mdy$(L)
 Dim A$
 A = "Private": If ZIs_Pfx(L, A) Then ZSrcLin_Mdy = A: Exit Property
@@ -3348,20 +3534,99 @@ Private Property Get ZUB&(Ay)
 ZUB = ZSz(Ay) - 1
 End Property
 
-Private Property Get ZVbe_DupFFunNy(A As VBE, Optional IsNoSrt As Boolean) As String()
-Dim N$(): N = ZVbe_FFunNy(A, IsNoSrt:=True)
-ZVbe_DupFFunNy = ZFFunNy_DupFFunNy(N)
+Private Property Get ZVbe_DupFFunNy(A As Vbe, Optional IsNoSrt As Boolean, Optional ExclPjNy0, Optional IsSamMthBdyOnly As Boolean) As String()
+Dim N$(): N = ZVbe_FFunNy(A, IsNoSrt:=IsNoSrt, ExclPjNy0:=ExclPjNy0)
+Dim N1$(): N1 = ZFFunNy_DupFFunNy(N)
+If IsSamMthBdyOnly Then
+    N1 = ZDupFFunNy_SamMthBdyFFunNy(N1, A)
+End If
+ZVbe_DupFFunNy = N1
 End Property
-
-Private Property Get ZVbe_DupMdNy(A As VBE) As String()
+Private Property Get ZDupFFunNy_SamMthBdyFFunNy(A$(), Vbe As Vbe) As String()
+Dim Gp(): Gp = ZDupFFunNy_GpAy(A)
+Dim O$(), N, Ny
+For Each Ny In Gp
+    If ZDupFFunNyGp_IsDup(Ny) Then
+        For Each N In Ny
+            ZPush O, N
+        Next
+    End If
+Next
+ZDupFFunNy_SamMthBdyFFunNy = O
+End Property
+Private Property Get ZFFun_PjMdMthDotNm$(A)
+With ZBrk(A, ":")
+    ZFFun_PjMdMthDotNm = .S2 & "." & .S1
+End With
+End Property
+Private Property Get ZFFun_Mth(A) As Mth
+ZFFun_Mth = ZPjMdMthDotNm_Mth(ZFFun_PjMdMthDotNm(A))
+End Property
+Private Function ZFFun_MthLines$(A)
+ZFFun_MthLines = ZMth_Lines(ZFFun_Mth(A))
+End Function
+Private Property Get ZIsSy(A) As Boolean
+ZIsSy = VarType(A) = vbArray + vbString
+End Property
+Private Property Get ZAyIsAllEq(A) As Boolean
+If ZSz(A) = 0 Then ZAyIsAllEq = True: Exit Property
+Dim J&
+For J = 1 To ZUB(A)
+    If A(0) <> A(J) Then Exit Property
+Next
+ZAyIsAllEq = True
+End Property
+Private Property Get ZDupFFunNyGp_IsDup(Ny) As Boolean
+ZDupFFunNyGp_IsDup = ZAyIsAllEq(ZAy_Map(Ny, "ZFFun_MthLines"))
+End Property
+Private Property Get ZDupFFunNy_GpAy(A$()) As Variant()
+Dim O(), J%, M()
+Dim L$ ' LasMthNm
+L = ZBrk(A(0), ":").S1
+ZPush M, A(0)
+Dim B As S1S2
+For J = 1 To ZUB(A)
+    B = ZBrk(A(J), ":")
+    If L <> B.S1 Then
+        ZPush O, M
+        Erase M
+        L = B.S1
+    End If
+    ZPush M, A(J)
+Next
+If ZSz(M) > 0 Then
+    ZPush O, M
+End If
+ZDupFFunNy_GpAy = O
+End Property
+Private Property Get ZVbe_DupMdNy(A As Vbe) As String()
 Dim O$()
 Stop '
 ZVbe_DupMdNy = O
 End Property
-
-Private Property Get ZVbe_FFunNy(A As VBE, Optional IsNoSrt As Boolean) As String()
+Private Property Get ZRplDblSpc$(A)
+Dim O$: O = A
+While InStr(O, "  ") > 0
+    O = Replace(O, "  ", " ")
+Wend
+ZRplDblSpc = O
+End Property
+Private Property Get ZSplitSsl(A) As String()
+ZSplitSsl = Split(ZRplDblSpc(Trim(A)), " ")
+End Property
+Private Property Get ZDftNy(Ny0) As String()
+Dim T As VbVarType: T = VarType(Ny0)
+If T = vbEmpty Then Exit Property
+If IsMissing(Ny0) Then Exit Property
+If T = vbString Then
+    ZDftNy = ZSplitSsl(Ny0)
+    Exit Property
+End If
+ZDftNy = Ny0
+End Property
+Private Property Get ZVbe_FFunNy(A As Vbe, Optional IsNoSrt As Boolean, Optional ExclPjNy0) As String()
 Dim Ay() As VBProject
-    Ay = ZVbe_PjAy(A)
+    Ay = ZVbe_PjAy(A, ExclPjNy0:=ExclPjNy0)
 If ZSz(Ay) = 0 Then Exit Property
 Dim O$(), I
 For Each I In Ay
@@ -3374,7 +3639,7 @@ Else
 End If
 End Property
 
-Private Property Get ZVbe_MdPjNy(A As VBE, MdNm$) As String()
+Private Property Get ZVbe_MdPjNy(A As Vbe, MdNm$) As String()
 Dim I, O$()
 For Each I In ZVbe_PjAy(A)
     If ZPj_HasCmp(ZCvPj(I), MdNm) Then
@@ -3384,7 +3649,7 @@ Next
 ZVbe_MdPjNy = O
 End Property
 
-Private Property Get ZVbe_MthKy(A As VBE, Optional IsSngLinFmt As Boolean) As String()
+Private Property Get ZVbe_MthKy(A As Vbe, Optional IsSngLinFmt As Boolean) As String()
 Dim O$(), I
 For Each I In ZVbe_PjAy(A)
     ZPushAy O, ZPj_MthKy(ZCvPj(I), IsSngLinFmt)
@@ -3392,7 +3657,7 @@ Next
 ZVbe_MthKy = O
 End Property
 
-Private Property Get ZVbe_MthNy(A As VBE, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Mdy$) As String()
+Private Property Get ZVbe_MthNy(A As Vbe, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Mdy$) As String()
 Dim Ay() As VBProject: Ay = ZVbe_PjAy(A, MdNmPatn)
 If ZSz(Ay) = 0 Then Exit Property
 Dim I, O$()
@@ -3401,24 +3666,43 @@ For Each I In Ay
 Next
 ZVbe_MthNy = O
 End Property
+Private Property Get ZVbe_FstQPj(A As Vbe) As VBProject
+Dim I
+For Each I In A.VBProjects
+    If ZFstChr(ZCvPj(I).Name) = "Q" Then
+        Set ZVbe_FstQPj = I
+        Exit Property
+    End If
+Next
+End Property
 
-Private Property Get ZVbe_PjAy(A As VBE, Optional MdNmPatn$ = ".") As VBProject()
+Private Property Get ZVbe_PjAy(A As Vbe, Optional MdNmPatn$ = ".", Optional ExclPjNy0) As VBProject()
 Dim I, O() As VBProject
 Dim R As RegExp
 Set R = ZRe(MdNmPatn)
+Dim N$()
+Dim Nm$
+Dim X As Boolean
+    N = ZDftNy(ExclPjNy0)
+    X = ZSz(N) > 0
 For Each I In A.VBProjects
-    If ZReTst(R, ZCvPj(I).Name) Then
+    Nm = ZCvPj(I).Name
+    If X Then
+        If ZAyHas(N, Nm) Then GoTo XX
+    End If
+    If ZReTst(R, Nm) Then
         ZPushObj O, I
     End If
+XX:
 Next
 ZVbe_PjAy = O
 End Property
 
-Private Property Get ZVbe_PjNy(A As VBE) As String()
+Private Property Get ZVbe_PjNy(A As Vbe) As String()
 ZVbe_PjNy = ZItr_Ny(A.VBProjects)
 End Property
 
-Private Property Get ZVbe_SrtRptLy(A As VBE) As String()
+Private Property Get ZVbe_SrtRptLy(A As Vbe) As String()
 Dim Ay() As VBProject: Ay = ZVbe_PjAy(A)
 Dim O$(), I, M As VBProject
 For Each I In Ay
@@ -3446,7 +3730,7 @@ Next
 End Property
 
 Private Property Get ZZMd() As CodeModule
-Set ZZMd = ZCurVbe.VBProjects("QVb").VBComponents("M_A").CodeModule
+Set ZZMd = ZCurVbe.VBProjects("QTool").VBComponents("F_Tool").CodeModule
 End Property
 
 Private Property Get ZZSrc() As String()

@@ -11,14 +11,14 @@ Option Explicit
 Private A_LABCAy() As LABC
 Private A_ErLy$()
 
-Property Get ErLy() As String()
-ErLy = A_ErLy
-End Property
-
 Property Get Init(A() As LABC, ErLy$()) As LABCAyRslt
 A_LABCAy = A
 A_ErLy = ErLy
 Set Init = Me
+End Property
+
+Property Get ErLy() As String()
+ErLy = A_ErLy
 End Property
 
 Property Get ToStr$()

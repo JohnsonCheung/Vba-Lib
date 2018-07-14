@@ -8,26 +8,30 @@ Enum eTstOpt
     eValidateAsFny = 4
 End Enum
 
-Property Get ABCLines_LABCAy(ABCLines$, Optional IsVF As Boolean) As LABC()
+Property Get LABCAy_CnoValAy(A() As LABC, Fny$()) As CnoVal()
+Dim O() As CnoVal
+Dim F$, V$, Fny1$(), Cno%
+Dim J%, JJ%
+For J = 0 To UB(A)
 Stop '
-'Dim O As New LABC()
-'Set ByLines = O.InitByLines(ABCLines, IsVF)
+'    V = A(J).Val
+'    Fny1 = A(J).Fny
+    For JJ = 0 To UB(Fny1)
+        Cno = AyIx(Fny, Fny1(JJ))
+        If Cno = -1 Then Stop
+        Cno = Cno + 1
+'        O.AddCnoVal Cno, Fny1(JJ), V
+    Next
+Next
+LABCAy_CnoValAy = O
 End Property
 
-Property Get ABCVbl_LABCAy(ABCVBarLines$, Optional IsVF As Boolean) As LABC()
+Property Get LFVAy_FnyRslt(A As LABCGp) As FnyRslt
 Stop '
-'Set ByVBarLines = ByLines(RplVBar(ABCVBarLines), IsVF)
-End Property
-
-Property Get FldSslAy() As String()
-Stop '
-'If IsEmp Then Exit Property
-'Dim I, M As LABC, O$()
-'For Each I In A
-'    Set M = I
-'    Push O, M.FldSsl
-'Next
-'FldSslAy = O
+'Dim O As LABCAyRslt
+'Set A = VdtDupFld(A)
+'Dim O1 As FnyRslt
+'Set LABCAy_ValidateAsFny = O.Init(UniqFny, A.ErLy, C1, C2)
 End Property
 
 Property Get Init(ABCAy() As ABC, Optional IsVF As Boolean) As LABC()
@@ -68,23 +72,56 @@ Stop '
 'Set InitByT1 = Me
 End Property
 
-Property Get LABCAy_CnoValAy(A() As LABC, Fny$()) As CnoVal()
-Dim O() As CnoVal
-Dim F$, V$, Fny1$(), Cno%
-Dim J%, JJ%
-For J = 0 To UB(A)
-Stop '
-'    V = A(J).Val
-'    Fny1 = A(J).Fny
-    For JJ = 0 To UB(Fny1)
-        Cno = AyIx(Fny, Fny1(JJ))
-        If Cno = -1 Then Stop
-        Cno = Cno + 1
-'        O.AddCnoVal Cno, Fny1(JJ), V
-    Next
-Next
-LABCAy_CnoValAy = O
+
+Private Property Get NmErNoLin() As String()
+Stop
+'If IsEmp Then NmErNoLin = ApSy(FmtQQ("There is not ?-line", C2_Lo_Nam))
 End Property
+
+Private Property Get NmErExcessLin() As String()
+Stop '
+'Dim J%, O$()
+'If N <= 1 Then Exit Property
+'For J = 1 To U
+'    Push O, FmtQQ(M_Nm_ExcessLin, A(J).Lx)
+'Next
+'NmErExcessLin = O
+End Property
+
+Private Property Get NmErMultiName() As String()
+Stop '
+'If IsEmp Then Exit Property
+'Dim A As LABC: Set A = A(0)
+End Property
+
+Property Get Ly() As String()
+Stop '
+'Dim O$(), J%
+'For J = 0 To U
+'    Push O, A(J).Lin
+'Next
+'Ly = O
+End Property
+
+Property Get ToStr$()
+Stop '
+'Dim S$
+'    Dim O$(), J%
+'    For J = 0 To U
+'        Push O, A(J).ToStr
+'    Next
+'    S = JnCrLf(O)
+'ToStr = Tag("LABC()", S)
+End Property
+
+Sub TstValidateAsBetNum()
+Dim ABCLines$
+Dim FnyStr$
+Dim FmNum&
+Dim ToNum&
+    ABCLines = RplVBar("Wdt 10 A B C|Wdt 20 X Y Z")
+AyDmp ValidateAsBetNumIO(ABCLines, FnyStr, FmNum, ToNum)
+End Sub
 
 Property Get LABCAy_LxFldAy(A() As LABC) As LxFld()
 Stop '
@@ -106,57 +143,6 @@ Stop '
 'LxFldAy = O
 End Property
 
-Property Get LABCAy_ValidateAsFldVal(A() As LABC, Fny$()) As LABCAyRslt
-Dim A1 As LABCAyRslt: Set A1 = VdtErFld(Fny)
-Dim A2 As LABCAyRslt: Set A2 = VdtDupFld(A1)
-Set LABCAy_ValidateAsFldVal = A2
-End Property
-
-Property Get LFVAy_FnyRslt(A As LABCGp) As FnyRslt
-Stop '
-'Dim O As LABCAyRslt
-'Set A = VdtDupFld(A)
-'Dim O1 As FnyRslt
-'Set LABCAy_ValidateAsFny = O.Init(UniqFny, A.ErLy, C1, C2)
-End Property
-
-Property Get LxAy() As Integer()
-Stop '
-'If IsEmp Then Exit Property
-'Dim I, M As LABC, O%()
-'For Each I In A
-'    Set M = I
-'    Push O, M.Lx
-'Next
-'LxAy = O
-End Property
-
-Property Get Ly() As String()
-Stop '
-'Dim O$(), J%
-'For J = 0 To U
-'    Push O, A(J).Lin
-'Next
-'Ly = O
-End Property
-
-Property Get Ly_LABCAy(ABCAy() As ABC, IsVF As Boolean) As LABC()
-Stop '
-'Dim O As New LABC()
-'Set Init = O.Init(ABCAy, IsVF)
-End Property
-
-Property Get ToStr$()
-Stop '
-'Dim S$
-'    Dim O$(), J%
-'    For J = 0 To U
-'        Push O, A(J).ToStr
-'    Next
-'    S = JnCrLf(O)
-'ToStr = Tag("LABC()", S)
-End Property
-
 Property Get UniqFny() As String()
 Stop '
 'Dim I, M As LABC, O$()
@@ -174,6 +160,25 @@ Stop '
 'Dim A1 As LABCAyRslt: Set A1 = ValidateAsFldVal(Fny)
 'Dim A2 As LABCAyRslt: Set A2 = VdtIsNum(A1)
 'Set ValidateAsBetNum = VdtIsBet(A2, FmNum, ToNum)
+End Property
+
+Private Property Get VdtIsBet(A As LABCAyRslt, FmNum&, ToNum&) As LABCAyRslt
+Stop '
+'Dim Ay() As LABC: Ay = A.LABC().Ay
+'Dim O As LABC(): Set O = A.LABC().DupEmpLABC()
+'Dim OEr As New Er: OEr.Push A.Er
+'Dim J%, V&
+'For J = 0 To UB(Ay)
+'    With Ay(J)
+'        V = .B
+'        If FmNum <= V And V <= ToNum Then
+'            O.AddLBC .Lx, .B, .C
+'        Else
+'            OEr.PushMsg FmtQQ(M_Val_ShouldBet, .Lx, .B, FmNum, ToNum)
+'        End If
+'    End With
+'Next
+'Set VdtIsBet = LABCAyRslt(O, OEr)
 End Property
 
 Property Get ValidateAsBetNumIO(ABCLines$, FnyStr$, FmNum&, ToNum&) As String()
@@ -195,12 +200,54 @@ Stop '
 'ValidateAsBetNumIO = O
 End Property
 
+Property Get LABCAy_ValidateAsFldVal(A() As LABC, Fny$()) As LABCAyRslt
+Dim A1 As LABCAyRslt: Set A1 = VdtErFld(Fny)
+Dim A2 As LABCAyRslt: Set A2 = VdtDupFld(A1)
+Set LABCAy_ValidateAsFldVal = A2
+End Property
+
 Property Get ValidateAsFldLngVal(Fny$()) As LABCAyRslt
 Stop '
 'If Not IsVF Then PmEr
 'Dim A1 As LABCAyRslt: Set A1 = ValidateAsFldVal(Fny)
 'Dim A2 As LABCAyRslt: Set A2 = VdtIsNum(A1)
 'Set ValidateAsFldLngVal = VdtIsLng(A2)
+End Property
+
+Private Property Get VdtIsNum(A As LABCAyRslt) As LABCAyRslt
+Stop '
+'Dim O As LABC(): Set O = A.LABC().DupEmpLABC()
+'Dim OEr As New Er: OEr.Push A.Er
+'    Dim Ay() As LABC: Ay = A.LABC().Ay
+'    Dim J%
+'    For J = 0 To UB(Ay)
+'        With Ay(J)
+'            If IsNumeric(.B) Then
+'                O.AddLBC .Lx, .B, .C
+'            Else
+'                OEr.PushMsg FmtQQ(M_Val_IsNonNum, .Lx, .B)
+'            End If
+'        End With
+'    Next
+'Set VdtIsNum = LABCAyRslt(O, OEr)
+End Property
+
+Private Property Get VdtIsLng(A As LABCAyRslt) As LABCAyRslt
+Stop '
+'Dim Ay() As LABC: Ay = A.LABC().Ay
+'Dim O As LABC(): Set O = A.LABC().DupEmpLABC()
+'Dim OEr As New Er: OEr.Push A.Er
+'Dim J%
+'For J = 0 To UB(Ay)
+'    With Ay(J)
+'        If IsLng(.B) Then
+'            O.AddLBC .Lx, .B, .C
+'        Else
+'            OEr.PushMsg FmtQQ(M_Val_IsNonLng, .Lx, .B)
+'        End If
+'    End With
+'Next
+'Set VdtIsLng = LABCAyRslt(O, OEr)
 End Property
 
 Property Get ValidateAsFldValIO(ABCLines$, IsVF As Boolean, FnyStr$) As String()
@@ -244,31 +291,6 @@ Stop '
 'ValidateNmIO = O
 End Property
 
-Sub Tst(Optional Opt As eTstOpt = eValidateAsFldVal)
-Select Case Opt
-Case eValidateAsFldVal: TstValidateAsFldVal
-Case eValidateAsBetNum: TstValidateAsBetNum
-Case eValidateAsNm:     TstValidateAsNm
-Case eValidateAsFny:    TstValidateAsFny
-Case eAllValidate:
-    TstValidateAsFldVal
-    TstValidateAsBetNum
-    TstValidateAsNm
-    TstValidateAsFny
-Case Else
-    PmEr
-End Select
-End Sub
-
-Sub TstValidateAsBetNum()
-Dim ABCLines$
-Dim FnyStr$
-Dim FmNum&
-Dim ToNum&
-    ABCLines = RplVBar("Wdt 10 A B C|Wdt 20 X Y Z")
-AyDmp ValidateAsBetNumIO(ABCLines, FnyStr, FmNum, ToNum)
-End Sub
-
 Sub TstValidateAsFldVal()
 Dim IsVF As Boolean, ABCLines$, FnyStr$
 IsVF = True
@@ -280,6 +302,10 @@ Debug.Print "LABC().TstValidateAsFldVal"
 AyDmp ValidateAsFldValIO(ABCLines, IsVF, FnyStr)
 End Sub
 
+Sub TstValidateAsNm()
+'AyDmp ValidateNmIO(InpStr)
+End Sub
+
 Sub TstValidateAsFny()
 Stop '
 'Dim A() As LABC: A = LyLABCAy(SslSy("Lo IsVF"))
@@ -287,29 +313,66 @@ Stop '
 'Debug.Print A.ValidateAsFny("Lo", "Fny").ToStr
 End Sub
 
-Sub TstValidateAsNm()
-'AyDmp ValidateNmIO(InpStr)
-End Sub
 
-Private Property Get NmErExcessLin() As String()
+Private Property Get VdtDupFld_1(FnyAy(), LxAy%(), J%) As StrRslt
 Stop '
-'Dim J%, O$()
-'If N <= 1 Then Exit Property
-'For J = 1 To U
-'    Push O, FmtQQ(M_Nm_ExcessLin, A(J).Lx)
+''Validate Current Fny (From FnyAy(J)) has duplicate field or not
+''if yes, report into Er
+''return FldSsl as StrRslt after removing all the duplicated fields in Fny
+'Dim O As New StrRslt
+'    Dim OFny$()             '<-- Those Fld has no duplicated will be put in the string result
+'    Dim I%
+'    Dim F$, Fny$()
+'    Fny = FnyAy(J)
+'    For I = 0 To UB(Fny)
+'        F = Fny(I)
+'        Dim DupAtLx% ' Duplicated at which line
+'        With VdtDupFld_DupAtLxOpt(FnyAy, LxAy, J, I)
+'            If .Som Then
+'                Dim Lx%, Msg$
+'                Lx = LxAy(I)
+'                Msg = FmtQQ(M_Fld_IsDup, Lx, F, .I)
+'                O.Er.PushMsg Msg    '<== Report duplication in OEr
+'            Else
+'                Push OFny, F    '<== Push to Fny1 for no-dup
+'            End If
+'        End With
+'    Next
+'    O.Str = JnSpc(OFny) '<== Put to {O}
+'Set VdtDupFld_1 = O
+End Property
+
+Private Property Get VdtDupFld_DupAtLxOpt(FnyAy(), LxAy%(), J%, I%) As SomInt
+'Check if Fny(I)-element has duplication found in Fny(I+1..)
+Dim Fny$(): Fny = FnyAy(J)
+Dim F$: F = Fny(I)
+Dim II%
+For II = I + 1 To UB(Fny)
+    If Fny(II) = F Then
+        VdtDupFld_DupAtLxOpt = SomInt(II)
+        Exit Property
+    End If
+Next
+For II = J + 1 To UB(FnyAy)
+    Fny = FnyAy(II)
+    If AyHas(Fny, F) Then VdtDupFld_DupAtLxOpt = SomInt(II): Exit Property
+Next
+End Property
+
+Private Property Get VdtDupFld2(A() As LABC, J%, F$, _
+    ODupAtLx%) As Boolean
+'Check if F has duplicated-element found in A(J+1...)
+Dim JJ%, Fny$(), FldSsl$
+ODupAtLx = -1
+'For JJ = J + 1 To LABC_UB(A)
+'    FldSsl = A(JJ).C
+'    Fny = SslSy(FldSsl)
+'    If AyHas(Fny, F) Then
+'        ODupAtLx = JJ
+'        VdtDupFld2 = True
+'        Exit Function
+'    End If
 'Next
-'NmErExcessLin = O
-End Property
-
-Private Property Get NmErMultiName() As String()
-Stop '
-'If IsEmp Then Exit Property
-'Dim A As LABC: Set A = A(0)
-End Property
-
-Private Property Get NmErNoLin() As String()
-Stop
-'If IsEmp Then NmErNoLin = ApSy(FmtQQ("There is not ?-line", C2_Lo_Nam))
 End Property
 
 Private Property Get VdtDupFld(A As LABCAyRslt) As LABCAyRslt
@@ -341,50 +404,6 @@ Stop '
 'Set VdtDupFld = LABCAyRslt(O, OEr)
 End Property
 
-Private Property Get VdtDupFld2(A() As LABC, J%, F$, _
-    ODupAtLx%) As Boolean
-'Check if F has duplicated-element found in A(J+1...)
-Dim JJ%, Fny$(), FldSsl$
-ODupAtLx = -1
-'For JJ = J + 1 To LABC_UB(A)
-'    FldSsl = A(JJ).C
-'    Fny = SslSy(FldSsl)
-'    If AyHas(Fny, F) Then
-'        ODupAtLx = JJ
-'        VdtDupFld2 = True
-'        Exit Function
-'    End If
-'Next
-End Property
-
-Private Property Get VdtDupFld_1(FnyAy(), LxAy%(), J%) As StrRslt
-Stop '
-''Validate Current Fny (From FnyAy(J)) has duplicate field or not
-''if yes, report into Er
-''return FldSsl as StrRslt after removing all the duplicated fields in Fny
-'Dim O As New StrRslt
-'    Dim OFny$()             '<-- Those Fld has no duplicated will be put in the string result
-'    Dim I%
-'    Dim F$, Fny$()
-'    Fny = FnyAy(J)
-'    For I = 0 To UB(Fny)
-'        F = Fny(I)
-'        Dim DupAtLx% ' Duplicated at which line
-'        With VdtDupFld_DupAtLxOpt(FnyAy, LxAy, J, I)
-'            If .Som Then
-'                Dim Lx%, Msg$
-'                Lx = LxAy(I)
-'                Msg = FmtQQ(M_Fld_IsDup, Lx, F, .I)
-'                O.Er.PushMsg Msg    '<== Report duplication in OEr
-'            Else
-'                Push OFny, F    '<== Push to Fny1 for no-dup
-'            End If
-'        End With
-'    Next
-'    O.Str = JnSpc(OFny) '<== Put to {O}
-'Set VdtDupFld_1 = O
-End Property
-
 Private Property Get VdtDupFld_2(A() As LABC, M As LABC, FldSsl$) As LABC()  ' (A() As LABC, FldSsl$, J%) As StrRslt
 Stop '
 'If FldSsl <> "" Then
@@ -395,21 +414,26 @@ Stop '
 'Set VdtDupFld_2 = A
 End Property
 
-Private Property Get VdtDupFld_DupAtLxOpt(FnyAy(), LxAy%(), J%, I%) As SomInt
-'Check if Fny(I)-element has duplication found in Fny(I+1..)
-Dim Fny$(): Fny = FnyAy(J)
-Dim F$: F = Fny(I)
-Dim II%
-For II = I + 1 To UB(Fny)
-    If Fny(II) = F Then
-        VdtDupFld_DupAtLxOpt = SomInt(II)
-        Exit Property
-    End If
-Next
-For II = J + 1 To UB(FnyAy)
-    Fny = FnyAy(II)
-    If AyHas(Fny, F) Then VdtDupFld_DupAtLxOpt = SomInt(II): Exit Property
-Next
+Property Get FldSslAy() As String()
+Stop '
+'If IsEmp Then Exit Property
+'Dim I, M As LABC, O$()
+'For Each I In A
+'    Set M = I
+'    Push O, M.FldSsl
+'Next
+'FldSslAy = O
+End Property
+
+Property Get LxAy() As Integer()
+Stop '
+'If IsEmp Then Exit Property
+'Dim I, M As LABC, O%()
+'For Each I In A
+'    Set M = I
+'    Push O, M.Lx
+'Next
+'LxAy = O
 End Property
 
 Private Property Get VdtErFld(Fny$()) As LABCAyRslt
@@ -442,19 +466,6 @@ Stop '
 'Set VdtErFld = LABCAyRslt(O, Er)
 End Property
 
-Private Property Get VdtErFld1(SslFldAy$(), LxAy%(), Fny$()) As LyRslt
-Stop '
-'Dim OLy$(), J%, Lx%, FldSsl$, OEr As New Er, A As StrRslt
-'For J = 0 To UB(SslFldAy)
-'    Lx = LxAy(J)
-'    FldSsl = SslFldAy(J)
-'    Set A = VdtErFld2(FldSsl, Lx, Fny)
-'    Push OLy, A.Str
-'    OEr.Push A.Er
-'Next
-'Set VdtErFld1 = LyRslt(OLy, OEr)
-End Property
-
 Private Property Get VdtErFld2(SslFld$, Lx%, Fny$()) As StrRslt
 Stop '
 'Dim F1$(): F1 = SslSy(SslFld)
@@ -470,57 +481,50 @@ Stop '
 'Set VdtErFld2 = StrRslt(JnSpc(F2), Er)
 End Property
 
-Private Property Get VdtIsBet(A As LABCAyRslt, FmNum&, ToNum&) As LABCAyRslt
+Private Property Get VdtErFld1(SslFldAy$(), LxAy%(), Fny$()) As LyRslt
 Stop '
-'Dim Ay() As LABC: Ay = A.LABC().Ay
-'Dim O As LABC(): Set O = A.LABC().DupEmpLABC()
-'Dim OEr As New Er: OEr.Push A.Er
-'Dim J%, V&
-'For J = 0 To UB(Ay)
-'    With Ay(J)
-'        V = .B
-'        If FmNum <= V And V <= ToNum Then
-'            O.AddLBC .Lx, .B, .C
-'        Else
-'            OEr.PushMsg FmtQQ(M_Val_ShouldBet, .Lx, .B, FmNum, ToNum)
-'        End If
-'    End With
+'Dim OLy$(), J%, Lx%, FldSsl$, OEr As New Er, A As StrRslt
+'For J = 0 To UB(SslFldAy)
+'    Lx = LxAy(J)
+'    FldSsl = SslFldAy(J)
+'    Set A = VdtErFld2(FldSsl, Lx, Fny)
+'    Push OLy, A.Str
+'    OEr.Push A.Er
 'Next
-'Set VdtIsBet = LABCAyRslt(O, OEr)
+'Set VdtErFld1 = LyRslt(OLy, OEr)
 End Property
 
-Private Property Get VdtIsLng(A As LABCAyRslt) As LABCAyRslt
+Sub Tst(Optional Opt As eTstOpt = eValidateAsFldVal)
+Select Case Opt
+Case eValidateAsFldVal: TstValidateAsFldVal
+Case eValidateAsBetNum: TstValidateAsBetNum
+Case eValidateAsNm:     TstValidateAsNm
+Case eValidateAsFny:    TstValidateAsFny
+Case eAllValidate:
+    TstValidateAsFldVal
+    TstValidateAsBetNum
+    TstValidateAsNm
+    TstValidateAsFny
+Case Else
+    PmEr
+End Select
+End Sub
+
+Property Get Ly_LABCAy(ABCAy() As ABC, IsVF As Boolean) As LABC()
 Stop '
-'Dim Ay() As LABC: Ay = A.LABC().Ay
-'Dim O As LABC(): Set O = A.LABC().DupEmpLABC()
-'Dim OEr As New Er: OEr.Push A.Er
-'Dim J%
-'For J = 0 To UB(Ay)
-'    With Ay(J)
-'        If IsLng(.B) Then
-'            O.AddLBC .Lx, .B, .C
-'        Else
-'            OEr.PushMsg FmtQQ(M_Val_IsNonLng, .Lx, .B)
-'        End If
-'    End With
-'Next
-'Set VdtIsLng = LABCAyRslt(O, OEr)
+'Dim O As New LABC()
+'Set Init = O.Init(ABCAy, IsVF)
 End Property
 
-Private Property Get VdtIsNum(A As LABCAyRslt) As LABCAyRslt
+Property Get ABCLines_LABCAy(ABCLines$, Optional IsVF As Boolean) As LABC()
 Stop '
-'Dim O As LABC(): Set O = A.LABC().DupEmpLABC()
-'Dim OEr As New Er: OEr.Push A.Er
-'    Dim Ay() As LABC: Ay = A.LABC().Ay
-'    Dim J%
-'    For J = 0 To UB(Ay)
-'        With Ay(J)
-'            If IsNumeric(.B) Then
-'                O.AddLBC .Lx, .B, .C
-'            Else
-'                OEr.PushMsg FmtQQ(M_Val_IsNonNum, .Lx, .B)
-'            End If
-'        End With
-'    Next
-'Set VdtIsNum = LABCAyRslt(O, OEr)
+'Dim O As New LABC()
+'Set ByLines = O.InitByLines(ABCLines, IsVF)
 End Property
+
+Property Get ABCVbl_LABCAy(ABCVBarLines$, Optional IsVF As Boolean) As LABC()
+Stop '
+'Set ByVBarLines = ByLines(RplVBar(ABCVBarLines), IsVF)
+End Property
+
+

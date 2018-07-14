@@ -72,21 +72,24 @@ End Property
 
 Property Get DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As String()
 Dim O$()
-Stop '
-'    Push O, "*Ds " & A.DsNm & "=================================================="
+    Push O, "*Ds " & A.DsNm & "=================================================="
 Dim Dic As Dictionary ' DicOf_Tn_to_BrkColNm
-Stop
+    Stop '
 '    Set Dic = MapStr_Dic(DtBrkLinMapStr)
-'If Not DtAy_IsEmp(A.DtAy) Then
-'    Dim J%, DtNm$, Dt As Dt, BrkColNm$
-'    For J = 0 To UBound(A.DtAy)
-'        Dt = A.DtAy(J)
-'        DtNm$ = Dt.DtNm
-'        If Dic.Exists(DtNm) Then BrkColNm = Dic(DtNm) Else BrkColNm = ""
-'        PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
-'    Next
-'End If
-'DsLy = O
+If Not DsIsEmp(A) Then
+    Dim J%, DtNm$, Dt As Dt, BrkColNm$, Ay() As Dt
+    Ay = A.DtAy
+    For J = 0 To UBound(A.DtAy)
+        Set Dt = Ay(J)
+        DtNm = Dt.DtNm
+        If Dic.Exists(DtNm) Then BrkColNm = Dic(DtNm) Else BrkColNm = ""
+        Stop '
+        'PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
+    Next
+End If
+DsLy = O
 End Property
+
+
 
 

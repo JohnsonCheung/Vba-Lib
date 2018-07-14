@@ -11,6 +11,12 @@ End If
 Dim S$: S = ToStr(A)
 AlignL = StrAlignL(S, W, ErIfNotEnoughWdt, DoNotCut)
 End Property
+Property Get Quote$(A, QuoteStr$)
+With BrkQuote(QuoteStr)
+    Quote = .S1 & A & .S2
+End With
+End Property
+
 
 Property Get AlignR$(S, W%)
 Dim L%: L = Len(S)
@@ -67,12 +73,6 @@ End Property
 
 Property Get PrependDash$(S)
 PrependDash = Prepend(S, "-")
-End Property
-
-Property Get Quote$(A, QuoteStr$)
-With BrkQuote(QuoteStr)
-    Quote = .S1 & A & .S2
-End With
 End Property
 
 Property Get RTrimWhite$(S)

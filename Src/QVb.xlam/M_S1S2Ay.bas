@@ -87,9 +87,6 @@ Next
 S1S2Ay_ToStr = Tag("S1S2Ay", JnSpc(O))
 End Property
 
-Sub AAA()
-ZZ_S1S2Ay_Ly
-End Sub
 
 Sub S1S2Ay_Brw(A() As S1S2)
 AyBrw S1S2Ay_FmtLy(A)

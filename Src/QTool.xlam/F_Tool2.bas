@@ -1,4 +1,6 @@
 Attribute VB_Name = "F_Tool2"
+Sub AA()
+End Sub
 'Option Explicit
 'Type Either
 '    IsLeft As Boolean

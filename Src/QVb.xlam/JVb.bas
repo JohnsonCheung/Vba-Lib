@@ -10,7 +10,10 @@ Property Get DDLines(Ly$()) As DDLines
 Dim O As New DDLines
 Set DDLines = O.Init(Ly)
 End Property
-
+Property Get Gp(A() As Lnx) As Gp
+Dim O As New Gp
+Set Gp = O.Init(A)
+End Property
 Property Get Emp() As Emp
 Static Y As New Emp
 Set Emp = Y
@@ -24,11 +27,6 @@ End Property
 Property Get FmToPos(FmPos, ToPos) As FmToPos
 Dim O As New FmToPos
 Set FmToPos = O.Init(FmPos, ToPos)
-End Property
-
-Property Get Gp(A() As Lnx) As Gp
-Dim O As New Gp
-Set Gp = O.Init(A)
 End Property
 
 Property Get IntAyObj(Ay%()) As IntAyObj

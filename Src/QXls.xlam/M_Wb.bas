@@ -25,20 +25,6 @@ WbHasWs = True
 Exit Property
 X:
 End Property
-
-Property Get WbLasWs(A As Workbook) As Worksheet
-Set WbLasWs = A.Sheets(A.Sheets.Count)
-End Property
-
-Property Get WbWs(A As Workbook, Ix_or_WsNm) As Worksheet
-Set WbWs = A.Sheets(Ix_or_WsNm)
-End Property
-
-Property Get WbWsNy(A As Workbook) As String()
-Stop
-'WbWsNy = ItrNy(A.Sheets)
-End Property
-
 Sub WbClsNoSav(A As Workbook)
 On Error Resume Next
 A.Close False
@@ -57,3 +43,18 @@ End Sub
 Sub WbVis(A As Workbook)
 A.Application.Visible = True
 End Sub
+
+Property Get WbLasWs(A As Workbook) As Worksheet
+Set WbLasWs = A.Sheets(A.Sheets.Count)
+End Property
+
+Property Get WbWs(A As Workbook, Ix_or_WsNm) As Worksheet
+Set WbWs = A.Sheets(Ix_or_WsNm)
+End Property
+
+Property Get WbWsNy(A As Workbook) As String()
+Stop
+'WbWsNy = ItrNy(A.Sheets)
+End Property
+
+

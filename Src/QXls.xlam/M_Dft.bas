@@ -16,3 +16,5 @@ Stop
 'If WsNm0 = "" Then O = Xls.Fx(Fx).FstWsNm Else O = WsNm0
 DftWsNmByFxFstWs = O
 End Property
+
+

@@ -17,15 +17,6 @@ Next
 Ay_Dry_By_AddConst_Aft_Ay = O
 End Property
 
-Property Get AyDt(A, Optional FldNm$ = "Itm", Optional DtNm$ = "Ay") As Dt
-Dim O(), I
-If Sz(A) > 0 Then
-    For Each I In A
-        Push O, Array(I)
-    Next
-End If
-Set AyDt = Dt(DtNm, ApSy(FldNm), O)
-End Property
 
 Property Get Ay_Dry_By_AddConst_Bef_Ay(A, Constant) As Variant()
 If Sz(A) = 0 Then Exit Property
@@ -125,24 +116,12 @@ Dim Dry()
 Set DrsExpLinesCol = Drs(A.Fny, Dry)
 End Property
 
-Property Get DrsFldSsl$(A As Drs)
-DrsFldSsl = JnSpc(A.Fny)
-End Property
-
 Sub DrsLoFmt(A As Drs, At As Range, LoFmtrLy$(), Optional LoNm$)
 Dim Lo As ListObject
 Stop '
 'Set Lo = DrsLo(A, At, LoNm)
 'LoFmt Lo, LoFmtrLy
 End Sub
-
-Property Get DrsReOrd(A As Drs, Partial_Fny0) As Drs
-Dim ReOrdFny$(): ReOrdFny = DftNy(Partial_Fny0)
-Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
-Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
-Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
-Set DrsReOrd = Drs(OFny, ODry)
-End Property
 
 Property Get DrsRowCnt&(A As Drs, ColNm$, EqVal)
 DrsRowCnt = DryRowCnt(A.Dry, AyIx(A.Fny, ColNm), EqVal)
@@ -457,59 +436,9 @@ Set Ay(N) = T
 Set DsAddDt = Ds(Ay, O.DsNm)
 End Property
 
-Sub DsBrw(A As Ds)
-AyBrw DsLy(A)
-End Sub
-
-Sub DsDmp(A As Ds)
-AyDmp DsLy(A)
-End Sub
-
-Property Get DsHasDt(A As Ds, DtNm) As Boolean
-If DsIsEmp(A) Then Exit Property
-Dim J%, Ay() As Dt
-Ay = A.DtAy
-For J = 0 To UB(Ay)
-    If Ay(J).DtNm = DtNm Then DsHasDt = True: Exit Property
-Next
-End Property
-
-Property Get DsIsEmp(A As Ds) As Boolean
-DsIsEmp = Sz(A.DtAy) = 0
-End Property
-
-Property Get DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As String()
-Dim O$()
-    Push O, "*Ds " & A.DsNm & "=================================================="
-Dim Dic As Dictionary ' DicOf_Tn_to_BrkColNm
-    Stop '
-'    Set Dic = MapStr_Dic(DtBrkLinMapStr)
-If Not DsIsEmp(A) Then
-    Dim J%, DtNm$, Dt As Dt, BrkColNm$, Ay() As Dt
-    Ay = A.DtAy
-    For J = 0 To UBound(A.DtAy)
-        Set Dt = Ay(J)
-        DtNm = Dt.DtNm
-        If Dic.Exists(DtNm) Then BrkColNm = Dic(DtNm) Else BrkColNm = ""
-        PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
-    Next
-End If
-DsLy = O
-End Property
-
 Sub DtBrw(A As Dt, Optional Fnn)
 AyBrw DtLy(A), IIf(IsEmp(Fnn), A.DtNm, Fnn)
 End Sub
-
-Property Get DtCsvLy(A As Dt) As String()
-Dim O$()
-Dim QQStr$
-Dim Dr
-Push O, JnComma(AyQuoteDbl(A.Fny))
-For Each Dr In A.Dry
-   Push O, FmtQQAv(QQStr, Dr)
-Next
-End Property
 
 Sub DtDmp(A As Dt)
 AyDmp DtLy(A)
@@ -540,17 +469,6 @@ Property Get DrsDt(A As Drs, Dt$, Drs As Drs) As Dt
 Set DrsDt = Drs()
 End Property
 
-Property Get DtReOrd(A As Dt, ColNy0) As Dt
-Dim ReOrdFny$(): ReOrdFny = DftNy(ColNy0)
-Dim IxAy&(): IxAy = AyIxAy(A.Fny, ReOrdFny)
-Dim OFny$(): OFny = AyReOrd(A.Fny, IxAy)
-Dim ODry(): ODry = DryReOrd(A.Dry, IxAy)
-Set DtReOrd = Dt(A.DtNm, OFny, ODry)
-End Property
-
-Property Get DtSrt(A As Dt, ColNm$, Optional IsDes As Boolean) As Dt
-Set DtSrt = Dt(A.DtNm, A.Fny, DrsSrt(DtDrs(A), ColNm, IsDes).Dry)
-End Property
 
 Sub Fiy(Fny$(), FldLvs$, ParamArray OAp())
 'Fiy=Field Index Array

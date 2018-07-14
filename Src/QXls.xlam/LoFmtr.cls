@@ -20,26 +20,44 @@ Private A_Lvl() As CnoVal
 Private A_Tit() As CnoVal
 Private A_Wdt() As CnoVal
 
-Property Get AvgCny() As String()
-AvgCny = A_AvgCny
-End Property
-
-Property Get BdrCnoAy() As Integer()
-BdrCnoAy = A_BdrCnoAy
-End Property
-
-Property Get CntCny() As String()
-CntCny = A_CntCny
-End Property
-
-Property Get HidCnoAy() As Integer()
-HidCnoAy = A_HidCnoAy
+Friend Property Get Init(SumCny$(), AvgCny$(), _
+CntCny$(), BdrCnoAy%(), HidCnoAy%(), _
+Bet() As CnoVal, Cor() As CnoVal, _
+Fml() As CnoVal, Fmt() As CnoVal, _
+Lbl() As CnoVal, Lvl() As CnoVal, _
+Tit() As CnoVal, Wdt() As CnoVal) As LoFmtr
+A_SumCny = SumCny
+A_AvgCny = AvgCny
+A_CntCny = CntCny
+A_BdrCnoAy = BdrCnoAy
+A_HidCnoAy = HidCnoAy
+A_Bet = Bet
+A_Cor = Cor
+A_Fml = Fml
+A_Fmt = Fmt
+A_Lbl = Lbl
+A_Lvl = Lvl
+A_Tit = Tit
+A_Wdt = Wdt
+Set Init = Me
 End Property
 
 Property Get SumCny() As String()
 SumCny = A_SumCny
 End Property
 
+Property Get AvgCny() As String()
+AvgCny = A_AvgCny
+End Property
+Property Get CntCny() As String()
+CntCny = A_CntCny
+End Property
+Property Get BdrCnoAy() As Integer()
+BdrCnoAy = A_BdrCnoAy
+End Property
+Property Get HidCnoAy() As Integer()
+HidCnoAy = A_HidCnoAy
+End Property
 Property Get ToStr$()
 Stop '
 'Dim O$()
@@ -67,24 +85,3 @@ Stop '
 'Lbl, Lvl, Tit, Wdt)
 End Property
 
-Friend Property Get Init(SumCny$(), AvgCny$(), _
-CntCny$(), BdrCnoAy%(), HidCnoAy%(), _
-Bet() As CnoVal, Cor() As CnoVal, _
-Fml() As CnoVal, Fmt() As CnoVal, _
-Lbl() As CnoVal, Lvl() As CnoVal, _
-Tit() As CnoVal, Wdt() As CnoVal) As LoFmtr
-A_SumCny = SumCny
-A_AvgCny = AvgCny
-A_CntCny = CntCny
-A_BdrCnoAy = BdrCnoAy
-A_HidCnoAy = HidCnoAy
-A_Bet = Bet
-A_Cor = Cor
-A_Fml = Fml
-A_Fmt = Fmt
-A_Lbl = Lbl
-A_Lvl = Lvl
-A_Tit = Tit
-A_Wdt = Wdt
-Set Init = Me
-End Property
