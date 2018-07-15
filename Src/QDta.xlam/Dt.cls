@@ -11,17 +11,17 @@ Public DtNm$
 Private A_Fny$()
 Private A_Dry() As Variant
 
-Friend Property Get Init(DtNm$, Fny0, Dry()) As Dt
-A_Dry = Dry
-A_Fny = DftNy(Fny0)
-A_DtNm = DtNm
-Set Init = Me
+Property Get Dry() As Variant()
+Dry = A_Dry
 End Property
 
 Property Get Fny() As String()
 Fny = B_Fny
 End Property
 
-Property Get Dry() As Variant()
-Dry = A_Dry
+Friend Property Get Init(DtNm$, Fny0, Dry()) As Dt
+A_Dry = Dry
+A_Fny = DftNy(Fny0)
+A_DtNm = DtNm
+Set Init = Me
 End Property

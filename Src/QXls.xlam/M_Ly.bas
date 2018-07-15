@@ -7,4 +7,3 @@ Dim R As Range
 Set R = AyRgV(Ly, WsA1(O))
 Set LyWs = O
 End Property
-

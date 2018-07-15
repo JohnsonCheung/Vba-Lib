@@ -33,7 +33,6 @@ If MsgBox(FmtQQ("Delete this Md[?]", CurMdNm), vbYesNo + vbDefaultButton2) <> vb
 CurPjx.DltMd CurMdNm
 End Sub
 
-
 Sub RenMd(NewNm$)
 CurMd.Name = NewNm
 End Sub

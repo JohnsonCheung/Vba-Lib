@@ -5,6 +5,14 @@ Type ZZ7_TstDta
    Exp As String
 End Type
 
+Private Sub ZZ7__Srp_TTx__Tst()
+Dim Ay() As ZZ7_TstDta: Ay = ZZ7_Ay
+Dim J%
+For J = 0 To UBound(Ay)
+   ZZ7_Tstr Ay(J)
+Next
+End Sub
+
 Private Function ZZ7_Ay() As ZZ7_TstDta()
 Dim O() As ZZ7_TstDta
 ZZ7_Push O, ZZ7_TstDta1
@@ -74,11 +82,3 @@ End Sub
 Private Function ZZ7_UB%(A() As ZZ7_TstDta)
 ZZ7_UB = ZZ7_Sz(A) - 1
 End Function
-
-Private Sub ZZ7__Srp_TTx__Tst()
-Dim Ay() As ZZ7_TstDta: Ay = ZZ7_Ay
-Dim J%
-For J = 0 To UBound(Ay)
-   ZZ7_Tstr Ay(J)
-Next
-End Sub

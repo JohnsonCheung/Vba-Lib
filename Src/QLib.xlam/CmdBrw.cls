@@ -8,6 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
+
 Sub LoFmtrTp()
 Dim O$()
 Push O, "Lo  Nm     *Nm"

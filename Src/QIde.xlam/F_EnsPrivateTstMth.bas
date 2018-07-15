@@ -1,4 +1,4 @@
-Attribute VB_Name = "IdeEnsPrivateTstMth"
+Attribute VB_Name = "F_EnsPrivateTstMth"
 Option Explicit
 
 Sub MdEnsTstMthAsPrivate(A As CodeModule)

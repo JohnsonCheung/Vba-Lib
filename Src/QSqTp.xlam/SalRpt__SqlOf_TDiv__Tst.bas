@@ -6,6 +6,12 @@ Private Type ZZ4_TstDta
    Exp As String
 End Type
 
+Private Sub Srp_TDiv__Tst()
+ZZ4_Tstr ZZ4_TstDta1
+ZZ4_Tstr ZZ4_TstDta2
+ZZ4_Tstr ZZ4_TstDta3
+End Sub
+
 Private Function ZZ4_TstDta1() As ZZ4_TstDta
 With ZZ4_TstDta1
    .BrkDiv = False
@@ -33,10 +39,4 @@ Private Sub ZZ4_Tstr(A As ZZ4_TstDta)
 With A
    Ass IsEq(Srp_TDiv(.BrkDiv, .LisDiv), .Exp)
 End With
-End Sub
-
-Private Sub Srp_TDiv__Tst()
-ZZ4_Tstr ZZ4_TstDta1
-ZZ4_Tstr ZZ4_TstDta2
-ZZ4_Tstr ZZ4_TstDta3
 End Sub

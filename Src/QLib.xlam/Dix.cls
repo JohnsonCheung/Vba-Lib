@@ -16,9 +16,10 @@ Enum e_DicLyOpt
     e_DrsFmt = 1
     e_KeyLinesFmt = 2
 End Enum
-Friend Property Get Init(Dic As Dictionary) As Dix
-Set A = Dic
-Set Init = Me
+
+Property Get IsEmp() As Boolean
+If IsNothing(A) Then IsEmp = True: Exit Property
+IsEmp = A.Count = 0
 End Property
 
 Sub AssDicHasKeyLvs(A As Dictionary, KeyLvs$)
@@ -36,7 +37,23 @@ Sub AssEqDic(B As Dictionary)
 If Not IsEqDic(B) Then Stop
 End Sub
 
+Sub Brw()
+DrsBrw DicDrs(A)
+End Sub
 
+Function Cmp(B As Dictionary, Optional Nm1$ = "Fst", Optional Nm2$ = "Snd") As DCRslt
+Dim O As DCRslt
+Set O.AExcess = DicMinus(A, B)
+Set O.BExcess = DicMinus(B, A)
+Set O.Sam = Intersect(B)
+With DicSamKeyDifValPair(A, B)
+    Set O.ADif = .A
+    Set O.BDif = .B
+End With
+O.Nm1 = Nm1
+O.Nm2 = Nm2
+Cmp = O
+End Function
 
 Function DicAdd(A As Dictionary, ParamArray DicAp()) As Dictionary
 Dim Av(): Av = DicAp
@@ -123,10 +140,6 @@ Dim V As VOpt: V = DicValOpt(A, K)
 If V.Som Then DicBoolOpt = SomBool(V.V)
 End Function
 
-Sub Brw()
-DrsBrw DicDrs(A)
-End Sub
-
 Function DicByDry(DicDry) As Dictionary
 Dim O As New Dictionary
 If Not AyIsEmp(DicDry) Then
@@ -150,24 +163,6 @@ End Function
 
 Sub DicCmp(A As Dictionary, B As Dictionary)
 AyBrw DCRsltLy(Dix(A).Cmp(B))
-End Sub
-
-Function Cmp(B As Dictionary, Optional Nm1$ = "Fst", Optional Nm2$ = "Snd") As DCRslt
-Dim O As DCRslt
-Set O.AExcess = DicMinus(A, B)
-Set O.BExcess = DicMinus(B, A)
-Set O.Sam = Intersect(B)
-With DicSamKeyDifValPair(A, B)
-    Set O.ADif = .A
-    Set O.BDif = .B
-End With
-O.Nm1 = Nm1
-O.Nm2 = Nm2
-Cmp = O
-End Function
-
-Sub Dmp(Optional InclDicValTy As Boolean, Optional Opt As e_DicLyOpt = e_DrsFmt)
-AyDmp DicLy(A, InclDicValTy, Opt)
 End Sub
 
 Function DicDrs(A As Dictionary, Optional InclDicValTy As Boolean) As Drs
@@ -227,26 +222,6 @@ For Each K In Ky
 Next
 DicHasKy = True
 End Function
-
-Function Intersect(B As Dictionary) As Dictionary
-Dim O As New Dictionary
-If IsEmp Then GoTo X
-If Dix(B).IsEmp Then GoTo X
-Dim K
-For Each K In A.Keys
-    If B.Exists(K) Then
-        If A(K) = B(K) Then
-            O.Add K, A(K)
-        End If
-    End If
-Next
-X: Set Intersect = O
-End Function
-
-Property Get IsEmp() As Boolean
-If IsNothing(A) Then IsEmp = True: Exit Property
-IsEmp = A.Count = 0
-End Property
 
 Function DicJn(DicAy, Optional FnyOpt) As Drs
 Const CSub$ = "DicJn"
@@ -354,20 +329,6 @@ Next
 Set DicMinus = O
 End Function
 
-Function S1S2Ay() As S1S2()
-If IsEmp Then Exit Function
-Dim O() As S1S2
-Dim U&: U = A.Count - 1
-ReDim O(U)
-Dim J&, I
-For Each I In A
-    O(J).S1 = I
-    O(J).S2 = A(I)
-    J = J + 1
-Next
-S1S2Ay = O
-End Function
-
 Function DicSamKeyDifValPair(A As Dictionary, B As Dictionary) As DicPair
 Dim K, A1 As New Dictionary, B1 As New Dictionary
 For Each K In A.Keys
@@ -414,22 +375,6 @@ Function DicStrKy(A As Dictionary) As String()
 DicStrKy = AySy(A.Keys)
 End Function
 
-Function N&()
-If IsNothing(A) Then Exit Function
-N = A.Count
-End Function
-
-Function Ly() As String()
-If IsEmp Then Exit Function
-Dim Key: Key = A.Keys
-Dim O$(): O = AyAlignL(Key)
-Dim J&
-For J = 0 To UB(Key)
-   O(J) = O(J) & " " & A(Key(J))
-Next
-Ly = O
-End Function
-
 Function DicVal(A As Dictionary, K, Optional ThrowErIfNotFnd As Boolean)
 If Not A.Exists(K) Then
    If ThrowErIfNotFnd Then Stop
@@ -456,6 +401,30 @@ Dim O As Worksheet
    Set O = DicWs(A)
    WsVis O
 Set DicWsVis = O
+End Function
+
+Sub Dmp(Optional InclDicValTy As Boolean, Optional Opt As e_DicLyOpt = e_DrsFmt)
+AyDmp DicLy(A, InclDicValTy, Opt)
+End Sub
+
+Friend Property Get Init(Dic As Dictionary) As Dix
+Set A = Dic
+Set Init = Me
+End Property
+
+Function Intersect(B As Dictionary) As Dictionary
+Dim O As New Dictionary
+If IsEmp Then GoTo X
+If Dix(B).IsEmp Then GoTo X
+Dim K
+For Each K In A.Keys
+    If B.Exists(K) Then
+        If A(K) = B(K) Then
+            O.Add K, A(K)
+        End If
+    End If
+Next
+X: Set Intersect = O
 End Function
 
 Function IsEqDic(B As Dictionary) As Boolean
@@ -535,19 +504,6 @@ Next
 LinesDic_Ly = O
 End Function
 
-Function LinesDic_Ly__Ly(K, Lines) As String()
-Dim O$(), J&
-Dim Ly$()
-    Ly = SplitCrLf(Lines)
-For J = 0 To UB(Ly)
-    Dim Lin$
-        Lin = Ly(J)
-        If FstChr(Lin) = " " Then Lin = "~" & RmvFstChr(Lin)
-    Push O, K & " " & Lin
-Next
-LinesDic_Ly__Ly = O
-End Function
-
 Function LinesDic_S1S2Ay(A As Dictionary) As S1S2()
 If IsEmp Then Exit Function
 Dim O() As S1S2
@@ -570,6 +526,17 @@ Case e_EscFstSpc
     Next
 End Select
 LinesLy = L
+End Function
+
+Function Ly() As String()
+If IsEmp Then Exit Function
+Dim Key: Key = A.Keys
+Dim O$(): O = AyAlignL(Key)
+Dim J&
+For J = 0 To UB(Key)
+   O(J) = O(J) & " " & A(Key(J))
+Next
+Ly = O
 End Function
 
 Function LyBoolDic(A$()) As Dictionary
@@ -597,26 +564,9 @@ Next
 LyDic_FmtLy = O
 End Function
 
-Function Wb(Optional Vis As Boolean) As Workbook
-'LyDic is a dictionary with K is string and V is Ly
-Dim O As Workbook: Set O = NewWb
-If IsEmp Then GoTo X
-Dim Ws As Worksheet, K, ThereIsSheet1 As Boolean
-For Each K In A.Keys
-    If K = "Sheet1" Then
-        Set Ws = O.Sheets("Sheet1")
-        ThereIsSheet1 = True
-    Else
-        Set Ws = O.Sheets.Add
-        Ws.Name = K
-    End If
-    AyRgV(A(K), WsA1(Ws)).Font.Name = "Courier New"
-Next
-If Not ThereIsSheet1 Then
-    WbWs(O, "Sheet1").Delete
-End If
-If Vis Then O.Application.Visible = True
-X: Set Wb = O
+Function N&()
+If IsNothing(A) Then Exit Function
+N = A.Count
 End Function
 
 Function NewDic() As Dictionary
@@ -648,6 +598,19 @@ Next
 Set NewLyDic = O
 End Function
 
+Function S1S2Ay() As S1S2()
+If IsEmp Then Exit Function
+Dim O() As S1S2
+Dim U&: U = A.Count - 1
+ReDim O(U)
+Dim J&, I
+For Each I In A
+    O(J).S1 = I
+    O(J).S2 = A(I)
+    J = J + 1
+Next
+S1S2Ay = O
+End Function
 
 Function S1S2Ay_KeyLinesLy(A() As S1S2) As String()
 Dim U%: U = S1S2_UB(A)
@@ -667,23 +630,26 @@ SomKeyVal.Som = True
 SomKeyVal.KeyVal = KeyVal(K, V)
 End Function
 
-Private Sub ZZ_DicCmp()
-Dim A As Dictionary: Set A = DicVbl_Dic("X AA|A BBB|A Lines1|A Line3|B Line1|B line2|B line3..")
-Dim B As Dictionary: Set B = DicVbl_Dic("X AA|C Line|D Line1|D line2|B Line1|B line2|B line3|B Line4")
-DicCmp A, B
-End Sub
-
-Private Function LinesDicLy_LinesDic__Lines$(FstTermAy$(), RstAy$(), Nm$)
-Dim O$(), J&
-For J = 0 To UB(FstTermAy)
-    If FstTermAy(J) = Nm Then
-        Dim Lin$
-        Lin = RstAy(J)
-        If FstChr(Lin) = "~" Then Lin = RplFstChr(Lin, " ")
-        Push O, Lin
+Function Wb(Optional Vis As Boolean) As Workbook
+'LyDic is a dictionary with K is string and V is Ly
+Dim O As Workbook: Set O = NewWb
+If IsEmp Then GoTo X
+Dim Ws As Worksheet, K, ThereIsSheet1 As Boolean
+For Each K In A.Keys
+    If K = "Sheet1" Then
+        Set Ws = O.Sheets("Sheet1")
+        ThereIsSheet1 = True
+    Else
+        Set Ws = O.Sheets.Add
+        Ws.Name = K
     End If
+    AyRgV(A(K), WsA1(Ws)).Font.Name = "Courier New"
 Next
-LinesDicLy_LinesDic__Lines = JnCrLf(O)
+If Not ThereIsSheet1 Then
+    WbWs(O, "Sheet1").Delete
+End If
+If Vis Then O.Application.Visible = True
+X: Set Wb = O
 End Function
 
 Sub DicS1S2Ay__Tst()
@@ -703,3 +669,34 @@ Ass IsVdtLyDicStr(RplVBar("***")) = True
 Ass IsVdtLyDicStr("**") = False
 End Sub
 
+Private Function LinesDicLy_LinesDic__Lines$(FstTermAy$(), RstAy$(), Nm$)
+Dim O$(), J&
+For J = 0 To UB(FstTermAy)
+    If FstTermAy(J) = Nm Then
+        Dim Lin$
+        Lin = RstAy(J)
+        If FstChr(Lin) = "~" Then Lin = RplFstChr(Lin, " ")
+        Push O, Lin
+    End If
+Next
+LinesDicLy_LinesDic__Lines = JnCrLf(O)
+End Function
+
+Function LinesDic_Ly__Ly(K, Lines) As String()
+Dim O$(), J&
+Dim Ly$()
+    Ly = SplitCrLf(Lines)
+For J = 0 To UB(Ly)
+    Dim Lin$
+        Lin = Ly(J)
+        If FstChr(Lin) = " " Then Lin = "~" & RmvFstChr(Lin)
+    Push O, K & " " & Lin
+Next
+LinesDic_Ly__Ly = O
+End Function
+
+Private Sub ZZ_DicCmp()
+Dim A As Dictionary: Set A = DicVbl_Dic("X AA|A BBB|A Lines1|A Line3|B Line1|B line2|B line3..")
+Dim B As Dictionary: Set B = DicVbl_Dic("X AA|C Line|D Line1|D line2|B Line1|B line2|B line3|B Line4")
+DicCmp A, B
+End Sub

@@ -1,5 +1,6 @@
 Attribute VB_Name = "M_Ws"
 Option Explicit
+
 Property Get WsA1(A As Worksheet) As Range
 Set WsA1 = A.Range("A1")
 End Property
@@ -17,10 +18,6 @@ For J = 1 To 999
 Next
 Stop
 End Property
-
-Sub WsDlt(A As Workbook, WsIx)
-If WbHasWs(A, WsIx) Then WbWs(A, WsIx).Delete
-End Sub
 
 Property Get WsDtaRg(A As Worksheet) As Range
 Dim R, C
@@ -79,12 +76,14 @@ Property Get WsWb(A As Worksheet) As Workbook
 Set WsWb = A.Parent
 End Property
 
-
 Sub WsClsNoSav(A As Worksheet)
 WbClsNoSav WsWb(A)
+End Sub
+
+Sub WsDlt(A As Workbook, WsIx)
+If WbHasWs(A, WsIx) Then WbWs(A, WsIx).Delete
 End Sub
 
 Sub WsVis(A As Worksheet)
 A.Application.Visible = True
 End Sub
-

@@ -8,17 +8,6 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Sub Log(Msg$, Optional FilNum%)
-Dim F%
-   F = FilNum
-   If FilNum = 0 Then F = FilNum
-Print #F, NowStr & " " & Msg
-If FilNum = 0 Then Close #F
-End Sub
-
-Sub Brw()
-FtBrw Me.Ft
-End Sub
 
 Property Get FilNum%()
 FilNum = FtOpnApp(Me.Ft)
@@ -35,3 +24,14 @@ O = O & "Log\": PthEns O
 Pth = O
 End Property
 
+Sub Brw()
+FtBrw Me.Ft
+End Sub
+
+Sub Log(Msg$, Optional FilNum%)
+Dim F%
+   F = FilNum
+   If FilNum = 0 Then F = FilNum
+Print #F, NowStr & " " & Msg
+If FilNum = 0 Then Close #F
+End Sub

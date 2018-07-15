@@ -1,5 +1,6 @@
 Attribute VB_Name = "M_Cell"
 Option Explicit
+
 Property Get CellAyH(A As Range) As Variant()
 If IsEmpty(RgA1(A).Value) Then Exit Property
 Dim R&
@@ -78,4 +79,3 @@ With A.Hyperlinks
     .Add A, "", FmtQQ("'?'!A1", WsNm)
 End With
 End Sub
-

@@ -2,9 +2,9 @@ Attribute VB_Name = "G_Esc_UnEsc"
 Option Explicit
 
 Property Get Esc$(A, Fm$, ToStr$)
-If InStr(A, "\n") > 0 Then
-    Stop
-    'Debug.Print ErMsgLines("Esc", "Warning: escaping a {Str} of {FmStrSub} to {ToSubStr} is found that {Str} contains some {ToSubStr}.  This will make the string chagned after UnEsc", A, Fm, ToStr)
+Const CSub$ = "Esc"
+If InStr(A, ToStr) > 0 Then
+    Debug.Print ErMsgLines(CSub, "Warning: escaping a {Str} of {FmStrSub} to {ToSubStr} is found that {Str} contains some {ToSubStr}.  This will make the string chagned after UnEsc", A, Fm, ToStr)
 End If
 Esc = Replace(A, Fm, ToStr)
 End Property

@@ -1,13 +1,6 @@
 Attribute VB_Name = "M_Dry"
 Option Explicit
-Property Get UIxAy(U&) As Long()
-Dim O&(), J&
-ReDim O(U)
-For J = 0 To U
-    O(J) = J
-Next
-UIxAy = O
-End Property
+
 Property Get Ay_Dry_By_AddConst_Aft_Ay(A, Constant) As Variant()
 If Sz(A) = 0 Then Exit Property
 Dim O(), I
@@ -16,7 +9,6 @@ For Each I In A
 Next
 Ay_Dry_By_AddConst_Aft_Ay = O
 End Property
-
 
 Property Get Ay_Dry_By_AddConst_Bef_Ay(A, Constant) As Variant()
 If Sz(A) = 0 Then Exit Property
@@ -105,6 +97,10 @@ Dim O$()
 DrLin = Quote(Join(O, " | "), "| * |")
 End Property
 
+Property Get DrsDt(A As Drs, Dt$, Drs As Drs) As Dt
+Set DrsDt = Drs()
+End Property
+
 Property Get DrsExpLinesCol(A As Drs, LinesColNm$) As Drs
 Dim Ix%
     Ix = AyIx(A.Fny, LinesColNm)
@@ -116,12 +112,21 @@ Dim Dry()
 Set DrsExpLinesCol = Drs(A.Fny, Dry)
 End Property
 
-Sub DrsLoFmt(A As Drs, At As Range, LoFmtrLy$(), Optional LoNm$)
-Dim Lo As ListObject
-Stop '
-'Set Lo = DrsLo(A, At, LoNm)
-'LoFmt Lo, LoFmtrLy
-End Sub
+Property Get DrsLy_Drs(DrsLy$()) As Drs
+Dim Fny$(): Fny = SslSy(DrsLy(0))
+Dim J&, Dry()
+If IsSimTySsl(DrsLy(2)) Then
+    Dim TyAy() As eSimTy
+    For J = 3 To UB(DrsLy)
+        Push Dry, SslDr(DrsLy(J), TyAy)
+    Next
+Else
+    For J = 2 To UB(DrsLy)
+        Push Dry, SslSy(DrsLy(J))
+    Next
+End If
+Set DrsLy_Drs = Drs(Fny, Dry)
+End Property
 
 Property Get DrsRowCnt&(A As Drs, ColNm$, EqVal)
 DrsRowCnt = DryRowCnt(A.Dry, AyIx(A.Fny, ColNm), EqVal)
@@ -144,8 +149,10 @@ Property Get DrsSrt(A As Drs, ColNm$, Optional IsDes As Boolean) As Drs
 Set DrsSrt = Drs(A.Fny, DrySrt(A.Dry, AyIx(A.Fny, ColNm), IsDes))
 End Property
 
-Property Get DrsStrCol(Drs As Drs, ColNm$) As String()
-DrsStrCol = AySy(DrsCol(Drs, ColNm))
+Property Get DrsVbl_Drs(DrsVbl$) As Drs
+'SpecStr:Vbl:VbarLine
+'SpecStr:DrsVbl:Data-record-set-vbar-line
+DrsVbl_Drs = DrsLy_Drs(SplitVBar(DrsVbl))
 End Property
 
 Property Get DrsWh(A As Drs, Fld, V) As Drs
@@ -194,10 +201,6 @@ Dim O()
 DryAddConstCol = O
 End Property
 
-Sub DryBrw(Dry, Optional MaxColWdt& = 100, Optional BrkColIx% = -1)
-AyBrw DryLy(Dry, MaxColWdt, BrkColIx)
-End Sub
-
 Property Get DryCol(Dry, Optional ColIx% = 0) As Variant()
 If AyIsEmp(Dry) Then Exit Property
 Dim O(), Dr
@@ -207,9 +210,29 @@ Next
 DryCol = O
 End Property
 
-Sub DryDmp(Dry)
-AyDmp DryLy(Dry)
-End Sub
+Property Get DryCol_Into(A, ColIx%, OIntoAy)
+Dim O: O = OIntoAy: Erase O
+If Sz(A) = 0 Then
+    DryCol_Into = O
+    Exit Property
+End If
+Dim Dr, J&
+ReDim O(UB(A))
+For Each Dr In A
+    If UB(Dr) >= ColIx Then
+        O(J) = Dr(ColIx)
+    End If
+    J = J + 1
+Next
+End Property
+
+Property Get DryCvCellToStr(Dry, ShwZer As Boolean) As Variant()
+Dim O(), Dr
+For Each Dr In Dry
+   Push O, AyCellSy(Dr, ShwZer)
+Next
+DryCvCellToStr = O
+End Property
 
 Property Get DryDrIx_IsBrk(Dry, DrIx&, BrkColIx%) As Boolean
 If AyIsEmp(Dry) Then Exit Property
@@ -219,12 +242,20 @@ If Dry(DrIx)(BrkColIx) = Dry(DrIx - 1)(BrkColIx) Then Exit Property
 DryDrIx_IsBrk = True
 End Property
 
-Property Get DryCvCellToStr(Dry, ShwZer As Boolean) As Variant()
-Dim O(), Dr
-For Each Dr In Dry
-   Push O, AyCellSy(Dr, ShwZer)
+Property Get DryIntCol(A, ColIx%) As Integer()
+DryIntCol = DryCol_Into(A, ColIx, EmpIntAy)
+End Property
+
+Property Get DryIsEq(A(), B()) As Boolean
+Dim N&: N = Sz(A)
+If N <> Sz(B) Then Exit Property
+If N = 0 Then DryIsEq = True: Exit Property
+Dim J&, Dr
+For Each Dr In A
+   If Not AyIsEq(Dr, B(J)) Then Exit Property
+   J = J + 1
 Next
-DryCvCellToStr = O
+DryIsEq = True
 End Property
 
 Property Get DryKeyGpAy(Dry(), K_Ix%, Gp_Ix%) As Variant()
@@ -242,6 +273,23 @@ For Each Dr In Dry
     End If
 Next
 DryKeyGpAy = O
+End Property
+
+Property Get DryKix_GpAy(A, Kix%, Gix%) As Variant()
+If Sz(A) = 0 Then Exit Property
+Dim J%, O, K, GpAy(), O_Ix&, Gp, Dr, K_Ay()
+For Each Dr In A
+    K = Dr(Kix)
+    Gp = Dr(Gix)
+    O_Ix = AyIx(K_Ay, K)
+    If O_Ix = -1 Then
+        Push K_Ay, K
+        Push O, Array(K, Array(Gp))
+    Else
+        Push O(O_Ix)(1), Gp
+    End If
+Next
+DryKix_GpAy = O
 End Property
 
 Property Get DryLy(A, Optional MaxColWdt& = 100, Optional BrkColIx% = -1, Optional ShwZer As Boolean) As String()
@@ -420,29 +468,53 @@ For J = 0 To UB(Ix)
 Next
 DrySrt = O
 End Property
+
+Property Get DryStrCol(A, Optional ColIx% = 0) As String()
+DryStrCol = DryCol_Into(A, ColIx, EmpSy)
+End Property
+
+Property Get DryWdtAy(A, Optional MaxColWdt& = 100) As Integer()
+Const CSub$ = "DryWdtAy"
+If Sz(A) = 0 Then Exit Property
+Dim O%()
+   Dim Dr, UDr%, U%, V, L%, J%
+   U = -1
+   For Each Dr In A
+       If Not IsSy(Dr) Then Er CSub, "This routine should call DryCvFmtEachCell first so that each cell is ValCellStr as a string.|Now some Dr in given-Dry is not a StrAy, but[" & TypeName(Dr) & "]"
+       UDr = UB(Dr)
+       If UDr > U Then ReDim Preserve O(UDr): U = UDr
+       If AyIsEmp(Dr) Then GoTo Nxt
+       For J = 0 To UDr
+           V = Dr(J)
+           L = Len(V)
+
+           If L > O(J) Then O(J) = L
+       Next
+Nxt:
+   Next
+Dim M%
+M = MaxColWdt
+For J = 0 To UB(O)
+   If O(J) > M Then O(J) = M
+Next
+DryWdtAy = O
+End Property
+
+Property Get DryWh(A, ColIx%, EqVal) As Variant()
+Dim O()
+Dim J&
+For J = 0 To UB(A)
+   If A(J)(ColIx) = EqVal Then Push O, A(J)
+Next
+DryWh = O
+End Property
+
 Property Get DryWs(Dry, Optional WsNm$ = "Sheet1") As Worksheet
 Dim O As Worksheet: Set O = NewWs(WsNm, Vis:=True)
 DryRg Dry, WsA1(O)
 Set DryWs = O
 End Property
 
-Property Get DsAddDt(O As Ds, T As Dt) As Ds
-If DsHasDt(O, T.DtNm) Then Err.Raise 1, , FmtQQ("DsAddDt: Ds[?] already has Dt[?]", O.DsNm, T.DtNm)
-Dim N%: N = Sz(O.DtAy)
-Dim Ay() As Dt
-    Ay = O.DtAy
-ReDim Preserve Ay(N)
-Set Ay(N) = T
-Set DsAddDt = Ds(Ay, O.DsNm)
-End Property
-
-Sub DtBrw(A As Dt, Optional Fnn)
-AyBrw DtLy(A), IIf(IsEmp(Fnn), A.DtNm, Fnn)
-End Sub
-
-Sub DtDmp(A As Dt)
-AyDmp DtLy(A)
-End Sub
 
 Property Get DtDrpCol(A As Dt, Fny0) As Dt
 Dim B As Drs: Set B = DtDrs(A)
@@ -464,22 +536,6 @@ Dim O$()
    PushAy O, DrsLy(DtDrs(A), MaxColWdt, BrkColNm, ShwZer)
 DtLy = O
 End Property
-
-Property Get DrsDt(A As Drs, Dt$, Drs As Drs) As Dt
-Set DrsDt = Drs()
-End Property
-
-
-Sub Fiy(Fny$(), FldLvs$, ParamArray OAp())
-'Fiy=Field Index Array
-Dim A$(): A = SplitSpc(FldLvs)
-Dim I&(): I = AyIxAy(Fny, A)
-Dim J%
-For J = 0 To UB(I)
-    OAp(J) = I(J)
-Next
-End Sub
-
 
 Property Get ItrCntByBoolPrp&(A, BoolPrpNm$)
 If A.Count = 0 Then Exit Property
@@ -528,47 +584,6 @@ If A.Count > 0 Then
 End If
 ItrNy = O
 End Property
-Property Get SslDr(Ssl, TyAy() As eSimTy) As Variant()
-Stop '
-End Property
-Property Get DrsLy_Drs(DrsLy$()) As Drs
-Dim Fny$(): Fny = SslSy(DrsLy(0))
-Dim J&, Dry()
-If IsSimTySsl(DrsLy(2)) Then
-    Dim TyAy() As eSimTy
-    For J = 3 To UB(DrsLy)
-        Push Dry, SslDr(DrsLy(J), TyAy)
-    Next
-Else
-    For J = 2 To UB(DrsLy)
-        Push Dry, SslSy(DrsLy(J))
-    Next
-End If
-Set DrsLy_Drs = Drs(Fny, Dry)
-End Property
-
-Property Get DrsVbl_Drs(DrsVbl$) As Drs
-'SpecStr:Vbl:VbarLine
-'SpecStr:DrsVbl:Data-record-set-vbar-line
-DrsVbl_Drs = DrsLy_Drs(SplitVBar(DrsVbl))
-End Property
-
-Property Get Ds(A() As Dt, Optional DsNm$ = "Ds") As Ds
-Dim O As New Ds
-Set Ds = O.Init(A, DsNm)
-End Property
-
-Property Get SimTyStr_SimTy(SimTyStr$) As eSimTy
-Dim O As eSimTy
-Select Case UCase(SimTyStr)
-Case "TXT": O = eTxt
-Case "NBR": O = eNbr
-Case "LGC": O = eLgc
-Case "DTE": O = eDte
-Case Else: O = eOth
-End Select
-SimTyStr_SimTy = O
-End Property
 
 Property Get ObjPrpDr(Obj, PrpNy0) As Variant()
 Dim Ny$(): Ny = DftNy(PrpNy0)
@@ -598,6 +613,18 @@ Next
 S1S2Ay_Dry = O
 End Property
 
+Property Get SimTyStr_SimTy(SimTyStr$) As eSimTy
+Dim O As eSimTy
+Select Case UCase(SimTyStr)
+Case "TXT": O = eTxt
+Case "NBR": O = eNbr
+Case "LGC": O = eLgc
+Case "DTE": O = eDte
+Case Else: O = eOth
+End Select
+SimTyStr_SimTy = O
+End Property
+
 Property Get SimTy_QuoteTp$(A As eSimTy)
 Const CSub$ = "SimTyQuoteTp"
 Dim O$
@@ -619,6 +646,10 @@ End Property
 Property Get SqNRow%(A)
 On Error Resume Next
 SqNRow = UBound(A, 1)
+End Property
+
+Property Get SslDr(Ssl, TyAy() As eSimTy) As Variant()
+Stop '
 End Property
 
 Property Get TitAy_Sq(TitAy$())
@@ -648,6 +679,14 @@ Dim O()
 TitAy_Sq = O
 End Property
 
+Property Get UIxAy(U&) As Long()
+Dim O&(), J&
+ReDim O(U)
+For J = 0 To U
+    O(J) = J
+Next
+UIxAy = O
+End Property
 
 Property Get VblLy_Dry(A$()) As Variant()
 If Sz(A) = 0 Then Exit Property
@@ -659,34 +698,41 @@ Dim O()
 VblLy_Dry = O
 End Property
 
-
-Private Sub ZZ_DrsSel()
-'DrsBrw DrsSel(Vmd.MthDrs, "MthNm Mdy Ty MdNm")
-'DrsBrw Vmd.MthDrs
-End Sub
-
-Private Sub ZZ_DsWb()
-Dim Wb As Workbook
+Sub DrsLoFmt(A As Drs, At As Range, LoFmtrLy$(), Optional LoNm$)
+Dim Lo As ListObject
 Stop '
-'Set Wb = DsWb(DbDs(CurDb, "Permit PermitD"))
-WbVis Wb
-Stop
-Wb.Close False
+'Set Lo = DrsLo(A, At, LoNm)
+'LoFmt Lo, LoFmtrLy
 End Sub
 
-Private Sub ZZ_ItrDrs()
-Stop '
-'DrsBrw ItrDrs(Dbt(SampleDb_DutyPrepare, "Permit").Flds, "Name Type Required")
-'DrsBrw ItrDrs(Application.VBE.VBProjects, "Name Type")
+Sub DryBrw(Dry, Optional MaxColWdt& = 100, Optional BrkColIx% = -1)
+AyBrw DryLy(Dry, MaxColWdt, BrkColIx)
 End Sub
 
-Private Sub ZZ_TitAy_Sq()
-Dim A$()
-Push A, "ksdf | skdfj  |skldf jf"
-Push A, "skldf|sdkfl|lskdf|slkdfj"
-Push A, "askdfj|sldkf"
-Push A, "fskldf"
-SqBrw TitAy_Sq(A)
+Sub DryDmp(Dry)
+AyDmp DryLy(Dry)
+End Sub
+
+Function DryRg(A, At As Range) As Range
+Set DryRg = SqRg(DrySq(A), At)
+End Function
+
+Sub DtBrw(A As Dt, Optional Fnn)
+AyBrw DtLy(A), IIf(IsEmp(Fnn), A.DtNm, Fnn)
+End Sub
+
+Sub DtDmp(A As Dt)
+AyDmp DtLy(A)
+End Sub
+
+Sub Fiy(Fny$(), FldLvs$, ParamArray OAp())
+'Fiy=Field Index Array
+Dim A$(): A = SplitSpc(FldLvs)
+Dim I&(): I = AyIxAy(Fny, A)
+Dim J%
+For J = 0 To UB(I)
+    OAp(J) = I(J)
+Next
 End Sub
 
 Sub VblLy_Dry__Tst()
@@ -717,95 +763,31 @@ Next
 Dry_MgeIx = -1
 End Property
 
-Function DryRg(A, At As Range) As Range
-Set DryRg = SqRg(DrySq(A), At)
-End Function
+Private Sub ZZ_DrsSel()
+'DrsBrw DrsSel(Vmd.MthDrs, "MthNm Mdy Ty MdNm")
+'DrsBrw Vmd.MthDrs
+End Sub
 
-Property Get DryCol_Into(A, ColIx%, OIntoAy)
-Dim O: O = OIntoAy: Erase O
-If Sz(A) = 0 Then
-    DryCol_Into = O
-    Exit Property
-End If
-Dim Dr, J&
-ReDim O(UB(A))
-For Each Dr In A
-    If UB(Dr) >= ColIx Then
-        O(J) = Dr(ColIx)
-    End If
-    J = J + 1
-Next
-End Property
-Property Get DryIntCol(A, ColIx%) As Integer()
-DryIntCol = DryCol_Into(A, ColIx, EmpIntAy)
-End Property
+Private Sub ZZ_DsWb()
+Dim Wb As Workbook
+Stop '
+'Set Wb = DsWb(DbDs(CurDb, "Permit PermitD"))
+WbVis Wb
+Stop
+Wb.Close False
+End Sub
 
-Property Get DryIsEq(A(), B()) As Boolean
-Dim N&: N = Sz(A)
-If N <> Sz(B) Then Exit Property
-If N = 0 Then DryIsEq = True: Exit Property
-Dim J&, Dr
-For Each Dr In A
-   If Not AyIsEq(Dr, B(J)) Then Exit Property
-   J = J + 1
-Next
-DryIsEq = True
-End Property
+Private Sub ZZ_ItrDrs()
+Stop '
+'DrsBrw ItrDrs(Dbt(SampleDb_DutyPrepare, "Permit").Flds, "Name Type Required")
+'DrsBrw ItrDrs(Application.VBE.VBProjects, "Name Type")
+End Sub
 
-Property Get DryKix_GpAy(A, Kix%, Gix%) As Variant()
-If Sz(A) = 0 Then Exit Property
-Dim J%, O, K, GpAy(), O_Ix&, Gp, Dr, K_Ay()
-For Each Dr In A
-    K = Dr(Kix)
-    Gp = Dr(Gix)
-    O_Ix = AyIx(K_Ay, K)
-    If O_Ix = -1 Then
-        Push K_Ay, K
-        Push O, Array(K, Array(Gp))
-    Else
-        Push O(O_Ix)(1), Gp
-    End If
-Next
-DryKix_GpAy = O
-End Property
-
-Property Get DryStrCol(A, Optional ColIx% = 0) As String()
-DryStrCol = DryCol_Into(A, ColIx, EmpSy)
-End Property
-
-Property Get DryWdtAy(A, Optional MaxColWdt& = 100) As Integer()
-Const CSub$ = "DryWdtAy"
-If Sz(A) = 0 Then Exit Property
-Dim O%()
-   Dim Dr, UDr%, U%, V, L%, J%
-   U = -1
-   For Each Dr In A
-       If Not IsSy(Dr) Then Er CSub, "This routine should call DryCvFmtEachCell first so that each cell is ValCellStr as a string.|Now some Dr in given-Dry is not a StrAy, but[" & TypeName(Dr) & "]"
-       UDr = UB(Dr)
-       If UDr > U Then ReDim Preserve O(UDr): U = UDr
-       If AyIsEmp(Dr) Then GoTo Nxt
-       For J = 0 To UDr
-           V = Dr(J)
-           L = Len(V)
-
-           If L > O(J) Then O(J) = L
-       Next
-Nxt:
-   Next
-Dim M%
-M = MaxColWdt
-For J = 0 To UB(O)
-   If O(J) > M Then O(J) = M
-Next
-DryWdtAy = O
-End Property
-
-Property Get DryWh(A, ColIx%, EqVal) As Variant()
-Dim O()
-Dim J&
-For J = 0 To UB(A)
-   If A(J)(ColIx) = EqVal Then Push O, A(J)
-Next
-DryWh = O
-End Property
-
+Private Sub ZZ_TitAy_Sq()
+Dim A$()
+Push A, "ksdf | skdfj  |skldf jf"
+Push A, "skldf|sdkfl|lskdf|slkdfj"
+Push A, "askdfj|sldkf"
+Push A, "fskldf"
+SqBrw TitAy_Sq(A)
+End Sub

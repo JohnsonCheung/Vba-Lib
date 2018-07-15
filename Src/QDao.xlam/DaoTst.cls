@@ -8,9 +8,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
 Sub DbInf()
 Dim A As New DbInf: A.Tst
 End Sub
+
 Sub Dbt()
 Dim A As New Dbt: A.Tst
 End Sub

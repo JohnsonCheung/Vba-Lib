@@ -10,9 +10,11 @@ Attribute VB_Exposed = True
 Option Explicit
 Private A_DtAy() As Dt
 Public DsNm$
+
 Property Get DtAy() As Dt()
 DtAy = A_DtAy
 End Property
+
 Property Get Init(A() As Dt, Optional DsNm$ = "Ds") As Ds
 A_DtAy = A
 Me.DsNm = DsNm

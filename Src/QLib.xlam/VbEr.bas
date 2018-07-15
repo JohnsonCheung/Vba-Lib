@@ -42,6 +42,10 @@ Function NowStr$()
 NowStr = Format(Now(), "YYYY-MM-DD HH:MM:SS")
 End Function
 
+Function ObjPrp(Obj, PrpNm$)
+ObjPrp = CallByName(Obj, PrpNm, VbGet)
+End Function
+
 Function ObjPth(Obj, Pth$)
 'Ret the Obj's Get-Property-Value using Pth, which is dot-separated-string
 Dim Ny$()
@@ -55,9 +59,6 @@ Dim O
     Next
 
 ObjPth = CallByName(O, Ny(U), VbGet) ' Last Prp may be non-object, so must use 'Asg'
-End Function
-Function ObjPrp(Obj, PrpNm$)
-ObjPrp = CallByName(Obj, PrpNm, VbGet)
 End Function
 
 Function PipeAy(Prm, MthNy$())

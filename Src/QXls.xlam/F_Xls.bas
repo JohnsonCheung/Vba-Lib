@@ -36,10 +36,10 @@ For C = 0 To UB(Fny)
 Next
 TitS1S2Ay_Sq = Sq
 End Property
+
 Property Get ZerFill$(N%, NDig%)
 ZerFill = Format(N, StrDup(NDig, 0))
 End Property
-
 
 Sub TitRg_Fmt(A As Range)
 '---
@@ -49,7 +49,6 @@ Sub TitRg_Fmt(A As Range)
     Next
 HBar_MgeSamValCell A
 End Sub
-
 
 Private Property Get A_TitColAy(TitS1S2Ay() As S1S2, Fny$()) As String()
 Dim O$(), J%, I%, UTit%

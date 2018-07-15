@@ -9,10 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Public Rs As Adodb.Recordset
-Friend Property Get Init(A As Record) As ARs
-Set Rs = A
-Set Init = Me
-End Property
+
 Property Get Drs() As Drs
 Set Drs = JDta.Drs(Fny, Dry)
 End Property
@@ -31,6 +28,15 @@ Function Fny() As String()
 Fny = AFlds(Rs.Fields).Fny
 End Function
 
+Friend Property Get Init(A As Record) As ARs
+Set Rs = A
+Set Init = Me
+End Property
+
+Friend Sub ZZ__Tst()
+ZZ_Drs
+End Sub
+
 Private Sub ZZ_Drs()
 Dim S$, F As AFb
 Set F = AFb(SampleFb_DutyPrepare)
@@ -39,8 +45,4 @@ F.Cn.Execute S
 Dim Rs As Recordset
 Set Rs = F.Cn.Execute("Select * from KE24")
 Drs.Brw
-End Sub
-
-Friend Sub ZZ__Tst()
-ZZ_Drs
 End Sub

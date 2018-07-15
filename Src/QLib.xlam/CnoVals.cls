@@ -18,24 +18,25 @@ Property Get CnoAy() As Integer()
 CnoAy = Oy.PrpIntAy("Cno")
 End Property
 
-Private Function Oy() As Oy
-Set Oy = Vb.Oy(B_Ay)
-End Function
+Property Get IsEmp() As Boolean
+IsEmp = N = 0
+End Property
+
+Property Get N&()
+N = Sz(B_Ay)
+End Property
+
+Property Get ToStr$()
+ToStr = Tag("CnoVals", Oy.ToStr)
+End Property
+
+Property Get U&()
+U = N - 1
+End Property
+
 Property Get ValAy() As Variant()
 ValAy = Oy.PrpAy("V")
 End Property
-Function StrValAy() As String()
-StrValAy = Oy.PrpSy("V")
-End Function
-Function CnoIx%(Cno%)
-'Use Cno to find any element in B_Ay has .Cno = Cno,
-'Return the Ix of B_Ay if found else return -1
-Dim J%
-For J = 0 To U
-    If B_Ay(J).Cno = Cno Then CnoIx = J: Exit Function
-Next
-CnoIx = -1
-End Function
 
 Sub AddCnoVal(Cno%, F$, V)
 Dim O As New CnoVal
@@ -51,19 +52,20 @@ Sub AddItm(A As CnoVal)
 PushObj B_Ay, A
 End Sub
 
-Property Get N&()
-N = Sz(B_Ay)
-End Property
+Function CnoIx%(Cno%)
+'Use Cno to find any element in B_Ay has .Cno = Cno,
+'Return the Ix of B_Ay if found else return -1
+Dim J%
+For J = 0 To U
+    If B_Ay(J).Cno = Cno Then CnoIx = J: Exit Function
+Next
+CnoIx = -1
+End Function
 
-Property Get U&()
-U = N - 1
-End Property
+Function StrValAy() As String()
+StrValAy = Oy.PrpSy("V")
+End Function
 
-Property Get IsEmp() As Boolean
-IsEmp = N = 0
-End Property
-
-Property Get ToStr$()
-ToStr = Tag("CnoVals", Oy.ToStr)
-End Property
-
+Private Function Oy() As Oy
+Set Oy = Vb.Oy(B_Ay)
+End Function

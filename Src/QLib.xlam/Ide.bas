@@ -8,11 +8,77 @@ Public Enum eTstLABCs
     eValidateAsBetNum
     eAll
 End Enum
+
+Property Get CurCdPne() As VBIDE.CodePane
+Set CurCdPne = CurVbe.ActiveCodePane
+End Property
+
+Property Get CurCdWin() As VBIDE.Window
+Set CurCdWin = Vbe.ActiveCodePane.Window
+End Property
+
+Property Get CurPj() As VBProject
+Set CurPj = CurVbe.ActiveVBProject
+End Property
+
+Property Get CurPjx() As Pjx
+Set CurPjx = Pjx(CurPj)
+End Property
+
+Property Get CurVbe() As Vbe
+Set CurVbe = Application.Vbe
+End Property
+
+Property Get CurVbex() As Vbex
+Set CurVbex = Vbex(CurVbe)
+End Property
+
+Property Get CurWin() As VBIDE.Window
+Set CurWin = CurVbe.ActiveWindow
+End Property
+
 Property Get CvPj(I) As Pjx
 Set CvPj = I
 End Property
+
 Property Get CvPjx(I) As Pjx
 Set CvPjx = I
+End Property
+
+Property Get Dcl(A$()) As Dcl
+Dim O As New Dcl
+Set Dcl = O.Init(A)
+End Property
+
+Property Get Fxa(A) As Fxa
+Dim O As New Fxa
+Set Fxa = O.Init(A)
+End Property
+
+Property Get Md(MdNm) As CodeModule
+Dim A As VBComponents: Set A = CurPj.VBComponents
+Dim I, Cmp As VBComponent
+Set Md = CurPj.VBComponents(MdNm).CodeModule
+End Property
+
+Property Get Mdx(A As CodeModule) As Mdx
+Dim O As New Mdx
+Set Mdx = O.Init(A)
+End Property
+
+Property Get Pjx(A) As Pjx
+Dim O As New Pjx
+Set Pjx = O.Init(A)
+End Property
+
+Property Get SrcLin(A) As SrcLin
+Dim O As New SrcLin
+Set SrcLin = O.Init(A)
+End Property
+
+Property Get Vbex(A As Vbe) As Vbex
+Dim O As New Vbex
+Set Vbex = O.Init(A)
 End Property
 
 Function CmpTy_Str$(A As vbext_ComponentType)
@@ -28,41 +94,14 @@ End Select
 CmpTy_Str = O
 End Function
 
-Property Get Fxa(A) As Fxa
-Dim O As New Fxa
-Set Fxa = O.Init(A)
-End Property
-Property Get Md(MdNm) As CodeModule
-Dim A As VBComponents: Set A = CurPj.VBComponents
-Dim I, Cmp As VBComponent
-Set Md = CurPj.VBComponents(MdNm).CodeModule
-End Property
+Function CvMd(A) As CodeModule
+Set CvMd = A
+End Function
 
-Property Get SrcLin(A) As SrcLin
-Dim O As New SrcLin
-Set SrcLin = O.Init(A)
-End Property
+Function CvMdx(A) As Mdx
+CvMdx = A
+End Function
 
-Property Get CurCdPne() As VBIDE.CodePane
-Set CurCdPne = CurVbe.ActiveCodePane
-End Property
-
-Property Get CurCdWin() As VBIDE.Window
-Set CurCdWin = Vbe.ActiveCodePane.Window
-End Property
-
-Property Get CurVbe() As Vbe
-Set CurVbe = Application.Vbe
-End Property
-
-Property Get CurWin() As VBIDE.Window
-Set CurWin = CurVbe.ActiveWindow
-End Property
-
-Property Get Dcl(A$()) As Dcl
-Dim O As New Dcl
-Set Dcl = O.Init(A)
-End Property
 Function DftVbe(A As Vbe) As Vbe
 If IsNothing(A) Then
    Set DftVbe = CurVbe
@@ -111,6 +150,10 @@ Wb.SaveAs F, FileFormat:=XlFileFormat.xlOpenXMLAddIn
 Wb.Close
 Wb.Quit
 Set X = Nothing
+End Sub
+
+Sub TstSrcLin()
+Dim A As New SrcLin: A.Tst
 End Sub
 
 Function TyChrAsTyStr$(TyChr$)
@@ -177,37 +220,7 @@ End Sub
 Function WinCnt&()
 WinCnt = Application.Vbe.Windows.Count
 End Function
-Property Get Vbex(A As Vbe) As Vbex
-Dim O As New Vbex
-Set Vbex = O.Init(A)
-End Property
+
 Function WinMdNm$(A As VBIDE.Window)
 WinMdNm = TakBet(A.Caption, " - ", " (Code)")
 End Function
-Sub TstSrcLin()
-Dim A As New SrcLin: A.Tst
-End Sub
-Function CvMd(A) As CodeModule
-Set CvMd = A
-End Function
-Function CvMdx(A) As Mdx
-CvMdx = A
-End Function
-Property Get Mdx(A As CodeModule) As Mdx
-Dim O As New Mdx
-Set Mdx = O.Init(A)
-End Property
-Property Get Pjx(A) As Pjx
-Dim O As New Pjx
-Set Pjx = O.Init(A)
-End Property
-Property Get CurPj() As VBProject
-Set CurPj = CurVbe.ActiveVBProject
-End Property
-Property Get CurPjx() As Pjx
-Set CurPjx = Pjx(CurPj)
-End Property
-
-Property Get CurVbex() As Vbex
-Set CurVbex = Vbex(CurVbe)
-End Property

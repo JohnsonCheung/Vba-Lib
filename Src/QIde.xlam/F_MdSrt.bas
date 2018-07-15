@@ -120,6 +120,10 @@ Function SrcSrtedLy(A$()) As String()
 SrcSrtedLy = SplitCrLf(SrcSrtedLines(A))
 End Function
 
+Private Function ZZSrc() As String()
+'ZZSrc = MdSrc(Md("IdeMdSrt"))
+End Function
+
 Private Sub ZZ_Dcl_BefAndAft_Srt()
 Const MdNm$ = "VbStrRe"
 Dim A$() ' Src
@@ -132,25 +136,6 @@ A1 = SrcDclLy(A)
 B1 = SrcDclLy(B)
 Stop
 End Sub
-
-Private Sub ZZ_PjSrtCmpRptWb()
-Dim O As Workbook: Set O = PjSrtCmpRptWb(CurPjx, Vis:=True)
-Stop
-End Sub
-
-Private Sub ZZ_SrcSrtCmpLy()
-AyBrw SrcSrtCmpLy(ZZSrc)
-End Sub
-
-Private Sub ZZ_SrcSrted()
-'Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
-'Dim Src1$(): Src1 = SrcSrtedLy(Src)
-Stop
-End Sub
-
-Private Function ZZSrc() As String()
-'ZZSrc = MdSrc(Md("IdeMdSrt"))
-End Function
 
 Private Sub ZZ_MdSrt()
 Dim Md As CodeModule
@@ -181,7 +166,7 @@ Ass:
         If AyLasEle(AftSrt) = "" Then
             Dim Pfx
             Pfx = Array("There is non-blank-line at end after sorting", "Md=[" & MdNm(Md) & "=====")
-            AyBrw AyAddAp(Pfx, AftSrt)
+            aybrw AyAddAp(Pfx, AftSrt)
             Stop
         End If
     End If
@@ -192,12 +177,12 @@ Ass:
     If Sz(A) = 0 And Sz(B) = 0 Then Return
     If Not AyIsEmp(AyRmvEmp(A)) Then
         Debug.Print "Sz(A)=" & Sz(A)
-        AyBrw A
+        aybrw A
         Stop
     End If
     If Not AyIsEmp(AyRmvEmp(B)) Then
         Debug.Print "Sz(B)=" & Sz(B)
-        AyBrw B
+        aybrw B
         Stop
     End If
     Return
@@ -205,6 +190,21 @@ End Sub
 
 Private Sub ZZ_MdSrtedLines()
 'StrBrw MdSrtedLines(Md("Md_"))
+End Sub
+
+Private Sub ZZ_PjSrtCmpRptWb()
+Dim O As Workbook: Set O = PjSrtCmpRptWb(CurPjx, Vis:=True)
+Stop
+End Sub
+
+Private Sub ZZ_SrcSrtCmpLy()
+aybrw SrcSrtCmpLy(ZZSrc)
+End Sub
+
+Private Sub ZZ_SrcSrted()
+'Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
+'Dim Src1$(): Src1 = SrcSrtedLy(Src)
+Stop
 End Sub
 
 Private Sub ZZ_SrcSrtedBdyLines()

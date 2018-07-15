@@ -9,10 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private B_SeedSy$()
-Friend Property Get Init(Seed0) As Seed
-B_SeedSy = DftLy(Seed0)
-Set Init = Me
-End Property
 
 Function Expand$(Ny0)
 Dim O$()
@@ -25,6 +21,11 @@ For J = 0 To UB(Ny)
 Next
 Expand = JnCrLf(O)
 End Function
+
+Friend Property Get Init(Seed0) As Seed
+B_SeedSy = DftLy(Seed0)
+Set Init = Me
+End Property
 
 Friend Sub Tst()
 Expand__Tst

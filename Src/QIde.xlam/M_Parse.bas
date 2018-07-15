@@ -17,14 +17,6 @@ Else
 End If
 End Property
 
-Sub ParseBrw(A As Parse)
-AyBrw ParseToLy(A)
-End Sub
-
-Sub ParseDmp(A As Parse)
-AyDmp ParseToLy(A)
-End Sub
-
 Property Get Parse_seKwBktPair(A As Parse) As Parse
 ParseKwBktPair = ParseStr(A, "()")
 End Property
@@ -146,4 +138,10 @@ Property Get Parse_seToLy(A As Parse) As String()
 ParseToLy = Dix(ParseToDic(A)).Ly
 End Property
 
+Sub ParseBrw(A As Parse)
+aybrw ParseToLy(A)
+End Sub
 
+Sub ParseDmp(A As Parse)
+AyDmp ParseToLy(A)
+End Sub

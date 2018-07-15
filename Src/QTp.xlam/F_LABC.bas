@@ -146,17 +146,6 @@ Stop '
 'Set Init = O.Init(ABCAy, IsVF)
 End Property
 
-Property Get ToStr$()
-Stop '
-'Dim S$
-'    Dim O$(), J%
-'    For J = 0 To U
-'        Push O, A(J).ToStr
-'    Next
-'    S = JnCrLf(O)
-'ToStr = Tag("LABC()", S)
-End Property
-
 Property Get UniqFny() As String()
 Stop '
 'Dim I, M As LABC, O$()

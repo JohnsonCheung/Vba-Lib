@@ -8,10 +8,6 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
-Property Get Init(ABCAy() As ABC, IsVF As Boolean) As LABCs
-Dim O As New LABCs
-Set Init = O.Init(ABCAy, IsVF)
-End Property
 
 Property Get ByLines(ABCLines$, Optional IsVF As Boolean) As LABCs
 Dim O As New LABCs
@@ -25,4 +21,9 @@ End Property
 
 Property Get ByVBarLines(ABCVBarLines$, Optional IsVF As Boolean) As LABCs
 Set ByVBarLines = ByLines(RplVBar(ABCVBarLines), IsVF)
+End Property
+
+Property Get Init(ABCAy() As ABC, IsVF As Boolean) As LABCs
+Dim O As New LABCs
+Set Init = O.Init(ABCAy, IsVF)
 End Property

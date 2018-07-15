@@ -15,12 +15,12 @@ Set A = Md
 Set Init = Me
 End Property
 
-Property Get Nm$()
-Nm = A.Parent.Name
-End Property
-
 Property Get Md() As CodeModule
 Set Md = A
+End Property
+
+Property Get Nm$()
+Nm = A.Parent.Name
 End Property
 
 Function Search$(RegExpStr)

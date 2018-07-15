@@ -150,6 +150,14 @@ For Each I In Pjx(A).MdAy
 Next
 End Sub
 
+Private Sub CSubBrk_Dmp__Tst()
+End Sub
+
+Private Sub MdMth_CSubBrk__Tst()
+CSubBrk_Dmp MdMth_CSubBrk(CurMd, "MdMth_CSubBrk_Tst")
+Stop
+End Sub
+
 Private Sub CSubBrk_Dmp(A As CSubBrk)
 DrecDmp CSubBrk_Drec(A)
 End Sub
@@ -185,11 +193,3 @@ For Each Mth In Ny
 Next
 MdCSubDry = Dry
 End Function
-
-Private Sub CSubBrk_Dmp__Tst()
-End Sub
-
-Private Sub MdMth_CSubBrk__Tst()
-CSubBrk_Dmp MdMth_CSubBrk(CurMd, "MdMth_CSubBrk_Tst")
-Stop
-End Sub

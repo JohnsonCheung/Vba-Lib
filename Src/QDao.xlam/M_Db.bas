@@ -1,5 +1,6 @@
 Attribute VB_Name = "M_Db"
 Option Explicit
+
 Property Get DbDs(A As Database, Tny0, Optional DsNm$ = "Ds") As Ds
 Dim DtAy1() As Dt
     Dim U%, Tny$()
@@ -13,11 +14,14 @@ Dim DtAy1() As Dt
 Set DbDs = Ds(DsNm, DtAy1)
 End Property
 
-Private Sub ZZ_DbDs()
-Dim Ds As Ds
-Set Ds = DbDs(CurDb, "Permit PermitD")
-Stop
-End Sub
+Property Get Db_DbInf(A As Database) As DbInf
+Stop '
+End Property
+
+Property Get Ds(Tny0) As Ds
+Dim Tny$(): Tny = DftNy(Tny)
+End Property
+
 Sub DbCrtTbl(A As Database, T, FldDclAy)
 A.Execute FmtQQ("Create Table [?] (?)", T, JnComma(FldDclAy))
 End Sub
@@ -54,16 +58,12 @@ Function DbQny(A As Database) As String()
 DbQny = DbqSy(A, "Select Name from MSysObjects where Type=5 and Left(Name,4)<>'MSYS' and Left(Name,4)<>'~sq_'")
 End Function
 
-Property Get Ds(Tny0) As Ds
-Dim Tny$(): Tny = DftNy(Tny)
-End Property
+Private Sub ZZ_DbDs()
+Dim Ds As Ds
+Set Ds = DbDs(CurDb, "Permit PermitD")
+Stop
+End Sub
 
 Private Sub ZZ_Qny()
 AyDmp DbQny(CurDb)
 End Sub
-
-Property Get Db_DbInf(A As Database) As DbInf
-Stop '
-End Property
-
-

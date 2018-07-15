@@ -120,6 +120,10 @@ Function SrcSrtedLy(A$()) As String()
 SrcSrtedLy = SplitCrLf(SrcSrtedLines(A))
 End Function
 
+Private Function ZZSrc() As String()
+'ZZSrc = MdSrc(Md("IdeMdSrt"))
+End Function
+
 Private Sub ZZ_Dcl_BefAndAft_Srt()
 Const MdNm$ = "VbStrRe"
 Dim A$() ' Src
@@ -132,25 +136,6 @@ A1 = SrcDclLy(A)
 B1 = SrcDclLy(B)
 Stop
 End Sub
-
-Private Sub ZZ_PjSrtCmpRptWb()
-Dim O As Workbook: Set O = PjSrtCmpRptWb(CurPjx, Vis:=True)
-Stop
-End Sub
-
-Private Sub ZZ_SrcSrtCmpLy()
-AyBrw SrcSrtCmpLy(ZZSrc)
-End Sub
-
-Private Sub ZZ_SrcSrted()
-'Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
-'Dim Src1$(): Src1 = SrcSrtedLy(Src)
-Stop
-End Sub
-
-Private Function ZZSrc() As String()
-'ZZSrc = MdSrc(Md("IdeMdSrt"))
-End Function
 
 Private Sub ZZ_MdSrt()
 Dim Md As CodeModule
@@ -205,6 +190,21 @@ End Sub
 
 Private Sub ZZ_MdSrtedLines()
 'StrBrw MdSrtedLines(Md("Md_"))
+End Sub
+
+Private Sub ZZ_PjSrtCmpRptWb()
+Dim O As Workbook: Set O = PjSrtCmpRptWb(CurPjx, Vis:=True)
+Stop
+End Sub
+
+Private Sub ZZ_SrcSrtCmpLy()
+AyBrw SrcSrtCmpLy(ZZSrc)
+End Sub
+
+Private Sub ZZ_SrcSrted()
+'Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
+'Dim Src1$(): Src1 = SrcSrtedLy(Src)
+Stop
 End Sub
 
 Private Sub ZZ_SrcSrtedBdyLines()

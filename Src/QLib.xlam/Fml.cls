@@ -9,10 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A$
-Friend Property Get Init(Fml$) As Fml
-A = Fml
-Set Init = Me
+
+Property Get Ny() As String()
+Ny = Macro(A).Ny(ExclBkt:=True, Bkt:="[]")
 End Property
+
 Function ErMsgOpt(Fny$()) As StrOpt
 Dim A$(): A = Ny
 Dim O$(), J%
@@ -25,7 +26,7 @@ If AyIsEmp(O) Then Exit Function
 ErMsgOpt = SomStr(JnSpc(O))
 End Function
 
-Property Get Ny() As String()
-Ny = Macro(A).Ny(ExclBkt:=True, Bkt:="[]")
+Friend Property Get Init(Fml$) As Fml
+A = Fml
+Set Init = Me
 End Property
-

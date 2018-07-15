@@ -10,17 +10,21 @@ Attribute VB_Exposed = True
 Option Explicit
 Private B_Fny$()
 Public Er As Er
+
 Property Get Fny() As String()
 Fny = B_Fny
 End Property
+
 Property Get Init(Fny$(), Er As Er) As FnyRslt
 B_Fny = Fny
 Set Me.Er = Er
 Set Init = Me
 End Property
+
 Property Get Lin$()
 Lin = C1_Lo & " " & C2_Lo_Fld & " " & JnSpc(B_Fny)
 End Property
+
 Property Get ToStr$()
 ToStr = FmtQQ("Fny(?)|?", JnSpc(B_Fny), Er.ToStr)
 End Property

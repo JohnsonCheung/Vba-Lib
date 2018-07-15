@@ -1,5 +1,6 @@
 Attribute VB_Name = "DtaFmt"
 Option Explicit
+
 Function DrValCellStr(Dr, ShwZer As Boolean) As String()
 Dim I, O$()
 For Each I In Dr
@@ -77,10 +78,6 @@ End If
 ValCellStr = Nz(V, "")
 End Function
 
-Sub Tst__VbFmt()
-DrsLyInsBrkLin__Tst
-End Sub
-
 Private Sub DrsLyInsBrkLin__Tst()
 Dim TblLy$()
 Dim Act$()
@@ -89,4 +86,8 @@ TblLy = FtLy(TstResPth & "DrsLyInsBrkLin.txt")
 Act = DrsLyInsBrkLin(TblLy, "Tbl")
 Exp = FtLy(TstResPth & "DrsLyInsBrkLin_Exp.txt")
 AyPair_EqChk Exp, Act
+End Sub
+
+Sub Tst__VbFmt()
+DrsLyInsBrkLin__Tst
 End Sub

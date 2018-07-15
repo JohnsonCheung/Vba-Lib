@@ -9,12 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Cn As ADODB.Connection
-Private Function Rs(Sql) As AdoRs
-Set Rs = AdoP.Rs(Cn.Execute(Sql))
-End Function
-Function SqlDrs(Sql) As Drs
-SqlDrs = Rs(Sql).Drs
-End Function
 
 Sub RunSqlAy(SqlAy$())
 If AyIsEmp(SqlAy) Then Exit Sub
@@ -24,6 +18,9 @@ For Each Sql In SqlAy
 Next
 End Sub
 
+Function SqlDrs(Sql) As Drs
+SqlDrs = Rs(Sql).Drs
+End Function
 
 Private Sub SqlDrs__Tst()
 Dim Cn As ADODB.Connection: Set Cn = Fx(SampleFx_KE24).Cn
@@ -31,3 +28,7 @@ Dim Sql$: Sql = "Select * from [Sheet1$]"
 Dim Drs As Drs: Drs = AdoP.Cn(Cn).SqlDrs(Sql)
 DrsBrw Drs
 End Sub
+
+Private Function Rs(Sql) As AdoRs
+Set Rs = AdoP.Rs(Cn.Execute(Sql))
+End Function

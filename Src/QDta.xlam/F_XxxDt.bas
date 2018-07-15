@@ -1,5 +1,6 @@
 Attribute VB_Name = "F_XxxDt"
 Option Explicit
+
 Property Get AyDt(A, Optional FldNm$ = "Itm", Optional DtNm$ = "Ay") As Dt
 Dim O(), J&
 For J = 0 To UB(A)
@@ -19,5 +20,3 @@ Dim F$
     End If
 Set DicDt = Dt(DtNm, F, Dry)
 End Property
-
-

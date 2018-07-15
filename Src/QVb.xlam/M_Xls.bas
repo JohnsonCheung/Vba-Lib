@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Xls"
 Option Explicit
 
-Property Get NewWb1(Optional Vis As Boolean) As Workbook
+Property Get NewWb(Optional Vis As Boolean) As Workbook
 If Vis Then Xls.Visible = True
 Set NewWb = Xls.Workbooks.Add
 End Property

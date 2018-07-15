@@ -1,28 +1,33 @@
 Attribute VB_Name = "VbStrHas"
 Option Explicit
 
+Function Has(A, SubStr) As Boolean
+Has = InStr(A, SubStr) > 0
+End Function
+
+Function HasCrLf(A) As Boolean
+HasCrLf = Has(A, vbCrLf)
+End Function
+
 Function HasOneOfPfx(A, PfxAy) As Boolean
 Dim I
 For Each I In PfxAy
    If HasPfx(A, I) Then HasOneOfPfx = True: Exit Function
 Next
 End Function
-Function HasOneOfPfxIgnCas_PfxLvs(A, PfxLvs$) As Boolean
-Dim Sy$(): Sy = LvsSy(PfxLvs)
-If HasOneOfPfxIgnCas(A, Sy) Then HasOneOfPfxIgnCas_PfxLvs = True: Exit Function
-End Function
+
 Function HasOneOfPfxIgnCas(A, PfxAy) As Boolean
 Dim I
 For Each I In PfxAy
    If HasPfxIgnCas(A, I) Then HasOneOfPfxIgnCas = True: Exit Function
 Next
 End Function
-Function HasCrLf(A) As Boolean
-HasCrLf = Has(A, vbCrLf)
+
+Function HasOneOfPfxIgnCas_PfxLvs(A, PfxLvs$) As Boolean
+Dim Sy$(): Sy = LvsSy(PfxLvs)
+If HasOneOfPfxIgnCas(A, Sy) Then HasOneOfPfxIgnCas_PfxLvs = True: Exit Function
 End Function
-Function Has(A, SubStr) As Boolean
-Has = InStr(A, SubStr) > 0
-End Function
+
 Function HasPfx(A, Pfx) As Boolean
 HasPfx = (Left(A, Len(Pfx)) = Pfx)
 End Function

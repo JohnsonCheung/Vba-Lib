@@ -20,6 +20,31 @@ Type SrcItmCnt
     NPrv As Integer
 End Type
 
+Property Get CurCdWin() As VBIDE.Window
+Stop '
+'Set CurCdWin = Vbe.ActiveCodePane.Window
+End Property
+
+Property Get CurMd() As VBIDE.CodeModule
+Set CurMd = CurCdPne.CodeModule
+End Property
+
+Property Get CurMdNm$()
+CurMdNm = MdNm(CurMd)
+End Property
+
+Property Get CurPj() As VBProject
+Set CurPj = CurVbe.ActiveVBProject
+End Property
+
+Property Get CurVbe() As Vbe
+Set CurVbe = Application.Vbe
+End Property
+
+Property Get CurWin() As VBIDE.Window
+Set CurWin = CurVbe.ActiveWindow
+End Property
+
 Sub ClrImmWin()
 With WinOfImm
     .SetFocus
@@ -52,10 +77,6 @@ End Function
 
 Function CmdPopOfWin() As CommandBarPopup
 Set CmdPopOfWin = CmdBarCap_CmdPop(CmdBarOfMnu, "&Window")
-End Function
-
-Function CvWin(V) As VBIDE.Window
-Set CvWin = V
 End Function
 
 Function FnyOfMthDrs(Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As String()
@@ -129,8 +150,7 @@ MdMthCnt = NewSrcItmCnt(N, NPub, NPrv)
 End Function
 
 Function MdMthDrs(A As CodeModule, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Drs
-Stop '
-'MdMthDrs = SrcMthDrs(MdSrc(A), MdNm(A), MdTy(A), WithBdyLy, WithBdyLines)
+Set MdMthDrs = SrcMthDrs(MdSrc(A), MdNm(A), MdTy(A), WithBdyLy, WithBdyLines)
 End Function
 
 Function MdMthDry(A As CodeModule, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Variant()
@@ -201,10 +221,6 @@ Stop '
 'Next
 'PjMdLisDt = NewDt("Md", FnyOf_MdLis, O)
 End Function
-Private Sub ZZ_PjMthNmDrs()
-Stop '
-'DrsBrw PjMthNmDrs(CurPj)
-End Sub
 
 Function PjMthNmDrs(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".") As Drs
 Stop '
@@ -314,6 +330,14 @@ Stop '
 'Set WinTy_Win = ItrItmByPrp(CurVbe.Windows, "Type", A)
 End Function
 
+Sub CmdBarOfMnu__Tst()
+Debug.Print CmdBarOfMnu.Name
+End Sub
+
+Sub CmdPopOfWin__Tst()
+Debug.Print CmdPopOfWin.Caption
+End Sub
+
 Private Function MthDrs_SortingKy__CrtKey$(Mdy$, Ty$, MthNm$)
 Dim A1 As Byte
     If HasSfx(MthNm, "__Tst") Then
@@ -333,10 +357,7 @@ Dim A3$
 MthDrs_SortingKy__CrtKey = FmtQQ("?:?:?", A1, MthNm, A3)
 End Function
 
-Sub CmdBarOfMnu__Tst()
-Debug.Print CmdBarOfMnu.Name
-End Sub
-
-Sub CmdPopOfWin__Tst()
-Debug.Print CmdPopOfWin.Caption
+Private Sub ZZ_PjMthNmDrs()
+Stop '
+'DrsBrw PjMthNmDrs(CurPj)
 End Sub

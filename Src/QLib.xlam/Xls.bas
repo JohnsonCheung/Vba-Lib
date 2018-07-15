@@ -1,14 +1,28 @@
 Attribute VB_Name = "Xls"
 Option Explicit
 Public Const SampleFx_KE24 = "C:\Users\User\Desktop\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls"
+
 Property Get Fml(A$) As Fml
 Dim O As New Fml
 Set Fml = O.Init(A)
 End Property
+
+Property Get Fx(A) As Fx
+Dim O As New Fx
+O.Fx = A
+Set Fx = O
+End Property
+
+Property Get Tst() As XlsTst
+Dim Y As New XlsTst
+Set Tst = Y
+End Property
+
 Property Get XlsX() As XlsPrivateClassCreator
 Dim Y As New XlsPrivateClassCreator
 Set XlsX = Y
 End Property
+
 Function AyRgH(Ay, At As Range) As Range
 Set AyRgH = SqRg(AySqH(Ay), At)
 End Function
@@ -119,6 +133,12 @@ If A = "" Then
 Else
    DftFx = A
 End If
+End Function
+
+Function DftWsNmByFxFstWs$(WsNm0, Fx)
+Dim O$
+If WsNm0 = "" Then O = Xls.Fx(Fx).FstWsNm Else O = WsNm0
+DftWsNmByFxFstWs = O
 End Function
 
 Function DrsLo(A As Drs, At As Range, Optional LoNm$, Optional StopAutoFit As Boolean) As ListObject
@@ -238,10 +258,12 @@ Next
 Fnd:
 If Fnd Then Set HBar_SamValRg = RgRCC(A, 1, C1, C2)
 End Function
+
 Function IsLng(A) As Boolean
 On Error Resume Next
 IsLng = CLng(A) = Val(A)
 End Function
+
 Function IsNum(A) As Boolean
 Dim J%
 For J = 1 To Len(A)
@@ -328,6 +350,7 @@ With LoDrs
     .Fny = LoFny(A)
 End With
 End Function
+
 Function LoDry(A As ListObject) As Variant()
 LoDry = SqDry(LoSq(A))
 End Function
@@ -696,19 +719,7 @@ End Function
 Sub SqBrw(A)
 DryBrw SqDry(A)
 End Sub
-Function SqTranspose(A) As Variant()
-Dim NRow&, NCol&
-NRow = UBound(A, 1)
-NCol = UBound(A, 2)
-Dim O(), J&, I&
-ReDim O(1 - NCol, 1 To NRow)
-For J = 1 To NRow
-    For I = 1 To NCol
-        O(I, J) = A(J, I)
-    Next
-Next
-SqTranspose = O
-End Function
+
 Function SqCol(A, C%) As Variant()
 Dim O()
 Dim NR&, J&
@@ -818,6 +829,20 @@ Dim Dry() 'Sq,SqIxAy
    Next
 SqSel.Dry = Dry
 SqSel.Fny = Fny
+End Function
+
+Function SqTranspose(A) As Variant()
+Dim NRow&, NCol&
+NRow = UBound(A, 1)
+NCol = UBound(A, 2)
+Dim O(), J&, I&
+ReDim O(1 - NCol, 1 To NRow)
+For J = 1 To NRow
+    For I = 1 To NCol
+        O(I, J) = A(J, I)
+    Next
+Next
+SqTranspose = O
 End Function
 
 Sub TitRg_Fmt(A As Range)
@@ -1028,6 +1053,35 @@ Function ZerFill$(N%, NDig%)
 ZerFill = Format(N, StrDup(NDig, 0))
 End Function
 
+Sub LoAdjColWdt__Tst()
+Dim Ws As Worksheet: Set Ws = NewWs(Vis:=True)
+Dim Sq(1 To 2, 1 To 2)
+Sq(1, 1) = "A"
+Sq(1, 2) = "B"
+Sq(2, 1) = "123123"
+Sq(2, 2) = String(1234, "A")
+Ws.Range("A1:B2").Value = Sq
+LoAdjColWdt LoCrt(Ws)
+WsClsNoSav Ws
+End Sub
+
+Sub LoBrw__Tst()
+Dim O As ListObject: Set O = SampleLo
+LoBrw O
+Stop
+End Sub
+
+Private Sub TitS1S2Ay_Sq__Tst()
+Dim Fny$()
+    PushAy Fny, Array("X", "A", "C", "B")
+Dim TitS1S2Ay() As S1S2
+    S1S2_Push TitS1S2Ay, NewS1S2("A", "skldf|lsjdf|sdldf")
+    S1S2_Push TitS1S2Ay, NewS1S2("C", "skldf|lsjdf|sdlkf |sdfsdf")
+    S1S2_Push TitS1S2Ay, NewS1S2("B", "skldf|ls|df|jdf|sdlkf |sdfsdf")
+    S1S2_Push TitS1S2Ay, NewS1S2("X", "skdf|df|lsjdf|sdlkf |sdfsdf")
+SqBrw TitS1S2Ay_Sq(TitS1S2Ay, Fny)
+End Sub
+
 Private Function A_TitColAy(TitS1S2Ay() As S1S2, Fny$()) As String()
 Dim O$(), J%, I%, UTit%
 UTit = S1S2_UB(TitS1S2Ay)
@@ -1059,53 +1113,3 @@ For J = 0 To UB(TitColAy)
 Next
 A_VBarColAy = O
 End Function
-
-Property Get Fx(A) As Fx
-Dim O As New Fx
-O.Fx = A
-Set Fx = O
-End Property
-
-Function DftWsNmByFxFstWs$(WsNm0, Fx)
-Dim O$
-If WsNm0 = "" Then O = Xls.Fx(Fx).FstWsNm Else O = WsNm0
-DftWsNmByFxFstWs = O
-End Function
-
-Sub LoAdjColWdt__Tst()
-Dim Ws As Worksheet: Set Ws = NewWs(Vis:=True)
-Dim Sq(1 To 2, 1 To 2)
-Sq(1, 1) = "A"
-Sq(1, 2) = "B"
-Sq(2, 1) = "123123"
-Sq(2, 2) = String(1234, "A")
-Ws.Range("A1:B2").Value = Sq
-LoAdjColWdt LoCrt(Ws)
-WsClsNoSav Ws
-End Sub
-
-Sub LoBrw__Tst()
-Dim O As ListObject: Set O = SampleLo
-LoBrw O
-Stop
-End Sub
-
-Private Sub TitS1S2Ay_Sq__Tst()
-Dim Fny$()
-    PushAy Fny, Array("X", "A", "C", "B")
-Dim TitS1S2Ay() As S1S2
-    S1S2_Push TitS1S2Ay, NewS1S2("A", "skldf|lsjdf|sdldf")
-    S1S2_Push TitS1S2Ay, NewS1S2("C", "skldf|lsjdf|sdlkf |sdfsdf")
-    S1S2_Push TitS1S2Ay, NewS1S2("B", "skldf|ls|df|jdf|sdlkf |sdfsdf")
-    S1S2_Push TitS1S2Ay, NewS1S2("X", "skdf|df|lsjdf|sdlkf |sdfsdf")
-SqBrw TitS1S2Ay_Sq(TitS1S2Ay, Fny)
-End Sub
-
-Property Get Tst() As XlsTst
-Dim Y As New XlsTst
-Set Tst = Y
-End Property
-Sub AAA()
-Xls.Tst.FmtWs
-End Sub
-

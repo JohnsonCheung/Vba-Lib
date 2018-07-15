@@ -9,23 +9,49 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private A As DAO.Database
+
+Sub Brw()
+AyBrw DsLy(Ds, 2000, DtBrkLinMapStr:="TblFld:Tbl")
+End Sub
+
+Friend Function Dbt(T) As Dbt
+Set Dbt = DaoX.Dbt(A, T)
+End Function
+
 Friend Property Get Init(Db As Database) As DbInf
 Set A = Db
 Set Init = Me
 End Property
 
+Friend Function TblFDt() As Dt
+Dim T, Dry()
+For Each T In DbTny(A)
+   PushAy Dry, Me.Dbt(T).TblFInfDry
+Next
+Dim O As Dt
+O.Dry = Dry
+O.Fny = FnyOf_InfOf_TblF
+O.DtNm = "TblFld"
+TblFDt = O
+End Function
+
 Friend Sub Tst()
 Brw__Tst
 End Sub
-Sub Brw()
-AyBrw DsLy(Ds, 2000, DtBrkLinMapStr:="TblFld:Tbl")
-End Sub
+
 Function Wb(Optional Hid As Boolean) As Workbook
 Dim O As Workbook
 Set O = DsWb(Ds)
 If Not Hid Then WbVis O
 Set Wb = O
 End Function
+
+Sub Brw__Tst()
+'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
+'CurrentProject.Connection.Execute strDdlDim A As DBEngine: Set A = dao.DBEngine
+'not work: dao.DBEngine.Workspaces(1).Databases(1).Execute "GRANT SELECT ON MSysObjects TO Admin;"
+DbInf(SampleDb_DutyPrepare).Brw
+End Sub
 
 Private Function Ds() As Ds
 Dim O As Ds
@@ -67,27 +93,3 @@ Dim O As Dt
    End With
 StruDt = O
 End Function
-
-Friend Function TblFDt() As Dt
-Dim T, Dry()
-For Each T In DbTny(A)
-   PushAy Dry, Me.Dbt(T).TblFInfDry
-Next
-Dim O As Dt
-O.Dry = Dry
-O.Fny = FnyOf_InfOf_TblF
-O.DtNm = "TblFld"
-TblFDt = O
-End Function
-
-Friend Function Dbt(T) As Dbt
-Set Dbt = DaoX.Dbt(A, T)
-End Function
-
-Sub Brw__Tst()
-'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
-'CurrentProject.Connection.Execute strDdlDim A As DBEngine: Set A = dao.DBEngine
-'not work: dao.DBEngine.Workspaces(1).Databases(1).Execute "GRANT SELECT ON MSysObjects TO Admin;"
-DbInf(SampleDb_DutyPrepare).Brw
-End Sub
-

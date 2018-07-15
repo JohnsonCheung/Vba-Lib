@@ -39,3 +39,7 @@ End Property
 Property Get AySy(Ay) As String()
 AySy = AyCast(Ay, EmpSy)
 End Property
+
+Function A123()
+Stop
+End Function

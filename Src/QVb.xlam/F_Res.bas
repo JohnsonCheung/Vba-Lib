@@ -23,7 +23,7 @@ ResNm_Ly = O
 End Property
 
 Private Property Get ZCurPjMd(MdNm) As CodeModule
-Set ZCurPjMd = ZCurPj.VBComponents(MdNm).CodeModule
+Stop 'Set ZCurPjMd = ZCurPj.VBComponents(MdNm).CodeModule
 End Property
 
 Private Property Get ZCurVbe() As VBE
@@ -60,7 +60,7 @@ Private Property Get ZResNm_Res(A$) As Res
 Dim A1$(): A1 = Split(A, ".")
 Dim O As Res
 Select Case Sz(A1)
-Case 1: Set O.Md = ZCurMd:                 O.Nm = A1(0)
+Case 1: Stop 'Set O.Md = ZCurMd:                 O.Nm = A1(0)
 Case 2: Set O.Md = ZMd(A1(0)):              O.Nm = A1(1)
 Case 3: Set O.Md = ZMd(A1(0) & "." & A1(1)): O.Nm = A1(2)
 Case Else: Stop

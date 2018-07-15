@@ -41,6 +41,7 @@ End Function
 Function LnxUB%(A() As Lnx)
 LnxUB = LnxSz(A) - 1
 End Function
+
 Function LyHasMajPfx(A$(), MajPfx$) As Boolean
 Dim Cnt%, J%
 For J = 0 To UB(A)
@@ -64,4 +65,3 @@ With NewLnx
     .Lin = Lin
 End With
 End Function
-

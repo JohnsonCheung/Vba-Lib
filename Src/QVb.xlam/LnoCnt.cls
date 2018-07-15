@@ -9,3 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Public Lno&, Cnt&
+
+Property Get Init(Lno&, Cnt&) As LnoCnt
+Me.Lno = Lno
+Me.Cnt = Cnt
+Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = Tag("LnoCnt", Lno & " " & Cnt)
+End Property

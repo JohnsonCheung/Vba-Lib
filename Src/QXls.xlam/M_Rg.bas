@@ -87,25 +87,31 @@ Property Get RgRR(A As Range, R1, R2) As Range
 Set RgRR = RgRCRC(A, R1, 1, R2, RgNCol(A))
 End Property
 
-Sub RgBdrTop(A As Range)
-RgBdr A, xlEdgeTop
-End Sub
+Property Get RgReSz(A As Range, Sq) As Range
+Set RgReSz = RgRCRC(A, 1, 1, UBound(Sq, 1), UBound(Sq, 2))
+End Property
 
-Sub RgLnkWs(A As Range)
-Dim R As Range
-Dim WsNy$(): WsNy = WbWsNy(RgWb(A))
-For Each R In A
-    CellLnkWs R, WsNy
-Next
-End Sub
+Property Get RgSq(A As Range)
+If A.Columns.Count = 1 Then
+    If A.Rows.Count = 1 Then
+        Dim O()
+        ReDim O(1 To 1, 1 To 1)
+        O(1, 1) = A.Value
+        RgSq = O
+        Exit Property
+    End If
+End If
+RgSq = A.Value
+End Property
 
-Sub RgVis(A As Range)
-WsVis RgWs(A)
-End Sub
+Property Get RgWb(A As Range) As Workbook
+Set RgWb = WsWb(RgWs(A))
+End Property
 
-Sub RgeMgeV(A As Range)
-Stop '?
-End Sub
+Property Get RgWs(A As Range) As Worksheet
+Set RgWs = A.Parent
+End Property
+
 Sub RgBdr(A As Range, Ix As XlBordersIndex, Optional Wgt As XlBorderWeight = xlMedium)
 With A.Borders(Ix)
   .LineStyle = xlContinuous
@@ -144,29 +150,22 @@ If A.Column < MaxCol Then
 End If
 End Sub
 
+Sub RgBdrTop(A As Range)
+RgBdr A, xlEdgeTop
+End Sub
 
-Property Get RgReSz(A As Range, Sq) As Range
-Set RgReSz = RgRCRC(A, 1, 1, UBound(Sq, 1), UBound(Sq, 2))
-End Property
+Sub RgLnkWs(A As Range)
+Dim R As Range
+Dim WsNy$(): WsNy = WbWsNy(RgWb(A))
+For Each R In A
+    CellLnkWs R, WsNy
+Next
+End Sub
 
-Property Get RgSq(A As Range)
-If A.Columns.Count = 1 Then
-    If A.Rows.Count = 1 Then
-        Dim O()
-        ReDim O(1 To 1, 1 To 1)
-        O(1, 1) = A.Value
-        RgSq = O
-        Exit Property
-    End If
-End If
-RgSq = A.Value
-End Property
+Sub RgVis(A As Range)
+WsVis RgWs(A)
+End Sub
 
-Property Get RgWb(A As Range) As Workbook
-Set RgWb = WsWb(RgWs(A))
-End Property
-
-Property Get RgWs(A As Range) As Worksheet
-Set RgWs = A.Parent
-End Property
-
+Sub RgeMgeV(A As Range)
+Stop '?
+End Sub

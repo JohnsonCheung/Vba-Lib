@@ -10,29 +10,44 @@ Attribute VB_Exposed = False
 Option Explicit
 Private A As DAO.Database
 Private T$
-Friend Sub Tst()
-Pk__Tst
-End Sub
-Friend Property Get Init(Db As Database, TblNm) As Dbt
-Set A = Db
-T = TblNm
-Set Init = Me
+
+Property Get IsExist() As Property
+IsExist = A.OpenRecordset("Select Name from MSysObjects where Type in (1,6) and Name='?'").EOF
 End Property
-Function StruLin$(Optional SkipTn As Boolean)
-Dim O$(): O = Me.Fny: If AyIsEmp(O) Then Exit Function
-O = FnyQuote(O, Me.Pk)
-O = FnyQuoteIfNeed(O)
-Dim J%, V
-V = 0
-For Each V In O
-   O(J) = Replace(V, T, "*")
-   J = J + 1
-Next
-If SkipTn Then
-   StruLin = JnSpc(O)
+
+Sub AddFld(F, Ty As DataTypeEnum)
+Dim FF As New DAO.Field
+FF.Name = F
+FF.Type = Ty
+Flds.Append FF
+End Sub
+
+Sub Brw()
+DtBrw Dt
+End Sub
+
+Function Des$()
+Des = PrpVal(A.TableDefs(T).Properties, "Description")
+End Function
+
+Function DftFny(Optional Fny0) As String()
+If IsMissing(Fny0) Then
+   DftFny = Me.Fny
 Else
-   StruLin = T & " = " & JnSpc(O)
+   DftFny = DftNy(Fny0)
 End If
+End Function
+
+Sub Drp()
+If IsExist Then A.Execute FmtQQ("Drop Table [?]", T)
+End Sub
+
+Function Dt() As Dt
+Dim O As Dt
+O.DtNm = T
+O.Dry = RsDry(A.TableDefs(T).OpenRecordset)
+O.Fny = Fny
+Dt = O
 End Function
 
 Function Exist() As Boolean
@@ -51,6 +66,17 @@ Function FxOfLnkTbl$()
 FxOfLnkTbl = TakBet(A.TableDefs(T).Connect, "Database=", ";")
 End Function
 
+Function HasFld(F) As Boolean
+Ass Dbt(A, T).IsExist
+HasFld = TblHasFld(A.TableDefs(T), F)
+End Function
+
+Friend Property Get Init(Db As Database, TblNm) As Dbt
+Set A = Db
+T = TblNm
+Set Init = Me
+End Property
+
 Sub LnkFb(Fb$, Optional SrcT0$)
 Dim Src$: Src = Dft(SrcT0, T)
 Dim Tbl  As TableDef
@@ -60,43 +86,6 @@ Tbl.Connect = ";DATABASE=?" & Fb
 Drp
 A.TableDefs.Append Tbl
 End Sub
-Sub Brw()
-DtBrw Dt
-End Sub
-Property Get IsExist() As Property
-IsExist = A.OpenRecordset("Select Name from MSysObjects where Type in (1,6) and Name='?'").EOF
-End Property
-
-Function Des$()
-Des = PrpVal(A.TableDefs(T).Properties, "Description")
-End Function
-
-Sub Drp()
-If IsExist Then A.Execute FmtQQ("Drop Table [?]", T)
-End Sub
-Private Sub Pk__Tst()
-Set A = SampleDb_DutyPrepare
-Dim Dr(), Dry(), T
-For Each T In DbTny(A)
-    Erase Dr
-    Push Dr, T
-    PushAy Dr, DaoX.Dbt(A, CStr(T)).Pk
-    Push Dry, Dr
-Next
-DryBrw Dry
-End Sub
-Function HasFld(F) As Boolean
-Ass Dbt(A, T).IsExist
-HasFld = TblHasFld(A.TableDefs(T), F)
-End Function
-
-Function Dt() As Dt
-Dim O As Dt
-O.DtNm = T
-O.Dry = RsDry(A.TableDefs(T).OpenRecordset)
-O.Fny = Fny
-Dt = O
-End Function
 
 Sub LnkFxWs(Fx$, Optional WsNm0)
 Const CSub$ = "ATLnkFxWs"
@@ -129,6 +118,41 @@ Next
 X:
 End Function
 
+Function RecCnt&()
+RecCnt = DbqV(A, FmtQQ("Select Count(*) from [?]", T))
+End Function
+
+Function SimTyAy(Optional Fny0) As eSimTy()
+Dim Fny$(): Fny = DftFny(Fny0)
+Dim O() As eSimTy
+   Dim U%
+   ReDim O(U)
+   Dim J%, F
+   J = 0
+   For Each F In Fny
+       O(J) = NewSimTy(DbTF_Fld(A, T, F).Type)
+       J = J + 1
+   Next
+SimTyAy = O
+End Function
+
+Function StruLin$(Optional SkipTn As Boolean)
+Dim O$(): O = Me.Fny: If AyIsEmp(O) Then Exit Function
+O = FnyQuote(O, Me.Pk)
+O = FnyQuoteIfNeed(O)
+Dim J%, V
+V = 0
+For Each V In O
+   O(J) = Replace(V, T, "*")
+   J = J + 1
+Next
+If SkipTn Then
+   StruLin = JnSpc(O)
+Else
+   StruLin = T & " = " & JnSpc(O)
+End If
+End Function
+
 Function TblFInfDry() As Variant()
 Dim O(), F, Dr(), Fny$()
 Fny = Me.Fny
@@ -145,40 +169,22 @@ Next
 TblFInfDry = O
 End Function
 
-Function RecCnt&()
-RecCnt = DbqV(A, FmtQQ("Select Count(*) from [?]", T))
-End Function
-Function DftFny(Optional Fny0) As String()
-If IsMissing(Fny0) Then
-   DftFny = Me.Fny
-Else
-   DftFny = DftNy(Fny0)
-End If
-End Function
-
-
-Sub AddFld(F, Ty As DataTypeEnum)
-Dim FF As New DAO.Field
-FF.Name = F
-FF.Type = Ty
-Flds.Append FF
+Friend Sub Tst()
+Pk__Tst
 End Sub
-
-Function SimTyAy(Optional Fny0) As eSimTy()
-Dim Fny$(): Fny = DftFny(Fny0)
-Dim O() As eSimTy
-   Dim U%
-   ReDim O(U)
-   Dim J%, F
-   J = 0
-   For Each F In Fny
-       O(J) = NewSimTy(DbTF_Fld(A, T, F).Type)
-       J = J + 1
-   Next
-SimTyAy = O
-End Function
 
 Function Ws() As Worksheet
 Set Ws = DtWs(Me.Dt)
 End Function
 
+Private Sub Pk__Tst()
+Set A = SampleDb_DutyPrepare
+Dim Dr(), Dry(), T
+For Each T In DbTny(A)
+    Erase Dr
+    Push Dr, T
+    PushAy Dr, DaoX.Dbt(A, CStr(T)).Pk
+    Push Dry, Dr
+Next
+DryBrw Dry
+End Sub

@@ -9,14 +9,16 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Lines$
-Property Get LinCnt&()
-LinCnt = Sz(SplitCrLf(Lines))
-End Property
 
 Property Get LasLin$()
 Dim A$(): A = Ly: If Sz(A) = 0 Then Exit Property
 LasLin = AyLasEle(A)
 End Property
+
+Property Get LinCnt&()
+LinCnt = Sz(SplitCrLf(Lines))
+End Property
+
 Property Get Ly() As String()
 Ly = SplitLines(Lines)
 End Property
@@ -29,5 +31,3 @@ End Property
 Property Get Wdt%()
 Wdt = AyWdt(Ly)
 End Property
-
-

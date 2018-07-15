@@ -1,4 +1,4 @@
-Attribute VB_Name = "IdeEnsDclOpt"
+Attribute VB_Name = "F_EnsDclOpt"
 Option Explicit
 Private Enum eOptTy
    eExplicit = 1
@@ -82,4 +82,3 @@ Case eCmpDb: OptLin = "Option Compare Database"
 Case eExplicit: OptLin = "Option Explicit"
 End Select
 End Property
-

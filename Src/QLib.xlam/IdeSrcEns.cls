@@ -9,46 +9,15 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private Const C_FldLvs$ = "Lx Src Som NewLin Md"
-Private Sub ZZ_MdDrs()
-'DrsBrw MdDrs(Md("IdeFeature_EnsZZ_AsPrivate"))
-End Sub
-Private Sub ZZ_PjDrs()
-DrsBrw PjDrs(CurPj)
-End Sub
-Private Sub ZZZPjEnsZZAsPrivate()
-PjEnsZZAsPrivate CurPj
-End Sub
-Private Function MdDrs(A As CodeModule) As Drs
-Dim Dry(): Dry = MdDry(A)
-MdDrs = NewDrs(C_FldLvs, Dry)
-End Function
-Private Function MdDry(A As CodeModule) As Variant()
-MdDry = SrcDry(MdSrc(A), MdNm(A))
-End Function
-Private Function SrcDry(A$(), MdNm$) As Variant()
-Dim Src1$()
-Dim Som() As Boolean
-Dim NewL$()
-Dim J%
-Dim Dry1()
 
-Dim M() As StrOpt
-Dim Lx&(): Lx = SrcLxAy(A)
-    M = SrcLxAy_EnsPrivate(A, Lx)
-    If StrOptAy_HasNone(M) Then Stop
+Sub MdEnsZZAsPrivate(A As CodeModule)
+DrsEns MdDrs(A)
+End Sub
 
-Dim Dry()
-    Src1 = AyWh_ByIxAy(A, Lx)
-    For J = 0 To UB(Src1)
-        With MthLin_EnsPrivate(Src1(J))
-            Push Som, .Som
-            Push NewL, .Str
-        End With
-    Next
-    Dry1 = AyZipAp(Lx, Src1, Som, NewL)
-    Dry = DryAddConstCol(Dry1, MdNm)
-SrcDry = Dry
-End Function
+Sub PjEnsZZAsPrivate(A As VBProject)
+DrsEns PjDrs(A)
+End Sub
+
 Function PjZZDrs(A As VBProject) As Drs
 Dim Dry(), I
 'For Each I In PjMdAy(A)
@@ -73,9 +42,15 @@ For Each Dr In A.Dry
 Next
 End Sub
 
-Sub MdEnsZZAsPrivate(A As CodeModule)
-DrsEns MdDrs(A)
-End Sub
+Private Function MdDrs(A As CodeModule) As Drs
+Dim Dry(): Dry = MdDry(A)
+MdDrs = NewDrs(C_FldLvs, Dry)
+End Function
+
+Private Function MdDry(A As CodeModule) As Variant()
+MdDry = SrcDry(MdSrc(A), MdNm(A))
+End Function
+
 Private Function PjDrs(A As VBProject) As Drs
 Dim ODry()
 Dim I
@@ -85,9 +60,34 @@ Next
 PjDrs = NewDrs(C_FldLvs, ODry)
 End Function
 
-Sub PjEnsZZAsPrivate(A As VBProject)
-DrsEns PjDrs(A)
-End Sub
+Private Function SrcDry(A$(), MdNm$) As Variant()
+Dim Src1$()
+Dim Som() As Boolean
+Dim NewL$()
+Dim J%
+Dim Dry1()
+
+Dim M() As StrOpt
+Dim Lx&(): Lx = SrcLxAy(A)
+    M = SrcLxAy_EnsPrivate(A, Lx)
+    If StrOptAy_HasNone(M) Then Stop
+
+Dim Dry()
+    Src1 = AyWh_ByIxAy(A, Lx)
+    For J = 0 To UB(Src1)
+        With MthLin_EnsPrivate(Src1(J))
+            Push Som, .Som
+            Push NewL, .Str
+        End With
+    Next
+    Dry1 = AyZipAp(Lx, Src1, Som, NewL)
+    Dry = DryAddConstCol(Dry1, MdNm)
+SrcDry = Dry
+End Function
+
+Private Function SrcEnsZZAsPrivateDrs(A$(), LxAy&()) As Drs
+
+End Function
 
 Private Function SrcLxAy(A$()) As Long()
 Dim L$, Lx%, J%, MthNm$
@@ -117,8 +117,14 @@ Dim O() As StrOpt
 SrcLxAy_EnsPrivate = O
 End Function
 
-Private Function SrcEnsZZAsPrivateDrs(A$(), LxAy&()) As Drs
+Private Sub ZZZPjEnsZZAsPrivate()
+PjEnsZZAsPrivate CurPj
+End Sub
 
-End Function
+Private Sub ZZ_MdDrs()
+'DrsBrw MdDrs(Md("IdeFeature_EnsZZ_AsPrivate"))
+End Sub
 
-
+Private Sub ZZ_PjDrs()
+DrsBrw PjDrs(CurPj)
+End Sub

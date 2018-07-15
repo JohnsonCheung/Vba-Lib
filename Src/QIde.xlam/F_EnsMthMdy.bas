@@ -1,4 +1,4 @@
-Attribute VB_Name = "IdeEnsMthMdy"
+Attribute VB_Name = "F_EnsMthMdy"
 Option Explicit
 
 Sub MdMth_EnsMdy(A As CodeModule, MthNm$, Mdy$)
@@ -15,6 +15,16 @@ End Sub
 
 Sub MdMth_EnsPublic(A As CodeModule, MthNm$)
 MdMth_EnsMdy A, MthNm, "Public"
+End Sub
+
+Sub MdMth_EnsMdy__Tst()
+Dim M As CodeModule
+Dim MthNm$
+Dim Mdy$
+'Set M = Md("IDE_Feature001_EnsMthMdy")
+MthNm = "AAAX"
+Mdy = "Public"
+MdMth_EnsMdy M, MthNm, Mdy
 End Sub
 
 Private Sub MdMthLno_EnsMdy(A As CodeModule, MthLno%, Mdy$)
@@ -38,14 +48,4 @@ MdRplLin A, MthLno, NewLin
 Debug.Print FmtQQ("MdMthLno_EnsMdy: Mdy[?] Of MthLno[?] of Md[?] is ensured", Mdy, MthLno, MdNm(A))
 Debug.Print FmtQQ("                 OldLin[?]", Lin)
 Debug.Print FmtQQ("                 NewLin[?]", NewLin)
-End Sub
-
-Sub MdMth_EnsMdy__Tst()
-Dim M As CodeModule
-Dim MthNm$
-Dim Mdy$
-'Set M = Md("IDE_Feature001_EnsMthMdy")
-MthNm = "AAAX"
-Mdy = "Public"
-MdMth_EnsMdy M, MthNm, Mdy
 End Sub

@@ -10,4 +10,3 @@ Attribute VB_Exposed = True
 Option Explicit
 Public KeyVal As KeyVal
 Public Som As Boolean
-

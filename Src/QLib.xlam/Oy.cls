@@ -10,33 +10,34 @@ Attribute VB_Exposed = True
 Option Explicit
 Private B_Oy ' each element is an object
 
-Sub DoMth(Mth$)
-Dim J&
-For J = 0 To U
-    CallByName B_Oy(J), Mth, VbMethod
-Next
-End Sub
-
-Function MapByObjGet(Obj, GetMthNm$, OIntoAy)
-
-Dim O: O = OIntoAy
-Erase O
-Dim ArgAy(0), J%
-For J = 0 To U
-    Asg Oy(J), ArgAy(0)
-    Push O, CallByName(Obj, GetMthNm, VbGet, ArgAy)
-Next
-MapByObjGet = O
-End Function
-Property Get N&()
-N = Sz(B_Oy)
+Property Get Init(Oy) As Oy
+Ass IsArray(Oy)
+B_Oy = Oy
+Set Init = Me
 End Property
-Private Function U&()
-U = N - 1
-End Function
+
+Property Get InitByColl(A As VBA.Collection) As Oy
+B_Oy = Collx(A).Ay
+Set InitByColl = Me
+End Property
+
 Property Get IsEmp() As Boolean
 IsEmp = N = 0
 End Property
+
+Property Get N&()
+N = Sz(B_Oy)
+End Property
+
+Function Ay(PrpNm$) As Variant()
+If IsEmp Then Exit Function
+Dim O(), I
+For Each I In B_Oy
+    Push O, CallByName(I, PrpNm, VbGet)
+Next
+Ay = O
+End Function
+
 Function CatAyPrpAsAy(AyPrpNm$)
 Dim O, J&, I
 If IsEmp Then Exit Function
@@ -50,48 +51,33 @@ Next
 CatAyPrpAsAy = O
 End Function
 
-Property Get Init(Oy) As Oy
-Ass IsArray(Oy)
-B_Oy = Oy
-Set Init = Me
-End Property
-Property Get InitByColl(A As VBA.Collection) As Oy
-B_Oy = Collx(A).Ay
-Set InitByColl = Me
-End Property
+Sub DoMth(Mth$)
+Dim J&
+For J = 0 To U
+    CallByName B_Oy(J), Mth, VbMethod
+Next
+End Sub
 
-Function Sy(PrpNm$) As String()
-If IsEmp Then Exit Function
-Dim O$(), I
+Function Dry() As Variant()
+'Assume each object has Dr-prp
+Dry = PrpAy("Dr")
+End Function
+
+Sub EachFun(FunNm$)
+If IsEmp Then Exit Sub
+Dim I
 For Each I In B_Oy
-    Push O, CallByName(I, PrpNm, VbGet)
+    Run FunNm, I
 Next
-Sy = O
-End Function
-Function ToStr$()
-Dim O$(), I
-For Each I In B_Oy
-    Push O, CallByName(I, "ToStr", VbGet)
+End Sub
+
+Sub EachSubP1(SubNm$, Prm)
+If IsEmp Then Exit Sub
+Dim O
+For Each O In B_Oy
+    CallByName O, SubNm, VbMethod, Prm
 Next
-ToStr = JnCrLf(O)
-End Function
-Function SrtedUniqAy(PrpNm$) As Variant()
-SrtedUniqAy = AySrt(AyUniq(Ay(PrpNm)))
-End Function
-Function SrtedUniqIntAy(PrpNm$) As Integer()
-SrtedUniqIntAy = AySrt(AyUniq(PrpIntAy(PrpNm)))
-End Function
-Function SrtedUniqSy(PrpNm$) As Variant()
-SrtedUniqSy = AySrt(AyUniq(Sy(PrpNm)))
-End Function
-Function Ay(PrpNm$) As Variant()
-If IsEmp Then Exit Function
-Dim O(), I
-For Each I In B_Oy
-    Push O, CallByName(I, PrpNm, VbGet)
-Next
-Ay = O
-End Function
+End Sub
 
 Function Map(MapMthNm$) As Variant()
 Dim Obj, J&, O()
@@ -101,6 +87,19 @@ For J = 0 To U
 Next
 Map = O
 End Function
+
+Function MapByObjGet(Obj, GetMthNm$, OIntoAy)
+
+Dim O: O = OIntoAy
+Erase O
+Dim ArgAy(0), J%
+For J = 0 To U
+    Asg Oy(J), ArgAy(0)
+    Push O, CallByName(Obj, GetMthNm, VbGet, ArgAy)
+Next
+MapByObjGet = O
+End Function
+
 Function MapInto(MapFunNm$, OIntoAy)
 Dim Obj, J&
 Dim O
@@ -112,29 +111,10 @@ Next
 MapInto = O
 End Function
 
-Sub EachSubP1(SubNm$, Prm)
-If IsEmp Then Exit Sub
-Dim O
-For Each O In B_Oy
-    CallByName O, SubNm, VbMethod, Prm
-Next
-End Sub
-
-Sub EachFun(FunNm$)
-If IsEmp Then Exit Sub
-Dim I
-For Each I In B_Oy
-    Run FunNm, I
-Next
-End Sub
-
 Function Ny() As String()
 Ny = PrpSy("Name")
 End Function
-Function Dry() As Variant()
-'Assume each object has Dr-prp
-Dry = PrpAy("Dr")
-End Function
+
 Function PrpAy(PrpNm$, Optional Oup)
 Dim O
    If Not IsMissing(Oup) Then
@@ -164,6 +144,39 @@ End Function
 Function PrpSy(PrpNm$) As String()
 PrpSy = PrpAy(PrpNm, Emp.Sy)
 End Function
+
+Function SrtedUniqAy(PrpNm$) As Variant()
+SrtedUniqAy = AySrt(AyUniq(Ay(PrpNm)))
+End Function
+
+Function SrtedUniqIntAy(PrpNm$) As Integer()
+SrtedUniqIntAy = AySrt(AyUniq(PrpIntAy(PrpNm)))
+End Function
+
+Function SrtedUniqSy(PrpNm$) As Variant()
+SrtedUniqSy = AySrt(AyUniq(Sy(PrpNm)))
+End Function
+
+Function Sy(PrpNm$) As String()
+If IsEmp Then Exit Function
+Dim O$(), I
+For Each I In B_Oy
+    Push O, CallByName(I, PrpNm, VbGet)
+Next
+Sy = O
+End Function
+
+Function ToStr$()
+Dim O$(), I
+For Each I In B_Oy
+    Push O, CallByName(I, "ToStr", VbGet)
+Next
+ToStr = JnCrLf(O)
+End Function
+
+Sub Tst()
+PrpAy__Tst
+End Sub
 
 Function WhIxSelIntPrp(WhIx, PrpNm$) As Integer()
 WhIxSelIntPrp = WhIxSelPrp(WhIx, PrpNm, Emp.IntAy)
@@ -221,9 +234,6 @@ CdPanAy = Oy(CurPjx.MdAy).PrpAy("CodePane", CdPanAy)
 Stop
 End Sub
 
-Sub Tst()
-PrpAy__Tst
-End Sub
-'=======================================================================================
-
-
+Private Function U&()
+U = N - 1
+End Function

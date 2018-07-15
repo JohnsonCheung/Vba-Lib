@@ -9,16 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A As Vbe
-Friend Property Get Init(Vbe As Vbe) As Vbex
-Set A = Vbe
-Set Init = Me
+
+Property Get PjNy() As String()
+PjNy = Oy(PjxAy).Ny
 End Property
-Sub Export()
-Dim I
-For Each I In PjxAy
-    CvPjx(I).Export
-Next
-End Sub
+
 Property Get PjxAy() As Pjx()
 Dim O() As Pjx, I, M As Pjx
 For Each I In A.VBProjects
@@ -29,6 +24,15 @@ For Each I In A.VBProjects
 Next
 PjxAy = O
 End Property
-Property Get PjNy() As String()
-PjNy = Oy(PjxAy).Ny
+
+Sub Export()
+Dim I
+For Each I In PjxAy
+    CvPjx(I).Export
+Next
+End Sub
+
+Friend Property Get Init(Vbe As Vbe) As Vbex
+Set A = Vbe
+Set Init = Me
 End Property

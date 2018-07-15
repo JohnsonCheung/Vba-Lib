@@ -1,5 +1,6 @@
 Attribute VB_Name = "M_VblAy"
 Option Explicit
+
 Property Get VblLy_Dry(VblLy$()) As Variant()
 If AyIsEmp(VblLy) Then Exit Property
 Dim O()
@@ -9,5 +10,3 @@ Dim O()
    Next
 VblLy_Dry = O
 End Property
-
-

@@ -37,4 +37,3 @@ Public Const M_Nm_ExcessLin$ = "LX(?) is excess due to Nm-Lin is found above"
 Public Const M_Should_Lng$ = "Lx(?) Fld(?) should have val(?) be a long number"
 Public Const M_Should_Num$ = "Lx(?) Fld(?) should have val(?) be a number"
 Public Const M_Should_Bet$ = "Lx(?) Fld(?) should have val(?) be between (?) and (?)"
-

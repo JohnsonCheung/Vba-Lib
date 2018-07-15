@@ -7,6 +7,17 @@ Private Type ZZ1_CrdExpr_TstDta
    Exp As String
 End Type
 
+Private Sub ZZ1__CrdExpr__Tst()
+Dim Ay() As ZZ1_CrdExpr_TstDta
+   Ay = ZZ1_TstDtaAy
+Dim J%
+For J = 0 To UBound(Ay)
+   If J = J Then
+       ZZ1_Tstr Ay(J)
+   End If
+Next
+End Sub
+
 Private Function ZZ1_Act(A As ZZ1_CrdExpr_TstDta) As String
 With A
    ZZ1_Act = CrdTyLvs_CrdExpr(.CrdTyLvs, .CrdPfxTyDry)
@@ -96,14 +107,3 @@ End Function
 Private Function ZZCrdTyLvs$()
 ZZCrdTyLvs = "1 2 3"
 End Function
-
-Private Sub ZZ1__CrdExpr__Tst()
-Dim Ay() As ZZ1_CrdExpr_TstDta
-   Ay = ZZ1_TstDtaAy
-Dim J%
-For J = 0 To UBound(Ay)
-   If J = J Then
-       ZZ1_Tstr Ay(J)
-   End If
-Next
-End Sub

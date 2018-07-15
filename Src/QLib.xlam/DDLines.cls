@@ -10,12 +10,18 @@ Attribute VB_Exposed = False
 Option Explicit
 Private A As Dictionary
 
+Property Get Init(Ly$()) As DDLines
+Dim J&
+For J = 0 To UB(Ly)
+    AddLin Ly(J)
+Next
+Set Init = Me
+End Property
+
 Sub Brw()
 AyBrw FmtLy
 End Sub
-Friend Sub Tst()
 
-End Sub
 Function Dic2(K1) As Dictionary
 Dim mK1$: mK1 = K1
 If A.Exists(mK1) Then
@@ -32,14 +38,6 @@ For Each K1 In A
 Next
 FmtLy = O
 End Function
-
-Property Get Init(Ly$()) As DDLines
-Dim J&
-For J = 0 To UB(Ly)
-    AddLin Ly(J)
-Next
-Set Init = Me
-End Property
 
 Function K1_S1S2Ay(K1) As S1S2()
 Dim Ky2$(): Ky2 = Me.Ky2(K1)
@@ -62,6 +60,44 @@ If IsNothing(D2) Then Exit Function
 Stop
 'Ky2 = DicKeySy(D2)
 End Function
+
+Friend Sub Tst()
+
+End Sub
+
+Private Sub FmtLy__Tst()
+Dim D As DDLines: Set D = ZZSampleDDLines
+AyBrw D.FmtLy
+End Sub
+
+Sub KKLines__Tst()
+With ZZSampleDDLines
+    Ass .KKLines("B", "X") = "sldkf sdf"
+    Ass .KKLines("A", "B") = RplVBar("lskdf|  lsdkf")
+    Ass .KKLines("A", "C") = RplVBar("sdkfjdf|  sdfsdf")
+End With
+End Sub
+
+Private Sub Ky2__Tst()
+Dim A$()
+With ZZSampleDDLines
+    A = .Ky2("A")
+    Ass Sz(A) = 2
+    Ass A(0) = "B"
+    Ass A(1) = "C"
+    
+    A = .Ky2("B")
+    Ass Sz(A) = 1
+    Ass A(0) = "X"
+    
+    A = .Ky2("C")
+    Ass Sz(A) = 0
+End With
+End Sub
+
+Private Sub ZZSamplesDDLinesLy__Tst()
+AyBrw ZZSampleDDLinesLy
+End Sub
 
 Private Sub AddKKLin(K1$, K2$, Lin$)
 If FstChr(Lin) = "~" Then Lin = RplFstChr(Lin, " ")
@@ -118,38 +154,3 @@ End Function
 Private Function ZZSampleDDLinesLy() As String()
 'ZZSampleDDLinesLy = MdResLy(Md("DDLines"), "SampleDDLinesLy")
 End Function
-
-Private Sub FmtLy__Tst()
-Dim D As DDLines: Set D = ZZSampleDDLines
-AyBrw D.FmtLy
-End Sub
-
-Sub KKLines__Tst()
-With ZZSampleDDLines
-    Ass .KKLines("B", "X") = "sldkf sdf"
-    Ass .KKLines("A", "B") = RplVBar("lskdf|  lsdkf")
-    Ass .KKLines("A", "C") = RplVBar("sdkfjdf|  sdfsdf")
-End With
-End Sub
-
-Private Sub Ky2__Tst()
-Dim A$()
-With ZZSampleDDLines
-    A = .Ky2("A")
-    Ass Sz(A) = 2
-    Ass A(0) = "B"
-    Ass A(1) = "C"
-    
-    A = .Ky2("B")
-    Ass Sz(A) = 1
-    Ass A(0) = "X"
-    
-    A = .Ky2("C")
-    Ass Sz(A) = 0
-End With
-End Sub
-
-Private Sub ZZSamplesDDLinesLy__Tst()
-AyBrw ZZSampleDDLinesLy
-End Sub
-

@@ -1,5 +1,6 @@
 Attribute VB_Name = "M_Obj"
 Option Explicit
+
 Function ObjPrpDr(Obj, PrpNy0) As Variant()
 Dim Ny$(): Ny = DftNy(PrpNy0)
 Dim U%
@@ -12,4 +13,3 @@ Dim O()
     Next
 ObjPrpDr = O
 End Function
-

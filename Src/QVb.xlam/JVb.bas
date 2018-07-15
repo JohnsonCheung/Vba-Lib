@@ -1,21 +1,6 @@
 Attribute VB_Name = "JVb"
 Option Explicit
 
-Property Get ABC(Lin) As ABC
-Dim O As New ABC
-Set ABC = O.Init(Lin)
-End Property
-
-Property Get DDLines(Ly$()) As DDLines
-Dim O As New DDLines
-Set DDLines = O.Init(Ly)
-End Property
-
-Property Get Emp() As Emp
-Static Y As New Emp
-Set Emp = Y
-End Property
-
 Property Get FmTo(FmIx&, ToIx&) As FmTo
 Dim O As New FmTo
 Set FmTo = O.Init(FmIx, ToIx)
@@ -24,11 +9,6 @@ End Property
 Property Get FmToPos(FmPos, ToPos) As FmToPos
 Dim O As New FmToPos
 Set FmToPos = O.Init(FmPos, ToPos)
-End Property
-
-Property Get Gp(A() As Lnx) As Gp
-Dim O As New Gp
-Set Gp = O.Init(A)
 End Property
 
 Property Get IntAyObj(Ay%()) As IntAyObj
@@ -41,19 +21,9 @@ Dim O As New KeyVal
 Set KeyVal = O.Init(K, V)
 End Property
 
-Property Get LABCAyRslt(A() As LABC, ErLy$()) As LABCAyRslt
-Dim O As New LABCAyRslt
-Set LABCAyRslt = O.Init(A, ErLy)
-End Property
-
-Property Get Lnx(Lin, Lx%) As Lnx
-Dim O As New Lnx
-Set Lnx = O.Init(Lin, Lx)
-End Property
-
-Property Get LyRslt(Ly$(), ErLy$()) As LyRslt
-Dim O As New LyRslt
-Set LyRslt = O.Init(Ly, ErLy)
+Property Get LnoCnt(Lno&, Cnt&) As LnoCnt
+Dim O As New LnoCnt
+Set LnoCnt = O.Init(Lno, Cnt)
 End Property
 
 Property Get P123(P1, P2, P3) As P123

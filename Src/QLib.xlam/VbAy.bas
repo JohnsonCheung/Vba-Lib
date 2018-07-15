@@ -1,6 +1,30 @@
 Attribute VB_Name = "VbAy"
 Option Explicit
 
+Property Get AyRmvEle(A, Ele)
+Dim Ix&: Ix = AyIx(A, Ele): If Ix = -1 Then AyRmvEle = A: Exit Property
+AyRmvEle = AyRmvEleAt(A, AyIx(A, Ele))
+End Property
+
+Property Get AyRmvEleAt(A, Optional At&)
+AyRmvEleAt = AyWhExclAtCnt(A, At)
+End Property
+
+Property Get AyWhExclAtCnt(A, At&, Optional Cnt& = 1)
+If Cnt <= 0 Then AyWhExclAtCnt = A: Exit Property
+Dim U&: U = UB(A)
+If At > U Then Stop
+If At < 0 Then Stop
+If U = 0 Then AyWhExclAtCnt = A: Exit Property
+Dim O: O = A
+Dim J&
+For J = At To U - Cnt
+    O(J) = O(J + Cnt)
+Next
+ReDim Preserve O(U - Cnt)
+AyWhExclAtCnt = O
+End Property
+
 Function ApIntAy(ParamArray Ap()) As Integer()
 Dim Av(): Av = Ap
 ApIntAy = AyIntAy(Av)
@@ -26,18 +50,6 @@ If AyIsEmp(Chk) Then Exit Sub
 AyBrw Chk
 Stop
 End Sub
-
-Function SyAddAp(ParamArray Ap()) As String()
-Dim Av(): Av = Ap
-Dim O$(), I
-For Each I In Av
-    If IsStr(I) Then
-        Push O, I
-    Else
-        PushAy O, I
-    End If
-Next
-End Function
 
 Function AyAdd(Ay1, Ay2)
 Dim O: O = Ay1
@@ -131,18 +143,6 @@ Next
 AyAsgAy = OIntoAy
 End Function
 
-Function AyMapInto(Ay, Obj, GetNm$, OIntoAy)
-Dim O: O = OIntoAy: Erase O
-Dim J&, U&
-Dim Arg
-U = UB(Ay)
-ReSz O, U
-For J = 0 To U
-    Asg Ay(J), Arg
-    Asg CallByName(Obj, GetNm, VbGet, Arg), O(J)
-Next
-AyMapInto = O
-End Function
 Function AyBoolAy(A) As Boolean()
 AyBoolAy = AyAsgAy(A, Emp.BoolAy)
 End Function
@@ -160,6 +160,30 @@ End Function
 
 Function AyBytAy(A) As Byte()
 AyBytAy = AyAsgAy(A, Emp.BytAy)
+End Function
+
+Function AyC1Dry(A, C) As Variant()
+'C1Dry is Dry with 2 column and Col1 is const
+Dim U&, J&
+U = UB(A)
+Dim O()
+ReSz O, U
+For J = 0 To U
+    O(J) = Array(C, A(J))
+Next
+AyC1Dry = O
+End Function
+
+Function AyC2Dry(A, C) As Variant()
+'C2Dry is Dry with 2 column and Col1 is const
+Dim U&, J&
+U = UB(A)
+Dim O()
+ReSz O, U
+For J = 0 To U
+    O(J) = Array(A(J), C)
+Next
+AyC2Dry = O
 End Function
 
 Function AyDblAy(A) As Double()
@@ -195,29 +219,6 @@ End Sub
 
 Function AyDrs(A) As Drs
 AyDrs = NewDrs("Itm", AyDry(A))
-End Function
-
-Function AyC1Dry(A, C) As Variant()
-'C1Dry is Dry with 2 column and Col1 is const
-Dim U&, J&
-U = UB(A)
-Dim O()
-ReSz O, U
-For J = 0 To U
-    O(J) = Array(C, A(J))
-Next
-AyC1Dry = O
-End Function
-Function AyC2Dry(A, C) As Variant()
-'C2Dry is Dry with 2 column and Col1 is const
-Dim U&, J&
-U = UB(A)
-Dim O()
-ReSz O, U
-For J = 0 To U
-    O(J) = Array(A(J), C)
-Next
-AyC2Dry = O
 End Function
 
 Function AyDry(A) As Variant()
@@ -406,6 +407,7 @@ For J = 1 To UB(A)
 Next
 AyIsAllEq = True
 End Function
+
 Function AyIsEmp(V) As Boolean
 AyIsEmp = (Sz(V) = 0)
 End Function
@@ -438,17 +440,7 @@ For J = 0 To UB(A)
 Next
 AyIx = -1
 End Function
-Function FnyIxAy(A$(), SubFny0) As Integer()
-Dim SubFny$(): SubFny = DftNy(SubFny0)
-If AyIsEmp(SubFny) Then Stop
-Dim O%(), U&, J%
-U = UB(SubFny)
-ReSz O, U
-For J = 0 To U
-    O(J) = AyIx(A, SubFny(J))
-    If O(J) = -1 Then Stop
-Next
-End Function
+
 Function AyIxAy(A, SubAy, Optional ChkNotFound As Boolean, Optional SkipNotFound As Boolean) As Long()
 If AyIsEmp(SubAy) Then Exit Function
 Dim O&()
@@ -539,6 +531,19 @@ Dim O$()
         J = J + 1
     Next
 AyMapAsgSy = O
+End Function
+
+Function AyMapInto(Ay, Obj, GetNm$, OIntoAy)
+Dim O: O = OIntoAy: Erase O
+Dim J&, U&
+Dim Arg
+U = UB(Ay)
+ReSz O, U
+For J = 0 To U
+    Asg Ay(J), Arg
+    Asg CallByName(Obj, GetNm, VbGet, Arg), O(J)
+Next
+AyMapInto = O
 End Function
 
 Function AyMap_Lng(A, MapMthNm$) As Long()
@@ -661,15 +666,6 @@ Dim O
     Next
 AyReOrd = O
 End Function
-
-Property Get AyRmvEle(A, Ele)
-Dim Ix&: Ix = AyIx(A, Ele): If Ix = -1 Then AyRmvEle = A: Exit Property
-AyRmvEle = AyRmvEleAt(A, AyIx(A, Ele))
-End Property
-
-Property Get AyRmvEleAt(A, Optional At&)
-AyRmvEleAt = AyWhExclAtCnt(A, At)
-End Property
 
 Function AyRmvEmp(A)
 If AyIsEmp(A) Then AyRmvEmp = A: Exit Function
@@ -888,21 +884,6 @@ For Each Dr In GpDry
 Next
 AyWhDup = O
 End Function
-
-Property Get AyWhExclAtCnt(A, At&, Optional Cnt& = 1)
-If Cnt <= 0 Then AyWhExclAtCnt = A: Exit Property
-Dim U&: U = UB(A)
-If At > U Then Stop
-If At < 0 Then Stop
-If U = 0 Then AyWhExclAtCnt = A: Exit Property
-Dim O: O = A
-Dim J&
-For J = At To U - Cnt
-    O(J) = O(J + Cnt)
-Next
-ReDim Preserve O(U - Cnt)
-AyWhExclAtCnt = O
-End Property
 
 Function AyWhExclIxAy(A, IxAy)
 'IxAy holds index if A to be remove.  It has been sorted else will be stop
@@ -1168,6 +1149,18 @@ Function CvSy(V) As String()
 CvSy = V
 End Function
 
+Function FnyIxAy(A$(), SubFny0) As Integer()
+Dim SubFny$(): SubFny = DftNy(SubFny0)
+If AyIsEmp(SubFny) Then Stop
+Dim O%(), U&, J%
+U = UB(SubFny)
+ReSz O, U
+For J = 0 To U
+    O(J) = AyIx(A, SubFny(J))
+    If O(J) = -1 Then Stop
+Next
+End Function
+
 Function IntAy_ByU(U&) As Integer()
 If 0 > U Then Exit Function
 Dim O%()
@@ -1302,11 +1295,6 @@ Else
 End If
 End Sub
 
-Sub PushItmAy(O, Itm, Ay)
-Push O, Itm
-PushAy O, Ay
-End Sub
-
 Sub PushAp(O, ParamArray Ap())
 Dim Av(), I: Av = Ap
 For Each I In Av
@@ -1320,6 +1308,11 @@ Dim I
 For Each I In A
     Push O, I
 Next
+End Sub
+
+Sub PushItmAy(O, Itm, Ay)
+Push O, Itm
+PushAy O, Ay
 End Sub
 
 Sub PushNoDup(O, M)
@@ -1360,6 +1353,18 @@ Else
     ReDim Preserve A(U)
 End If
 End Sub
+
+Function SyAddAp(ParamArray Ap()) As String()
+Dim Av(): Av = Ap
+Dim O$(), I
+For Each I In Av
+    If IsStr(I) Then
+        Push O, I
+    Else
+        PushAy O, I
+    End If
+Next
+End Function
 
 Function SyIsAllEleHasPfx(A$(), Pfx$) As Boolean
 If AyIsEmp(A) Then Exit Function
@@ -1403,70 +1408,6 @@ Function UB&(A)
 UB = Sz(A) - 1
 End Function
 
-Private Sub AyGpDry__Tst1()
-Dim A$(): A = SplitSpc("a a a b c b")
-Dim Act(): Act = AyGpDry(A)
-Dim Exp(): Exp = Array(Array("a", 3), Array("b", 2), Array("c", 1))
-AssEqDry Act, Exp
-End Sub
-
-Private Sub AyGpDry__Upd(OGpDry(), Itm)
-Dim J&
-For J = 0 To UB(OGpDry)
-    If OGpDry(J)(0) = Itm Then
-        OGpDry(J)(1) = OGpDry(J)(1) + 1
-        Exit Sub
-    End If
-Next
-Push OGpDry, Array(Itm, 1)
-End Sub
-
-Private Sub AyIxAy__ChkNotFound(IxAy&(), A, SubAy)
-If IxAy_IsAllGE0(IxAy) Then Exit Sub
-Dim J&, SomEle(), SomEleIx&()
-For J = 0 To UB(IxAy)
-    If IxAy(J) = -1 Then
-        Push SomEleIx, J
-        Push SomEle, SubAy(J)
-    End If
-Next
-Er "AyIxAy__ChkNotFound", "{SomEle} with {Ix} in {SubAy} are not found in Given {Ay}", SomEle, SomEleIx, SubAy, A, SomEleIx
-End Sub
-
-Private Function AySrtInToIxAy_Ix&(Ix&(), A, V, Des As Boolean)
-Dim I, O&
-If Des Then
-    For Each I In Ix
-        If V > A(I) Then AySrtInToIxAy_Ix& = O: Exit Function
-        O = O + 1
-    Next
-    AySrtInToIxAy_Ix& = O
-    Exit Function
-End If
-For Each I In Ix
-    If V < A(I) Then AySrtInToIxAy_Ix& = O: Exit Function
-    O = O + 1
-Next
-AySrtInToIxAy_Ix& = O
-End Function
-
-Private Function AySrt__Ix&(A, V, Des As Boolean)
-Dim I, O&
-If Des Then
-    For Each I In A
-        If V > I Then AySrt__Ix = O: Exit Function
-        O = O + 1
-    Next
-    AySrt__Ix = O
-    Exit Function
-End If
-For Each I In A
-    If V < I Then AySrt__Ix = O: Exit Function
-    O = O + 1
-Next
-AySrt__Ix = O
-End Function
-
 Sub AyAdd__Tst()
 Dim Act(), Exp(), Ay1(), Ay2()
 Ay1 = Array(1, 2, 2, 2, 4, 5)
@@ -1492,6 +1433,24 @@ Ass AyIsEq(Act(1), Array(2, 3))
 Ass AyIsEq(Act(2), Array(4))
 End Sub
 
+Private Sub AyGpDry__Tst1()
+Dim A$(): A = SplitSpc("a a a b c b")
+Dim Act(): Act = AyGpDry(A)
+Dim Exp(): Exp = Array(Array("a", 3), Array("b", 2), Array("c", 1))
+AssEqDry Act, Exp
+End Sub
+
+Private Sub AyGpDry__Upd(OGpDry(), Itm)
+Dim J&
+For J = 0 To UB(OGpDry)
+    If OGpDry(J)(0) = Itm Then
+        OGpDry(J)(1) = OGpDry(J)(1) + 1
+        Exit Sub
+    End If
+Next
+Push OGpDry, Array(Itm, 1)
+End Sub
+
 Sub AyHasDupEle__Tst()
 Ass AyHasDupEle(Array(1, 2, 3, 4)) = False
 Ass AyHasDupEle(Array(1, 2, 3, 4, 4)) = True
@@ -1503,6 +1462,18 @@ Ass Sz(Act) = 3
 Ass Act(0) = 1
 Ass Act(1) = 2
 Ass Act(2) = 3
+End Sub
+
+Private Sub AyIxAy__ChkNotFound(IxAy&(), A, SubAy)
+If IxAy_IsAllGE0(IxAy) Then Exit Sub
+Dim J&, SomEle(), SomEleIx&()
+For J = 0 To UB(IxAy)
+    If IxAy(J) = -1 Then
+        Push SomEleIx, J
+        Push SomEle, SubAy(J)
+    End If
+Next
+Er "AyIxAy__ChkNotFound", "{SomEle} with {Ix} in {SubAy} are not found in Given {Ay}", SomEle, SomEleIx, SubAy, A, SomEleIx
 End Sub
 
 Sub AyMap_Sy__Tst()
@@ -1557,6 +1528,23 @@ Dim A: A = Array("A", "B", "C", "D", "E")
 AyPair_EqChk Array(0, 1, 2, 3, 4), AySrtInToIxAy(A)
 AyPair_EqChk Array(4, 3, 2, 1, 0), AySrtInToIxAy(A, True)
 End Sub
+
+Private Function AySrt__Ix&(A, V, Des As Boolean)
+Dim I, O&
+If Des Then
+    For Each I In A
+        If V > I Then AySrt__Ix = O: Exit Function
+        O = O + 1
+    Next
+    AySrt__Ix = O
+    Exit Function
+End If
+For Each I In A
+    If V < I Then AySrt__Ix = O: Exit Function
+    O = O + 1
+Next
+AySrt__Ix = O
+End Function
 
 Private Sub AySrt__Tst()
 Dim Exp, Act
@@ -1630,3 +1618,20 @@ End Sub
 Private Sub SyTrim__Tst()
 AyDmp SyTrim(ApSy(1, 2, 3, "  a"))
 End Sub
+
+Private Function AySrtInToIxAy_Ix&(Ix&(), A, V, Des As Boolean)
+Dim I, O&
+If Des Then
+    For Each I In Ix
+        If V > A(I) Then AySrtInToIxAy_Ix& = O: Exit Function
+        O = O + 1
+    Next
+    AySrtInToIxAy_Ix& = O
+    Exit Function
+End If
+For Each I In Ix
+    If V < A(I) Then AySrtInToIxAy_Ix& = O: Exit Function
+    O = O + 1
+Next
+AySrtInToIxAy_Ix& = O
+End Function

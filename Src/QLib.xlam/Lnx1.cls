@@ -9,24 +9,17 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private B_Lx%, B_Lin$
-Property Get Lx%()
-Lx = B_Lx
+
+Property Get IsBlankLin() As Boolean
+IsBlankLin = Trim(B_Lin) = ""
 End Property
+
 Property Get Lin$()
 Lin = B_Lin
 End Property
-Function Fmt$(QQVblStr$)
-Dim A$: A = RplVBar(QQVblStr)
-Fmt = FmtQQ(A, B_Lin, B_Lx)
-End Function
-Friend Property Get Init(Lin$, Lx%) As Lnx1
-B_Lx = Lx
-B_Lin = Lin
-Set Init = Me
-End Property
 
-Property Get ToStr$()
-ToStr = FmtQQ("Lnx(?: ?", B_Lx, B_Lin)
+Property Get Lx%()
+Lx = B_Lx
 End Property
 
 Property Get RmvDDRmk() As Lnx1
@@ -36,6 +29,17 @@ Dim L$:
 Set RmvDDRmk = O.Init(L, B_Lx)
 End Property
 
-Property Get IsBlankLin() As Boolean
-IsBlankLin = Trim(B_Lin) = ""
+Property Get ToStr$()
+ToStr = FmtQQ("Lnx(?: ?", B_Lx, B_Lin)
+End Property
+
+Function Fmt$(QQVblStr$)
+Dim A$: A = RplVBar(QQVblStr)
+Fmt = FmtQQ(A, B_Lin, B_Lx)
+End Function
+
+Friend Property Get Init(Lin$, Lx%) As Lnx1
+B_Lx = Lx
+B_Lin = Lin
+Set Init = Me
 End Property

@@ -343,7 +343,7 @@ Property Get DicWb(A As Dictionary, Optional Vis As Boolean) As Workbook
 Ass DicAllKeyIsNm(A)
 Ass DicAllValIsStr(A)
 Dim K, ThereIsSheet1 As Boolean
-Dim O As Workbook: Set O = NewWb
+Dim O As Workbook: Stop 'Set O = NewWb
 Dim Ws As Worksheet
 For Each K In A.Keys
     If K = "Sheet1" Then

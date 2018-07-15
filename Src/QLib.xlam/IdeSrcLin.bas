@@ -323,33 +323,6 @@ End If
 SyOfSrcTy = Y
 End Function
 
-Private Sub ZZ_PrjSrcDrs()
-Dim O As Drs: O = CurPjx.SrcDrs
-'DryBrw O
-
-Dim A As SrcLin: Set A = V(O.Dry(2)(1)).SrcLin
-Dim A1 As Drs: A1 = A.InfDrs
-DrsDmp A1
-Stop
-End Sub
-
-Private Function ZZSrc() As String()
-'ZZSrc = MdSrc(Md("IdeSrcLin"))
-End Function
-
-Private Function ZZSrcLin$()
-ZZSrcLin = "Private Sub SrcLin_IsMth()"
-End Function
-
-Private Sub ZZ_SrcLin_IsMth()
-Dim O()
-Dim L
-For Each L In ZZSrc
-    Push O, Array(IIf(SrcLin_IsMth(L), "*Mth", ""), MthLin_Key(L), L)
-Next
-DrsBrw NewDrs("IsMth Key Lin", O)
-End Sub
-
 Private Sub SrcLin_IsMth__Tst()
 ZZ_SrcLin_IsMth
 End Sub
@@ -372,4 +345,31 @@ Dim Act$
 Dim Lin$
 Lin = "Private Sub SrcLin_MthNm__Tst )": Act = SrcLin_MthNm(Lin): Ass Act = "SrcLin_MthNm__Tst"
 Lin = "Property Set A(V)":           Act = SrcLin_MthNm(Lin): Ass Act = "A"
+End Sub
+
+Private Function ZZSrc() As String()
+'ZZSrc = MdSrc(Md("IdeSrcLin"))
+End Function
+
+Private Function ZZSrcLin$()
+ZZSrcLin = "Private Sub SrcLin_IsMth()"
+End Function
+
+Private Sub ZZ_PrjSrcDrs()
+Dim O As Drs: O = CurPjx.SrcDrs
+'DryBrw O
+
+Dim A As SrcLin: Set A = V(O.Dry(2)(1)).SrcLin
+Dim A1 As Drs: A1 = A.InfDrs
+DrsDmp A1
+Stop
+End Sub
+
+Private Sub ZZ_SrcLin_IsMth()
+Dim O()
+Dim L
+For Each L In ZZSrc
+    Push O, Array(IIf(SrcLin_IsMth(L), "*Mth", ""), MthLin_Key(L), L)
+Next
+DrsBrw NewDrs("IsMth Key Lin", O)
 End Sub

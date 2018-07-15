@@ -125,10 +125,6 @@ Function LnxAy_SwRslt(A() As Lnx, Pm As Dictionary) As SwRslt
 'End With
 End Function
 
-Private Function LyIsSw(A$()) As Boolean
-LyIsSw = LyHasMajPfx(A, "?")
-End Function
-
 Function SqFldExprAy_SelPhrase$(A() As FldExpr)
 Dim B() As S1S2
     Dim B1() As S1S2
@@ -234,6 +230,59 @@ SqTp_SqTpRslt.MsgLy = TpEr_Ly(Er)
 SqTp_SqTpRslt.Stmts = StmtsRslt.Stmts
 End Function
 
+Private Sub FmtSql__Tst()
+Dim Tp$: Tp = "Select" & _
+"|{?Sel}" & _
+"|    {ECrd} Crd," & _
+"|    {EAmt} Amt," & _
+"|    {EQty} Qty," & _
+"|    {ECnt} Cnt," & _
+"|  Into #Tx" & _
+"|  From SaleHistory" & _
+"|  Where SHDate Between '{PFm}' and '{PTo}'" & _
+"|    And {EDiv} in ({InDiv})" & _
+"|  Group By" & _
+"|{?Gp}" & _
+"|?M   {ETxM}," & _
+"|?W   {ETxW}," & _
+"|?D   {ETxD}"
+'SR_ = Sales Report
+Const ETxWD$ = _
+"CASE WHEN TxWD1 = 1 then 'Sun'" & _
+"|ELSE WHEN TxWD1 = 2 THEN 'Mon'" & _
+"|ELSE WHEN TxWD1 = 3 THEN 'Tue'" & _
+"|ELSE WHEN TxWD1 = 4 THEN 'Mon'" & _
+"|ELSE WHEN TxWD1 = 5 THEN 'Thu'" & _
+"|ELSE WHEN TxWD1 = 6 THEN 'Fri'" & _
+"|ELSE WHEN TxWD1 = 7 THEN 'Sat'" & _
+"|ELSE Null" & _
+"|END END END END END END END"
+Dim D As New Dictionary
+With D
+    .Add "ECrd", "Line-1|Line-2"
+    .Add "EAmt", "Sum(SHTxDate)"
+
+End With
+Dim Act$: 'Act = FmtSql(Tp, D)
+Dim Exp$: Exp = ""
+Ass Act = Exp
+End Sub
+
+Private Sub LnxAy_SwRslt__Tst()
+Dim Act As SwRslt
+Act = LnxAy_SwRslt(ZZSwLnxAy, ZZPm)
+Stop
+End Sub
+
+Private Sub SqTp_SqTpRslt__Tst()
+Dim A As SqTpRslt: A = SqTp_SqTpRslt(ZZSqTp)
+Stop
+End Sub
+
+Private Sub ZZSqTp__Tst()
+Debug.Print ZZSqTp
+End Sub
+
 Private Function BlkAy_ErBlkEr(A() As Blk) As TpEr
 '?
 End Function
@@ -301,6 +350,13 @@ Next
 GpAy_RmvRmk = O
 End Function
 
+Private Function GpBlk(A As Gp) As Blk
+With GpBlk
+    .BlkTyStr = GpBlkTyStr(A)
+    .Gp = A
+End With
+End Function
+
 Private Function GpBlkTyStr$(A As Gp)
 Dim Ly$(): Ly = GpLy(A)
 Dim O$
@@ -312,13 +368,6 @@ Case LyIsSq(Ly): O = "SQ"
 Case Else: O = "ER"
 End Select
 GpBlkTyStr = O
-End Function
-
-Private Function GpBlk(A As Gp) As Blk
-With GpBlk
-    .BlkTyStr = GpBlkTyStr(A)
-    .Gp = A
-End With
 End Function
 
 Private Function GpRmvRmk(A As Gp) As Gp
@@ -385,6 +434,10 @@ If AyIsEmp(A) Then Exit Function
 Dim L$: L = A(0)
 Dim X$(): X = LvsSy("?SEL SEL ?SELDIS SELDIS UPD DRP")
 If HasOneOfPfxIgnCas(L, X) Then LyIsSq = True: Exit Function
+End Function
+
+Private Function LyIsSw(A$()) As Boolean
+LyIsSw = LyHasMajPfx(A, "?")
 End Function
 
 Private Function PmLnxAy_PmRslt(A() As Lnx) As PmRslt
@@ -857,6 +910,18 @@ End Select
 SwT1T2_BoolOpt = O
 End Function
 
+Private Function SwTermAy_BoolOpt(A$(), Op As e_BoolAyOp, Pm As Dictionary, Sw As Dictionary) As BoolOpt
+Dim B As New Bools
+    Dim I
+    For Each I In A
+        With SwTerm_VarOpt(I, Pm, Sw)
+            If Not .Som Then Exit Function
+            B.Push CBool(.V)
+        End With
+    Next
+SwTermAy_BoolOpt = SomBool(B.Val(Op))
+End Function
+
 Private Function SwTerm_VarOpt(A, Pm As Dictionary, Sw As Dictionary) As VarOpt
 'switch-term begins with % or ? or it is *Blank.  % is for parameter & ? is for switch
 '  If %, it will evaluated to str by lookup from Pm
@@ -883,22 +948,9 @@ Dim O As VarOpt
 SwTerm_VarOpt = O
 End Function
 
-Private Function SwTermAy_BoolOpt(A$(), Op As e_BoolAyOp, Pm As Dictionary, Sw As Dictionary) As BoolOpt
-Dim B As New Bools
-    Dim I
-    For Each I In A
-        With SwTerm_VarOpt(I, Pm, Sw)
-            If Not .Som Then Exit Function
-            B.Push CBool(.V)
-        End With
-    Next
-SwTermAy_BoolOpt = SomBool(B.Val(Op))
-End Function
-
 Private Function SwWrkDic_Sw(A As Dictionary) As Sw
 
 End Function
-
 
 Private Function TpEr_Add3(A1 As TpEr, A2 As TpEr, A3 As TpEr) As TpEr
 Dim O As TpEr
@@ -1126,57 +1178,3 @@ End Function
 Private Function ZZSwLy() As String()
 ZZSwLy = MdResLy(ZZMd, "SwLy")
 End Function
-
-Private Sub FmtSql__Tst()
-Dim Tp$: Tp = "Select" & _
-"|{?Sel}" & _
-"|    {ECrd} Crd," & _
-"|    {EAmt} Amt," & _
-"|    {EQty} Qty," & _
-"|    {ECnt} Cnt," & _
-"|  Into #Tx" & _
-"|  From SaleHistory" & _
-"|  Where SHDate Between '{PFm}' and '{PTo}'" & _
-"|    And {EDiv} in ({InDiv})" & _
-"|  Group By" & _
-"|{?Gp}" & _
-"|?M   {ETxM}," & _
-"|?W   {ETxW}," & _
-"|?D   {ETxD}"
-'SR_ = Sales Report
-Const ETxWD$ = _
-"CASE WHEN TxWD1 = 1 then 'Sun'" & _
-"|ELSE WHEN TxWD1 = 2 THEN 'Mon'" & _
-"|ELSE WHEN TxWD1 = 3 THEN 'Tue'" & _
-"|ELSE WHEN TxWD1 = 4 THEN 'Mon'" & _
-"|ELSE WHEN TxWD1 = 5 THEN 'Thu'" & _
-"|ELSE WHEN TxWD1 = 6 THEN 'Fri'" & _
-"|ELSE WHEN TxWD1 = 7 THEN 'Sat'" & _
-"|ELSE Null" & _
-"|END END END END END END END"
-Dim D As New Dictionary
-With D
-    .Add "ECrd", "Line-1|Line-2"
-    .Add "EAmt", "Sum(SHTxDate)"
-
-End With
-Dim Act$: 'Act = FmtSql(Tp, D)
-Dim Exp$: Exp = ""
-Ass Act = Exp
-End Sub
-
-Private Sub LnxAy_SwRslt__Tst()
-Dim Act As SwRslt
-Act = LnxAy_SwRslt(ZZSwLnxAy, ZZPm)
-Stop
-End Sub
-
-Private Sub SqTp_SqTpRslt__Tst()
-Dim A As SqTpRslt: A = SqTp_SqTpRslt(ZZSqTp)
-Stop
-End Sub
-
-Private Sub ZZSqTp__Tst()
-Debug.Print ZZSqTp
-End Sub
-

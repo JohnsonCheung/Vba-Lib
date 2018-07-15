@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A As Recordset
+
 Property Get Drs() As Drs
 Dim O As New Drs
 O.Fny = Fny

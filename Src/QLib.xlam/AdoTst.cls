@@ -8,9 +8,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
 Sub AdoRs()
 Dim A As New AdoRs: A.Tst
 End Sub
+
 Sub Fb()
 Dim A As New Fb: A.Tst
 End Sub

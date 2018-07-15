@@ -17,45 +17,7 @@ Type LngOpt
     Som As Boolean
     Lng As Long
 End Type
-Function VarLngOpt(V) As LngOpt
-Dim O&
-On Error GoTo X
-O = V
-VarLngOpt = SomLng(O)
-Exit Function
-X:
-End Function
-Function SomLng(A&) As LngOpt
-With SomLng
-    .Som = True
-    .Lng = A
-End With
-End Function
-Function ObjS$(A)
-On Error Resume Next
-ObjS = A.S
-End Function
-Function ValStr$(A)
-If VarIsPrim(A) Then ValStr = A: Exit Function
-If IsNothing(A) Then ValStr = "#Nothing": Exit Function
-If IsEmpty(A) Then ValStr = "#Empty": Exit Function
-Dim T$
-If IsObject(A) Then
-    T = TypeName(A)
-    Select Case T
-    Case "CodeModule"
-        ValStr = FmtQQ("*Md{?}", CvMdx(A).Nm)
-        Exit Function
-    End Select
-    ValStr = FmtQQ("*?{?}", T, ObjS(A))
-    Exit Function
-End If
-If IsArray(A) Then
-    ValStr = "*Array"
-    Exit Function
-End If
-Stop
-End Function
+
 Function AlignL$(A, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
 Const CSub$ = "AlignL"
 If ErIfNotEnoughWdt And DoNotCut Then
@@ -64,29 +26,7 @@ End If
 Dim S$: S = ValStr(A)
 AlignL = StrAlignL(S, W, ErIfNotEnoughWdt, DoNotCut)
 End Function
-Function StrAlignL$(S$, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
-Const CSub$ = "StrAlignL"
-Dim L%: L = Len(S)
-If L > W Then
-    If ErIfNotEnoughWdt Then
-        Er CSub, "Len({S)) > {W}", S, W
-    End If
-    If DoNotCut Then
-        StrAlignL = S
-        Exit Function
-    End If
-End If
 
-If W >= L Then
-    StrAlignL = S & Space(W - L)
-    Exit Function
-End If
-If W > 2 Then
-    StrAlignL = Left(S, W - 2) + ".."
-    Exit Function
-End If
-StrAlignL = Left(S, W)
-End Function
 Function AlignR$(S, W%)
 Dim L%: L = Len(S)
 If W > L Then
@@ -125,6 +65,13 @@ Dim ToPos&
 'BktPos.ToPos = ToPos
 End Function
 
+Function Brk(A, Sep, Optional NoTrim As Boolean) As S1S2
+Const CSub$ = "Brk"
+Dim P&: P = InStr(A, Sep)
+If P = 0 Then Er CSub, "{S} does not contains {Sep}", A, Sep
+Brk = BrkAt(A, P, Len(Sep), NoTrim)
+End Function
+
 Function Brk1(A, Sep, Optional NoTrim As Boolean) As S1S2
 Dim P&: P = InStr(A, Sep)
 Brk1 = Brk1__(A, P, Sep, NoTrim)
@@ -148,40 +95,6 @@ If P = 0 Then
     Exit Function
 End If
 Brk2 = BrkAt(A, P, Len(Sep), NoTrim)
-End Function
-Function RTrimWhite$(S)
-Dim J%
-    Dim A$
-    For J = Len(S) To 1 Step -1
-        If Not IsWhite(Mid(S, J, 1)) Then Exit For
-    Next
-    If J = 0 Then Exit Function
-RTrimWhite = Mid(S, J)
-End Function
-Function IsWhite(A) As Boolean
-Dim B$: B = Left(A, 1)
-IsWhite = True
-If B = " " Then Exit Function
-If B = vbCr Then Exit Function
-If B = vbLf Then Exit Function
-If B = vbTab Then Exit Function
-IsWhite = False
-End Function
-Function LTrimWhite$(A)
-Dim J%
-    For J = 1 To Len(A)
-        If Not IsWhite(Mid(A, J, 1)) Then Exit For
-    Next
-LTrimWhite = Left(A, J)
-End Function
-Function TrimWhite$(A)
-TrimWhite = RTrimWhite(LTrimWhite(A))
-End Function
-Function Brk(A, Sep, Optional NoTrim As Boolean) As S1S2
-Const CSub$ = "Brk"
-Dim P&: P = InStr(A, Sep)
-If P = 0 Then Er CSub, "{S} does not contains {Sep}", A, Sep
-Brk = BrkAt(A, P, Len(Sep), NoTrim)
 End Function
 
 Sub BrkAsg(A, Sep, OS1$, OS2$, Optional NoTrim As Boolean)
@@ -434,6 +347,16 @@ If IsDigit(A) Then Exit Function
 IsNmChr = False
 End Function
 
+Function IsWhite(A) As Boolean
+Dim B$: B = Left(A, 1)
+IsWhite = True
+If B = " " Then Exit Function
+If B = vbCr Then Exit Function
+If B = vbLf Then Exit Function
+If B = vbTab Then Exit Function
+IsWhite = False
+End Function
+
 Function JnComma$(Ay)
 JnComma = Join(Ay, ",")
 End Function
@@ -494,6 +417,14 @@ Function JnVBar$(Ay)
 JnVBar = Join(Ay, "|")
 End Function
 
+Function LTrimWhite$(A)
+Dim J%
+    For J = 1 To Len(A)
+        If Not IsWhite(Mid(A, J, 1)) Then Exit For
+    Next
+LTrimWhite = Left(A, J)
+End Function
+
 Function LasChr$(A)
 LasChr = Right(A, 1)
 End Function
@@ -510,7 +441,6 @@ Function LvsSy(A) As String()
 LvsSy = Split(RmvDblSpc(Trim(A)), " ")
 End Function
 
-
 Function NewFmToPos(FmPos&, ToPos&) As FmToPos
 Dim O As FmToPos
 With O
@@ -518,6 +448,11 @@ With O
     .ToPos = ToPos
 End With
 NewFmToPos = O
+End Function
+
+Function ObjS$(A)
+On Error Resume Next
+ObjS = A.S
 End Function
 
 Function Prepend$(S, P)
@@ -532,6 +467,16 @@ Function Quote$(A, QuoteStr$)
 With BrkQuote(QuoteStr)
     Quote = .S1 & A & .S2
 End With
+End Function
+
+Function RTrimWhite$(S)
+Dim J%
+    Dim A$
+    For J = Len(S) To 1 Step -1
+        If Not IsWhite(Mid(S, J, 1)) Then Exit For
+    Next
+    If J = 0 Then Exit Function
+RTrimWhite = Mid(S, J)
 End Function
 
 Function Rmv2Dash$(A)
@@ -627,6 +572,13 @@ ReDim Preserve O(N)
     O(N) = M
 End Sub
 
+Function SomLng(A&) As LngOpt
+With SomLng
+    .Som = True
+    .Lng = A
+End With
+End Function
+
 Function SplitComma(A, Optional NoTrim As Boolean) As String()
 If NoTrim Then
     SplitComma = Split(A, ",")
@@ -660,6 +612,30 @@ Else
 End If
 End Function
 
+Function StrAlignL$(S$, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
+Const CSub$ = "StrAlignL"
+Dim L%: L = Len(S)
+If L > W Then
+    If ErIfNotEnoughWdt Then
+        Er CSub, "Len({S)) > {W}", S, W
+    End If
+    If DoNotCut Then
+        StrAlignL = S
+        Exit Function
+    End If
+End If
+
+If W >= L Then
+    StrAlignL = S & Space(W - L)
+    Exit Function
+End If
+If W > 2 Then
+    StrAlignL = Left(S, W - 2) + ".."
+    Exit Function
+End If
+StrAlignL = Left(S, W)
+End Function
+
 Sub StrBrw(A, Optional Fnn$)
 Dim T$: T = TmpFt("StrBrw", Fnn$)
 StrWrt A, T
@@ -674,28 +650,20 @@ Next
 StrDup = O
 End Function
 
-Sub StrOpt_Dmp(A As StrOpt)
-Debug.Print StrOpt_Str(A)
-End Sub
-
 Function StrOptAy_HasNone(A() As StrOpt) As Boolean
 Dim J%
 For J = 0 To StrOpt_UB(A)
     If Not A(J).Som Then StrOptAy_HasNone = True: Exit Function
 Next
 End Function
-Function StrOpt_UB&(A() As StrOpt)
-StrOpt_UB = StrOpt_Sz(A) - 1
-End Function
+
+Sub StrOpt_Dmp(A As StrOpt)
+Debug.Print StrOpt_Str(A)
+End Sub
 
 Sub StrOpt_Push(O() As StrOpt, A As StrOpt)
 Dim N&: N = StrOpt_Sz(O)
 End Sub
-
-Function StrOpt_Sz&(A() As StrOpt)
-On Error Resume Next
-StrOpt_Sz = UBound(A) - 1
-End Function
 
 Function StrOpt_Str$(A As StrOpt, Optional W% = 50)
 With A
@@ -709,6 +677,15 @@ With A
         StrOpt_Str = "*NoStr"
     End If
 End With
+End Function
+
+Function StrOpt_Sz&(A() As StrOpt)
+On Error Resume Next
+StrOpt_Sz = UBound(A) - 1
+End Function
+
+Function StrOpt_UB&(A() As StrOpt)
+StrOpt_UB = StrOpt_Sz(A) - 1
 End Function
 
 Function StrPfx$(A, PfxAy$())
@@ -743,6 +720,10 @@ If FmPos > 0 Then ToPos = FmPos + Len(SubStr)
 SubStrPos = NewFmToPos(FmPos, ToPos)
 End Function
 
+Function TrimWhite$(A)
+TrimWhite = RTrimWhite(LTrimWhite(A))
+End Function
+
 Function UnEscSpc$(A)
 UnEscSpc = Replace(A, "~", " ")
 End Function
@@ -751,18 +732,35 @@ Function UnEscTab(A)
 UnEscTab = Replace(A, "\t", "~")
 End Function
 
-Private Function Brk1__(A, P&, Sep, NoTrim As Boolean) As S1S2
-If P = 0 Then
-    Dim O As S1S2
-    If NoTrim Then
-        O.S1 = A
-    Else
-        O.S1 = Trim(A)
-    End If
-    Brk1__ = O
+Function ValStr$(A)
+If VarIsPrim(A) Then ValStr = A: Exit Function
+If IsNothing(A) Then ValStr = "#Nothing": Exit Function
+If IsEmpty(A) Then ValStr = "#Empty": Exit Function
+Dim T$
+If IsObject(A) Then
+    T = TypeName(A)
+    Select Case T
+    Case "CodeModule"
+        ValStr = FmtQQ("*Md{?}", CvMdx(A).Nm)
+        Exit Function
+    End Select
+    ValStr = FmtQQ("*?{?}", T, ObjS(A))
     Exit Function
 End If
-Brk1__ = BrkAt(A, P, Len(Sep), NoTrim)
+If IsArray(A) Then
+    ValStr = "*Array"
+    Exit Function
+End If
+Stop
+End Function
+
+Function VarLngOpt(V) As LngOpt
+Dim O&
+On Error GoTo X
+O = V
+VarLngOpt = SomLng(O)
+Exit Function
+X:
 End Function
 
 Private Sub Brk1Rev__Tst()
@@ -777,6 +775,20 @@ End With
 Ass S1 = ExpS1
 Ass S2 = ExpS2
 End Sub
+
+Private Function Brk1__(A, P&, Sep, NoTrim As Boolean) As S1S2
+If P = 0 Then
+    Dim O As S1S2
+    If NoTrim Then
+        O.S1 = A
+    Else
+        O.S1 = Trim(A)
+    End If
+    Brk1__ = O
+    Exit Function
+End If
+Brk1__ = BrkAt(A, P, Len(Sep), NoTrim)
+End Function
 
 Private Sub InstrN__Tst()
 Dim Act&, Exp&, S, SubStr, N%
@@ -826,4 +838,3 @@ Function SubStrCnt__Tst()
 Ass SubStrCnt("aaaa", "aa") = 2
 Ass SubStrCnt("aaaa", "a") = 4
 End Function
-

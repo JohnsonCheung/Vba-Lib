@@ -1,5 +1,6 @@
 Attribute VB_Name = "VbS1S2_Fun_S1S2Ay_FmtLy"
 Option Explicit
+
 Function S1S2Ay_FmtLy(A() As S1S2) As String()
 Dim W1%: W1 = S1S2Ay_S1LinesWdt(A)
 Dim W2%: W2 = S1S2Ay_S2LinesWdt(A)
@@ -9,6 +10,16 @@ End Function
 
 Private Function Hdr$(W1%, W2%)
 Hdr = "|" + StrDup(W1 + 2, "-") + "|" + StrDup(W2 + 2, "-") + "|"
+End Function
+
+Private Function S1S2Ay_LinesLinesLy(A() As S1S2, H$, W1%, W2%) As String()
+Dim O$(), I&
+Push O, H
+For I = 0 To S1S2_UB(A)
+   PushAy O, S1S2_Ly(A(I), W1, W2)
+   Push O, H
+Next
+S1S2Ay_LinesLinesLy = O
 End Function
 
 Private Function S1S2_Ly(A As S1S2, W1%, W2%) As String()
@@ -37,16 +48,6 @@ For J = 0 To M
    Push O, Lin
 Next
 S1S2_Ly = O
-End Function
-
-Private Function S1S2Ay_LinesLinesLy(A() As S1S2, H$, W1%, W2%) As String()
-Dim O$(), I&
-Push O, H
-For I = 0 To S1S2_UB(A)
-   PushAy O, S1S2_Ly(A(I), W1, W2)
-   Push O, H
-Next
-S1S2Ay_LinesLinesLy = O
 End Function
 
 Private Sub ZZ_S1S2Ay_FmtLy()

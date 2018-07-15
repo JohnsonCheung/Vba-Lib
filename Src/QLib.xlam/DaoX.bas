@@ -1,6 +1,25 @@
 Attribute VB_Name = "DaoX"
 Option Explicit
 Public Const SampleFb_DutyPrepare$ = "C:\Users\User\Desktop\SAPAccessReports\DutyPrepay5\DutyPrepay5_Data.mdb"
+
+Property Get DbEng() As DAO.DBEngine
+Static Y As New DAO.DBEngine
+Set DbEng = Y
+End Property
+
+Property Get DbInf() As DbInf
+Set DbInf = New DbInf
+End Property
+
+Property Get Dbt(Db As DAO.Database, T) As Dbt
+Dim O As New Dbt
+Set Dbt = O.Init(Db, T)
+End Property
+
+Property Get Tst() As DaoTst
+Set Tst = New DaoTst
+End Property
+
 Function DaoTy_Str$(T As DataTypeEnum)
 Dim O$
 Select Case T
@@ -20,10 +39,7 @@ Case Else: Stop
 End Select
 DaoTy_Str = O
 End Function
-Property Get Dbt(Db As DAO.Database, T) As Dbt
-Dim O As New Dbt
-Set Dbt = O.Init(Db, T)
-End Property
+
 Sub DbBrw(A As Database)
 Dim N$: N = A.Name
 A.Close
@@ -95,7 +111,6 @@ Dim S$: S = FmtQQ("select Max(?) from ?", Dft(F, T), T)
 DbTF_NxtId = DbqV(A, S) + 1
 End Function
 
-
 Function DbTny(A As Database) As String()
 DbTny = DbqSy(A, "Select Name from MSysObjects where Type in (1,6) and Left(Name,4)<>'MSYS'")
 End Function
@@ -132,8 +147,6 @@ With A.OpenRecordset(Sql)
 End With
 End Function
 
-
-
 Function DftDb(A As Database) As Database
 If IsNothing(A) Then
    Set DftDb = CurDb
@@ -152,6 +165,15 @@ Else
 End If
 End Function
 
+Function DftLy(Ly0) As String()
+If VarIsStr(Ly0) Then
+   DftLy = SplitVBar(Ly0)
+   Exit Function
+End If
+If IsArray(Ly0) Then
+   DftLy = AySy(Ly0)
+End If
+End Function
 
 Function DftNy(Ny0) As String()
 If VarIsStr(Ny0) Then
@@ -160,15 +182,6 @@ If VarIsStr(Ny0) Then
 End If
 If VarIsSy(Ny0) Then
    DftNy = Ny0
-End If
-End Function
-Function DftLy(Ly0) As String()
-If VarIsStr(Ly0) Then
-   DftLy = SplitVBar(Ly0)
-   Exit Function
-End If
-If IsArray(Ly0) Then
-   DftLy = AySy(Ly0)
 End If
 End Function
 
@@ -292,10 +305,7 @@ With A
 End With
 RsSy = O
 End Function
-Property Get DbEng() As DAO.DBEngine
-Static Y As New DAO.DBEngine
-Set DbEng = Y
-End Property
+
 Function SampleDb_DutyPrepare() As DAO.Database
 Set SampleDb_DutyPrepare = DbEng.OpenDatabase(SampleFb_DutyPrepare)
 End Function
@@ -307,16 +317,10 @@ End Function
 Function TmpDb(Optional Fnn$) As Database
 Set TmpDb = DBEngine.CreateDatabase(TmpFb("TmpDb", Fnn), DAO.LanguageConstants.dbLangGeneral)
 End Function
-Property Get DbInf() As DbInf
-Set DbInf = New DbInf
-End Property
+
 Private Sub DbQny__Tst()
 AyDmp DbQny(CurDb)
 End Sub
-Property Get Tst() As DaoTst
-Set Tst = New DaoTst
-End Property
-
 
 Private Sub FxTmpDb__Tst()
 Dim Db As Database: Set Db = FxTmpDb("N:\SapAccessReports\DutyPrepay5\SAPDownloadExcel\KE24 2010-01c.xls")

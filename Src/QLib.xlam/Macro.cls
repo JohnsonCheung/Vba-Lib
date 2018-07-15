@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Macro$
+
 Property Get Ny(Optional ExclBkt As Boolean, Optional Bkt$ = "{}") As String()
 Dim Q1$, Q2$
 With BrkQuote(Bkt)

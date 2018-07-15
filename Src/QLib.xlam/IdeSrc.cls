@@ -8,6 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
+
 Property Get Ens() As IdeSrcEns
 Static Y As New IdeSrcEns
 Set Ens = Y

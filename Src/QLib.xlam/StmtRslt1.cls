@@ -10,13 +10,15 @@ Attribute VB_Exposed = False
 Option Explicit
 Public Stmt$
 Private B_ErLy$()
-Friend Property Get Init(A() As Lnx1) As StmtRslt
-
-End Property
 
 Property Get ErLy() As String()
 ErLy = B_ErLy
 End Property
+
 Property Let ErLy(V$())
 B_ErLy = V
+End Property
+
+Friend Property Get Init(A() As Lnx1) As StmtRslt
+
 End Property

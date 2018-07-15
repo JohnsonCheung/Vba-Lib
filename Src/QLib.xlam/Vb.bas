@@ -15,14 +15,82 @@ Type LnoCnt
     Cnt As Long
 End Type
 
-Property Get Ly(A$()) As Ly
-Dim O As New Ly
-Set Ly = O.Init(A)
+Property Get ABC(Lin) As ABC
+Dim O As New ABC
+Set ABC = O.Init(Lin)
+End Property
+
+Property Get Bools(A() As Boolean) As Bools
+Dim O As New Bools
+Set Bools = O.Init(A)
+End Property
+
+Property Get C() As Cmd
+Static Y As New Cmd
+Set C = Y
+End Property
+
+Property Get Collx(A As VBA.Collection) As Collx
+Dim O As New Collx
+Set Collx = O.Init(A)
+End Property
+
+Property Get Dix(A As Dictionary) As Dix
+Dim O As New Dix
+Set Dix = O.Init(A)
 End Property
 
 Property Get Emp() As Emp
 Static Y As New Emp
 Set Emp = Y
+End Property
+
+Property Get LABCs() As LABCsBy
+Set LABCs = New LABCsBy
+End Property
+
+Property Get LABCsRslt(A As LABCs, Optional Er As Er) As LABCsRslt
+Dim O As New LABCsRslt
+Set LABCsRslt = O.Init(A, Er)
+End Property
+
+Property Get Lg() As Logger
+Static Y As New Logger
+Set Lg = Y
+End Property
+
+Property Get Lin(A) As Lin
+Dim O As New Lin
+Set Lin = O.Init(A)
+End Property
+
+Property Get Lines(A) As Lines
+Dim O As New Lines
+O.Lines = A
+Set Lines = O
+End Property
+
+Property Get Lnx(Lin$, Lx%) As Lnx1
+Dim O As New Lnx1
+Set Lnx = O.Init(Lin, Lx)
+End Property
+
+Property Get Lnxs(A() As Lnx1) As Lnx1s
+Dim O As New Lnx1s
+Set Lnxs = O.Init(A)
+End Property
+
+Property Get Ly(A$()) As Ly
+Dim O As New Ly
+Set Ly = O.Init(A)
+End Property
+
+Property Get LyRslt(Ly$(), Er As Er) As LyRslt
+Dim O As New LyRslt
+O.Ly = Ly
+Set O.Er = Er
+If IsNothing(Er) Then PmEr
+Set LyRslt = O
 End Property
 
 Property Get Macro(MacroStr$) As Macro
@@ -31,18 +99,21 @@ O.Macro = MacroStr
 Set Macro = O
 End Property
 
+Property Get Re(Patn$, Optional MultiLine As Boolean, Optional IgnoreCase As Boolean, Optional IsGlobal As Boolean) As Re
+Dim O As New Re
+Set Re = O.Init(Patn, MultiLine, IgnoreCase, IsGlobal)
+End Property
+
 Property Get Seed(Seed0) As Seed
 Dim O As New Seed
 Set Seed = O.Init(Seed0)
 End Property
 
-Function DftTpLy(Tp0) As String()
-Select Case True
-Case VarIsStr(Tp0): DftTpLy = SplitVBar(Tp0)
-Case VarIsSy(Tp0):  DftTpLy = Tp0
-Case Else: Stop
-End Select
-End Function
+Property Get StrObj(A) As StrObj
+Dim O As New StrObj
+Set StrObj = O.Init(A)
+End Property
+
 Property Get StrRslt(S, Er As Er) As StrRslt
 Dim O As New StrRslt
 O.Str = S
@@ -50,79 +121,37 @@ Set O.Er = Er
 If IsNothing(Er) Then PmEr
 Set StrRslt = O
 End Property
-Property Get LyRslt(Ly$(), Er As Er) As LyRslt
-Dim O As New LyRslt
-O.Ly = Ly
-Set O.Er = Er
-If IsNothing(Er) Then PmEr
-Set LyRslt = O
-End Property
-Property Get Lines(A) As Lines
-Dim O As New Lines
-O.Lines = A
-Set Lines = O
-End Property
-Property Get Lin(A) As Lin
-Dim O As New Lin
-Set Lin = O.Init(A)
-End Property
-Property Get ABC(Lin) As ABC
-Dim O As New ABC
-Set ABC = O.Init(Lin)
+
+Property Get SyObj(Sy$()) As SyObj
+Dim O As New SyObj
+Set SyObj = O.Init(Sy)
 End Property
 
-Function Oy(ObjAy) As Oy
-Dim O As New Oy
-Set Oy = O.Init(ObjAy)
-End Function
-Property Get Dix(A As Dictionary) As Dix
-Dim O As New Dix
-Set Dix = O.Init(A)
-End Property
-Property Get Collx(A As VBA.Collection) As Collx
-Dim O As New Collx
-Set Collx = O.Init(A)
+Property Get TblNm(A) As TblNm
+Dim O As New TblNm
+Set TblNm = O.Init(A)
 End Property
 
-Function Tag$(TagNm$, S)
-If HasPfx(S, TagNm & "(") Then
-    If HasSfx(S, ")") Then
-        Tag = S
-        Exit Function
-    End If
-End If
-If Has(S, vbCrLf) Then
-    Tag = FmtQQ("?(|?|?)", TagNm, S, TagNm)
-Else
-    Tag = FmtQQ("?(?)", TagNm, S)
-End If
-End Function
+Property Get TblNms(Ny0) As TblNm
+Dim O As New TblNms
+Set TblNms = O.Init(Ny0)
+End Property
 
-Private Function Tag_Ny_ObjAv$(TagNm$, Ny$(), ObjAv())
-Ass AyIsSamSz(Ny, ObjAv)
-Dim S$
-    Dim O$()
-    Dim A$, N%
-    Dim J%
-    For J = 0 To UB(Ny)
-        Select Case True
-        Case IsNothing(ObjAv(J)): A = "Nothing"
-        Case IsEmpty(ObjAv(J)):   A = "Empty"
-        Case Else:                A = CallByName(ObjAv(J), "ToStr", VbGet)
-        End Select
-        Push O, Tag(Ny(J), A)
-    Next
-    S = JnCrLf(O)
-Tag_Ny_ObjAv = Tag(TagNm, S)
-End Function
+Property Get Tst() As VbTst
+Static Y As New VbTst
+Set Tst = Y
+End Property
+
+Property Get V(A) As V
+Dim O As New V
+O.Init A
+Set V = O
+End Property
 
 Sub AA()
 Tag_NyStr_ObjAp "", "", 3, 4
 End Sub
-Function Tag_NyStr_ObjAp$(TagNm$, NyStr$, ParamArray ObjAp())
-Dim Av(): Av = ObjAp
-Tag_NyStr_ObjAp = Tag_Ny_ObjAv(TagNm, LvsSy(NyStr), Av)
-End Function
+
 Sub Asg(V, OV)
 If IsObject(V) Then
    Set OV = V
@@ -135,6 +164,9 @@ Sub Ass(A As Boolean)
 Debug.Assert A
 End Sub
 
+Function AyIsEqSz(A, B) As Boolean
+AyIsEqSz = Sz(A) = Sz(B)
+End Function
 
 Function CollObjAy(Coll) As Object()
 Dim O() As Object
@@ -143,6 +175,23 @@ For Each V In Coll
    Push O, V
 Next
 CollObjAy = O
+End Function
+
+Function DftTpLy(Tp0) As String()
+Select Case True
+Case VarIsStr(Tp0): DftTpLy = SplitVBar(Tp0)
+Case VarIsSy(Tp0):  DftTpLy = Tp0
+Case Else: Stop
+End Select
+End Function
+
+Sub DtaEr()
+MsgBox "DtaEr"
+Stop
+End Sub
+
+Function ErShow(Er$()) As String()
+ErShow = SyShow("Er", Er)
 End Function
 
 Function FmToAy_LnoCntAy(A() As FmTo) As LnoCnt()
@@ -209,6 +258,7 @@ Function IntAyObj(Ay%()) As IntAyObj
 Dim O As New IntAyObj
 Set IntAyObj = O.Init(Ay)
 End Function
+
 Function IsEmpFmTo(A As FmTo) As Boolean
 IsEmpFmTo = True
 If A.FmIx < 0 Then Exit Function
@@ -228,34 +278,25 @@ If IsArray(Act) Then
 End If
 End Function
 
-Property Get TblNm(A) As TblNm
-Dim O As New TblNm
-Set TblNm = O.Init(A)
-End Property
-Property Get TblNms(Ny0) As TblNm
-Dim O As New TblNms
-Set TblNms = O.Init(Ny0)
-End Property
 Function IsNonBlankStr(V) As Boolean
 If Not IsStr(V) Then Exit Function
 IsNonBlankStr = V <> ""
 End Function
+
 Function IsNothing(V) As Boolean
 IsNothing = TypeName(V) = "Nothing"
 End Function
+
 Function IsNothingOrEmp(V) As Boolean
 Select Case TypeName(V)
 Case "Nothing", "Empty": IsNothingOrEmp = True
 End Select
 End Function
-Property Get Lnx(Lin$, Lx%) As Lnx1
-Dim O As New Lnx1
-Set Lnx = O.Init(Lin, Lx)
-End Property
-Property Get Lnxs(A() As Lnx1) As Lnx1s
-Dim O As New Lnx1s
-Set Lnxs = O.Init(A)
-End Property
+
+Function IsStr(V) As Boolean
+IsStr = VarType(V) = vbString
+End Function
+
 Sub LnoCnt_Dmp(A As LnoCnt)
 Debug.Print LnoCnt_Str(A)
 End Sub
@@ -277,6 +318,16 @@ End Function
 
 Function LnoCnt_UB&(A() As LnoCnt)
 LnoCnt_UB = LnoCnt_Sz(A) - 1
+End Function
+
+Function Ly0Ap_Ly(ParamArray Ly0Ap()) As String()
+Dim I, Av(): Av = Ly0Ap
+If AyIsEmp(Av) Then Exit Function
+Dim O$()
+For Each I In Av
+    PushAy O, DftLy(I)
+Next
+Ly0Ap_Ly = O
 End Function
 
 Function Max(ParamArray Ap())
@@ -327,6 +378,20 @@ End With
 NewRRCC = O
 End Function
 
+Function OkShow(Ok$()) As String()
+OkShow = SyShow("Ok", Ok)
+End Function
+
+Function Oy(ObjAy) As Oy
+Dim O As New Oy
+Set Oy = O.Init(ObjAy)
+End Function
+
+Sub PmEr()
+MsgBox "Parameter Er"
+Stop
+End Sub
+
 Sub RRCC_Dmp(A As RRCC)
 Debug.Print RRCC_Str(A)
 End Sub
@@ -345,6 +410,49 @@ Function RRCC_Str$(A As RRCC)
 With A
    RRCC_Str = FmtQQ("(RRCC : ? ? ? ??)", .R1, .R2, .C1, .C2, IIf(RRCC_IsEmp(A), " *Empty", ""))
 End With
+End Function
+
+Sub Stp()
+Stop
+End Sub
+
+Function Sy(A$()) As Sy
+Dim O As New Sy
+Set Sy = O.Init(A)
+End Function
+
+Function SyShow(XX$, Sy$()) As String()
+Dim O$()
+Select Case Sz(Sy)
+Case 0
+    Push O, XX & "()"
+Case 1
+    Push O, XX & "(" & Sy(0) & ")"
+Case Else
+    Push O, XX & "("
+    PushAy O, Sy
+    Push O, XX & ")"
+End Select
+SyShow = O
+End Function
+
+Function Tag$(TagNm$, S)
+If HasPfx(S, TagNm & "(") Then
+    If HasSfx(S, ")") Then
+        Tag = S
+        Exit Function
+    End If
+End If
+If Has(S, vbCrLf) Then
+    Tag = FmtQQ("?(|?|?)", TagNm, S, TagNm)
+Else
+    Tag = FmtQQ("?(?)", TagNm, S)
+End If
+End Function
+
+Function Tag_NyStr_ObjAp$(TagNm$, NyStr$, ParamArray ObjAp())
+Dim Av(): Av = ObjAp
+Tag_NyStr_ObjAp = Tag_Ny_ObjAv(TagNm, LvsSy(NyStr), Av)
 End Function
 
 Function VarIsBet(V, A, B) As Boolean
@@ -436,106 +544,20 @@ Ass VarIsStrAy(C) = False
 Ass VarIsStrAy(D) = False
 End Sub
 
-Function AyIsEqSz(A, B) As Boolean
-AyIsEqSz = Sz(A) = Sz(B)
+Private Function Tag_Ny_ObjAv$(TagNm$, Ny$(), ObjAv())
+Ass AyIsSamSz(Ny, ObjAv)
+Dim S$
+    Dim O$()
+    Dim A$, N%
+    Dim J%
+    For J = 0 To UB(Ny)
+        Select Case True
+        Case IsNothing(ObjAv(J)): A = "Nothing"
+        Case IsEmpty(ObjAv(J)):   A = "Empty"
+        Case Else:                A = CallByName(ObjAv(J), "ToStr", VbGet)
+        End Select
+        Push O, Tag(Ny(J), A)
+    Next
+    S = JnCrLf(O)
+Tag_Ny_ObjAv = Tag(TagNm, S)
 End Function
-
-Function IsStr(V) As Boolean
-IsStr = VarType(V) = vbString
-End Function
-Property Get StrObj(A) As StrObj
-Dim O As New StrObj
-Set StrObj = O.Init(A)
-End Property
-Property Get Tst() As VbTst
-Static Y As New VbTst
-Set Tst = Y
-End Property
-
-Property Get Bools(A() As Boolean) As Bools
-Dim O As New Bools
-Set Bools = O.Init(A)
-End Property
-
-Property Get Lg() As Logger
-Static Y As New Logger
-Set Lg = Y
-End Property
-
-Property Get SyObj(Sy$()) As SyObj
-Dim O As New SyObj
-Set SyObj = O.Init(Sy)
-End Property
-
-Property Get C() As Cmd
-Static Y As New Cmd
-Set C = Y
-End Property
-
-Property Get Re(Patn$, Optional MultiLine As Boolean, Optional IgnoreCase As Boolean, Optional IsGlobal As Boolean) As Re
-Dim O As New Re
-Set Re = O.Init(Patn, MultiLine, IgnoreCase, IsGlobal)
-End Property
-
-Property Get V(A) As V
-Dim O As New V
-O.Init A
-Set V = O
-End Property
-Property Get LABCsRslt(A As LABCs, Optional Er As Er) As LABCsRslt
-Dim O As New LABCsRslt
-Set LABCsRslt = O.Init(A, Er)
-End Property
-
-Function Ly0Ap_Ly(ParamArray Ly0Ap()) As String()
-Dim I, Av(): Av = Ly0Ap
-If AyIsEmp(Av) Then Exit Function
-Dim O$()
-For Each I In Av
-    PushAy O, DftLy(I)
-Next
-Ly0Ap_Ly = O
-End Function
-
-Property Get LABCs() As LABCsBy
-Set LABCs = New LABCsBy
-End Property
-Sub DtaEr()
-MsgBox "DtaEr"
-Stop
-End Sub
-Function Sy(A$()) As Sy
-Dim O As New Sy
-Set Sy = O.Init(A)
-End Function
-Function ErShow(Er$()) As String()
-ErShow = SyShow("Er", Er)
-End Function
-
-Function OkShow(Ok$()) As String()
-OkShow = SyShow("Ok", Ok)
-End Function
-
-Function SyShow(XX$, Sy$()) As String()
-Dim O$()
-Select Case Sz(Sy)
-Case 0
-    Push O, XX & "()"
-Case 1
-    Push O, XX & "(" & Sy(0) & ")"
-Case Else
-    Push O, XX & "("
-    PushAy O, Sy
-    Push O, XX & ")"
-End Select
-SyShow = O
-End Function
-
-Sub PmEr()
-MsgBox "Parameter Er"
-Stop
-End Sub
-
-Sub Stp()
-Stop
-End Sub

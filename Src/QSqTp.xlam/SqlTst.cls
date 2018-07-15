@@ -8,6 +8,7 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
 Sub SqTp()
 Dim A As New SqTp2: A.Tst
 End Sub

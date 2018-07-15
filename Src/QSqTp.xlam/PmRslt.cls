@@ -10,12 +10,13 @@ Attribute VB_Exposed = False
 Option Explicit
 Public Pm As Dictionary
 Private A_ErLy$()
+
+Property Get ErLy() As String()
+ErLy = A_ErLy
+End Property
+
 Friend Property Get Init(Pm As Dictionary, ErLy$()) As PmRslt
 Set Me.Pm = Pm
 A_ErLy = ErLy
 Set Init = Me
 End Property
-Property Get ErLy() As String()
-ErLy = A_ErLy
-End Property
-

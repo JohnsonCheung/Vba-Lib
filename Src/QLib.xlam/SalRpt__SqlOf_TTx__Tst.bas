@@ -6,6 +6,16 @@ Private Type ZZ6_TstDta
    Exp        As String
 End Type
 
+Sub Srp_TTx__Tst()
+Dim J%
+Dim Ay() As ZZ6_TstDta: Ay = ZZ6_TstDtaAy
+For J = 0 To ZZ6_UB(Ay)
+   If J = J Then
+       ZZ6_Tstr Ay(J)
+   End If
+Next
+End Sub
+
 Private Function Act$(A As ZZ6_TstDta)
 Act = Srp_TTx(A.P)
 End Function
@@ -91,13 +101,3 @@ End Sub
 Private Function ZZ6_UB%(A() As ZZ6_TstDta)
 ZZ6_UB = ZZ6_Sz(A) - 1
 End Function
-
-Sub Srp_TTx__Tst()
-Dim J%
-Dim Ay() As ZZ6_TstDta: Ay = ZZ6_TstDtaAy
-For J = 0 To ZZ6_UB(Ay)
-   If J = J Then
-       ZZ6_Tstr Ay(J)
-   End If
-Next
-End Sub

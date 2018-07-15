@@ -9,11 +9,12 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A$
-Friend Property Get Init(Str) As StrObj
-A = Str
-Set Init = Me
-End Property
 
 Property Get ToStr$()
 ToStr = Tag("StrObj", A)
+End Property
+
+Friend Property Get Init(Str) As StrObj
+A = Str
+Set Init = Me
 End Property

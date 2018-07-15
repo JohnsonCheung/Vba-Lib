@@ -10,6 +10,7 @@ For J = 0 To UBound(Ds.DtAy)
 Next
 DbDs_SqlAy_OfIns = O
 End Function
+
 Function DbDt_SqlAy_OfIns(A As Database, Dt As Dt) As String()
 If DtIsEmp(Dt) Then Exit Function
 Dim SimTyAy() As eSimTy
@@ -60,4 +61,3 @@ Dim Dt As Dt: Dt = Dbt(CurDb, "Tmp1").Dt
 Dim O$(): O = DbDt_SqlAy_OfIns(CurDb, Dt)
 Stop
 End Sub
-

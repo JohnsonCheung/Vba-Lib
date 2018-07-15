@@ -75,104 +75,6 @@ Private Type WrkDicRslt
     Er As TpEr
 End Type
 Private B_SqTp$
-Private Function C_WhyBlkIsEr_MsgAy() As String()
-Dim O$()
-Push O, "The block is error because, it is none of these [RmkBlk SqBlk PrmBlk SwBlk]"
-Push O, "SwBlk is all remark line or SwLin, which is started with ?"
-Push O, "PrmBlk is all remark line or PrmLin, which is started with %"
-Push O, "SqBlk is first non-remark begins with these [sel seldis drp upd] with optionally ?-Pffx"
-Push O, "RmkBlk is all remark lines"
-End Function
-
-Private Function LinIsTpRmk(A$) As Boolean
-Dim L$: L = LTrim(A)
-If L <> "" Then
-    If HasPfx(L, "--") Then
-        LinIsTpRmk = True
-    End If
-End If
-End Function
-
-Private Function SqFldExprAy_SelPhrase$(A() As FldExpr)
-Dim B() As S1S2
-    Dim B1() As S1S2
-    Dim B2() As S1S2
-    Dim B3() As S1S2
-    Dim B4() As S1S2
-    B2 = SqFldExprAy_SetFldNmPfxIsDot(B1)
-    B3 = SqFldExprAy_RmvEmpExprItm(B2)
-    B4 = SqFldExprAy_RmvFldNmPfxIsQuestionMrk(B3)
-     B = SqFldExprAy_RmvTermWithDot(B4)
-Dim F1$()
-Dim E1$()
-    F1 = S1S2Ay_Sy1(B)
-    E1 = S1S2Ay_Sy2(B)
-Dim F2$()
-Dim E2$()
-    F2 = AyAlignL(F1)
-    E2 = VblAy_AlignAsLy(E1)
-Dim E3$()
-'    E3 = Y1__ExprLinesAyTab(E2, 4)
-
-Dim O$()
-    O = S1S2Ay_AddAsLy(SyPair_S1S2Ay(E3, F2), " ")
-SqFldExprAy_SelPhrase = "Select|" & Join(O, ",|")
-End Function
-
-Private Function SqLin_OptChk$(SqLin)
-If HasPfx(SqLin, "$") Then Exit Function
-Dim T1$: T1 = Lin(SqLin).T1
-Dim O$
-    Select Case RmvPfx(T1, "?")
-    Case "Gp", "Sel", "SelDis", "AndInStrLis", "AndInNbrLis"
-    Case "WhBetStr", "WhBetNbr"
-    Case "Into", "Fm", "Upd"
-    Case Else: O = "Invalid Sql-Phrase-Item"
-    End Select
-If O <> "" Then
-    If FstChr(T1) = "?" Then
-        Dim Ay$(): Ay = LvsSy("Sel SelDis Upd AndInStrLis AndInNbrLis WhBetStr WhBetNbr")
-        If Not AyHas(Ay, T1) Then
-            O = Replace("Only these following Sql-Phrase-Item allow [?} as prefix: [*]", "*", JnSpc(Ay))
-        End If
-    End If
-End If
-SqLin_OptChk = O
-End Function
-
-Private Function SqLnxs_StmtRslt(A As Lnx1s, Pm As Dictionary, Sw As Sw) As StmtRslt1
-Dim Ly$(): Ly = A.Ly
-Dim Ty As e_StmtTy: Ty = SqLy_Ty(Ly)
-Dim IsSkip As Boolean: IsSkip = SqLy_IsSkip(Ly, Ty, Sw.Tbl)
-Dim DrpStmt As StmtRslt1: DrpStmt = SqLnxs_DrpStmtRslt(A, Ty)
-Dim UpdStmt As StmtRslt1: UpdStmt = SqLnxs_UpdStmtRslt(A, Ty, Pm, Sw.Fld)
-Dim SelStmt As StmtRslt1: SelStmt = SqLnxs_SelStmtRslt(A, Ty, Pm, Sw.Fld)
-Dim Stmt$: Stmt = UpdStmt.Stmt + SelStmt.Stmt + DrpStmt.Stmt
-Dim E$(): E = Ly0Ap_Ly(UpdStmt.ErLy, DrpStmt.ErLy, SelStmt.ErLy)
-With SqLnxs_StmtRslt
-    .ErLy = E
-    .Stmt = Stmt
-End With
-End Function
-
-Private Function SqRst_Sel$(A$, EDic As Dictionary)
-'Sq:=[S]ql-[T]em[p]late-[C]ontext-For
-Dim Fny$()
-Dim ExprAy$()
-    Fny = LvsSy(A)
-Stop
-'    ExprAy = DicSelIntoSy(EDic, Fny)
-SqRst_Sel = SqpSel(Fny, ExprAy)
-End Function
-
-Friend Property Get Init(Optional SqTpStr) As SqTp2
-If IsNonBlankStr(SqTpStr) Then
-    B_SqTp = SqTpStr
-Else
-    B_SqTp = ZZSqTp
-End If
-Set Init = Me
-End Property
 
 Property Get Validate() As SqTpRslt
 Dim L$():                              L = SplitCrLf(B_SqTp)
@@ -203,23 +105,81 @@ O.Tp = Tp
 Set Validate = O
 End Property
 
+Friend Property Get Init(Optional SqTpStr) As SqTp2
+If IsNonBlankStr(SqTpStr) Then
+    B_SqTp = SqTpStr
+Else
+    B_SqTp = ZZSqTp
+End If
+Set Init = Me
+End Property
 
-Private Function LnxsAy_BlkAy(A() As Lnx1s) As Blk1s
-Dim Ay() As Blk1
-Dim U&
-    U = UB(A)
-If U = -1 Then Exit Function
-ReDim Ay(U)
-Dim J%
-For J = 0 To U
-    Dim M As New Blk1
-    Set Ay(J) = M.Init(A(J))
-Next
-Dim O As New Blk1s
-Set LnxsAy_BlkAy = O.Init(Ay)
+Friend Sub Tst()
+ZZ_Validate
+End Sub
+
+Private Sub FmtSql__Tst()
+Dim Tp$: Tp = "Select" & _
+"|{?Sel}" & _
+"|    {ECrd} Crd," & _
+"|    {EAmt} Amt," & _
+"|    {EQty} Qty," & _
+"|    {ECnt} Cnt," & _
+"|  Into #Tx" & _
+"|  From SaleHistory" & _
+"|  Where SHDate Between '{PFm}' and '{PTo}'" & _
+"|    And {EDiv} in ({InDiv})" & _
+"|  Group By" & _
+"|{?Gp}" & _
+"|?M   {ETxM}," & _
+"|?W   {ETxW}," & _
+"|?D   {ETxD}"
+'SR_ = Sales Report
+Const ETxWD$ = _
+"CASE WHEN TxWD1 = 1 then 'Sun'" & _
+"|ELSE WHEN TxWD1 = 2 THEN 'Mon'" & _
+"|ELSE WHEN TxWD1 = 3 THEN 'Tue'" & _
+"|ELSE WHEN TxWD1 = 4 THEN 'Mon'" & _
+"|ELSE WHEN TxWD1 = 5 THEN 'Thu'" & _
+"|ELSE WHEN TxWD1 = 6 THEN 'Fri'" & _
+"|ELSE WHEN TxWD1 = 7 THEN 'Sat'" & _
+"|ELSE Null" & _
+"|END END END END END END END"
+Dim D As New Dictionary
+With D
+    .Add "ECrd", "Line-1|Line-2"
+    .Add "EAmt", "Sum(SHTxDate)"
+
+End With
+Dim Act$: 'Act = FmtSql(Tp, D)
+Dim Exp$: Exp = ""
+Ass Act = Exp
+End Sub
+
+Private Sub LnxAy_SwRslt__Tst()
+Dim Act As SwRslt
+Stop
+'Act = LnxAy_SwRslt(ZZSwLnxAy, ZZPm)
+Stop
+End Sub
+
+Private Function C_WhyBlkIsEr_MsgAy() As String()
+Dim O$()
+Push O, "The block is error because, it is none of these [RmkBlk SqBlk PrmBlk SwBlk]"
+Push O, "SwBlk is all remark line or SwLin, which is started with ?"
+Push O, "PrmBlk is all remark line or PrmLin, which is started with %"
+Push O, "SqBlk is first non-remark begins with these [sel seldis drp upd] with optionally ?-Pffx"
+Push O, "RmkBlk is all remark lines"
 End Function
 
-
+Private Function LinIsTpRmk(A$) As Boolean
+Dim L$: L = LTrim(A)
+If L <> "" Then
+    If HasPfx(L, "--") Then
+        LinIsTpRmk = True
+    End If
+End If
+End Function
 
 Private Function LnxAy_ErIx_OfDupKey1(A() As Lnx1) As Integer()
 
@@ -237,6 +197,21 @@ For J = 0 To UB(A)
     End If
 Next
 LnxAy_WhByExclErIxAy = O
+End Function
+
+Private Function LnxsAy_BlkAy(A() As Lnx1s) As Blk1s
+Dim Ay() As Blk1
+Dim U&
+    U = UB(A)
+If U = -1 Then Exit Function
+ReDim Ay(U)
+Dim J%
+For J = 0 To U
+    Dim M As New Blk1
+    Set Ay(J) = M.Init(A(J))
+Next
+Dim O As New Blk1s
+Set LnxsAy_BlkAy = O.Init(Ay)
 End Function
 
 Private Function PmLnxAy_PmRslt(A() As Lnx1) As PmRslt
@@ -282,6 +257,32 @@ Next
 SqFldExprAy_RmvTermWithDot = O
 End Function
 
+Private Function SqFldExprAy_SelPhrase$(A() As FldExpr)
+Dim B() As S1S2
+    Dim B1() As S1S2
+    Dim B2() As S1S2
+    Dim B3() As S1S2
+    Dim B4() As S1S2
+    B2 = SqFldExprAy_SetFldNmPfxIsDot(B1)
+    B3 = SqFldExprAy_RmvEmpExprItm(B2)
+    B4 = SqFldExprAy_RmvFldNmPfxIsQuestionMrk(B3)
+     B = SqFldExprAy_RmvTermWithDot(B4)
+Dim F1$()
+Dim E1$()
+    F1 = S1S2Ay_Sy1(B)
+    E1 = S1S2Ay_Sy2(B)
+Dim F2$()
+Dim E2$()
+    F2 = AyAlignL(F1)
+    E2 = VblAy_AlignAsLy(E1)
+Dim E3$()
+'    E3 = Y1__ExprLinesAyTab(E2, 4)
+
+Dim O$()
+    O = S1S2Ay_AddAsLy(SyPair_S1S2Ay(E3, F2), " ")
+SqFldExprAy_SelPhrase = "Select|" & Join(O, ",|")
+End Function
+
 Private Function SqFldExprAy_SetFldNmPfxIsDot(A() As S1S2) As S1S2()
 Dim J%, O() As S1S2
 O = A
@@ -292,23 +293,6 @@ For J = 0 To S1S2_UB(O)
     End If
 Next
 SqFldExprAy_SetFldNmPfxIsDot = O
-End Function
-
-Private Function SqLnxsAy_StmtsRslt(SqLnxsAy() As Lnx1s, Pm As Dictionary, Sw As Sw) As StmtsRslt
-Dim OEr$()
-Dim OStmtAy$()
-    Dim J%
-    For J = 0 To UB(SqLnxsAy)
-        With SqLnxs_StmtRslt(SqLnxsAy(J), Pm, Sw)
-            Push OStmtAy, .Stmt
-            PushAy OEr, .ErLy
-        End With
-    Next
-Dim Z As StmtsRslt
-    Z.Stmts = JnDblCrLf(OStmtAy)
-    Stop
-    '    Z.ErLy = OEr
-SqLnxsAy_StmtsRslt = Z
 End Function
 
 Private Function SqLin_Evl$(SqLin, EDic As Dictionary)
@@ -371,6 +355,44 @@ SqLin = Pfx & Rst
 
 End Function
 
+Private Function SqLin_OptChk$(SqLin)
+If HasPfx(SqLin, "$") Then Exit Function
+Dim T1$: T1 = Lin(SqLin).T1
+Dim O$
+    Select Case RmvPfx(T1, "?")
+    Case "Gp", "Sel", "SelDis", "AndInStrLis", "AndInNbrLis"
+    Case "WhBetStr", "WhBetNbr"
+    Case "Into", "Fm", "Upd"
+    Case Else: O = "Invalid Sql-Phrase-Item"
+    End Select
+If O <> "" Then
+    If FstChr(T1) = "?" Then
+        Dim Ay$(): Ay = LvsSy("Sel SelDis Upd AndInStrLis AndInNbrLis WhBetStr WhBetNbr")
+        If Not AyHas(Ay, T1) Then
+            O = Replace("Only these following Sql-Phrase-Item allow [?} as prefix: [*]", "*", JnSpc(Ay))
+        End If
+    End If
+End If
+SqLin_OptChk = O
+End Function
+
+Private Function SqLnxsAy_StmtsRslt(SqLnxsAy() As Lnx1s, Pm As Dictionary, Sw As Sw) As StmtsRslt
+Dim OEr$()
+Dim OStmtAy$()
+    Dim J%
+    For J = 0 To UB(SqLnxsAy)
+        With SqLnxs_StmtRslt(SqLnxsAy(J), Pm, Sw)
+            Push OStmtAy, .Stmt
+            PushAy OEr, .ErLy
+        End With
+    Next
+Dim Z As StmtsRslt
+    Z.Stmts = JnDblCrLf(OStmtAy)
+    Stop
+    '    Z.ErLy = OEr
+SqLnxsAy_StmtsRslt = Z
+End Function
+
 Private Function SqLnxs_DrpStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy) As StmtRslt1
 If Ty = e_DrpStmt Then Exit Function
 Dim TnLvs$
@@ -381,6 +403,21 @@ End Function
 
 Private Function SqLnxs_SelStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy, Pm As Dictionary, FldSw As Dictionary) As StmtRslt1
 If Ty = e_SelStmt Then Exit Function
+End Function
+
+Private Function SqLnxs_StmtRslt(A As Lnx1s, Pm As Dictionary, Sw As Sw) As StmtRslt1
+Dim Ly$(): Ly = A.Ly
+Dim Ty As e_StmtTy: Ty = SqLy_Ty(Ly)
+Dim IsSkip As Boolean: IsSkip = SqLy_IsSkip(Ly, Ty, Sw.Tbl)
+Dim DrpStmt As StmtRslt1: DrpStmt = SqLnxs_DrpStmtRslt(A, Ty)
+Dim UpdStmt As StmtRslt1: UpdStmt = SqLnxs_UpdStmtRslt(A, Ty, Pm, Sw.Fld)
+Dim SelStmt As StmtRslt1: SelStmt = SqLnxs_SelStmtRslt(A, Ty, Pm, Sw.Fld)
+Dim Stmt$: Stmt = UpdStmt.Stmt + SelStmt.Stmt + DrpStmt.Stmt
+Dim E$(): E = Ly0Ap_Ly(UpdStmt.ErLy, DrpStmt.ErLy, SelStmt.ErLy)
+With SqLnxs_StmtRslt
+    .ErLy = E
+    .Stmt = Stmt
+End With
 End Function
 
 Private Function SqLnxs_UpdStmtRslt(SqLnxs As Lnx1s, Ty As e_StmtTy, Pm As Dictionary, FldSw As Dictionary) As StmtRslt1
@@ -424,6 +461,15 @@ Dim L$, E$
 SqRst_InLis = FmtQQ("? in ( ? )", E, L)
 End Function
 
+Private Function SqRst_Sel$(A$, EDic As Dictionary)
+'Sq:=[S]ql-[T]em[p]late-[C]ontext-For
+Dim Fny$()
+Dim ExprAy$()
+    Fny = LvsSy(A)
+Stop
+'    ExprAy = DicSelIntoSy(EDic, Fny)
+SqRst_Sel = SqpSel(Fny, ExprAy)
+End Function
 
 Private Function TpEr_Add3(A1 As TpEr, A2 As TpEr, A3 As TpEr) As TpEr
 Dim O As TpEr
@@ -642,55 +688,6 @@ Private Function ZZSwLy() As String()
 ZZSwLy = MdResLy(ZZMd, "SwLy")
 End Function
 
-Private Sub FmtSql__Tst()
-Dim Tp$: Tp = "Select" & _
-"|{?Sel}" & _
-"|    {ECrd} Crd," & _
-"|    {EAmt} Amt," & _
-"|    {EQty} Qty," & _
-"|    {ECnt} Cnt," & _
-"|  Into #Tx" & _
-"|  From SaleHistory" & _
-"|  Where SHDate Between '{PFm}' and '{PTo}'" & _
-"|    And {EDiv} in ({InDiv})" & _
-"|  Group By" & _
-"|{?Gp}" & _
-"|?M   {ETxM}," & _
-"|?W   {ETxW}," & _
-"|?D   {ETxD}"
-'SR_ = Sales Report
-Const ETxWD$ = _
-"CASE WHEN TxWD1 = 1 then 'Sun'" & _
-"|ELSE WHEN TxWD1 = 2 THEN 'Mon'" & _
-"|ELSE WHEN TxWD1 = 3 THEN 'Tue'" & _
-"|ELSE WHEN TxWD1 = 4 THEN 'Mon'" & _
-"|ELSE WHEN TxWD1 = 5 THEN 'Thu'" & _
-"|ELSE WHEN TxWD1 = 6 THEN 'Fri'" & _
-"|ELSE WHEN TxWD1 = 7 THEN 'Sat'" & _
-"|ELSE Null" & _
-"|END END END END END END END"
-Dim D As New Dictionary
-With D
-    .Add "ECrd", "Line-1|Line-2"
-    .Add "EAmt", "Sum(SHTxDate)"
-
-End With
-Dim Act$: 'Act = FmtSql(Tp, D)
-Dim Exp$: Exp = ""
-Ass Act = Exp
-End Sub
-
-Private Sub LnxAy_SwRslt__Tst()
-Dim Act As SwRslt
-Stop
-'Act = LnxAy_SwRslt(ZZSwLnxAy, ZZPm)
-Stop
-End Sub
-
 Private Sub ZZ_Validate()
 StrBrw Init(ZZSqTp).Validate.ToStr
-End Sub
-
-Friend Sub Tst()
-ZZ_Validate
 End Sub

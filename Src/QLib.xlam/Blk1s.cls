@@ -9,36 +9,13 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private B_Ay() As Blk1
-Friend Property Get Init(A() As Blk1) As Blk1s
-B_Ay = A
-Set Init = Me
-End Property
-Property Get N&()
-N = Sz(B_Ay)
-End Property
-Property Get U&()
-U = N - 1
-End Property
-Function LnxAy(BlkTyStr$) As Lnx1()
-Dim J%
-For J = 0 To U
-    If B_Ay(J).BlkTyStr = BlkTyStr Then LnxAy = B_Ay(J).Lnxs.LnxAy: Exit Function
-Next
-End Function
-Property Get StmtsRslt() As StmtsRslt
 
-End Property
-Property Get ErLy() As String()
-
-End Property
-Property Get SwRslt() As SwRslt
-
-End Property
-Property Get PmRslt() As PmRslt
-
-End Property
 Property Get ErBlkErLy() As String()
 '?
+End Property
+
+Property Get ErLy() As String()
+
 End Property
 
 Property Get ExcessPmBlkErLy() As String()
@@ -47,6 +24,14 @@ End Property
 
 Property Get ExcessSwBlkErLy() As String()
 '?
+End Property
+
+Property Get N&()
+N = Sz(B_Ay)
+End Property
+
+Property Get PmRslt() As PmRslt
+
 End Property
 
 Property Get SqLnxsAy() As Lnx1s()
@@ -59,3 +44,26 @@ Next
 SqLnxsAy = O
 End Property
 
+Property Get StmtsRslt() As StmtsRslt
+
+End Property
+
+Property Get SwRslt() As SwRslt
+
+End Property
+
+Property Get U&()
+U = N - 1
+End Property
+
+Friend Property Get Init(A() As Blk1) As Blk1s
+B_Ay = A
+Set Init = Me
+End Property
+
+Function LnxAy(BlkTyStr$) As Lnx1()
+Dim J%
+For J = 0 To U
+    If B_Ay(J).BlkTyStr = BlkTyStr Then LnxAy = B_Ay(J).Lnxs.LnxAy: Exit Function
+Next
+End Function

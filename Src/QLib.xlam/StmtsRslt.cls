@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Stmts
+
 Property Get ErLy() As String()
 
 End Property

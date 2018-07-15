@@ -13,13 +13,15 @@ Private A_V
 Sub Init(A)
 A_V = A
 End Sub
-Function Ty() As VbVarType
-Ty = VarType(A_V)
-End Function
-Function IsSy() As Boolean
-IsSy = Ty = vbArray + vbString
-End Function
+
 Function IsStr() As Boolean
 IsStr = VarIsStr(A_V)
 End Function
 
+Function IsSy() As Boolean
+IsSy = Ty = vbArray + vbString
+End Function
+
+Function Ty() As VbVarType
+Ty = VarType(A_V)
+End Function

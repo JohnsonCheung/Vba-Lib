@@ -24,6 +24,10 @@ Enum eReportSortingOption
     eBothDifAndSam = 3
 End Enum
 
+Property Get Md(MdNm$) As CodeModule
+Set Md = PjMd(CurPj, MdNm)
+End Property
+
 Function IsEmpMd(A As CodeModule) As Boolean
 IsEmpMd = A.CountOfLines = 0
 End Function
@@ -73,6 +77,10 @@ Function MdBdyLines$(A As CodeModule)
 MdBdyLines = SrcBdyLines(MdSrc(A))
 End Function
 
+Function MdBdyLno%(A As CodeModule)
+MdBdyLno = MdDclLinCnt(A) + 1
+End Function
+
 Function MdBdyLnoCnt(A As CodeModule) As LnoCnt
 MdBdyLnoCnt = SrcBdyLnoCnt(MdSrc(A))
 End Function
@@ -100,17 +108,6 @@ With A
 End With
 End Sub
 
-Function MdDclLinCnt%(A As CodeModule)
-MdDclLinCnt = SrcDclLinCnt(MdSrc(A))
-End Function
-
-Function MdDclLy(A As CodeModule) As String()
-MdDclLy = SrcDclLy(MdSrc(A))
-End Function
-
-Function MdBdyLno%(A As CodeModule)
-MdBdyLno = MdDclLinCnt(A) + 1
-End Function
 Sub MdClrBdy(A As CodeModule, Optional IsSilent As Boolean)
 Stop
 With A
@@ -143,8 +140,7 @@ While LasChr(O) = "_"
 Wend
 MdContLin = O
 End Function
-Function MdPjNm$(A As CodeModule)
-End Function
+
 Sub MdCpy(A As CodeModule, ToMdNm$)
 Dim Pj As VBProject
 Set Pj = MdPj(A)
@@ -167,8 +163,16 @@ Dim K As vbext_ProcKind
 MdCurMthNm = A.ProcOfLine(L, K)
 End Function
 
+Function MdDclLinCnt%(A As CodeModule)
+MdDclLinCnt = SrcDclLinCnt(MdSrc(A))
+End Function
+
 Function MdDclLines$(A As CodeModule)
 MdDclLines = JnCrLf(MdDclLy(A))
+End Function
+
+Function MdDclLy(A As CodeModule) As String()
+MdDclLy = SrcDclLy(MdSrc(A))
 End Function
 
 Function MdDftMthNm$(Optional A As CodeModule, Optional MthNm$)
@@ -180,7 +184,7 @@ End If
 End Function
 
 Function MdEnmBdyLy(A As CodeModule, EnmNm$) As String()
-MdEnmBdyLy = Dcl(MdDclLy(A)).EnmBdyLy(EnmNm)
+MdEnmBdyLy = DclEnmBdyLy(MdDclLy(A), EnmNm)
 End Function
 
 'Function MdMthDrs(Optional WithBdyLy As Boolean, _
@@ -214,7 +218,7 @@ MdEnmMbrLy = O
 End Function
 
 Function MdEnmNy(A As CodeModule) As String()
-MdEnmNy = Dcl(MdDclLy(A)).EnmNy
+MdEnmNy = DclEnmNy(MdDclLy(A))
 End Function
 
 Function MdEnsMth(A As CodeModule, MthNm$, NewMthLines$)
@@ -343,7 +347,7 @@ MdRmvLnoCntAy A, M
 End Sub
 
 Function MdNEnm%(A As CodeModule)
-MdNEnm = Dcl(MdDclLy(A)).NEnm
+MdNEnm = DclNEnm(MdDclLy(A))
 End Function
 
 Function MdNLin%(A As CodeModule)
@@ -385,6 +389,9 @@ Function MdPj(A As CodeModule) As VBProject
 Set MdPj = A.Parent.Collection.Parent
 End Function
 
+Function MdPjNm$(A As CodeModule)
+End Function
+
 Function MdPrvMthNy(A As CodeModule) As String()
 MdPrvMthNy = SrcPrvMthNy(MdSrc(A))
 End Function
@@ -402,13 +409,6 @@ If MdIsExist(NewNm, MdPj(A)) Then
 End If
 MdCmp(A).Name = NewNm
 Debug.Print FmtQQ("MdRen: Md-[?] renamed to [?] <==========================", Nm, NewNm)
-End Sub
-
-Sub MdSrtRptBrw(A As CodeModule)
-Dim Old$: Old = MdBdyLines(A)
-Dim NewLines$: NewLines = MdSrtedLines(A)
-Dim O$: O = IIf(Old = NewLines, "(Same)", "<====Diff")
-Debug.Print MdNm(A), O
 End Sub
 
 Function MdResLy(A As CodeModule, ResNm$, Optional ResPfx$ = "ZZRes") As String()
@@ -502,22 +502,13 @@ Sub MdRplBdy(A As CodeModule, NewMdBdy$)
 MdClrBdy A
 MdAppLines A, NewMdBdy
 End Sub
+
 Sub MdRplLin(A As CodeModule, Lno%, NewLin$)
 With A
     .DeleteLines Lno
     .InsertLines Lno, NewLin
 End With
 End Sub
-
-Private Function MthDotNm_Mth(A$) As Mth
-Dim O As MdMth
-With Brk(A, ".")
-    Stop
-'    Set O.Md = MdxByNm(.S1)
-    O.MthNm = .S2
-End With
-MdMthDotNm_Brk = O
-End Function
 
 Sub MdShw(A As CodeModule)
 A.CodePane.Show
@@ -536,11 +527,15 @@ Function MdSrcFn$(A As CodeModule)
 MdSrcFn = MdCmp(A).Name & MdSrcExt(A)
 End Function
 
+Sub MdSrtRptBrw(A As CodeModule)
+Dim Old$: Old = MdBdyLines(A)
+Dim NewLines$: NewLines = MdSrtedLines(A)
+Dim O$: O = IIf(Old = NewLines, "(Same)", "<====Diff")
+Debug.Print MdNm(A), O
+End Sub
+
 Function MdTy(A As CodeModule) As vbext_ComponentType
 MdTy = A.Parent.Type
-End Function
-Function MdTyStr$(A As CodeModule)
-MdTyStr = CmpTy_Str(MdTy(A))
 End Function
 
 Function MdTyLno$(A As CodeModule, TyNm$)
@@ -552,7 +547,7 @@ MdTyNm = CmpTy_Str(MdTy(A))
 End Function
 
 Function MdTyNy(A As CodeModule, Optional TyNmPatn$ = ".") As String()
-MdTyNy = AySrt(Dcl(MdDclLy(A)).TyNy(TyNmPatn))
+MdTyNy = AySrt(DclTyNy(MdDclLy(A), TyNmPatn))
 End Function
 
 Function MdTyRRCC(A As CodeModule, TyNm$) As RRCC
@@ -568,31 +563,18 @@ End If
 'MdTyRRCC = NewRRCC(R, R, C1, C2)
 End Function
 
-Function MdWin(A As CodeModule) As VBIDE.Window
-Set MdWin = A.CodePane.Window
+Function MdTyStr$(A As CodeModule)
+MdTyStr = CmpTy_Str(MdTy(A))
 End Function
 
-Private Function MdSrcExt$(A As CodeModule)
-Dim O$
-Select Case MdCmpTy(A)
-Case vbext_ct_ClassModule: O = ".cls"
-Case vbext_ct_Document: O = ".cls"
-Case vbext_ct_StdModule: O = ".bas"
-Case vbext_ct_MSForm: O = ".cls"
-Case Else: Err.Raise 1, , "MdSrcExt: Unexpected MdCmpTy.  Should be [Class or Module or Document]"
-End Select
-MdSrcExt = O
+Function MdWin(A As CodeModule) As VBIDE.Window
+Set MdWin = A.CodePane.Window
 End Function
 
 Sub CurMd__Tst()
 Ass CurMd.Parent.Name = "Cur_d"
 End Sub
 
-Sub DftCmpTyAy__Tst()
-Dim X() As vbext_ComponentType
-DftCmpTyAy (X)
-Stop
-End Sub
 
 Private Sub MdAppLines__Tst()
 Const MdNm$ = "Module1"
@@ -601,7 +583,7 @@ End Sub
 
 Sub MdDftMthNm__Tst()
 Dim I, Md As CodeModule
-For Each I In CurPjx.MbrAy
+For Each I In PjMbrAy(CurPj)
    MdShw CvMd(I)
    Debug.Print MdNm(Md), MdDftMthNm(Md)
 Next
@@ -612,7 +594,7 @@ Private Sub MdEnmMbrCnt__Tst()
 End Sub
 
 Private Sub MdLy__Tst()
-AyBrw MdLy(CurMd)
+aybrw MdLy(CurMd)
 End Sub
 
 Sub MdMth_LnoCntAy__Tst()
@@ -626,7 +608,7 @@ End Sub
 
 Sub MdOptCmpDbLin__Tst()
 Dim I, Md As CodeModule
-For Each I In CurPjx.MbrAy
+For Each I In PjMbrAy(CurPj)
     Set Md = I
     Debug.Print MdNm(Md), MdOptCmpDbLno(Md)
 Next
@@ -644,4 +626,14 @@ Stop
 'MdRmvLnoCntAy Md("Md_"), A
 End Sub
 
-
+Private Function MdSrcExt$(A As CodeModule)
+Dim O$
+Select Case MdCmpTy(A)
+Case vbext_ct_ClassModule: O = ".cls"
+Case vbext_ct_Document: O = ".cls"
+Case vbext_ct_StdModule: O = ".bas"
+Case vbext_ct_MSForm: O = ".cls"
+Case Else: Err.Raise 1, , "MdSrcExt: Unexpected MdCmpTy.  Should be [Class or Module or Document]"
+End Select
+MdSrcExt = O
+End Function

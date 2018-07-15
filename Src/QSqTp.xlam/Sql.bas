@@ -2,15 +2,14 @@ Attribute VB_Name = "Sql"
 Option Explicit
 Public Const M_$ = ""
 
+Property Get SqTp2(Optional SqTpStr) As SqTp2
+Dim O As New SqTp2
+Set SqTp2 = O.Init(SqTpStr)
+End Property
 
 Property Get Tst() As SqlTst
 Static Y As New SqlTst
 Set Tst = Y
-End Property
-
-Property Get SqTp2(Optional SqTpStr) As SqTp2
-Dim O As New SqTp2
-Set SqTp2 = O.Init(SqTpStr)
 End Property
 
 Function SqpAnd$(Expr$)
@@ -101,14 +100,6 @@ Function SqpWhBetStr$(FldNm$, FmStr$, ToStr$)
 SqpWhBetStr = FmtQQ("|  Where ? Between '?' and '?'", FldNm, FmStr, ToStr)
 End Function
 
-Private Function ZZExprVblAy() As String()
-ZZExprVblAy = ApSy("F1-Expr", "F2-Expr   AA|BB    X|DD       Y", "F3-Expr  x")
-End Function
-
-Private Function ZZFny() As String()
-ZZFny = SplitSpc("F1 F2 F3xxxxx")
-End Function
-
 Sub SqpGp__Tst()
 Dim ExprVblAy$()
     Push ExprVblAy, "1lskdf|sdlkfjsdfkl sldkjf sldkfj|lskdjf|lskdjfdf"
@@ -133,3 +124,11 @@ Dim Act$
     Act = SqpSel(Fny, ExprVblAy)
 Debug.Print RplVBar(Act)
 End Sub
+
+Private Function ZZExprVblAy() As String()
+ZZExprVblAy = ApSy("F1-Expr", "F2-Expr   AA|BB    X|DD       Y", "F3-Expr  x")
+End Function
+
+Private Function ZZFny() As String()
+ZZFny = SplitSpc("F1 F2 F3xxxxx")
+End Function

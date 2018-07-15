@@ -56,16 +56,6 @@ Function TMOSySomThowMsg(ThowMsg$) As ThowMsgOrSy
 TMOSySomThowMsg.ThowMsg = ThowMsg
 End Function
 
-Function TstResPth$()
-Dim O$
-    O = CurPjx.SrcPth & "TstRes\"
-    PthEns O
-TstResPth = O
-End Function
-Sub TstResPthBrw()
-PthBrw TstResPth
-End Sub
-
 Function TstResFdr$(Fdr$)
 Dim O$
     O = TstResPth & Fdr & "\"
@@ -77,3 +67,13 @@ Sub TstResFdrBrw(Fdr$)
 PthBrw TstResFdr(Fdr)
 End Sub
 
+Function TstResPth$()
+Dim O$
+    O = CurPjx.SrcPth & "TstRes\"
+    PthEns O
+TstResPth = O
+End Function
+
+Sub TstResPthBrw()
+PthBrw TstResPth
+End Sub

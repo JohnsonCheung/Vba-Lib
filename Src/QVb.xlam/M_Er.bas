@@ -7,26 +7,14 @@ AyBrw ErMsgLyByAv(CSub, MacroStr, Av)
 Stop
 End Sub
 
-Function ToLy(V) As String()
-If IsPrim(V) Then
-   ToLy = ApSy(V)
-ElseIf IsArray(V) Then
-   ToLy = AySy(V)
-ElseIf IsObject(V) Then
-   ToLy = ApSy("*Type: " & TypeName(V))
-Else
-   Stop
-End If
+Function ErMsgLines$(CSub$, MacroStr$, ParamArray Ap())
+Dim Av(): Av = Ap
+ErMsgLines = ErMsgLinesByAv(CSub, MacroStr, Av)
 End Function
 
 Private Sub ErMsgBrw(CSub$, MacroStr$, Av())
 AyBrw ErMsgLyByAv(CSub, MacroStr, Av())
 End Sub
-
-Private Function ErMsgLines$(CSub$, MacroStr$, ParamArray Ap())
-Dim Av(): Av = Ap
-ErMsgLines = ErMsgLinesByAv(CSub, MacroStr, Av)
-End Function
 
 Private Function ErMsgLinesByAv$(CSub$, MacroStr$, Av())
 ErMsgLinesByAv = JnCrLf(ErMsgLyByAv(CSub, MacroStr, Av))

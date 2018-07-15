@@ -32,6 +32,10 @@ Property Get VBarIntAy(A As Range) As Integer()
 VBarIntAy = AyIntAy(VBarAy(A))
 End Property
 
+Property Get VBarSy(A As Range) As String()
+VBarSy = AySy(VBarAy(A))
+End Property
+
 Sub HBar_MgeSamValCell(A As Range)
 Ass RgIsHBar(A)
 Dim R As Range
@@ -45,12 +49,6 @@ While Not IsNothing(R)
 Wend
 A.Application.DisplayAlerts = Sav
 End Sub
-
-
-Property Get VBarSy(A As Range) As String()
-VBarSy = AySy(VBarAy(A))
-End Property
-
 
 Sub VBar_MgeBottomEmpCell(A As Range)
 Ass RgIsVBar(A)

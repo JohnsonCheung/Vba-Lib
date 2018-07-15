@@ -9,21 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Private B_Ly$()
-Function LnxsAy(LinPfx$) As Lnx1()
-Stop
-End Function
-Property Get Lnxs() As Lnx1s
-Dim O As New Lnx1s
-Set Lnxs = O.Init(LnxAy)
-End Property
-Property Get LnxAy() As Lnx1()
-Dim O() As Lnx1
-Dim J%
-For J = 0 To U
-    PushObj O, Vb.Lnx(B_Ly(J), J)
-Next
-LnxAy = O
-End Property
 
 Property Get Dic(Optional JnSep$ = vbCrLf) As Dictionary
 Const CSub$ = "Ly.Dic"
@@ -49,22 +34,29 @@ Property Get Init(Ly$()) As Ly
 B_Ly = Ly
 Set Init = Me
 End Property
-Property Get ToStr$()
-If IsEmp Then
-    ToStr = "Ly()"
-Else
-    ToStr = FmtQQ("Ly(|?|)", JnCrLf(B_Ly, WithIx:=True))
-End If
-End Property
-Property Get N&()
-N = Sz(B_Ly)
-End Property
+
 Property Get IsEmp() As Boolean
 IsEmp = N = 0
 End Property
-Property Get U&()
-U = N - 1
+
+Property Get LnxAy() As Lnx1()
+Dim O() As Lnx1
+Dim J%
+For J = 0 To U
+    PushObj O, Vb.Lnx(B_Ly(J), J)
+Next
+LnxAy = O
 End Property
+
+Property Get Lnxs() As Lnx1s
+Dim O As New Lnx1s
+Set Lnxs = O.Init(LnxAy)
+End Property
+
+Property Get N&()
+N = Sz(B_Ly)
+End Property
+
 Property Get T1AyRstAy() As T1AyRstAy
 Dim J&, T1$(), Rst$(), L As Lin
 For J = 0 To U
@@ -79,6 +71,23 @@ With T1AyRstAy
     .RstAy = Rst
 End With
 End Property
+
+Property Get ToStr$()
+If IsEmp Then
+    ToStr = "Ly()"
+Else
+    ToStr = FmtQQ("Ly(|?|)", JnCrLf(B_Ly, WithIx:=True))
+End If
+End Property
+
+Property Get U&()
+U = N - 1
+End Property
+
+Function LnxsAy(LinPfx$) As Lnx1()
+Stop
+End Function
+
 Friend Sub Tst()
 ZZ_T1AyRstAy
 End Sub
@@ -91,4 +100,3 @@ Dim Act As T1AyRstAy
 Act = Ly(A).T1AyRstAy
 Stop
 End Sub
-

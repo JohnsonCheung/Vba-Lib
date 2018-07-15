@@ -6,6 +6,12 @@ Private Type ZZ5_TstDta
    Exp As String
 End Type
 
+Private Sub Srp_TSto__Tst()
+ZZ5_Tstr ZZ5_TstDta1
+ZZ5_Tstr ZZ5_TstDta2
+ZZ5_Tstr ZZ5_TstDta3
+End Sub
+
 Private Function ZZ5_TstDta1() As ZZ5_TstDta
 With ZZ5_TstDta1
    .BrkSto = False
@@ -32,10 +38,4 @@ End Function
 
 Private Sub ZZ5_Tstr(A As ZZ5_TstDta)
 Ass IsEq(Srp_TSto(A.BrkSto, A.LisSto), A.Exp)
-End Sub
-
-Private Sub Srp_TSto__Tst()
-ZZ5_Tstr ZZ5_TstDta1
-ZZ5_Tstr ZZ5_TstDta2
-ZZ5_Tstr ZZ5_TstDta3
 End Sub

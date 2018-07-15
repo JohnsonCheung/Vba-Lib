@@ -24,15 +24,16 @@ Enum eReportSortingOption
     eBothDifAndSam = 3
 End Enum
 
-Property Get CurMdx() As Mdx
-Set CurMdx = Mdx(CurMd)
-End Property
 Property Get CurMd() As VBIDE.CodeModule
 Set CurMd = CurCdPne.CodeModule
 End Property
 
 Property Get CurMdNm$()
 CurMdNm = MdNm(CurMd)
+End Property
+
+Property Get CurMdx() As Mdx
+Set CurMdx = Mdx(CurMd)
 End Property
 
 Function DftCmpTyAy(A) As vbext_ComponentType()
@@ -110,6 +111,10 @@ Function MdBdyLines$(A As CodeModule)
 MdBdyLines = SrcBdyLines(MdSrc(A))
 End Function
 
+Function MdBdyLno%(A As CodeModule)
+MdBdyLno = MdDclLinCnt(A) + 1
+End Function
+
 Function MdBdyLnoCnt(A As CodeModule) As LnoCnt
 MdBdyLnoCnt = SrcBdyLnoCnt(MdSrc(A))
 End Function
@@ -137,17 +142,6 @@ With A
 End With
 End Sub
 
-Function MdDclLinCnt%(A As CodeModule)
-MdDclLinCnt = SrcDclLinCnt(MdSrc(A))
-End Function
-
-Function MdDclLy(A As CodeModule) As String()
-MdDclLy = SrcDclLy(MdSrc(A))
-End Function
-
-Function MdBdyLno%(A As CodeModule)
-MdBdyLno = MdDclLinCnt(A) + 1
-End Function
 Sub MdClrBdy(A As CodeModule, Optional IsSilent As Boolean)
 Stop
 With A
@@ -180,8 +174,7 @@ While LasChr(O) = "_"
 Wend
 MdContLin = O
 End Function
-Function MdPjNm$(A As CodeModule)
-End Function
+
 Sub MdCpy(A As CodeModule, ToMdNm$)
 Dim Pj As VBProject
 Set Pj = MdPj(A)
@@ -203,8 +196,16 @@ Dim K As vbext_ProcKind
 MdCurMthNm = A.ProcOfLine(L, K)
 End Function
 
+Function MdDclLinCnt%(A As CodeModule)
+MdDclLinCnt = SrcDclLinCnt(MdSrc(A))
+End Function
+
 Function MdDclLines$(A As CodeModule)
 MdDclLines = JnCrLf(MdDclLy(A))
+End Function
+
+Function MdDclLy(A As CodeModule) As String()
+MdDclLy = SrcDclLy(MdSrc(A))
 End Function
 
 Function MdDftMthNm$(Optional A As CodeModule, Optional MthNm$)
@@ -344,6 +345,12 @@ Function MdLy(A As CodeModule) As String()
 MdLy = SplitCrLf(MdLines(A))
 End Function
 
+Sub MdMthDotNm_Go(A$)
+With MdMthDotNm_Brk(A)
+    MdMth_Go .Md, .MthNm
+End With
+End Sub
+
 Function MdMthLinAy(A As CodeModule) As String()
 MdMthLinAy = SrcMthLinAy(MdSrc(A))
 End Function
@@ -415,6 +422,9 @@ End Function
 
 Function MdPj(A As CodeModule) As VBProject
 Set MdPj = A.Parent.Collection.Parent
+End Function
+
+Function MdPjNm$(A As CodeModule)
 End Function
 
 Function MdPrvMthNy(A As CodeModule) As String()
@@ -533,25 +543,13 @@ Sub MdRplBdy(A As CodeModule, NewMdBdy$)
 MdClrBdy A
 MdAppLines A, NewMdBdy
 End Sub
+
 Sub MdRplLin(A As CodeModule, Lno%, NewLin$)
 With A
     .DeleteLines Lno
     .InsertLines Lno, NewLin
 End With
 End Sub
-Sub MdMthDotNm_Go(A$)
-With MdMthDotNm_Brk(A)
-    MdMth_Go .Md, .MthNm
-End With
-End Sub
-Private Function MdMthDotNm_Brk(A$) As MdMth
-Dim O As MdMth
-With Brk(A, ".")
-    Set O.Md = Md(.S1)
-    O.MthNm = .S2
-End With
-MdMthDotNm_Brk = O
-End Function
 
 Sub MdShw(A As CodeModule)
 A.CodePane.Show
@@ -571,9 +569,6 @@ End Function
 
 Function MdTy(A As CodeModule) As vbext_ComponentType
 MdTy = A.Parent.Type
-End Function
-Function MdTyStr$(A As CodeModule)
-MdTyStr = CmpTy_Str(MdTy(A))
 End Function
 
 Function MdTyLno$(A As CodeModule, TyNm$)
@@ -600,20 +595,12 @@ End If
 MdTyRRCC = NewRRCC(R, R, C1, C2)
 End Function
 
-Function MdWin(A As CodeModule) As VBIDE.Window
-Set MdWin = A.CodePane.Window
+Function MdTyStr$(A As CodeModule)
+MdTyStr = CmpTy_Str(MdTy(A))
 End Function
 
-Private Function MdSrcExt$(A As CodeModule)
-Dim O$
-Select Case MdCmpTy(A)
-Case vbext_ct_ClassModule: O = ".cls"
-Case vbext_ct_Document: O = ".cls"
-Case vbext_ct_StdModule: O = ".bas"
-Case vbext_ct_MSForm: O = ".cls"
-Case Else: Err.Raise 1, , "MdSrcExt: Unexpected MdCmpTy.  Should be [Class or Module or Document]"
-End Select
-MdSrcExt = O
+Function MdWin(A As CodeModule) As VBIDE.Window
+Set MdWin = A.CodePane.Window
 End Function
 
 Sub CurMd__Tst()
@@ -673,3 +660,23 @@ A = MdMth_LnoCntAy(Md("Md_"), "XXX")
 MdRmvLnoCntAy Md("Md_"), A
 End Sub
 
+Private Function MdMthDotNm_Brk(A$) As MdMth
+Dim O As MdMth
+With Brk(A, ".")
+    Set O.Md = Md(.S1)
+    O.MthNm = .S2
+End With
+MdMthDotNm_Brk = O
+End Function
+
+Private Function MdSrcExt$(A As CodeModule)
+Dim O$
+Select Case MdCmpTy(A)
+Case vbext_ct_ClassModule: O = ".cls"
+Case vbext_ct_Document: O = ".cls"
+Case vbext_ct_StdModule: O = ".bas"
+Case vbext_ct_MSForm: O = ".cls"
+Case Else: Err.Raise 1, , "MdSrcExt: Unexpected MdCmpTy.  Should be [Class or Module or Document]"
+End Select
+MdSrcExt = O
+End Function

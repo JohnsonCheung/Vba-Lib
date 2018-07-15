@@ -1,4 +1,4 @@
-Attribute VB_Name = "IdeEnsCSub"
+Attribute VB_Name = "F_EnsCSub"
 'Option Explicit
 'Type Drec
 '   Fny() As String
@@ -193,4 +193,3 @@ Attribute VB_Name = "IdeEnsCSub"
 'CSubBrk_Dmp MdMth_CSubBrk(CurMd, "MdMth_CSubBrk_Tst")
 'Stop
 'End Sub
-

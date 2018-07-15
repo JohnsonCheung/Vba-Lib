@@ -9,20 +9,16 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A$()
-Function IsEmp() As Boolean
-IsEmp = Sz = 0
-End Function
-Function Sz&()
-On Error Resume Next
-Sz = UBound(A) + 1
-End Function
-Function UB&()
-UB = Sz - 1
-End Function
+
 Property Get Init(Sy$()) As Sy
 A = Sy
 Set Init = Me
 End Property
+
+Function IsEmp() As Boolean
+IsEmp = Sz = 0
+End Function
+
 Function IxLy() As String()
 'It is 2 line first line is 0 ...
 'first line is x0 x1 of A$()
@@ -41,4 +37,13 @@ Next
 Push O, JnSpc(A1)
 Push O, JnSpc(A2)
 IxLy = O
+End Function
+
+Function Sz&()
+On Error Resume Next
+Sz = UBound(A) + 1
+End Function
+
+Function UB&()
+UB = Sz - 1
 End Function

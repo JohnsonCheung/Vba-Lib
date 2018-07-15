@@ -8,6 +8,15 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
+
+Sub DDLines()
+Dim A As New DDLines: A.Brw
+End Sub
+
+Sub Fxa()
+Dim A As New Fxa: A.Tst
+End Sub
+
 Sub GenCmdTstFun()
 Const Qvbl$ = "Sub ?()|Dim A As New ?: A.Tst|End Sub"
 Dim Bdy$: Bdy = Seed(Qvbl).Expand(AySrt(CurPjx.ClsNy))
@@ -24,17 +33,6 @@ Sub LABCs()
 Dim O As New LABCs: O.Tst
 End Sub
 
-Sub DDLines()
-Dim A As New DDLines: A.Brw
-End Sub
-
 Sub LoFmtr()
 Dim A As New LoFmtr: A.Tst
-End Sub
-
-Sub FmtWs()
-Dim A As New FmtWs: A.Tst
-End Sub
-Sub Fxa()
-Dim A As New Fxa: A.Tst
 End Sub

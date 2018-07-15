@@ -70,11 +70,12 @@ Sub FtBrw(Ft)
 Shell "notepad.exe """ & Ft & """", vbMaximizedFocus
 End Sub
 
-Function FtLines$(Ft)
-FtLines = Fso.GetFile(Ft).OpenAsTextStream.ReadAll
-End Function
 Function FtDic(Ft) As Dictionary
 Set FtDic = Ly(FtLy(Ft)).Dic
+End Function
+
+Function FtLines$(Ft)
+FtLines = Fso.GetFile(Ft).OpenAsTextStream.ReadAll
 End Function
 
 Function FtLy(Ft) As String()
@@ -251,6 +252,7 @@ End Function
 Function TmpFx$(Optional Fdr$, Optional Fnn$)
 TmpFx = TmpFfn(".xlsx", Fdr, Fnn)
 End Function
+
 Function TmpFxa$(Optional Fdr$, Optional Fnn$)
 TmpFxa = TmpFfn(".xlam", Fdr, Fnn)
 End Function
@@ -283,6 +285,17 @@ If X = "" Then X = Fso.GetSpecialFolder(TemporaryFolder) & "\"
 TmpPthFix = X
 End Function
 
+Private Sub PthEntAy__Tst()
+Dim A$(): A = PthEntAy("C:\users\user\documents\", IsRecursive:=True)
+Debug.Print Sz(A)
+Stop
+AyDmp A
+End Sub
+
+Private Sub PthRmvEmpSubDir__Tst()
+TmpPth
+End Sub
+
 Private Sub PthPushEntAyR(A)
 'Debug.Print "PthPUshEntAyR:" & A
 Dim P$(): P = PthSubPthAy(A)
@@ -295,15 +308,3 @@ For Each PP In P
     PthPushEntAyR PP
 Next
 End Sub
-
-Private Sub PthEntAy__Tst()
-Dim A$(): A = PthEntAy("C:\users\user\documents\", IsRecursive:=True)
-Debug.Print Sz(A)
-Stop
-AyDmp A
-End Sub
-
-Private Sub PthRmvEmpSubDir__Tst()
-TmpPth
-End Sub
-

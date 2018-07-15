@@ -1,5 +1,6 @@
 Attribute VB_Name = "A__"
 Option Explicit
+
 Sub RmkAll()
 Dim I, Md As CodeModule
 Dim NRmk%, Skip%
@@ -30,6 +31,10 @@ Debug.Print "NUnRmk"; NUnRmk
 Debug.Print "SKip"; Skip
 End Sub
 
+Private Function CurPj() As VBProject
+Set CurPj = Application.Vbe.ActiveVBProject
+End Function
+
 Private Function IsAllRemarked(Md As CodeModule) As Boolean
 Dim J%, L$
 For J = 1 To Md.CountOfLines
@@ -37,9 +42,7 @@ For J = 1 To Md.CountOfLines
 Next
 IsAllRemarked = True
 End Function
-Private Function CurPj() As VBProject
-Set CurPj = Application.Vbe.ActiveVBProject
-End Function
+
 Private Property Get MbrAy() As CodeModule()
 Dim O() As CodeModule, I, Cmp As VBComponent
 For Each I In CurPj.VBComponents

@@ -7,5 +7,3 @@ Enum eSimTy
     eDte
     eOth
 End Enum
-
-

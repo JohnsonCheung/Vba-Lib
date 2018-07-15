@@ -35,8 +35,6 @@ Dim O()
 SqDr = O
 End Property
 
-
-
 Property Get SqDry(A) As Variant
 Dim O(), NR&, NC%, R&, C%, UR&, UC%
 NR = UBound(A, 1)
@@ -72,4 +70,3 @@ Set O = RgReSz(At, Sq)
 O.Value = Sq
 Set SqRg = O
 End Property
-

@@ -1,8 +1,8 @@
 Attribute VB_Name = "VbStrVbl"
 Option Explicit
+
 'SpecStr:Vbl: is Vertical-Bar-Lin.  It is a string without VbCr and VbLf.
 'SpecStr:Vbl: It uses | as VbCrLf.  It can be converted to Lines.
-
 Function IsVdtVbl(Vbl) As Boolean
 If HasSubStr(Vbl, vbCr) Then Exit Function
 If HasSubStr(Vbl, vbLf) Then Exit Function

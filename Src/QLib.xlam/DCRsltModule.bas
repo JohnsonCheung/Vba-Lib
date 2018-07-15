@@ -15,6 +15,7 @@ Next
 X:
 Set AyPair_Dic = O
 End Function
+
 Function DCRsltIsSam(A As DCRslt) As Boolean
 With A
 If .ADif.Count > 0 Then Exit Function
@@ -81,4 +82,3 @@ For Each K In ASam.Keys
 Next
 DCRsltS1S2Ay_Of_Sam = O
 End Function
-

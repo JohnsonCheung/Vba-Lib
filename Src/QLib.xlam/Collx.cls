@@ -9,10 +9,20 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private A As VBA.Collection
+
 Property Get Init(Coll As VBA.Collection) As Collx
 Set A = Coll
 Set Init = Me
 End Property
+
+Function Ay() As Variant()
+Dim O(), I
+For Each I In A
+    Push O, I
+Next
+Ay = O
+End Function
+
 Function AyAs(OAsAy)
 Dim O: O = OAsAy: Erase O
 Dim I
@@ -20,11 +30,4 @@ For Each I In A
     Push O, I
 Next
 AyAs = O
-End Function
-Function Ay() As Variant()
-Dim O(), I
-For Each I In A
-    Push O, I
-Next
-Ay = O
 End Function

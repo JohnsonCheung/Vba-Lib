@@ -6,7 +6,11 @@ Dim O: O = Ay1
 PushAy O, Ay2
 AyAdd = O
 End Property
-
+Property Get AyFstNEle(A, N&)
+Dim O: O = A
+ReDim Preserve O(N - 1)
+AyFstNEle = O
+End Property
 Property Get AyAddAp(Ay, ParamArray Itm_or_Ay_Ap())
 Dim Av(): Av = Itm_or_Ay_Ap
 Dim O, I
@@ -252,7 +256,7 @@ Dim O
     ReDim Preserve O(N)
     Dim J&
     For J = N To At + 1 Step -1
-        M_Vb.Asg O(J - 1), O(J)
+        Asg O(J - 1), O(J)
     Next
     O(At) = Ele
 AyIns = O
@@ -491,21 +495,6 @@ For Each I In Ay
     PushNoDup O, I
 Next
 AyNoDupAy = O
-End Property
-
-Property Get AyPair_Dic(A1, A2) As Dictionary
-Dim N1&, N2&
-N1 = Sz(A1)
-N2 = Sz(A2)
-If N1 <> N2 Then Stop
-Dim O As New Dictionary
-Dim J&
-If AyIsEmp(A1) Then GoTo X
-For J = 0 To N1 - 1
-    O.Add A1(J), A2(J)
-Next
-X:
-Set AyPair_Dic = O
 End Property
 
 Property Get AyRTrim(Ay) As String()

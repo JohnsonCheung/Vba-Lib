@@ -65,15 +65,6 @@ With NewS1S2Opt
 End With
 End Function
 
-Function S1S2Ay_Dic(A() As S1S2) As Dictionary
-Dim J&, O As New Dictionary
-For J = 0 To S1S2_UB(A)
-    With A(J)
-        O.Add .S1, .S2
-    End With
-Next
-Set S1S2Ay_Dic = O
-End Function
 Function S1S2AyStr_Dic(A$) As Dictionary
 Set S1S2AyStr_Dic = S1S2Ay_Dic(S1S2AyStr_S1S2Ay(A))
 End Function
@@ -100,12 +91,33 @@ Next
 S1S2Ay_AddAsLy = O
 End Function
 
+Function S1S2Ay_Dic(A() As S1S2) As Dictionary
+Dim J&, O As New Dictionary
+For J = 0 To S1S2_UB(A)
+    With A(J)
+        O.Add .S1, .S2
+    End With
+Next
+Set S1S2Ay_Dic = O
+End Function
+
 Function S1S2Ay_S1LinesWdt%(A() As S1S2)
 S1S2Ay_S1LinesWdt = LinesAy_Wdt(S1S2Ay_Sy1(A))
 End Function
 
 Function S1S2Ay_S2LinesWdt%(A() As S1S2)
 S1S2Ay_S2LinesWdt = LinesAy_Wdt(S1S2Ay_Sy2(A))
+End Function
+
+Function S1S2Ay_Sy(A() As S1S2, Optional Sep$ = " ", Optional IsAlignS1 As Boolean) As String()
+Dim O$(), U&, W%, J%
+U = S1S2_UB(A)
+O = NewSy(U)
+If IsAlignS1 Then W = S1S2Ay_Wdt1(A)
+For J = 0 To U
+    O(J) = S1S2_Str(A(J), Sep, W)
+Next
+S1S2Ay_Sy = O
 End Function
 
 Function S1S2Ay_Sy1(A() As S1S2) As String()
@@ -122,17 +134,6 @@ For J = 0 To S1S2_UB(A)
    Push O, A(J).S2
 Next
 S1S2Ay_Sy2 = O
-End Function
-
-Function S1S2Ay_Sy(A() As S1S2, Optional Sep$ = " ", Optional IsAlignS1 As Boolean) As String()
-Dim O$(), U&, W%, J%
-U = S1S2_UB(A)
-O = NewSy(U)
-If IsAlignS1 Then W = S1S2Ay_Wdt1(A)
-For J = 0 To U
-    O(J) = S1S2_Str(A(J), Sep, W)
-Next
-S1S2Ay_Sy = O
 End Function
 
 Function S1S2Ay_SyPair(A() As S1S2) As SyPair

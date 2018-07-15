@@ -1,15 +1,6 @@
 Attribute VB_Name = "Dta"
 Option Explicit
-Sub DrIxAy_Asg(Dr, IxAy%(), ParamArray OAp())
-Dim J%
-For J = 0 To UB(IxAy)
-    If IsObject(OAp(J)) Then
-        Set OAp(J) = Dr(IxAy(J))
-    Else
-        OAp(J) = Dr(IxAy(J))
-    End If
-Next
-End Sub
+
 Sub AssEqDry(A(), B())
 If Not DryIsEq(A, B) Then Stop
 End Sub
@@ -119,6 +110,17 @@ Dim O()
     Next
 DrExpLinesCol = O
 End Function
+
+Sub DrIxAy_Asg(Dr, IxAy%(), ParamArray OAp())
+Dim J%
+For J = 0 To UB(IxAy)
+    If IsObject(OAp(J)) Then
+        Set OAp(J) = Dr(IxAy(J))
+    Else
+        OAp(J) = Dr(IxAy(J))
+    End If
+Next
+End Sub
 
 Function DrLin$(Dr, Wdt%())
 Dim UDr%
@@ -333,6 +335,14 @@ End If
 Set DryColSet = O
 End Function
 
+Function DryCvCellToStr(Dry, ShwZer As Boolean) As Variant()
+Dim O(), Dr
+For Each Dr In Dry
+   Push O, DrValCellStr(Dr, ShwZer)
+Next
+DryCvCellToStr = O
+End Function
+
 Sub DryDmp(Dry)
 AyDmp DryLy(Dry)
 End Sub
@@ -343,14 +353,6 @@ If DrIx = 0 Then Exit Function
 If DrIx = UB(Dry) Then Exit Function
 If Dry(DrIx)(BrkColIx) = Dry(DrIx - 1)(BrkColIx) Then Exit Function
 DryDrIx_IsBrk = True
-End Function
-
-Function DryCvCellToStr(Dry, ShwZer As Boolean) As Variant()
-Dim O(), Dr
-For Each Dr In Dry
-   Push O, DrValCellStr(Dr, ShwZer)
-Next
-DryCvCellToStr = O
 End Function
 
 Function DryIntCol(Dry(), ColIx%) As Integer()
@@ -961,7 +963,6 @@ Dim O()
 TitAy_Sq = O
 End Function
 
-
 Function VblLy_Dry(A$()) As Variant()
 If AyIsEmp(A) Then Exit Function
 Dim O()
@@ -1016,4 +1017,3 @@ Dim Act()
 Act = VblLy_Dry(VblLy)
 DryBrw Act
 End Sub
-

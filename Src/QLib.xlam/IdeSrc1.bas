@@ -1,7 +1,6 @@
 Attribute VB_Name = "IdeSrc1"
 Option Explicit
 
-
 Function MthDrs_Ky(A As Drs) As String()
 Dim Ty$, Mdy$, MthNm$, K$, IxAy%(), Dr, O$()
 IxAy = FnyIxAy(A.Fny, "Mdy MthNm Ty")
@@ -61,17 +60,6 @@ Next
 If IsCont Then Er CSub, "each lines {Src} ends with sfx _, which is impossible"
 SrcContLin = O
 End Function
-Function SrcDclLy(A$()) As String()
-If AyIsEmp(A) Then Exit Function
-Dim N&
-   N = SrcDclLinCnt(A)
-If N = 0 Then Exit Function
-SrcDclLy = AyFstNEle(A, N)
-End Function
-
-Function SrcDclLines$(A$())
-SrcDclLines = JnCrLf(SrcDclLy(A))
-End Function
 
 Function SrcDclLinCnt%(A$())
 Dim I&
@@ -88,6 +76,18 @@ Dim O&
     O = -1
 X:
 SrcDclLinCnt = O
+End Function
+
+Function SrcDclLines$(A$())
+SrcDclLines = JnCrLf(SrcDclLy(A))
+End Function
+
+Function SrcDclLy(A$()) As String()
+If AyIsEmp(A) Then Exit Function
+Dim N&
+   N = SrcDclLinCnt(A)
+If N = 0 Then Exit Function
+SrcDclLy = AyFstNEle(A, N)
 End Function
 
 Function SrcDic(A$()) As Dictionary
@@ -484,15 +484,11 @@ Else
 End If
 End Function
 
-Private Sub ZZ_SrcMthDrs()
-'DrsBrw SrcMthDrs(ZZSrc)
-Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
-DrsDmp SrcMthDrs(Src, WithBdyLy:=True)
-End Sub
-
-Private Sub ZZ_SrcMthDry()
-Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
-DryDmp SrcMthDry(Src, "IdeSrc")
+Sub SrcMth_BdyLy__Tst()
+Dim Src$(): Src = ZZSrc
+Dim MthNm$: MthNm = "A"
+Dim Act$()
+Act = SrcMth_BdyLy(Src, MthNm)
 End Sub
 
 Private Function SrcBdyIx%(A$(), FstMthLx&)
@@ -541,10 +537,32 @@ Dim Act%
 Ass Act = 2
 End Sub
 
+Private Sub ZZ_SrcDic()
+Dim Act() As S1S2
+Act = Dix(SrcDic(ZZSrc)).S1S2Ay
+AyBrw S1S2Ay_FmtLy(Act)
+'LinesDic_Brw SrcDic(ZZSrc)
+End Sub
+
 Private Sub ZZ_SrcFstMthLx()
 Dim Act%
 Act = SrcFstMthLx(ZZSrc)
 Ass Act = 2
+End Sub
+
+Private Sub ZZ_SrcMthDrs()
+'DrsBrw SrcMthDrs(ZZSrc)
+Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
+DrsDmp SrcMthDrs(Src, WithBdyLy:=True)
+End Sub
+
+Private Sub ZZ_SrcMthDry()
+Dim Src$(): Src = MdSrc(Md("ThisWorkbook"))
+DryDmp SrcMthDry(Src, "IdeSrc")
+End Sub
+
+Sub ZZ_SrcMthDry1()
+DryBrw SrcMthDry(ZZSrc, "IdeSrc")
 End Sub
 
 Private Sub ZZ_SrcMthLxAy()
@@ -556,6 +574,12 @@ Dim O$()
 O = DrsLy(NewDrs("Lx Lin", AyZip(LxAy, Ay)))
 PushAy O, DrsLy(AyDrs(Src))
 AyBrw O
+End Sub
+
+Sub ZZ_SrcMthLxAy1()
+Dim Src$(): Src = MdSrc(Md("DaoDb"))
+Dim Ay$(): Ay = AyWhIxAy(Src, SrcMthLxAy(Src))
+AyBrw Ay
 End Sub
 
 Private Sub ZZ_SrcMthLx_MthRmkLx()
@@ -581,32 +605,8 @@ Dim Drs As Drs
 DrsBrw Drs
 End Sub
 
-Private Sub ZZ_SrcDic()
-Dim Act() As S1S2
-Act = Dix(SrcDic(ZZSrc)).S1S2Ay
-AyBrw S1S2Ay_FmtLy(Act)
-'LinesDic_Brw SrcDic(ZZSrc)
-End Sub
-
-Sub ZZ_SrcMthDry1()
-DryBrw SrcMthDry(ZZSrc, "IdeSrc")
-End Sub
-
-Sub ZZ_SrcMthLxAy1()
-Dim Src$(): Src = MdSrc(Md("DaoDb"))
-Dim Ay$(): Ay = AyWhIxAy(Src, SrcMthLxAy(Src))
-AyBrw Ay
-End Sub
-
 Private Sub ZZ_SrcMthNy()
 Dim Act$()
    Act = SrcMthNy(ZZSrc)
    AyBrw Act
-End Sub
-
-Sub SrcMth_BdyLy__Tst()
-Dim Src$(): Src = ZZSrc
-Dim MthNm$: MthNm = "A"
-Dim Act$()
-Act = SrcMth_BdyLy(Src, MthNm)
 End Sub

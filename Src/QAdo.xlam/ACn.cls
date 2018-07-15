@@ -9,19 +9,11 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Public Cn As Adodb.Connection
+
 Friend Property Get Init(A As Adodb.Connection) As ACn
 Set Cn = A
 Set Init = Me
 End Property
-Private Property Get Rs(Sql) As Recordset
-Set Rs = Cn.Execute(Sql)
-End Property
-Private Property Get ARs(Sql) As ARs
-Set ARs = ARs(Rs(Sql))
-End Property
-Function SqlDrs(Sql) As Drs
-SqlDrs = ARs(Sql).Drs
-End Function
 
 Sub RunSqlAy(SqlAy$())
 If AyIsEmp(SqlAy) Then Exit Sub
@@ -30,6 +22,18 @@ For Each Sql In SqlAy
    Cn.Execute CStr(Sql)
 Next
 End Sub
+
+Function SqlDrs(Sql) As Drs
+SqlDrs = ARs(Sql).Drs
+End Function
+
+Private Property Get ARs(Sql) As ARs
+Set ARs = ARs(Rs(Sql))
+End Property
+
+Private Property Get Rs(Sql) As Recordset
+Set Rs = Cn.Execute(Sql)
+End Property
 
 Private Sub ZZ_SqlDrs()
 Dim Sql$: Sql = "Select * from [Sheet1$]"

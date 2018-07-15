@@ -9,22 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private B_Ny$()
-Friend Property Get Init(Ny0) As TblNms
-B_Ny = DftNy(Ny0)
-Set Init = Me
-End Property
+
 Property Get DrpStmts$()
 DrpStmts = JnDblCrLf(Oy.Sy("DrpStmt"))
 End Property
-Property Get Ny() As String()
-Ny = B_Ny
-End Property
+
 Property Get N&()
 N = Sz(B_Ny)
 End Property
-Property Get U&()
-U = N - 1
+
+Property Get Ny() As String()
+Ny = B_Ny
 End Property
+
 Property Get TblNmAy() As TblNm()
 Dim O() As TblNm, J%
 For J = 0 To U
@@ -32,6 +29,16 @@ For J = 0 To U
 Next
 TblNmAy = O
 End Property
+
+Property Get U&()
+U = N - 1
+End Property
+
+Friend Property Get Init(Ny0) As TblNms
+B_Ny = DftNy(Ny0)
+Set Init = Me
+End Property
+
 Private Function Oy() As Oy
 Dim O As New Oy
 Set Oy = O.Init(TblNmAy)

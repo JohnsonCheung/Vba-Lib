@@ -1,18 +1,6 @@
 Attribute VB_Name = "M_Lo"
 Option Explicit
 
-Property Get LoSq(A As ListObject)
-LoSq = A.DataBodyRange.Value
-End Property
-
-Property Get LoWs(A As ListObject) As Worksheet
-Set LoWs = A.Parent
-End Property
-
-Property Get LoWsCno%(A As ListObject, Ix_or_ColNm)
-LoWsCno = A.ListColumns(Ix_or_ColNm).Range.Column
-End Property
-
 Property Get LoC(A As ListObject, C, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
 Dim R As Range
 Set R = A.ListColumns(C).DataBodyRange
@@ -67,25 +55,6 @@ Next
 LoFny = O
 End Property
 
-
-Sub LoAdjColWdt__Tst()
-Dim Ws As Worksheet: Set Ws = NewWs(Vis:=True)
-Dim Sq(1 To 2, 1 To 2)
-Sq(1, 1) = "A"
-Sq(1, 2) = "B"
-Sq(2, 1) = "123123"
-Sq(2, 2) = String(1234, "A")
-Ws.Range("A1:B2").Value = Sq
-LoAdjColWdt LoCrt(Ws)
-WsClsNoSav Ws
-End Sub
-
-Sub LoBrw__Tst()
-Dim O As ListObject: Set O = SampleLo
-'LoBrw O
-Stop
-End Sub
-
 Property Get LoHasNoDta(A As ListObject) As Boolean
 LoHasNoDta = IsNothing(A.DataBodyRange)
 End Property
@@ -113,6 +82,18 @@ If LoHasNoDta(A) Then
    Exit Property
 End If
 LoR2 = A.DataBodyRange.Row + IIf(InclTot, 1, 0)
+End Property
+
+Property Get LoSq(A As ListObject)
+LoSq = A.DataBodyRange.Value
+End Property
+
+Property Get LoWs(A As ListObject) As Worksheet
+Set LoWs = A.Parent
+End Property
+
+Property Get LoWsCno%(A As ListObject, Ix_or_ColNm)
+LoWsCno = A.ListColumns(Ix_or_ColNm).Range.Column
 End Property
 
 Sub LoAdjColWdt(A As ListObject)
@@ -149,4 +130,20 @@ Sub LoVis(A As ListObject)
 A.Application.Visible = True
 End Sub
 
+Sub LoAdjColWdt__Tst()
+Dim Ws As Worksheet: Set Ws = NewWs(Vis:=True)
+Dim Sq(1 To 2, 1 To 2)
+Sq(1, 1) = "A"
+Sq(1, 2) = "B"
+Sq(2, 1) = "123123"
+Sq(2, 2) = String(1234, "A")
+Ws.Range("A1:B2").Value = Sq
+LoAdjColWdt LoCrt(Ws)
+WsClsNoSav Ws
+End Sub
 
+Sub LoBrw__Tst()
+Dim O As ListObject: Set O = SampleLo
+'LoBrw O
+Stop
+End Sub

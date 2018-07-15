@@ -188,9 +188,6 @@ For Each I In Pjx(A).MdAy(MdNmPatn)
 Next
 PjMdLisDt = NewDt("Md", FnyOf_MdLis, O)
 End Function
-Private Sub ZZ_PjMthNmDrs()
-DrsBrw PjMthNmDrs(CurPj)
-End Sub
 
 Function PjMthNmDrs(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".") As Drs
 Dim MthNy$(): MthNy = Pjx(A).MthNy(CmpTyAy0, MthNmPatn, MdNmPatn)
@@ -297,6 +294,14 @@ Function WinTy_Win(A As vbext_WindowType) As VBIDE.Window
 Set WinTy_Win = ItrItmByPrp(CurVbe.Windows, "Type", A)
 End Function
 
+Sub CmdBarOfMnu__Tst()
+Debug.Print CmdBarOfMnu.Name
+End Sub
+
+Sub CmdPopOfWin__Tst()
+Debug.Print CmdPopOfWin.Caption
+End Sub
+
 Private Function MthDrs_SortingKy__CrtKey$(Mdy$, Ty$, MthNm$)
 Dim A1 As Byte
     If HasSfx(MthNm, "__Tst") Then
@@ -316,10 +321,6 @@ Dim A3$
 MthDrs_SortingKy__CrtKey = FmtQQ("?:?:?", A1, MthNm, A3)
 End Function
 
-Sub CmdBarOfMnu__Tst()
-Debug.Print CmdBarOfMnu.Name
-End Sub
-
-Sub CmdPopOfWin__Tst()
-Debug.Print CmdPopOfWin.Caption
+Private Sub ZZ_PjMthNmDrs()
+DrsBrw PjMthNmDrs(CurPj)
 End Sub

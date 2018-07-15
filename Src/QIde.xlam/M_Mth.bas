@@ -30,6 +30,14 @@ Type MthSig
     RetTy As PrmTy
 End Type
 
+Function CurMthBdyLines$()
+CurMthBdyLines = MdMth_BdyLines(CurMd, CurMthNm$)
+End Function
+
+Function CurMthNm$()
+CurMthNm = MdCurMthNm(CurMd)
+End Function
+
 Function CurTarMd() As CodeModule
 With CurVbe
    If .CodePanes.Count <> 2 Then Exit Function
@@ -46,26 +54,6 @@ End Function
 
 Function IsOnlyTwoCdPne() As Boolean
 IsOnlyTwoCdPne = CurVbe.CodePanes.Count = 2
-End Function
-
-Sub MovAllMth()
-
-End Sub
-
-Sub MovMth()
-
-End Sub
-
-Sub CurTarMd__Tst()
-Debug.Print MdNm(CurTarMd)
-End Sub
-
-Function CurMthBdyLines$()
-CurMthBdyLines = MdMth_BdyLines(CurMd, CurMthNm$)
-End Function
-
-Function CurMthNm$()
-CurMthNm = MdCurMthNm(CurMd)
 End Function
 
 Function IsTstMthNm(MthNm$) As Boolean
@@ -187,16 +175,17 @@ End With
 End Function
 
 Function MthPrm1(MthPrmStr$) As MthPrm
-Const CSub$ = "MthPrm1"
-Dim A As Parse: NewParse (MthPrmStr)
-Dim TyChr$
-With MthPrm1
-    A = ParseKwOptional(A): .IsOpt = A.IsOk
-    A = ParseKwPrmAy(A):    .IsPrmAy = A.IsOk
-    A = ParseNm(A):       .Nm = ParseRet(A): If Not A.IsOk Then Er CSub, "A [Nm] is expected in {MthPrmStr}", MthPrmStr
-    A = ParseKwTyChr(A):    .Ty.TyChr = ParseRet(A)
-    A = ParseKwOptBktPair(A): .Ty.IsAy = ParseRet(A) = "()"
-End With
+Stop '
+'Const CSub$ = "MthPrm1"
+'Dim A As Parse: NewParse (MthPrmStr)
+'Dim TyChr$
+'With MthPrm1
+'    A = ParseKwOptional(A): .IsOpt = A.IsOk
+'    A = ParseKwPrmAy(A):    .IsPrmAy = A.IsOk
+'    A = ParseNm(A):       .Nm = ParseRet(A): If Not A.IsOk Then Er CSub, "A [Nm] is expected in {MthPrmStr}", MthPrmStr
+'    A = ParseKwTyChr(A):    .Ty.TyChr = ParseRet(A)
+'    A = ParseKwOptBktPair(A): .Ty.IsAy = ParseRet(A) = "()"
+'End With
 End Function
 
 Sub MthPrmPush(O() As MthPrm, I As MthPrm)
@@ -291,6 +280,10 @@ Dim O$
 PrmTyShtNm = O
 End Function
 
+Sub CurTarMd__Tst()
+Debug.Print MdNm(CurTarMd)
+End Sub
+
 Private Sub MdMth_BdyLines__Tst()
 Debug.Print Len(MdMth_BdyLines(CurMd, "MdMth_Lines"))
 Debug.Print MdMth_BdyLines(CurMd, "MdMth_Lines")
@@ -331,4 +324,3 @@ Ass A.TyAsNm = ""
 Ass A.IsAy = False
 Ass A.TyChr = ""
 End Sub
-

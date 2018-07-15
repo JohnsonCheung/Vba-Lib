@@ -1,5 +1,6 @@
 Attribute VB_Name = "M_Is"
 Option Explicit
+
 Property Get IsSimTySsl(A) As Boolean
 Dim Ay$(): Ay = SslSy(A)
 If AyIsEmp(Ay) Then Exit Property
@@ -15,4 +16,3 @@ Select Case UCase(A)
 Case "TXT", "NBR", "LGC", "DTE", "OTH": IsSimTyStr = True
 End Select
 End Property
-

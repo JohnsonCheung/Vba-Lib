@@ -15,16 +15,6 @@ Dim Pth$: Pth = DftPth(Pth0)
 DftFfn = Pth & TmpNm & Ext
 End Property
 
-Property Get DftLy(Ly0) As String()
-If IsStr(Ly0) Then
-    DftLy = SplitVBar(Ly0)
-ElseIf IsSy(Ly0) Then
-    DftLy = Ly0
-Else
-    PmEr
-End If
-End Property
-
 Property Get DftNy(Ny0) As String()
 If IsStr(Ny0) Then
    DftNy = SslSy(Ny0)

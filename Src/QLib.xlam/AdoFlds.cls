@@ -9,6 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Flds As ADODB.Fields
+
 Function Dr() As Variant()
 Dim I As ADODB.Field
 Dim O()

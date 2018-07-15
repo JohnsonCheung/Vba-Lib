@@ -78,4 +78,3 @@ Case eCmpDb: OptLin = "Option Compare Database"
 Case eExplicit: OptLin = "Option Explicit"
 End Select
 End Property
-

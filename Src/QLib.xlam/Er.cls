@@ -9,9 +9,10 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Private B_Er$()
-Sub Push(A As Er)
-PushAy B_Er, A.ErLy
-End Sub
+
+Property Get ErLy() As String()
+ErLy = B_Er
+End Property
 
 Property Get HasEr() As Boolean
 HasEr = Sz(B_Er) > 0
@@ -21,16 +22,8 @@ Property Get ToStr$()
 ToStr = Tag("Er", JnCrLf(B_Er, WithIx:=True))
 End Property
 
-Property Get ErLy() As String()
-ErLy = B_Er
-End Property
-
-Sub PushMsg(Msg$)
-VbAy.Push B_Er, Msg
-End Sub
-
-Sub PushErLy0(ErLy0)
-PushAy B_Er, DftLy(ErLy0)
+Sub Push(A As Er)
+PushAy B_Er, A.ErLy
 End Sub
 
 Sub PushAp(ParamArray ErAp())
@@ -41,9 +34,17 @@ For Each I In ErAp
 Next
 End Sub
 
+Sub PushErLy0(ErLy0)
+PushAy B_Er, DftLy(ErLy0)
+End Sub
+
 Sub PushErLy0Ap(ParamArray ErLy0Ap())
 Dim ErLy0
 For Each ErLy0 In ErLy0Ap
     PushErLy0 ErLy0
 Next
+End Sub
+
+Sub PushMsg(Msg$)
+VbAy.Push B_Er, Msg
 End Sub

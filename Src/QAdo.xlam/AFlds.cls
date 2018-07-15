@@ -9,10 +9,7 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
 Public Flds As Fields
-Friend Property Get Init(A As Fields) As AFlds
-Set Flds = A
-Set Init = Me
-End Property
+
 Property Get Dr() As Variant()
 Dim I As Adodb.Field
 Dim O()
@@ -29,4 +26,9 @@ For Each F In Flds
     Push O, F.Name
 Next
 Fny = O
+End Property
+
+Friend Property Get Init(A As Fields) As AFlds
+Set Flds = A
+Set Init = Me
 End Property
