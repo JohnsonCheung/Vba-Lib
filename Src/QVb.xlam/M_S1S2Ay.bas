@@ -62,7 +62,7 @@ End Property
 Property Get S1S2Ay_Sy1(A() As S1S2) As String()
 Dim O$(), J&
 For J = 0 To UB(A)
-   M_Ay.Push O, A(J).S1
+   Push O, A(J).S1
 Next
 S1S2Ay_Sy1 = O
 End Property
@@ -70,7 +70,7 @@ End Property
 Property Get S1S2Ay_Sy2(A() As S1S2) As String()
 Dim O$(), J&
 For J = 0 To UB(A)
-   M_Ay.Push O, A(J).S2
+   Push O, A(J).S2
 Next
 S1S2Ay_Sy2 = O
 End Property
@@ -117,7 +117,7 @@ End Property
 'End Function
 Private Property Get ZLinesLinesLy(A() As S1S2, H$, W1%, W2%) As String()
 Dim O$(), I&
-M_Ay.Push O, H
+Push O, H
 For I = 0 To UB(A)
    PushAy O, A(I).Ly(W1, W2)
    Push O, H

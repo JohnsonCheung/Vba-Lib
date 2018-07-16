@@ -1,6 +1,5 @@
 Attribute VB_Name = "M_Cv"
 Option Explicit
-
 Property Get CvLo(A) As ListObject
 Set CvLo = A
 End Property
@@ -12,3 +11,4 @@ End Property
 Property Get CvRg(A) As Range
 Set CvRg = A
 End Property
+

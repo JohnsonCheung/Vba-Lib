@@ -4,14 +4,17 @@ Private Type Res
     Md As CodeModule
     Nm As String
 End Type
+Property Get ResNm_Lines$(A)
+ResNm_Lines = JnCrLf(ResNm_Ly(A))
+End Property
 
-Property Get ResNm_Ly(A$) As String()
+Property Get ResNm_Ly(A) As String()
 'ResNm is "Pj.Md.Nm" where Pj & Md are optional
 Dim O$()
 Dim MthLy$()
 Dim Res As Res
 Res = ZResNm_Res(A)
-MthLy = ZRes_MthLy(Res)
+MthLy = ZResMthLy(Res)
 'O
     Dim J%, U%
     U = UB(MthLy)
@@ -22,53 +25,19 @@ MthLy = ZRes_MthLy(Res)
 ResNm_Ly = O
 End Property
 
-Private Property Get ZCurPjMd(MdNm) As CodeModule
-Stop 'Set ZCurPjMd = ZCurPj.VBComponents(MdNm).CodeModule
-End Property
-
-Private Property Get ZCurVbe() As VBE
-Set ZCurVbe = Excel.Application.VBE
-End Property
-
-Private Property Get ZMd(A) As CodeModule
-Dim A1$(): A1 = Split(A, ".")
-Select Case Sz(A1)
-Case 1: Set ZMd = ZCurPjMd(A)
-Case 2: Set ZMd = ZPjMd(A1(0), A1(1))
-Case Else: Stop
-End Select
-End Property
-
-Private Property Get ZMdLines$(A As CodeModule)
-If A.CountOfLines = 0 Then Exit Property
-ZMdLines = A.Lines(1, A.CountOfLines)
-End Property
-
-Private Property Get ZMdLy(A As CodeModule) As String()
-ZMdLy = Split(ZMdLines(A), vbCrLf)
-End Property
-
-Private Function ZPj(A) As VBProject
-Set ZPj = ZCurVbe.VBProjects(A)
-End Function
-
-Private Function ZPjMd(A, MdNm) As CodeModule
-Set ZPjMd = ZPj(A).VBComponents(MdNm).CodeModule
-End Function
-
-Private Property Get ZResNm_Res(A$) As Res
+Private Property Get ZResNm_Res(A) As Res
 Dim A1$(): A1 = Split(A, ".")
 Dim O As Res
 Select Case Sz(A1)
-Case 1: Stop 'Set O.Md = ZCurMd:                 O.Nm = A1(0)
-Case 2: Set O.Md = ZMd(A1(0)):              O.Nm = A1(1)
-Case 3: Set O.Md = ZMd(A1(0) & "." & A1(1)): O.Nm = A1(2)
+Case 1: Set O.Md = CurMd:                   O.Nm = A1(0)
+Case 2: Set O.Md = Md(A1(0)):               O.Nm = A1(1)
+Case 3: Set O.Md = Md(A1(0) & "." & A1(1)): O.Nm = A1(2)
 Case Else: Stop
 End Select
 ZResNm_Res = O
 End Property
 
-Private Property Get ZRes_MthLy(A As Res) As String()
+Private Property Get ZResMthLy(A As Res) As String()
 Dim O$()
 Dim J%, M As CodeModule, L$
 Dim B$, BLno%, N%
@@ -91,7 +60,7 @@ Set M = A.Md
         Push O, L
         If L = "End Sub" Then Exit For
     Next
-ZRes_MthLy = O
+ZResMthLy = O
 End Property
 
 Private Sub ZZRes_XX()

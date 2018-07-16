@@ -6,12 +6,6 @@ Private Type ZZ3_TstDta
    Exp As String
 End Type
 
-Private Sub Srp_TCrd__Tst()
-ZZ3_Tstr ZZ3_TstDta1
-ZZ3_Tstr ZZ3_TstDta2
-ZZ3_Tstr ZZ3_TstDta3
-End Sub
-
 Private Function ZZ3_TstDta1() As ZZ3_TstDta
 With ZZ3_TstDta1
    .BrkCrd = False
@@ -42,4 +36,10 @@ With A
    Act = Srp_TCrd(.BrkCrd, .LisCrd)
    Ass IsEq(Act, .Exp)
 End With
+End Sub
+
+Private Sub Srp_TCrd__Tst()
+ZZ3_Tstr ZZ3_TstDta1
+ZZ3_Tstr ZZ3_TstDta2
+ZZ3_Tstr ZZ3_TstDta3
 End Sub

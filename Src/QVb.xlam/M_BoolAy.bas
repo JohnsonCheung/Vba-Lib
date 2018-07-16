@@ -8,7 +8,6 @@ Public Enum e_BoolAyOp
     e_IsSomTrue = 5
     e_IsSomFalse = 6
 End Enum
-
 Property Get BoolAy_AndVal(A() As Boolean) As Boolean
 BoolAy_AndVal = BoolAy_IsAllTrue(A)
 End Property

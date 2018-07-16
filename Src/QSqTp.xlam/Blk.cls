@@ -10,13 +10,11 @@ Attribute VB_Exposed = False
 Option Explicit
 Private A_LnxAy() As Lnx
 Public BlkTyStr$
-
-Property Get LnxAy() As Lnx()
-LnxAy = A_LnxAy
-End Property
-
 Friend Property Get Init(Ay() As Lnx, BlkTyStr$) As Blk
 A_Lnxs = Ay
 Me.BlkTyStr = BlkTyStr
 Set Init = Me
+End Property
+Property Get LnxAy() As Lnx()
+LnxAy = A_LnxAy
 End Property

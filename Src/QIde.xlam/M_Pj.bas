@@ -133,6 +133,8 @@ If PthFdr(B) = "Src" Then Stop
 End Function
 
 Function PjMbrAy(A As VBProject, Optional NmPatn$ = ".", Optional CmpTyAy0) As CodeModule()
+Dim Ay() As vbext_ComponentType
+Ay = DftCmpTyAy(CmpTyAy0)
 
 Dim Ay() As vbext_ComponentType
 PjMbrAy = PjCmpAy(A, Ay, NmPatn)

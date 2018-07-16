@@ -1,6 +1,5 @@
 Attribute VB_Name = "M_Ly"
 Option Explicit
-
 Property Get LyGpAy(A$(), LinPfx$) As Gp()
 Dim J%, O() As Lnx, M() As Lnx
 For J = 0 To UB(A)
@@ -20,7 +19,6 @@ If Sz(M) > 0 Then
 End If
 LyGpAy = Gp(O)
 End Property
-
 Property Get LyLnxAy(A$()) As Lnx()
 Dim O() As Lnx, J%
 For J = 0 To UB(A)

@@ -34,6 +34,60 @@ Set B_Pm = Pm
 Set Init = Me
 End Property
 
+Private Function DupNmEr_0(A() As SwLnx) As String()
+Dim O$(), J%
+For J = 0 To U
+    Push O, A(J).Nm
+Next
+DupNmEr_0 = O
+End Function
+
+Private Property Get DupNmEr(A() As SwLnx) As SwLnxAyErLy
+Dim Ny$(): Ny = DupNmEr_0(A)
+Dim DupNy$(): DupNy = AyDupAy(Ny)
+Dim DupNmLx%(): DupNmLx = DupNmEr_1(A, DupNy)
+Dim E$(): E = DupNmEr_2(DupNmLx, A)
+Dim Ay() As SwLnx: Ay = DupNmEr_3(DupNmLx)
+With DupNmEr
+    .SwLnxAy = Ay
+    .ErLy = E
+End With
+End Property
+
+Private Function DupNmEr_4$(Lx%, A() As SwLnx)
+'return A(Lx=Lx).Nm
+Dim J%
+For J = 0 To UB(A)
+    If A(J).Lx = Lx Then DupNmEr_4 = A(J).Nm: Exit Function
+Next
+Stop ' LgcEr
+End Function
+
+Private Function DupNmEr_2(DupNmLx%(), A() As SwLnx) As String()
+Dim O$()
+    Dim Msg$, J%
+    For J = 0 To UB(DupNmLx)
+        Dim Nm$, Lx%
+        Lx = DupNmLx(J)
+        Nm = DupNmEr_4(Lx, A)
+        Msg = FmtQQ(M_, Lx, Nm)
+        Stop
+        Push O, Msg
+    Next
+DupNmEr_2 = O
+End Function
+
+Private Function DupNmEr_1(A() As SwLnx, DupNy$()) As Integer()
+End Function
+
+Private Property Get N&()
+N = UB(B_Ay)
+End Property
+
+Private Property Get U&()
+U = N - 1
+End Property
+
 Property Get Rslt() As SwRslt
 Dim R1 As SwLnxAyErLy
 Dim R2 As SwLnxAyErLy
@@ -53,71 +107,6 @@ With O
     Set .Sw = R3.Sw
 End With
 Set Rslt = O
-End Property
-
-Friend Sub Tst()
-StrBrw Tag_NyStr_ObjAp("SwLnxsIO", Me, Rslt)
-End Sub
-
-Private Property Get DupNmEr(A() As SwLnx) As SwLnxAyErLy
-Dim Ny$(): Ny = DupNmEr_0(A)
-Dim DupNy$(): DupNy = AyDupAy(Ny)
-Dim DupNmLx%(): DupNmLx = DupNmEr_1(A, DupNy)
-Dim E$(): E = DupNmEr_2(DupNmLx, A)
-Dim Ay() As SwLnx: Ay = DupNmEr_3(DupNmLx)
-With DupNmEr
-    .SwLnxAy = Ay
-    .ErLy = E
-End With
-End Property
-
-Private Function DupNmEr_0(A() As SwLnx) As String()
-Dim O$(), J%
-For J = 0 To U
-    Push O, A(J).Nm
-Next
-DupNmEr_0 = O
-End Function
-
-Private Function DupNmEr_1(A() As SwLnx, DupNy$()) As Integer()
-End Function
-
-Private Function DupNmEr_2(DupNmLx%(), A() As SwLnx) As String()
-Dim O$()
-    Dim Msg$, J%
-    For J = 0 To UB(DupNmLx)
-        Dim Nm$, Lx%
-        Lx = DupNmLx(J)
-        Nm = DupNmEr_4(Lx, A)
-        Msg = FmtQQ(M_, Lx, Nm)
-        Stop
-        Push O, Msg
-    Next
-DupNmEr_2 = O
-End Function
-
-Private Function DupNmEr_3(Lx%()) As SwLnx()
-Dim O() As SwLnx
-Dim J%
-For J = 0 To U
-    If Not AyHas(Lx, B_Ay(J).Lx) Then
-        PushObj O, B_Ay(J)
-    End If
-Next
-DupNmEr_3 = O
-End Function
-
-Private Function DupNmEr_4$(Lx%, A() As SwLnx)
-'return A(Lx=Lx).Nm
-Dim J%
-For J = 0 To UB(A)
-    If A(J).Lx = Lx Then DupNmEr_4 = A(J).Nm: Exit Function
-Next
-Stop ' LgcEr
-End Function
-
-Private Property Get N&()
-N = UB(B_Ay)
 End Property
 
 Private Function Rslt_1() As SwLnxAyErLy
@@ -161,7 +150,14 @@ With Rslt_2
     Set .Sw = Rslt_5(Sw)
 End With
 End Function
-
+Private Function Rslt_5(A As Dictionary) As Sw
+Stop
+Set Rslt_5 = New Sw
+End Function
+Private Function Rslt_4(LeftOvr() As SwLnx) As String()
+'Return ErLy for each of the LeftOvr
+Stop
+End Function
 Private Function Rslt_3(A() As SwLnx, Sw As Dictionary) As Evl
 Dim OAy() As SwLnx
 Dim OHasEvl As Boolean
@@ -193,16 +189,17 @@ With Rslt_3
 End With
 End Function
 
-Private Function Rslt_4(LeftOvr() As SwLnx) As String()
-'Return ErLy for each of the LeftOvr
-Stop
+Private Function DupNmEr_3(Lx%()) As SwLnx()
+Dim O() As SwLnx
+Dim J%
+For J = 0 To U
+    If Not AyHas(Lx, B_Ay(J).Lx) Then
+        PushObj O, B_Ay(J)
+    End If
+Next
+DupNmEr_3 = O
 End Function
 
-Private Function Rslt_5(A As Dictionary) As Sw
-Stop
-Set Rslt_5 = New Sw
-End Function
-
-Private Property Get U&()
-U = N - 1
-End Property
+Friend Sub Tst()
+StrBrw Tag_NyStr_ObjAp("SwLnxsIO", Me, Rslt)
+End Sub

@@ -37,7 +37,7 @@ If Atr = 0 Then
 End If
 While M <> ""
     If GetAttr(A & M) And Atr Then
-        M_Ay.Push O, M
+        Push O, M
     End If
     M = Dir
 Wend

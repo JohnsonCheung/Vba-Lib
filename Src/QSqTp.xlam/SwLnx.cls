@@ -13,6 +13,16 @@ Private B_Nm As String
 Private B_OpStr As String
 Private B_TermAy() As String
 Private B_Pm As Dictionary
+Friend Property Get Init(A As Lnx, Pm As Dictionary) As SwLnx
+B_Lx = A.Lx
+Set B_Pm = Pm
+With ABC(A.Lin)
+    B_Nm = .A
+    B_OpStr = .B
+    B_TermAy = SslSy(.C)
+End With
+Set Init = Me
+End Property
 
 Property Get AndOrLinEr$()
 If Not BoolOpStr_IsAndOr(B_OpStr) Then Exit Property
@@ -63,29 +73,61 @@ Select Case FstChr(T2)
 X:
     AndOrLinEr = O
 End Property
+Private Function T1T2_SomBool(T1$, T2$, EqNeOpStr$, Sw As Dictionary) As SomBool
+Dim S1$, S2$
+    With Term_VarOpt(T1, Sw)
+        If Not .Som Then Exit Function
+        S1 = .V
+    End With
+    With Term_VarOpt(T2, Sw)
+        If Not .Som Then Exit Function
+        S2 = .V
+    End With
+Dim O As SomBool
+Select Case EqNeOpStr
+Case "EQ": O = SomBool(S1 = S2)
+Case "NE": O = SomBool(S1 <> S2)
+Case Else: Stop
+End Select
+T1T2_SomBool = O
+End Function
+Private Function Term_VarOpt(A, Sw As Dictionary) As SomV
+'switch-term begins with % or ? or it is *Blank.  % is for parameter & ? is for switch
+'  If %, it will evaluated to str by lookup from Pm
+'        if not exist in {Pm}, stop, it means the validation fail to remove this term
+'  If ?, it will evaluated to bool by lookup from Sw
+'        if not exist in {Sw}, return None
+'  Otherwise, just return SomVar(A)
+Dim O As VarOpt
+    Select Case FstChr(A)
+    Case "?"
+        If Not Sw.Exists(A) Then Exit Function
+        O = SomVar(Sw(A))
+    Case "%"
+        If Not B_Pm.Exists(A) Then
+            Stop ' it means the validation fail to remove this term
+        End If
+        O = SomVar(B_Pm(A))
+    Case "*"
+        If A <> "*Blank" Then Stop ' it means the validation fail to remove this term
+        O = SomVar("")
+    Case Else
+        O = SomVar(A)
+    End Select
+Term_VarOpt = O
+End Function
 
-Property Get ErLy() As String()
-ErLy = Ly0Ap_Ly(NmEr, OpEr, PfxEr, EqNeLinEr, AndOrLinEr)
-End Property
-
-Property Get Lx%()
-Lx = B_Lx
-End Property
-
-Property Get Nm$()
-Nm = B_Nm
-End Property
-
-Friend Property Get Init(A As Lnx, Pm As Dictionary) As SwLnx
-B_Lx = A.Lx
-Set B_Pm = Pm
-With ABC(A.Lin)
-    B_Nm = .A
-    B_OpStr = .B
-    B_TermAy = SslSy(.C)
-End With
-Set Init = Me
-End Property
+Private Function TermAy_SomBool(A$(), Op As e_BoolAyOp, Sw As Dictionary) As SomBool
+Dim B As New Bools
+    Dim I
+    For Each I In A
+        With Term_VarOpt(I, Sw)
+            If Not .Som Then Exit Function
+            B.Push CBool(.V)
+        End With
+    Next
+TermAy_SomBool = SomBool(B.Val(Op))
+End Function
 
 Function SomBool(Sw As Dictionary) As SomBool
 If Sw.Exists(B_Nm) Then Exit Function
@@ -116,6 +158,15 @@ End If
 X:
     EqNeLinEr = O
 End Property
+Property Get Nm$()
+Nm = B_Nm
+End Property
+Property Get Lx%()
+Lx = B_Lx
+End Property
+Property Get ErLy() As String()
+ErLy = Ly0Ap_Ly(NmEr, OpEr, PfxEr, EqNeLinEr, AndOrLinEr)
+End Property
 
 Private Property Get NmEr$()
 If B_Nm = "" Then
@@ -136,37 +187,6 @@ If FstChr(B_Nm) <> "?" Then
     Stop
 End If
 End Property
-
-Private Function T1T2_SomBool(T1$, T2$, EqNeOpStr$, Sw As Dictionary) As SomBool
-Dim S1$, S2$
-    With Term_VarOpt(T1, Sw)
-        If Not .Som Then Exit Function
-        S1 = .V
-    End With
-    With Term_VarOpt(T2, Sw)
-        If Not .Som Then Exit Function
-        S2 = .V
-    End With
-Dim O As SomBool
-Select Case EqNeOpStr
-Case "EQ": O = SomBool(S1 = S2)
-Case "NE": O = SomBool(S1 <> S2)
-Case Else: Stop
-End Select
-T1T2_SomBool = O
-End Function
-
-Private Function TermAy_SomBool(A$(), Op As e_BoolAyOp, Sw As Dictionary) As SomBool
-Dim B As New Bools
-    Dim I
-    For Each I In A
-        With Term_VarOpt(I, Sw)
-            If Not .Som Then Exit Function
-            B.Push CBool(.V)
-        End With
-    Next
-TermAy_SomBool = SomBool(B.Val(Op))
-End Function
 
 Private Function TermEr() As String()
 Dim O0$(), O1$(), O2$(), I
@@ -194,30 +214,4 @@ If Sz(Sy) > 0 Then
     Stop
     'O = NewTpEr(Lx, JnCrLf(Sy))
 End If
-End Function
-
-Private Function Term_VarOpt(A, Sw As Dictionary) As SomV
-'switch-term begins with % or ? or it is *Blank.  % is for parameter & ? is for switch
-'  If %, it will evaluated to str by lookup from Pm
-'        if not exist in {Pm}, stop, it means the validation fail to remove this term
-'  If ?, it will evaluated to bool by lookup from Sw
-'        if not exist in {Sw}, return None
-'  Otherwise, just return SomVar(A)
-Dim O As VarOpt
-    Select Case FstChr(A)
-    Case "?"
-        If Not Sw.Exists(A) Then Exit Function
-        O = SomVar(Sw(A))
-    Case "%"
-        If Not B_Pm.Exists(A) Then
-            Stop ' it means the validation fail to remove this term
-        End If
-        O = SomVar(B_Pm(A))
-    Case "*"
-        If A <> "*Blank" Then Stop ' it means the validation fail to remove this term
-        O = SomVar("")
-    Case Else
-        O = SomVar(A)
-    End Select
-Term_VarOpt = O
 End Function

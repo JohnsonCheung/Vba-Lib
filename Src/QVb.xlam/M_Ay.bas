@@ -501,7 +501,7 @@ Property Get AyRTrim(Ay) As String()
 If AyIsEmp(Ay) Then Exit Property
 Dim O$(), I
 For Each I In Ay
-    M_Ay.Push O, RTrim(I)
+    Push O, RTrim(I)
 Next
 AyRTrim = O
 End Property
@@ -867,7 +867,7 @@ Dim I, O&(), J&
 Dim R As RegExp
 Set R = Re(Patn)
 For Each I In Ay
-    If ReTst(R, I) Then Push O, J
+    If R.Test(I) Then Push O, J
     J = J + 1
 Next
 AyWhPatnIx = O
@@ -928,7 +928,7 @@ Dim I, O$()
 Dim R As RegExp
 Set R = Re(Patn)
 For Each I In Ay
-    If ReTst(R, I) Then Push O, I
+    If R.Test(I) Then Push O, I
 Next
 AyWh_ByPatn = O
 End Property
@@ -1066,19 +1066,6 @@ Dim I&(): I = ULngSeq(U)
 PartialIxAy_CompleteIxAy = AyAddAp(PartialIxAy, AyMinus(I, PartialIxAy))
 End Property
 
-Property Get Pop(Ay)
-Pop = AyLasEle(Ay)
-AyRmvLasNEle Ay
-End Property
-
-Property Get Sz&(Ay)
-On Error Resume Next
-Sz = UBound(Ay) + 1
-End Property
-
-Property Get UB&(Ay)
-UB = Sz(Ay) - 1
-End Property
 
 Property Get UIntSeq(U&, Optional IsFmOne As Boolean) As Integer()
 Dim O%(): ReDim O(U)
@@ -1164,76 +1151,6 @@ Sub AyWrt(Ay, Ft)
 StrWrt JnCrLf(Ay), Ft
 End Sub
 
-Sub Push(OAy, M)
-Dim N&: N = Sz(OAy)
-ReDim Preserve OAy(N)
-If IsObject(M) Then
-    Set OAy(N) = M
-Else
-    OAy(N) = M
-End If
-End Sub
-
-Sub PushAp(O, ParamArray Ap())
-Dim Av(), I: Av = Ap
-For Each I In Av
-    Push O, I
-Next
-End Sub
-
-Sub PushAy(OAy, Ay)
-If AyIsEmp(Ay) Then Exit Sub
-Dim I
-For Each I In Ay
-    Push OAy, I
-Next
-End Sub
-
-Sub PushNoDup(O, M)
-If Not AyHas(O, M) Then Push O, M
-End Sub
-
-Sub PushNoDupAy(O, Ay)
-Dim I
-If AyIsEmp(Ay) Then Exit Sub
-For Each I In Ay
-    PushNoDup O, I
-Next
-End Sub
-
-Sub PushNonEmp(O, M)
-If IsEmp(M) Then Exit Sub
-Push O, M
-End Sub
-
-Sub PushObj(O, P)
-Dim N&: N = Sz(O)
-ReDim Preserve O(N)
-Set O(N) = P
-End Sub
-
-Sub PushObjAy(O, Ay)
-Dim J&
-For J = 0 To UB(Ay)
-    PushObj O, Ay(J)
-Next
-End Sub
-
-Sub PushOy(O, Oy)
-If AyIsEmp(Oy) Then Exit Sub
-Dim M
-For Each M In Oy
-    PushObj O, M
-Next
-End Sub
-
-Sub ReSz(Ay, U&)
-If U < 0 Then
-    Erase Ay
-Else
-    ReDim Preserve Ay(U)
-End If
-End Sub
 
 Private Sub AyGpDry__Upd(OGpDry(), Itm)
 Dim J&

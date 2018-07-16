@@ -8,3 +8,4 @@ End Function
 Function AyRgV(Ay, At As Range) As Range
 Set AyRgV = SqRg(AySqV(Ay), At)
 End Function
+

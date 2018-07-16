@@ -1,6 +1,5 @@
 Attribute VB_Name = "M_Fml"
 Option Explicit
-
 Property Get FmlErMsgOpt(Fml$, Fny$()) As SomStr
 Stop '
 'Dim A$(): A = Ny
@@ -18,3 +17,5 @@ Property Get FmlNy(Fml$) As String()
 Stop '
 'FmlNy = Macro(A).Ny(ExclBkt:=True, Bkt:="[]")
 End Property
+
+

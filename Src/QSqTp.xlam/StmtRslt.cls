@@ -10,6 +10,10 @@ Attribute VB_Exposed = False
 Option Explicit
 Public Stmt$
 Private B_ErLy$()
+Friend Property Get Init(Stmt$, ErLy$()) As StmtRslt
+Me.Stmt = Stmt
+B_ErLy = ErLy
+End Property
 
 Property Get ErLy() As String()
 ErLy = B_ErLy
@@ -17,9 +21,4 @@ End Property
 
 Property Get ToStr$()
 Stop '
-End Property
-
-Friend Property Get Init(Stmt$, ErLy$()) As StmtRslt
-Me.Stmt = Stmt
-B_ErLy = ErLy
 End Property

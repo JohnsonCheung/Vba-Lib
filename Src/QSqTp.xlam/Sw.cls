@@ -9,7 +9,6 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 Public Fld As New Dictionary, Tbl As New Dictionary
-
 Property Get ToStr$()
 ToStr = Tag_NyStr_ObjAp("Sw", "Fld Tbl", Dix(Fld), Dix(Tbl))
 End Property
