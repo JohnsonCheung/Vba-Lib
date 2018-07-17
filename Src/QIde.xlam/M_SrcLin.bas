@@ -65,13 +65,13 @@ Function KwIsMthTy(S) As Boolean
 KwIsMthTy = AyHas(S, SyOfMthTy)
 End Function
 
-Function MthLin_EnsPrivate(A) As SomStr
+Function MthLin_EnsPrivate(A) As StrOpt
 Dim P As Parse: P = ParseKwMdy(NewParse(A))
 If Not P.IsOk Then Exit Function
 Dim P1 As Parse: P1 = ParseKwMthTy(P)
 If Not P.IsOk Then Exit Function
-If P.Er_or_Ok = "Private" Then MthLin_EnsPrivate = SomStr(A): Exit Function
-MthLin_EnsPrivate = SomStr("Private " & P.Lin)
+If P.Er_or_Ok = "Private" Then MthLin_EnsPrivate = StrOpt(A): Exit Function
+MthLin_EnsPrivate = StrOpt("Private " & P.Lin)
 End Function
 
 Function MthLin_Key$(A)

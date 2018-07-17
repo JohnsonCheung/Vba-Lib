@@ -2,10 +2,6 @@ Attribute VB_Name = "M_Dao"
 Option Explicit
 Public Const SampleFb_DutyPrepare$ = "C:\Users\User\Desktop\SAPAccessReports\DutyPrepay5\DutyPrepay5_Data.mdb"
 
-Property Get DbEng() As Dao.DBEngine
-Static Y As New Dao.DBEngine
-Set DbEng = Y
-End Property
 
 Property Get HasFld(T As TableDef, F) As Boolean
 'TblHasFld = FldsHasFld(T.Fields, F)
@@ -48,12 +44,6 @@ End Select
 DaoTy_Str = O
 End Function
 
-Sub DbBrw(A As Database)
-Dim N$: N = A.Name
-A.Close
-Stop '
-'FbBrw N
-End Sub
 
 Sub DbSqlAy_Run(A As Database, SqlAy$())
 If AyIsEmp(A) Then Exit Sub
@@ -88,34 +78,11 @@ Function DbTny(A As Database) As String()
 DbTny = DbqSy(A, "Select Name from MSysObjects where Type in (1,6) and Left(Name,4)<>'MSYS'")
 End Function
 
-Sub DbqBrw(A As Database, Sql$)
-DrsBrw DbqDrs(A, Sql)
-End Sub
 
-Function DbqDrs(A As Database, Sql$) As Drs
-Dim Rs As Recordset
-Set Rs = A.OpenRecordset(Sql)
-Set DbqDrs = Drs(RsFny(Rs), RsDry(Rs))
-End Function
 
-Function DbqDry(A As Database, Sql$) As Variant()
-DbqDry = RsDry(A.OpenRecordset(Sql))
-End Function
 
-Sub DbqRun(A As Database, Sql$)
-A.Execute Sql
-End Sub
 
-Function DbqSy(A As Database, Sql$) As String()
-DbqSy = RsSy(A.OpenRecordset(Sql))
-End Function
 
-Function DbqV(A As Database, Sql$)
-With A.OpenRecordset(Sql)
-   DbqV = .Fields(0).Value
-   .Close
-End With
-End Function
 
 Function DftDb(A As Database) As Database
 If IsNothing(A) Then
@@ -135,54 +102,16 @@ Else
 End If
 End Function
 
-
-Function DtaDb() As Database
-Set DtaDb = DBEngine.OpenDatabase(DtaFb)
+Function FnyOf_FldInf() As String()
+FnyOf_FldInf = SplitSpc("Fld Pk Ty Sz Dft Req Des")
 End Function
 
-Function DtaFb$()
-DtaFb = FfnRplExt(FfnAddFnSfx(CurFb, "_Data"), ".mdb")
-End Function
-
-Function FldDes$(A As Dao.Field)
-FldDes = PrpVal(A.Properties, "Description")
-End Function
-
-Function FldsDr(A As Dao.Fields) As Variant()
-Dim O(), J%
-ReDim O(A.Count - 1)
-For J = 0 To A.Count - 1
-   O(J) = A(J).Value
-Next
-FldsDr = O
-End Function
-
-Function FldsFny(A As Dao.Fields) As String()
-Dim O$(), J%
-ReDim O(A.Count - 1)
-For J = 0 To A.Count - 1
-   O(J) = A(J).Name
-Next
-FldsFny = O
-End Function
-
-Function FldsHasFld(A As Dao.Fields, F) As Boolean
-Dim I  As Dao.Field
-For Each I In A
-   If I.Name = F Then FldsHasFld = True: Exit Function
-Next
-End Function
-
-Function FnyOf_InfOf_Fld() As String()
-FnyOf_InfOf_Fld = SplitSpc("Fld Pk Ty Sz Dft Req Des")
-End Function
-
-Function FnyOf_InfOf_TblF() As String()
+Function FnyOf_TblFInf() As String()
 Dim O$()
 Push O, "Tbl"
 Push O, "SeqNo"
-PushAy O, FnyOf_InfOf_Fld
-FnyOf_InfOf_TblF = O
+PushAy O, FnyOf_FldInf
+FnyOf_TblFInf = O
 End Function
 
 Function FnyQuote(Fny$(), ToQuoteFny$()) As String()

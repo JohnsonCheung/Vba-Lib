@@ -67,3 +67,7 @@ End Sub
 Private Sub ZZ_Qny()
 AyDmp DbQny(CurDb)
 End Sub
+Property Get DbEng() As Dao.DBEngine
+Static Y As New Dao.DBEngine
+Set DbEng = Y
+End Property

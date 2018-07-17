@@ -2,31 +2,31 @@ Attribute VB_Name = "F_Tool"
 Option Explicit
 
 Sub Add_Cls(Nm$)
-ZPj_Add_Mbr ZCurPj, Nm, vbext_ct_ClassModule
+PjAddMbr CurPj, Nm, vbext_ct_ClassModule
 End Sub
 
 Sub Add_Fun(FunNm$)
-ZAdd_Fun_or_Sub FunNm, IsFun:=True
+MdAddFun CurMd, FunNm, IsFun:=True
 End Sub
 
 Sub Add_Md(Nm$)
-ZPj_Add_Mbr ZCurPj, Nm, vbext_ct_StdModule
+PjAddMbr CurPj, Nm, vbext_ct_StdModule
 End Sub
 
 Sub Add_Sub(SubNm$)
-ZAdd_Fun_or_Sub SubNm, IsFun:=False
+MdAddFun CurMd, SubNm, IsFun:=False
 End Sub
 
 Sub Add_VbeRf_QTool()
 Dim I, P As VBProject
-For Each I In ZCurVbe_PjAy
+For Each I In CurVbe_PjAy
     Set P = I
-    ZPj_AddRf P, "QTool"
+    PjAddRf P, "QTool"
 Next
 End Sub
 
 Sub Brw_DupMdNm()
-AyBrw ZCurVbe_DupMdNy
+AyBrw CurVbe_DupMdNy
 End Sub
 
 Sub Brw_InproperMth()
@@ -34,135 +34,142 @@ Brw_Pj_InproperMth
 End Sub
 
 Sub Brw_Md_InproperMth()
-AyBrw ZMd_MthNy_OfInproper(ZCurMd)
+AyBrw MdMthNy_OfInproper(CurMd)
 End Sub
 
 Sub Brw_Md_Mth()
-ZS1S2Ay_Brw ZMd_MthS1S2Ay(ZCurMd)
+DicBrw Md_Dic_Of_MthKey_MthLines(CurMd)
 End Sub
-
+Property Get Md_Dic_Of_MthKey_MthLines(A As CodeModule) As Dictionary
+Set Md_Dic_Of_MthKey_MthLines = Src_Dic_Of_MthKey_MthLines(MdSrc(A), MdPjNm(A), MdNm(A))
+End Property
 Sub Brw_Md_MthKy()
-AyBrw ZMd_MthKy(ZCurMd, IsSngLinFmt:=True)
+AyBrw MdMthKy(CurMd, IsSngLinFmt:=True)
 End Sub
 
-Sub Brw_Md_MthNm(Optional MthNmPatn$, Optional Mdy$)
-AyBrw ZMd_MthNy(ZCurMd, MthNmPatn, IsNoMdNmPfx:=True, Mdy:=Mdy)
+Sub Brw_Md_MthNm(Optional MthNmPatn$, Optional Mdy0$)
+AyBrw MdMthNy(CurMd, MthNmPatn, IsNoMdNmPfx:=True, Mdy0:=Mdy0)
 End Sub
 
-Sub Brw_Pj_FFunNy()
-AyBrw ZPj_FFunNy(ZCurPj)
+Sub Brw_Pj_MthFNy()
+AyBrw PjMthFNy(CurPj)
 End Sub
 
 Sub Brw_Pj_InproperMth()
-AyBrw ZPj_MthNy_OfInproper(ZCurPj)
+AyBrw PjMthNy_OfInproper(CurPj)
 End Sub
 
 Sub Brw_Pj_Mth(Optional MthNmPatn$ = ".", Optional MbrNmPatn$ = ".")
-AyBrw ZPj_MthNy(ZCurPj, MthNmPatn:=MthNmPatn, MbrNmPatn:=MbrNmPatn)
+AyBrw PjMthNy(CurPj, MthNmPatn:=MthNmPatn, MbrNmPatn:=MbrNmPatn)
 End Sub
 
 Sub Brw_Pj_MthKy()
-AyBrw ZPj_MthKy(ZCurPj, IsSngLinFmt:=True)
+AyBrw PjMthKy(CurPj, IsSngLinFmt:=True)
 End Sub
 
 Sub Brw_Pj_SrtRpt()
-AyBrw ZPj_SrtRptLy(ZCurPj)
+AyBrw PjSrtRptLy(CurPj)
 End Sub
 
-Sub Brw_Vbe_DupFFunDrs(Optional IsSamMthBdyOnly As Boolean)
-ZWsVis ZDrsWs(ZVbe_DupFFunDrs(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly))
+Sub Brw_Md_SrtRpt(Optional MdDNm0$)
+Dim N$: N = DftMdDNm(MdDNm0)
+AyBrw MdSrtRptLy(Md(N))
 End Sub
 
-Sub Brw_Vbe_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
-AyBrw ZVbe_DupFFunNy(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+Sub Brw_Vbe_DupMthDrs(Optional IsSamMthBdyOnly As Boolean)
+WsVis DrsWs(VbeDupMthDrs(CurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly))
+End Sub
+
+Sub Brw_Vbe_DupMthFNy(Optional IsSamMthBdyOnly As Boolean)
+AyBrw VbeDupMthFNy(CurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
 End Sub
 
 Sub Brw_Vbe_DupFun()
-AyBrw ZVbe_DupFunLy(ZCurVbe)
+AyBrw VbeDupFunLy(CurVbe)
 End Sub
 
-Sub Brw_Vbe_FFunNy()
-AyBrw ZVbe_FFunNy(ZCurVbe)
+Sub Brw_Vbe_MthFNy()
+AyBrw VbeMthFNy(CurVbe)
 End Sub
 
 Sub Brw_Vbe_InproperMth()
-AyBrw ZVbe_MthNy_OfInproper(ZCurVbe)
+AyBrw VbeMthNy_OfInproper(CurVbe)
 End Sub
 
 Sub Brw_Vbe_MthKy()
-AyBrw ZVbe_MthKy(ZCurVbe, IsSngLinFmt:=True)
+AyBrw VbeMthKy(CurVbe, IsSngLinFmt:=True)
 End Sub
 
 Sub Brw_Vbe_SrcPth()
-ZVbe_SrcPthBrw ZCurVbe
+VbeSrcPthBrw CurVbe
 End Sub
 
 Sub Brw_Vbe_SrtRpt()
-AyBrw ZVbe_SrtRptLy(ZCurVbe)
+AyBrw VbeSrtRptLy(CurVbe)
 End Sub
 
 Sub Cls_Win()
 Dim W As VBIDE.Window
-For Each W In ZCurVbe.Windows
+For Each W In CurVbe.Windows
     W.Close
 Next
 End Sub
 
 Sub Compile_Pj()
-ZPj_Compile ZCurPj
+PjCompile CurPj
 End Sub
 
 Sub Compile_Vbe()
-AyDo ZCurVbe_PjAy, "ZPj_Compile"
+AyDo CurVbe_PjAy, "PjCompile"
 End Sub
 
 Sub Cpy_Mbr(FmPjMbrDotNm$)
-ZMd_Cpy_ToPj ZMd(FmPjMbrDotNm), ZCurPj
+MdCpy Md(FmPjMbrDotNm), CurPj
 End Sub
 
 Sub Cpy_Md_ToPj(ToPjNm$)
-ZMd_Cpy_ToPj ZCurMd, ZPj(ToPjNm)
+MdCpy CurMd, Pj(ToPjNm)
 End Sub
 
 Sub Dlt_Md()
-If MsgBox(ZFmtQQ("Delete this Md[?]", ZCurMdNm), vbYesNo + vbDefaultButton2) <> vbYes Then Exit Sub
-ZCurPj.VBComponents.Remove ZCurCmp
+If MsgBox(FmtQQ("Delete this Md[?]", CurMdNm), vbYesNo + vbDefaultButton2) <> vbYes Then Exit Sub
+CurPj.VBComponents.Remove CurCmp
 End Sub
 
 Sub Dmp_CurMth()
-Debug.Print ZMth_Lines(ZCurMth)
+Debug.Print MthLines(CurMth)
 End Sub
 
 Sub Dmp_Md_InproperMth()
-AyDmp ZMd_MthNy_OfInproper(ZCurMd)
+AyDmp MdMthNy_OfInproper(CurMd)
 End Sub
 
-Sub Dmp_Pj_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
-AyDmp ZPj_DupFFunNy(ZCurPj, IsSamMthBdyOnly:=IsSamMthBdyOnly)
+Sub Dmp_Pj_DupMthFNy(Optional IsSamMthBdyOnly As Boolean)
+AyDmp PjDupMthFNy(CurPj, IsSamMthBdyOnly:=IsSamMthBdyOnly)
+End Sub
+Sub Dmp_Pj_InproperMth(Optional PjNm0$)
+If PjNm0 <> "" Then Shw_Pj PjNm0
+AyDmp PjMthNy_OfInproper(CurPj)
 End Sub
 
-Sub Dmp_Pj_InproperMth(Optional PjNm$)
-AyDmp ZPj_MthNy_OfInproper(ZDft_Pj(PjNm))
-End Sub
-
-Sub Dmp_Vbe_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
-AyDmp ZVbe_DupFFunNy(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+Sub Dmp_Vbe_DupMthFNy(Optional IsSamMthBdyOnly As Boolean)
+AyDmp VbeDupMthFNy(CurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
 End Sub
 
 Sub Dmp_Vbe_InproperMth()
-AyDmp ZVbe_MthNy_OfInproper(ZCurVbe)
+AyDmp VbeMthNy_OfInproper(CurVbe)
 End Sub
 
 Sub Export_Pj()
-ZPj_Export ZCurPj
+PjExport CurPj
 End Sub
 
 Sub Export_Vbe()
-ZVbe_Export ZCurVbe
+VbeExport CurVbe
 End Sub
 
 Sub Gen_Md_TstSub()
-ZMd_Gen_TstSub ZCurMd
+MdGen_TstSub CurMd
 End Sub
 
 Sub Gen_Pj_ConstructorMd()
@@ -170,56 +177,88 @@ Stop '
 End Sub
 
 Sub Gen_Pj_TstClass()
-ZPj_Gen_TstClass ZCurPj
+Pj_Gen_TstClass CurPj
 End Sub
 
 Sub Gen_Pj_TstSub()
-ZPj_Gen_TstSub ZCurPj
+Pj_Gen_TstSub CurPj
 End Sub
 
 Sub Gen_Vbe_TstClass()
 End Sub
 
-Sub Go_Mbr(PjMbrDotNm$)
+Sub Shw_Mbr(PjMbrDotNm$)
 Dim E As Either
-E = ZPjMbrDotNm_Either(PjMbrDotNm)
+E = PjMbrDotNm_Either(PjMbrDotNm)
 If E.IsLeft Then
-    ZMd_Go ZMd(E.Left)
+    MdGo Md(E.Left)
     Exit Sub
 End If
 Dim Ny$()
     Ny = E.Right
-If ZSz(Ny) = 0 Then
+If Sz(Ny) = 0 Then
     Debug.Print PjMbrDotNm; "<-- No such module"
     Stop '
     Exit Sub
 End If
 Dim I
 For Each I In Ny
-    Debug.Print "Go_Mbr """; I; "."; PjMbrDotNm
+    Debug.Print "Shw_Mbr """; I; "."; PjMbrDotNm
 Next
 End Sub
-
-Sub Go_Mth(MthDNm$)
+Sub Shw(Nm$)
+Dim A$(): A = Split(Nm, ".")
+Select Case Sz(A)
+Case 1
+    Select Case True
+    Case Left(Nm, 1) = "Q":  Shw_Pj Nm
+    Case Else
+        If IsMdNm(Nm) Then
+            Shw_Mbr Nm
+        Else
+            Shw_Mth Nm
+        End If
+    End Select
+Case 2
+    Select Case True
+    Case Left(A(0), 1) = "Q"
+        If IsMdNm(A(1)) Then
+            Shw_Mbr Nm
+        Else
+            Shw_Mth Nm
+        End If
+    Case IsMdNm(A(0))
+        Shw_Mth Nm
+    Case Else
+        Debug.Print "For 2 Segment, 1st Segment of {Q* M_* S_* F_* G_*}"
+        Stop
+    End Select
+Case 3
+    Shw_Mth Nm
+Case Else
+Debug.Print "Nm has " & Sz(A) & " segments"
+End Select
+End Sub
+Sub Shw_Mth(MthDNm$)
 Dim M As Mth
-Set M = ZMthDNm_Mth(MthDNm)
-ZMd_GoLCCOpt M.Md, ZMth_LCCOpt(M)
+Set M = MthDNm_Mth(MthDNm)
+MdGoLCCOpt M.Md, MthLCCOpt(M)
 End Sub
 
-Sub Go_Pj(PjNm$)
-ZPj_Go ZPj(PjNm)
+Sub Shw_Pj(PjNm$)
+PjGo Pj(PjNm)
 End Sub
 
 Sub Lis_Md()
 Dim A$()
-    A = ZPj_MbrNy(ZCurPj)
+    A = PjMbrNy(CurPj)
     A = AySrt(A)
-    A = AyAddPfx(A, "Go_Mbr """)
+    A = AyAddPfx(A, "Shw_Mbr """)
 AyDmp A
 End Sub
 
-Sub Lis_Md_Mth(Optional MthNmPatn$ = ".", Optional Mdy$)
-AyDmp AyAddPfx(ZMd_MthNy(ZCurMd, MthNmPatn, Mdy:=Mdy), ZCurPjNm & ".")
+Sub Lis_Md_Mth(Optional MthNmPatn$ = ".", Optional Mdy0$)
+AyDmp AyAddPfx(MdMthNy(CurMd, MthNmPatn, Mdy0:=Mdy0), CurPjNm & ".")
 End Sub
 
 Sub Lis_Mth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Mdy$)
@@ -228,45 +267,50 @@ End Sub
 
 Sub Lis_Pj()
 Dim A$()
-    A = ZCurVbe_PjNy
-    A = AyAddPfx(A, "Go_Pj """)
+    A = CurVbe_PjNy
+    A = AyAddPfx(A, "Shw_Pj """)
 AyDmp A
 End Sub
 
-Sub Lis_Pj_Mth(Optional MthNmPatn$ = ".", Optional MbrNmPatn$ = ".", Optional Mdy$)
+Sub Lis_Pj_Mth(Optional MthNmPatn$ = ".", Optional MbrNmPatn$ = ".", Optional Mdy0$)
 Dim A$()
-    A = ZPj_MthNy(ZCurPj, MthNmPatn:=MthNmPatn, MbrNmPatn:=MbrNmPatn, Mdy:=Mdy)
+    A = PjMthNy(CurPj, MthNmPatn:=MthNmPatn, MbrNmPatn:=MbrNmPatn, Mdy0:=Mdy0)
     A = AySrt(A)
-    A = AyAddPfx(A, "Go_Mth """)
+    A = AyAddPfx(A, "Shw_Mth """)
 AyDmp A
 End Sub
 
-Sub Lis_Vbe_DupFFunNy(Optional IsSamMthBdyOnly As Boolean)
-Dim A$(): A = ZVbe_DupFFunNy(ZCurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
+Sub Lis_Vbe_DupMthFNy(Optional IsSamMthBdyOnly As Boolean)
+Dim A$(): A = VbeDupMthFNy(CurVbe, ExclPjNy0:="QLib", IsSamMthBdyOnly:=IsSamMthBdyOnly)
 Dim A1$(): A1 = AyDblQuote(A)
-AyDmp AyAddPfxSfx(A1, "Go_Mth ", ",IsMthPjMdNm:=True")
+AyDmp AyAddPfxSfx(A1, "Shw_Mth ", ",IsMthPjMdNm:=True")
 End Sub
 
 Sub Lis_Vbe_Mth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Mdy$)
 Dim A$()
-    A = ZCurVbe_MthNy(MthNmPatn, MdNmPatn, Mdy)
+    A = CurVbe_MthNy(MthNmPatn, MdNmPatn, Mdy)
     A = AySrt(A)
 AyDmp A
 End Sub
 
-Sub Mov_Fun()
+Sub Mov_Fun(Optional MthDNm0$)
 'Mov Fun to its proper-module
 'Fun here means Public-Prp/Sub/Fun, in a Md, not class
+'         or    Private-Sub ZZ_xxx, in a Md, not class
 'proper-module means, M_Xxx where Xxx is function-MdPfx
 'MdPfx-of-a-fun is a Pfx of a funNm which is used to give a proper-module-nm of M_Xxx
-With ZCurPubPSFunOpt
-    Stop
-    If Not .Som Then
-        Debug.Print "Mov_Fun: No Cur Public Prp-Sub-Fun.  Cannot Mov"
+Dim M As Mth: Set M = DftMth(MthDNm0)
+If MdCmpTy(M.Md) <> vbext_ct_StdModule Then
+    Debug.Print FmtQQ("Mov_Fun: CurMth(?) in not in StdMd", MthDNm(M))
+    Exit Sub
+End If
+If Not IsPfx(M.Nm, "ZZ_") Then
+    If Not MthIsPub(M) Then
+        Debug.Print FmtQQ("Mov_Fun: CurMth(?) is not public", MthDNm(M))
         Exit Sub
     End If
-    ZMth_Mov .Mth, ZMth_ProperMd(.Mth)
-End With
+End If
+MthMovToProperMd M
 End Sub
 
 Sub Mov_Fun_ToProperMd()
@@ -277,52 +321,51 @@ Sub Mov_Fun_ToProperMd()
 'else
 '   => it is proper-fun
 Dim I, M As CodeModule, Ny$()
-Set M = ZCurMd
-Ny = ZMd_MthNy_OfInproper(ZCurMd)
-If ZSz(Ny) = 0 Then Exit Sub
+Set M = CurMd
+Ny = MdMthNy_OfInproper(CurMd)
+If Sz(Ny) = 0 Then Exit Sub
 Dim N
-Dim Mth As Mth
+Dim Mth As New Mth
 Set Mth.Md = M
 For Each N In Ny
     Mth.Nm = N
-    ZMth_Mov_ToProperMd Mth
+    MthMovToProperMd Mth
 Next
 End Sub
 
 Sub Mov_MbrPatn_ToPj(MbrNmPatn$, ToPjNm$)
-Dim Ay() As CodeModule: Ay = ZPj_MbrAy(ZCurPj, MbrNmPatn)
-If ZSz(Ay) = 0 Then Exit Sub
+Dim Ay() As CodeModule: Ay = PjMbrAy(CurPj, MbrNmPatn)
+If Sz(Ay) = 0 Then Exit Sub
 Dim I, P As VBProject
-Set P = ZPj(ToPjNm)
+Set P = Pj(ToPjNm)
 For Each I In Ay
-    ZMd_Mov_ToPj ZCvMd(I), P
+    MdMov_ToPj CvMd(I), P
 Next
-ZClsWinExcept_Module_A_1
+Cls_Win
 End Sub
 
-
 Sub Mov_Md_ToPj(ToPjNm$)
-If ZCurPjNm = ToPjNm Then
-    Debug.Print ZFmtQQ("Mov_Md: ToPjNm(?) cannot be CurPjNm", ToPjNm)
+If CurPjNm = ToPjNm Then
+    Debug.Print FmtQQ("Mov_Md: ToPjNm(?) cannot be CurPjNm", ToPjNm)
     Exit Sub
 End If
-ZMd_Mov_ToPj ZCurMd, ZPj(ToPjNm)
+MdMov_ToPj CurMd, Pj(ToPjNm)
 End Sub
 
 Sub Ren_Md(NewNm$)
-If ZPj_HasCmp(ZCurPj, NewNm) Then
-    MsgBox ZFmtQQ("Md(?) exists in CurPj(?).  Cannot rename.", NewNm, ZCurPjNm), , "M_A:RenMd"
+If PjHasCmp(CurPj, NewNm) Then
+    MsgBox FmtQQ("Md(?) exists in CurPj(?).  Cannot rename.", NewNm, CurPjNm), , "M_A:RenMd"
     Exit Sub
 End If
-ZCurMd.Name = NewNm
+CurMd.Name = NewNm
 End Sub
 
 Sub Rmk_All()
 Dim I, Md As CodeModule
 Dim NRmk%, Skip%
-For Each I In ZPj_MbrAy(ZCurPj)
+For Each I In PjMbrAy(CurPj)
     Set Md = I
-    If ZMd_Rmk(Md) Then
+    If MdRmk(Md) Then
         NRmk = NRmk + 1
     Else
         Skip = Skip + 1
@@ -333,54 +376,64 @@ Debug.Print "SKip"; Skip
 End Sub
 
 Sub Rmk_Mth()
-ZMth_Rmk_Bdy ZCurMth
+MthRmk CurMth
 End Sub
 
 Sub Sav_Pj()
-ZPj_Sav ZCurPj
+PjSav CurPj
 End Sub
 
 Sub Sav_Vbe()
 Dim I
-For Each I In ZCurVbe_PjAy
-    ZPj_Sav ZCvPj(I)
+For Each I In CurVbe_PjAy
+    PjSav CvPj(I)
 Next
 End Sub
 
 Function Shw_Pj_SrtRptWb(Optional PjNm$) As Workbook
-ZPj_SrtRptWb ZDft_Pj(PjNm), Vis:=True
+PjSrtRptWb DftPj(PjNm), Vis:=True
 End Function
 
 Sub Srt_F_Tool()
-Dim P As VBProject
-Dim Md As CodeModule
-Dim Src$()
-Dim Cxt$
-Set P = ZPj("QTool")
-Set Md = ZPj_Md(P, "F_Tool")
-Src = ZMd_Src(Md)
-Cxt = ZSrc_SrtedLines(Src)
-ZMd_Ens_Cxt Md, Cxt
+Dim M As CodeModule: Set M = Md("QTool.F_Tool")
+Dim Src$(): Src = MdSrc(M)
+Dim Cxt$: Cxt = SrcSrtedLines(Src)
+If Cxt = Join(Src, vbCrLf) Then
+    Debug.Print "Md(F_Tool) is already sorted"
+Else
+    MdRpl_Cxt M, Cxt
+End If
 End Sub
 
-Sub Srt_Md()
-ZMd_Srt ZCurMd
+Sub Srt_G_Tool()
+Dim M As CodeModule: Set M = Md("QTool.G_Tool")
+Dim Src$(): Src = MdSrc(M)
+Dim Cxt$: Cxt = SrcSrtedLines(Src)
+If Cxt = Join(Src, vbCrLf) Then
+    Debug.Print "Md(F_Tool) is alread sorted"
+Else
+    MdRpl_Cxt M, Cxt
+End If
+End Sub
+
+Sub Srt_Md(Optional MdNm$)
+MdSrt DftMd(MdNm)
 End Sub
 
 Sub Srt_Pj()
-ZPj_Srt ZCurPj
+PjSrt CurPj
 End Sub
 
 Sub Srt_Vbe()
-ZVbe_Srt ZCurVbe
+VbeSrt CurVbe
 End Sub
 
 Sub UnRmk_All()
 Dim I, Md As CodeModule
 Dim NUnRmk%, Skip%
-For Each I In ZPj_MbrAy(ZCurPj)
+For Each I In PjMbrAy(CurPj)
     Set Md = I
-    If ZMd_UnRmk(Md) Then
+    If MdUnRmk(Md) Then
         NUnRmk = NUnRmk + 1
     Else
         Skip = Skip + 1
@@ -391,5 +444,5 @@ Debug.Print "SKip"; Skip
 End Sub
 
 Sub UnRmk_Mth()
-ZMth_UnRmk_Bdy ZCurMth
+MthUnRmk CurMth
 End Sub

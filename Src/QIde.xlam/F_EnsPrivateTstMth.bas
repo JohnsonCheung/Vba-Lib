@@ -11,11 +11,11 @@ For J = 0 To S1S2_UB(Ay)
    MdNm = S1S2.S1
    MthNm = S1S2.S2
 '   Set M = Md(MdNm)
-   MdMth_EnsPrivate M, MthNm
+   MthEnsPrivate M, MthNm
 Next
 End Sub
 
-Sub MdMth_EnsPrivate(A As CodeModule, MthNm$)
+Sub MthEnsPrivate(A As CodeModule, MthNm$)
 
 End Sub
 

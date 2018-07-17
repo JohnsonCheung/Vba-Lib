@@ -2,14 +2,27 @@ Attribute VB_Name = "G_Str"
 Option Explicit
 
 Property Get AlignL$(A, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
-Const CSub$ = "AlignL"
-If W <= 0 Then AlignL = A: Exit Property
-If ErIfNotEnoughWdt And DoNotCut Then
-    Stop
-    'Er CSub, "Both {ErIfNotEnoughWdt} and {DontCut} cannot be True", ErIfNotEnoughWdt, DoNotCut
+Dim L%: L = Len(A)
+If L > W Then
+    If ErIfNotEnoughWdt Then
+        Stop
+        'Er CSub, "Len({S)) > {W}", S, W
+    End If
+    If DoNotCut Then
+        AlignL = A
+        Exit Property
+    End If
 End If
-Dim S$: S = ToStr(A)
-AlignL = StrAlignL(S, W, ErIfNotEnoughWdt, DoNotCut)
+
+If W >= L Then
+    AlignL = A & Space(W - L)
+    Exit Property
+End If
+If W > 2 Then
+    AlignL = Left(A, W - 2) + ".."
+    Exit Property
+End If
+AlignL = Left(A, W)
 End Property
 
 Property Get AlignR$(S, W%)
@@ -97,31 +110,6 @@ Else
 End If
 End Property
 
-Property Get StrAlignL$(S$, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
-Const CSub$ = "StrAlignL"
-Dim L%: L = Len(S)
-If L > W Then
-    If ErIfNotEnoughWdt Then
-        Stop
-        'Er CSub, "Len({S)) > {W}", S, W
-    End If
-    If DoNotCut Then
-        StrAlignL = S
-        Exit Property
-    End If
-End If
-
-If W >= L Then
-    StrAlignL = S & Space(W - L)
-    Exit Property
-End If
-If W > 2 Then
-    StrAlignL = Left(S, W - 2) + ".."
-    Exit Property
-End If
-StrAlignL = Left(S, W)
-End Property
-
 Property Get StrDup$(N%, S)
 Dim O$, J%
 For J = 0 To N - 1
@@ -151,33 +139,6 @@ Wend
 SubStrCnt = O
 End Property
 
-Property Get ToStr$(A)
-If IsPrim(A) Then ToStr = A: Exit Property
-If IsNothing(A) Then ToStr = "#Nothing": Exit Property
-If IsEmpty(A) Then ToStr = "#Empty": Exit Property
-If IsObject(A) Then
-    Dim T$
-    T = TypeName(A)
-    Select Case T
-    Case "CodeModule"
-        Dim M As CodeModule
-        Set M = A
-        ToStr = FmtQQ("*Md{?}", M.Parent.Name)
-        Exit Property
-    End Select
-    ToStr = "*" & T
-    Exit Property
-End If
-
-If IsArray(A) Then
-    Dim Ay: Ay = A: ReDim Ay(0)
-    T = TypeName(Ay(0))
-    ToStr = "*[" & T & "]"
-    Exit Property
-End If
-Stop
-End Property
-
 Property Get TrimWhite$(A)
 TrimWhite = RTrimWhite(LTrimWhite(A))
 End Property
@@ -195,49 +156,4 @@ End Sub
 Sub ZZ__Tst()
 ZZ_InstrN
 ZZ_SubStrCnt
-End Sub
-
-Private Sub ZZ_InstrN()
-Dim Act&, Exp&, S, SubStr, N%
-
-'    12345678901234
-S = ".aaaa.aaaa.bbb"
-SubStr = "."
-N = 1
-Exp = 1
-Act = InstrN(S, SubStr, N)
-Stop
-'Ass Exp = Act
-
-'    12345678901234
-S = ".aaaa.aaaa.bbb"
-SubStr = "."
-N = 2
-Exp = 6
-Act = InstrN(S, SubStr, N)
-Stop
-'Ass Exp = Act
-
-'    12345678901234
-S = ".aaaa.aaaa.bbb"
-SubStr = "."
-N = 3
-Exp = 11
-Act = InstrN(S, SubStr, N)
-Stop
-'Ass Exp = Act
-
-'    12345678901234
-S = ".aaaa.aaaa.bbb"
-SubStr = "."
-N = 4
-Exp = 0
-Act = InstrN(S, SubStr, N)
-Stop
-'Ass Exp = Act
-End Sub
-
-Private Sub ZZ_SubStrCnt()
-Ass SubStrCnt("aaaa", "aa") = 2
-Ass SubStrCnt("aaaa", "a") = 4
 End Sub

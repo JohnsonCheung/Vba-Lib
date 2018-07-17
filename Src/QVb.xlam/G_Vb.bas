@@ -62,29 +62,6 @@ Property Get NowStr$()
 NowStr = Format(Now(), "YYYY-MM-DD HH:MM:SS")
 End Property
 
-Property Get ObjCompoundPrp$(Obj, PrpSsl$)
-Dim Ny$(): Ny = SslSy(PrpSsl)
-Dim O$(), I
-For Each I In Ny
-    Push O, CallByName(Obj, CStr(I), VbGet)
-Next
-ObjCompoundPrp = Join(O, "|")
-End Property
-
-Property Get ObjPrp(Obj, PrpPth$)
-'Ret the Obj's Get-Property-Value using Pth, which is dot-separated-string
-Dim Ny$()
-    Ny = Split(PrpPth, ".")
-Dim O
-    Dim J%, U%
-    Set O = Obj
-    U = UB(Ny)
-    For J = 0 To U - 1      ' U-1 is to skip the last Pth-Seg
-        Set O = CallByName(O, Ny(J), VbGet) ' in the middle of each path-seg, they must be object, so use [Set O = ...] is OK
-    Next
-
-ObjPrp = CallByName(O, Ny(U), VbGet) ' Last Prp may be non-object, so must use 'Asg'
-End Property
 
 Property Get PgmPth$()
 PgmPth = FfnPth(Excel.Application.VBE.ActiveVBProject.Filename)
@@ -106,52 +83,6 @@ For Each I In MthNy
    Asg Run(I, O), O
 Next
 Asg O, PipeAy
-End Property
-
-Property Get ToCellStr$(V, Optional ShwZer As Boolean)
-'CellStr is a string can be displayed in a cell
-If M_Is.IsEmp(V) Then Exit Property
-If IsStr(V) Then
-    ToCellStr = V
-    Exit Property
-End If
-If IsBool(V) Then
-    ToCellStr = IIf(V, "TRUE", "FALSE")
-    Exit Property
-End If
-
-If IsObject(V) Then
-    ToCellStr = "[" & TypeName(V) & "]"
-    Exit Property
-End If
-If ShwZer Then
-    If IsNumeric(V) Then
-        If V = 0 Then ToCellStr = "0"
-        Exit Property
-    End If
-End If
-If IsArray(V) Then
-    If AyIsEmp(V) Then Exit Property
-    ToCellStr = "Ay" & UB(V) & ":" & V(0)
-    Exit Property
-End If
-If InStr(V, vbCrLf) > 0 Then
-    ToCellStr = Brk(V, vbCrLf).S1 & "|.."
-    Exit Property
-End If
-ToCellStr = V
-End Property
-
-Property Get ToLy(V) As String()
-If IsPrim(V) Then
-   ToLy = ApSy(V)
-ElseIf IsArray(V) Then
-   ToLy = AySy(V)
-ElseIf IsObject(V) Then
-   ToLy = ApSy("*Type: " & TypeName(V))
-Else
-   Stop
-End If
 End Property
 
 Property Get Tst() As Tst
@@ -182,20 +113,7 @@ AyBrw Check
 Stop
 End Sub
 
-Sub DtaEr()
-MsgBox "DtaEr"
-Stop
-End Sub
 
-Sub NeverEr()
-MsgBox "Should never reach here"
-Stop
-End Sub
-
-Sub PmEr()
-MsgBox "Parameter Er"
-Stop
-End Sub
 
 Function RunAv(MthNm$, Av)
 Dim O
@@ -214,12 +132,3 @@ Case Else: Stop
 End Select
 RunAv = O
 End Function
-
-Sub Stp()
-Stop
-End Sub
-
-Private Sub ZZZ_ObjCompoundPrp()
-Dim Act$: Act = ObjCompoundPrp(Excel.Application.VBE.ActiveVBProject, "FileName Name")
-Ass Act = "C:\Users\user\Desktop\Vba-Lib-1\QVb.xlam|QVb"
-End Sub

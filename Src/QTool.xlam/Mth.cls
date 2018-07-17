@@ -16,5 +16,5 @@ Nm = MthNm
 Set Init = Me
 End Property
 Property Get ToStr$()
-ToStr = "Mth(" & ZMd_DNm(Md) & "." & Nm & ")"
+ToStr = "Mth(" & MdDNm(Md) & "." & Nm & ")"
 End Property

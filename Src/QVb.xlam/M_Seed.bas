@@ -1,18 +1,15 @@
-Attribute VB_Name = "M_LABC"
+Attribute VB_Name = "M_Seed"
 Option Explicit
 
-Property Get Seed_Expand$(QVbl$, Ny0)
-Dim O$()
-Dim Sy$()
-    Sy = SplitVBar(QVbl)
-Dim Ny$(), J%, I%
+Property Get Seed_Expand$(VblQQStr, Ny0)
+'Seed is a VblQQ-String
+Dim A$, J%, O$()
+Dim Ny$()
 Ny = DftNy(Ny0)
 For J = 0 To UB(Ny)
-    For I = 0 To UB(Sy)
-       Push O, Replace(Sy(I), "?", Ny(J))
-    Next
+    Push O, Replace(VblQQStr, "?", Ny(J))
 Next
-Seed_Expand = JnCrLf(O)
+Seed_Expand = RplVBar(JnCrLf(O))
 End Property
 
 Private Sub ZZ_Seed_Expand()

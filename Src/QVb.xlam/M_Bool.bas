@@ -40,14 +40,6 @@ End Select
 End Property
 
 Property Get BoolOpStr_IsVdt(A$) As Boolean
-BoolOpStr_IsVdt = IsInUCaseSy(A, SyOfBoolOp)
+BoolOpStr_IsVdt = IsInUCaseSy(A, Sy_OfBoolOp)
 End Property
 
-Property Get SyOfBoolOp() As String()
-Static Y$(), X As Boolean
-If Not X Then
-    X = True
-    Y = SslSy("AND OR")
-End If
-SyOfBoolOp = Y
-End Property

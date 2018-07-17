@@ -21,9 +21,9 @@ Type ThowMsgOrVar
     ThowMsg As String
 End Type
 
-Property Get TMOIntSomInt(I%) As ThowMsgOrInt
-TMOIntSomInt.Som = True
-TMOIntSomInt.Int = I
+Property Get TMOIntIntOpt(I%) As ThowMsgOrInt
+TMOIntIntOpt.Som = True
+TMOIntIntOpt.Int = I
 End Property
 
 Property Get TMOIntThowMsg(ThowMsg$) As ThowMsgOrInt
@@ -33,23 +33,23 @@ End Property
 Property Get TMOStrDmp(A As ThowMsgOrStr, Optional Nm$ = "ThowMsgOrStr")
 With A
     Debug.Print Nm$; " = ";
-    Debug.Print IIf(.Som, "SomStr ", "SomThowMsg ");
+    Debug.Print IIf(.Som, "StrOpt ", "SomThowMsg ");
     Debug.Print IIf(.Som, .Str, .ThowMsg)
 End With
 End Property
 
-Property Get TMOStrSomStr(Str$) As ThowMsgOrStr
-TMOStrSomStr.Som = True
-TMOStrSomStr.Str = Str
+Property Get TMOStrStrOpt(Str$) As ThowMsgOrStr
+TMOStrStrOpt.Som = True
+TMOStrStrOpt.Str = Str
 End Property
 
 Property Get TMOStrThowMsg(ThowMsg$) As ThowMsgOrStr
 TMOStrThowMsg.ThowMsg = ThowMsg
 End Property
 
-Property Get TMOSySomSy(Sy$()) As ThowMsgOrSy
-TMOSySomSy.Som = True
-TMOSySomSy.Sy = Sy
+Property Get TMOSySyOpt(Sy$()) As ThowMsgOrSy
+TMOSySyOpt.Som = True
+TMOSySyOpt.Sy = Sy
 End Property
 
 Property Get TMOSySomThowMsg(ThowMsg$) As ThowMsgOrSy

@@ -76,7 +76,7 @@ Dim O$(), I, J&, U&
 U = UB(Ay)
 ReSz O, U
 For Each I In Ay
-    O(J) = ToCellStr(I)
+    O(J) = VarCellStr(I)
     J = J + 1
 Next
 End Property
@@ -1015,88 +1015,11 @@ Dim ODry()
 AyZipAp = ODry
 End Property
 
-Property Get FnyIxAy(A$(), SubFny0) As Integer()
-Dim SubFny$(): SubFny = DftNy(SubFny0)
-If AyIsEmp(SubFny) Then Stop
-Dim O%(), U&, J%
-U = UB(SubFny)
-ReSz O, U
-For J = 0 To U
-    O(J) = AyIx(A, SubFny(J))
-    If O(J) = -1 Then Stop
-Next
-End Property
-
-Property Get IxAy_IsAllGE0(IxAy&()) As Boolean
-Dim J&
-For J = 0 To UB(IxAy)
-    If IxAy(J) = -1 Then Exit Property
-Next
-IxAy_IsAllGE0 = True
-End Property
-
-Property Get IxAy_IsParitial_of_0toU(IxAy, U&) As Boolean
-Const CSub$ = "Ass IxAy_IsParitial_of_0toU"
-Const Msg$ = "{IxAy} is not PartialIx-of-{U}." & _
-"|PartialIxAy-Of-U is defined as:" & _
-"|It should be Lng()" & _
-"|It should have 0 to U elements" & _
-"|It should have each element of value between 0 and U" & _
-"|It should have no dup element" & _
-"|All elements should have value equal or less than U"
-
-If Not IsLngAy(IxAy) Then Exit Property
-If AyIsEmp(IxAy) Then IxAy_IsParitial_of_0toU = True: Exit Property
-If AyHasDupEle(IxAy) Then Exit Property
-Dim I
-For Each I In IxAy
-   If 0 > I Or I > U Then Exit Property
-Next
-IxAy_IsParitial_of_0toU = True
-End Property
-
-Property Get PartialIxAy_CompleteIxAy(PartialIxAy&(), U&) As Long()
-'Des:Make a complete-IxAy-of-U by partialIxAy
-'Des:A complete-IxAy-Of-U is defined as
-'Des:it has (U+1)-elements,
-'Des:it does not have dup element
-'Des:it has all element of value between 0 and U
-Ass IxAy_IsParitial_of_0toU(PartialIxAy, U)
-Dim I&(): I = ULngSeq(U)
-PartialIxAy_CompleteIxAy = AyAddAp(PartialIxAy, AyMinus(I, PartialIxAy))
-End Property
 
 
-Property Get UIntSeq(U&, Optional IsFmOne As Boolean) As Integer()
-Dim O%(): ReDim O(U)
-Dim J&
-If IsFmOne Then
-    For J = 0 To U
-        O(J) = J + 1
-    Next
-Else
-    For J = 0 To U
-        O(J) = J
-    Next
-End If
-UIntSeq = O
-End Property
 
-Property Get ULngSeq(U&, Optional IsFmOne As Boolean) As Long()
-Dim O&()
-ReDim O(U)
-Dim J&
-If IsFmOne Then
-    For J = 0 To U
-        O(J) = J + 1
-    Next
-Else
-    For J = 0 To U
-        O(J) = J
-    Next
-End If
-ULngSeq = O
-End Property
+
+
 
 Sub AyBrw(Ay, Optional Fnn$)
 Dim T$

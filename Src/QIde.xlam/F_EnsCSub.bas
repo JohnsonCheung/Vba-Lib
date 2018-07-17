@@ -30,16 +30,16 @@ Attribute VB_Name = "F_EnsCSub"
 'Ny = MdMthNy(A)
 'If AyIsEmp(Ny) Then Exit Sub
 'For Each Mth In Ny
-'   MdMth_EnsCSub A, CStr(Mth)
+'   MthEnsCSub A, CStr(Mth)
 'Next
 'End Sub
 '
-'Function MdMth_CSubBrk(A As CodeModule, MthNm$) As CSubBrk
-'Const CSub$ = "MdMth_CSubBrk"
+'Function MthCSubBrk(A As CodeModule, MthNm$) As CSubBrk
+'Const CSub$ = "MthCSubBrk"
 'Dim MLy$()
 'Dim MLno&
-'   MLno = MdMth_Lno(A, MthNm)
-'   MLy = MdMth_BdyLy(A, MthNm)
+'   MLno = MthLno(A, MthNm)
+'   MLy = MthBdyLy(A, MthNm)
 '
 'Dim IsUsingCSub As Boolean '-> NewAt
 '   IsUsingCSub = False
@@ -109,18 +109,18 @@ Attribute VB_Name = "F_EnsCSub"
 '       .MdNm = MdNm(A)
 '       .MthNm = MthNm
 '   End With
-'MdMth_CSubBrk = O
+'MthCSubBrk = O
 'End Function
 '
-'Sub MdMth_DmpCSubBrk(A As CodeModule, MthNm$)
+'Sub MthDmpCSubBrk(A As CodeModule, MthNm$)
 'Const CSub$ = "DmpCSubBrk"
-'Debug.Print CSubBrk_Str(MdMth_CSubBrk(A, MthNm))
+'Debug.Print CSubBrk_Str(MthCSubBrk(A, MthNm))
 'End Sub
 '
-'Sub MdMth_EnsCSub(A As CodeModule, MthNm$)
+'Sub MthEnsCSub(A As CodeModule, MthNm$)
 'Const CSub$ = "MdMthEnsCSub"
 'Dim B As CSubBrk
-'    B = MdMth_CSubBrk(A, MthNm)
+'    B = MthCSubBrk(A, MthNm)
 'With B
 '   If .NeedDlt Then
 '       A.DeleteLines .OldLno         '<==
@@ -181,7 +181,7 @@ Attribute VB_Name = "F_EnsCSub"
 'Dim Ny$(): Ny = MdMthNy(A)
 'If AyIsEmp(Ny) Then Exit Function
 'For Each Mth In Ny
-'   Push Dry, CSubBrk_Dr(MdMth_CSubBrk(A, CStr(Mth)))
+'   Push Dry, CSubBrk_Dr(MthCSubBrk(A, CStr(Mth)))
 'Next
 'MdCSubDry = Dry
 'End Function
@@ -189,7 +189,7 @@ Attribute VB_Name = "F_EnsCSub"
 'Private Sub CSubBrk_Dmp__Tst()
 'End Sub
 '
-'Private Sub MdMth_CSubBrk__Tst()
-'CSubBrk_Dmp MdMth_CSubBrk(CurMd, "MdMth_CSubBrk_Tst")
+'Private Sub MthCSubBrk__Tst()
+'CSubBrk_Dmp MthCSubBrk(CurMd, "MthCSubBrk_Tst")
 'Stop
 'End Sub

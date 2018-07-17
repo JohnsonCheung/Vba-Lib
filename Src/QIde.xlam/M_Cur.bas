@@ -158,9 +158,9 @@ Stop '
 'MdMthDry = SrcMthDry(MdSrc(A), MdNm(A), MdTyStr(A), WithBdyLy, WithBdyLines)
 End Function
 
-Function MdMth_RRCC(A As CodeModule, MthNm$) As RRCC
+Function MthRRCC(A As CodeModule, MthNm$) As RRCC
 Stop '
-'MdMth_RRCC = SrcMth_RRCC(MdSrc(A), MthNm)
+'MthRRCC = SrcMth_RRCC(MdSrc(A), MthNm)
 End Function
 
 Function MdTyItmCnt(A As CodeModule) As SrcItmCnt

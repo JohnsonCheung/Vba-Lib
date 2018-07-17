@@ -12,3 +12,7 @@ Property Get S1S2(S1, S2) As S1S2
 Dim O As New S1S2
 Set S1S2 = O.Init(S1, S2)
 End Property
+Property Get Drs(Fny0, Dry()) As Drs
+Dim O As New Drs
+Set Drs = O.Init(Fny0, Dry)
+End Property

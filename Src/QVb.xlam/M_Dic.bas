@@ -8,8 +8,37 @@ Enum e_DicLyOpt
     e_KeyLinesFmt = 2
 End Enum
 
-Property Get CvDic(I) As Dictionary
-Set CvDic = I
+Sub DicCmpBrw(A As Dictionary, B As Dictionary, Optional Nm1$ = "Fst", Optional Nm2$ = "Snd")
+DCRslt_Brw DicCmp(A, B, Nm1, Nm2)
+End Sub
+Private Property Get ZSamKeyDifVal_DicPair(A As Dictionary, B As Dictionary) As DicPair
+Dim K, A1 As New Dictionary, B1 As New Dictionary
+For Each K In A.Keys
+    If B.Exists(K) Then
+        If A(K) <> B(K) Then
+            A1.Add K, A(K)
+            B1.Add K, B(K)
+        End If
+    End If
+Next
+With ZSamKeyDifVal_DicPair
+    Set .A = A1
+    Set .B = B1
+End With
+End Property
+
+Property Get DicCmp(A As Dictionary, B As Dictionary, Optional Nm1$ = "Fst", Optional Nm2$ = "Snd") As DCRslt
+Dim O As New DCRslt
+Set O.AExcess = DicMinus(A, B)
+Set O.BExcess = DicMinus(B, A)
+Set O.Sam = Intersect(A, B)
+With ZSamKeyDifVal_DicPair(A, B)
+    Set O.ADif = .A
+    Set O.BDif = .B
+End With
+O.Nm1 = Nm1
+O.Nm2 = Nm2
+Set DicCmp = O
 End Property
 
 Property Get DicAdd(A As Dictionary, B As Dictionary) As Dictionary
@@ -310,9 +339,9 @@ Next
 DicS1S2Ay = O
 End Property
 
-Property Get DicSomV(A As Dictionary, K) As SomV
-If Not A.Exists(K) Then Set DicSomV = New SomV: Exit Property
-Set DicSomV = JVb.SomV(A(K))
+Property Get DicValOpt(A As Dictionary, K) As ValOpt
+If Not A.Exists(K) Then Set DicValOpt = New ValOpt: Exit Property
+Set DicValOpt = JVb.ValOpt(A(K))
 End Property
 
 Property Get DicSrt(A As Dictionary) As Dictionary
@@ -403,7 +432,7 @@ With KeyVal
 End With
 End Sub
 
-Sub DicPushSomKeyVal(A As SomKeyVal)
+Sub DicPushKeyValOpt(A As KeyValOpt)
 With A
    If .Som Then DicPushKeyVal A, .KeyVal
 End With

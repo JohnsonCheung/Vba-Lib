@@ -222,11 +222,11 @@ MdEnmNy = DclEnmNy(MdDclLy(A))
 End Function
 
 Function MdEnsMth(A As CodeModule, MthNm$, NewMthLines$)
-Dim OldMthLines$: OldMthLines = MdMth_BdyLines(A, MthNm)
+Dim OldMthLines$: OldMthLines = MthBdyLines(A, MthNm)
 If OldMthLines = NewMthLines Then
     Debug.Print FmtQQ("MdEnsMth: Mth(?) in Md(?) is same", MthNm, MdNm(A))
 End If
-MdMth_Rmv A, MthNm
+MthRmv A, MthNm
 MdAppLines A, NewMthLines
 Debug.Print FmtQQ("MdEnsMth: Mth(?) in Md(?) is replaced <=========", MthNm, MdNm(A))
 End Function
@@ -324,20 +324,20 @@ Function MdMthNy(A As CodeModule, Optional MthNmPatn$ = ".") As String()
 MdMthNy = AySrt(SrcMthNy(MdSrc(A), MthNmPatn))
 End Function
 
-Function MdMth_BdyLy(A As CodeModule, MthNm$) As String()
-MdMth_BdyLy = SrcMth_BdyLy(MdSrc(A), MthNm)
+Function MthBdyLy(A As CodeModule, MthNm$) As String()
+MthBdyLy = SrcMth_BdyLy(MdSrc(A), MthNm)
 End Function
 
-Sub MdMth_Go(A As CodeModule, MthNm$)
-MdGoRRCC A, MdMth_RRCC(A, MthNm)
+Sub MthGo(A As CodeModule, MthNm$)
+MdGoRRCC A, MthRRCC(A, MthNm)
 End Sub
 
-Function MdMth_LnoCntAy(A As CodeModule, MthNm$) As LnoCnt()
-MdMth_LnoCntAy = SrcMth_LnoCntAy(MdSrc(A), MthNm)
+Function MthLnoCntAy(A As CodeModule, MthNm$) As LnoCnt()
+MthLnoCntAy = SrcMth_LnoCntAy(MdSrc(A), MthNm)
 End Function
 
-Sub MdMth_Rmv(A As CodeModule, MthNm$)
-Dim M() As LnoCnt: M = MdMth_LnoCntAy(A, MthNm)
+Sub MthRmv(A As CodeModule, MthNm$)
+Dim M() As LnoCnt: M = MthLnoCntAy(A, MthNm)
 If Sz(M) = 0 Then
     Debug.Print FmtQQ("Fun[?] in Md[?] not found, cannot Rmv", MthNm, MdNm(A))
 Else
@@ -413,7 +413,7 @@ End Sub
 
 Function MdResLy(A As CodeModule, ResNm$, Optional ResPfx$ = "ZZRes") As String()
 Dim Z$()
-    Z = MdMth_BdyLy(A, ResPfx & ResNm)
+    Z = MthBdyLy(A, ResPfx & ResNm)
     If AyIsEmp(Z) Then
         Er "MdResLy", "{MthNm} in {Md} is not found", ResPfx & ResNm, MdNm(A)
     End If
@@ -597,9 +597,9 @@ Private Sub MdLy__Tst()
 aybrw MdLy(CurMd)
 End Sub
 
-Sub MdMth_LnoCntAy__Tst()
+Sub MthLnoCntAy__Tst()
 Stop '
-'Dim A() As LnoCnt: A = MdMth_LnoCntAy(Md("Md_"), "XX")
+'Dim A() As LnoCnt: A = MthLnoCntAy(Md("Md_"), "XX")
 'Dim J%
 'For J = 0 To LnoCnt_UB(A)
 '    LnoCnt_Dmp A(J)
@@ -622,7 +622,7 @@ End Sub
 Sub MdRmvLnoCntAy__Tst()
 Dim A() As LnoCnt
 Stop
-'A = MdMth_LnoCntAy(Md("Md_"), "XXX")
+'A = MthLnoCntAy(Md("Md_"), "XXX")
 'MdRmvLnoCntAy Md("Md_"), A
 End Sub
 

@@ -97,7 +97,7 @@ Nxt:
 SrcLxAy = O
 End Function
 
-Private Function SrcLxAy_EnsPrivate(A$(), LxAy&()) As SomStr()
+Private Function SrcLxAy_EnsPrivate(A$(), LxAy&()) As StrOpt()
 Dim U%: U = UB(LxAy)
 If U = -1 Then Exit Function
 Dim O() As StrOpt

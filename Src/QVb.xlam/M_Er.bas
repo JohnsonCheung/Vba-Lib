@@ -29,7 +29,7 @@ If Not AyIsEmp(Av) Then
    If Not AyIsEmp(Ny) Then
        For Each I In Ny
            Push O, Chr(9) & I
-           PushAy O, AyAddPfx(ToLy(Av(J)), Chr(9) & Chr(9))
+           PushAy O, AyAddPfx(VarLy(Av(J)), Chr(9) & Chr(9))
            J = J + 1
        Next
    End If

@@ -35,18 +35,11 @@ End Property
 
 Property Get IsInAp(V, ParamArray Ap()) As Boolean
 Dim Av(): Av = Ap
-IsInAp = IsInAy(V, Av)
-End Property
-
-Property Get IsInAy(V, Ay) As Boolean
-Dim J%
-For J = 0 To UB(Ay)
-    If Ay(J) = V Then IsInAy = True: Exit Property
-Next
+IsInAp = AyHas(Av, V)
 End Property
 
 Property Get IsInUCaseSy(V, Sy$()) As Boolean
-IsInUCaseSy = IsInAy(UCase(V), Sy)
+IsInUCaseSy = AyHas(Sy, UCase(V))
 End Property
 
 Property Get IsIntAy(V) As Boolean

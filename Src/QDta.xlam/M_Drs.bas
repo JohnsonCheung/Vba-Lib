@@ -1,6 +1,10 @@
 Attribute VB_Name = "M_Drs"
 Option Explicit
 
+Property Get DrsDt(A As Drs, DtNm$) As Dt
+Set DrsDt = Dt(DtNm, A.Fny, A.Dry)
+End Property
+
 Property Get DicAy_Drs(A() As Dictionary, Optional Fny0) As Drs
 Const CSub$ = "DicAy_Drs"
 Dim UDic%

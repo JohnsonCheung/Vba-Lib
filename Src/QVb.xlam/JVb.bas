@@ -47,51 +47,51 @@ Dim O As New S1S2
 Set S1S2 = O.Init(S1, S2)
 End Property
 
-Property Get SomBool(Bool As Boolean) As SomBool
-Dim O As New SomBool
-Set SomBool = O.Init(Bool)
+Property Get BoolOpt(Bool As Boolean) As BoolOpt
+Dim O As New BoolOpt
+Set BoolOpt = O.Init(Bool)
 End Property
 
-Property Get SomBoolAy(A() As Boolean) As SomBoolAy
-Dim O As New SomBoolAy
-Set SomBoolAy = O.Init(A)
+Property Get BoolAyOpt(A() As Boolean) As BoolAyOpt
+Dim O As New BoolAyOpt
+Set BoolAyOpt = O.Init(A)
 End Property
 
-Property Get SomDic(A As Dictionary) As SomDic
-Dim O As New SomDic
+Property Get DicOpt(A As Dictionary) As DicOpt
+Dim O As New DicOpt
 Set O.Dic = A
-Set SomDic = O
+Set DicOpt = O
 End Property
 
-Property Get SomInt(I%) As SomInt
-Dim O As New SomInt
-Set SomInt = O.Init(I)
+Property Get IntOpt(I%) As IntOpt
+Dim O As New IntOpt
+Set IntOpt = O.Init(I)
 End Property
 
-Property Get SomKeyVal(A As KeyVal) As SomKeyVal
-Dim O As New SomKeyVal
-Set SomKeyVal = O.Init(A)
+Property Get KeyValOpt(A As KeyVal) As KeyValOpt
+Dim O As New KeyValOpt
+Set KeyValOpt = O.Init(A)
 End Property
 
-Property Get SomS1S2(A As S1S2) As SomS1S2
-Dim O As New SomS1S2
-Set SomS1S2 = O.Init(A)
+Property Get S1S2Opt(A As S1S2) As S1S2Opt
+Dim O As New S1S2Opt
+Set S1S2Opt = O.Init(A)
 End Property
 
 '========================================================
-Property Get SomStr(S) As SomStr
-Dim O As New SomStr
-Set SomStr = O.Init(S)
+Property Get StrOpt(S) As StrOpt
+Dim O As New StrOpt
+Set StrOpt = O.Init(S)
 End Property
 
-Property Get SomSy(Sy$()) As SomSy
-Dim O As New SomSy
-Set SomSy = O.Init(Sy)
+Property Get SyOpt(Sy$()) As SyOpt
+Dim O As New SyOpt
+Set SyOpt = O.Init(Sy)
 End Property
 
-Property Get SomV(V) As SomV
-Dim O As New SomV
-Set SomV = O.Init(V)
+Property Get ValOpt(V) As ValOpt
+Dim O As New ValOpt
+Set ValOpt = O.Init(V)
 End Property
 
 Property Get StrObj(A) As StrObj

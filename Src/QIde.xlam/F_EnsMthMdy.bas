@@ -1,30 +1,30 @@
 Attribute VB_Name = "F_EnsMthMdy"
 Option Explicit
 
-Sub MdMth_EnsMdy(A As CodeModule, MthNm$, Mdy$)
-Dim Ix%(): Ix = MdMth_LnoAy(A, MthNm)
+Sub MthEnsMdy(A As CodeModule, MthNm$, Mdy$)
+Dim Ix%(): Ix = MthLnoAy(A, MthNm)
 Dim J%
 For J = 0 To UB(Ix)
    MdMthLno_EnsMdy A, Ix(J), Mdy
 Next
 End Sub
 
-Sub MdMth_EnsPrivate(A As CodeModule, MthNm$)
-MdMth_EnsMdy A, MthNm, "Private"
+Sub MthEnsPrivate(A As CodeModule, MthNm$)
+MthEnsMdy A, MthNm, "Private"
 End Sub
 
-Sub MdMth_EnsPublic(A As CodeModule, MthNm$)
-MdMth_EnsMdy A, MthNm, "Public"
+Sub MthEnsPublic(A As CodeModule, MthNm$)
+MthEnsMdy A, MthNm, "Public"
 End Sub
 
-Sub MdMth_EnsMdy__Tst()
+Sub MthEnsMdy__Tst()
 Dim M As CodeModule
 Dim MthNm$
 Dim Mdy$
 'Set M = Md("IDE_Feature001_EnsMthMdy")
 MthNm = "AAAX"
 Mdy = "Public"
-MdMth_EnsMdy M, MthNm, Mdy
+MthEnsMdy M, MthNm, Mdy
 End Sub
 
 Private Sub MdMthLno_EnsMdy(A As CodeModule, MthLno%, Mdy$)

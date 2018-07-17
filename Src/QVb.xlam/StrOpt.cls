@@ -2,7 +2,7 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "SomStr"
+Attribute VB_Name = "StrOpt"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
@@ -13,9 +13,9 @@ Public Str$, Som As Boolean
 Property Get ToStr$(Optional W% = 50)
 If Som Then
     If Len(Str) < W Then
-        ToStr = "*SomStr " & Str
+        ToStr = "*StrOpt " & Str
     Else
-        ToStr = "*SomStr " & AlignL(Str, 50)
+        ToStr = "*StrOpt " & AlignL(Str, 50)
     End If
 Else
     ToStr = "*NoStr"
@@ -26,13 +26,13 @@ Sub Dmp()
 Debug.Print ToStr
 End Sub
 
-Friend Property Get Init(S) As SomStr
+Friend Property Get Init(S) As StrOpt
 Str = S
 Som = True
 Set Init = Me
 End Property
 
-Function IsEq(A As SomStr) As Boolean
+Function IsEq(A As StrOpt) As Boolean
 If Som <> A.Som Then Exit Function
 If Str <> A.Str Then Exit Function
 IsEq = True

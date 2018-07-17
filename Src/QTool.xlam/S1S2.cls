@@ -15,5 +15,5 @@ Me.S2 = S2
 Set Init = Me
 End Property
 Property Get ToStr$()
-ToStr = FmtQQ("S1S2(S1(?) S2(?))", ZStr_Lin(S1), ZStr_Lin(S2))
+ToStr = FmtQQ("S1S2(S1(?) S2(?))", StrLin(S1), StrLin(S2))
 End Property
