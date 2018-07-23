@@ -97,7 +97,7 @@ Dim Er1$():                            Er1 = Ly0Ap_Ly( _
                                              PmRslt.ErLy, _
                                              SwRslt.ErLy, _
                                              StmtsRslt.ErLy)
-                                             
+
 Dim O As New SqTpRslt
 O.Er = Er1
 O.Stmts = Stmts

@@ -1,15 +1,15 @@
 Attribute VB_Name = "M_Jn"
 Option Explicit
 
-Property Get JnComma$(Ay)
+Function JnComma$(Ay)
 JnComma = Join(AySy(Ay), ",")
-End Property
+End Function
 
-Property Get JnCommaSpc(Ay)
+Function JnCommaSpc(Ay)
 JnCommaSpc = Join(AySy(Ay), ", ")
-End Property
+End Function
 
-Property Get JnCrLf$(Ay, Optional WithIx As Boolean)
+Function JnCrLf$(Ay, Optional WithIx As Boolean)
 If WithIx Then
     Dim O$(), J%
     For J = 0 To UB(Ay)
@@ -19,44 +19,44 @@ If WithIx Then
 Else
     JnCrLf = Join(AySy(Ay), vbCrLf)
 End If
-End Property
+End Function
 
-Property Get JnDblCrLf$(Ay)
+Function JnDblCrLf$(Ay)
 JnDblCrLf = Join(AySy(Ay), vbCrLf & vbCrLf)
-End Property
+End Function
 
-Property Get JnQDblComma$(Ay)
+Function JnQDblComma$(Ay)
 JnQDblComma = JnComma(AyQuoteDbl(AySy(Ay)))
-End Property
+End Function
 
-Property Get JnQDblSpc$(Ay)
+Function JnQDblSpc$(Ay)
 JnQDblSpc = JnSpc(AyQuoteDbl(AySy(Ay)))
-End Property
+End Function
 
-Property Get JnQSngComma$(Ay)
+Function JnQSngComma$(Ay)
 JnQSngComma = JnComma(AyQuoteSng(AySy(Ay)))
-End Property
+End Function
 
-Property Get JnQSngSpc$(Ay)
+Function JnQSngSpc$(Ay)
 JnQSngSpc = JnSpc(AyQuoteSng(AySy(Ay)))
-End Property
+End Function
 
-Property Get JnQSqBktComma$(Ay)
+Function JnQSqBktComma$(Ay)
 JnQSqBktComma = JnComma(AyQuoteSqBkt(AySy(Ay)))
-End Property
+End Function
 
-Property Get JnQSqBktSpc$(Ay)
+Function JnQSqBktSpc$(Ay)
 JnQSqBktSpc = JnSpc(AyQuoteSqBkt(AySy(Ay)))
-End Property
+End Function
 
-Property Get JnSpc$(Ay)
+Function JnSpc$(Ay)
 JnSpc = Join(AySy(Ay), " ")
-End Property
+End Function
 
-Property Get JnTab$(Ay)
+Function JnTab$(Ay)
 JnTab = Join(AySy(Ay), vbTab)
-End Property
+End Function
 
-Property Get JnVBar$(Ay)
+Function JnVBar$(Ay)
 JnVBar = Join(AySy(Ay), "|")
-End Property
+End Function

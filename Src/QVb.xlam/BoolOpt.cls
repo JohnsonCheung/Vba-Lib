@@ -10,6 +10,12 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Bool As Boolean, Som As Boolean
 
+Friend Property Get Init(Bool As Boolean) As BoolOpt
+Me.Bool = Bool
+Me.Som = True
+Set Init = Me
+End Property
+
 Property Get ToStr$()
 If Som Then
     ToStr = FmtQQ("BoolOpt(?)", Bool)
@@ -18,8 +24,4 @@ Else
 End If
 End Property
 
-Friend Property Get Init(Bool As Boolean) As BoolOpt
-Me.Bool = Bool
-Me.Som = True
-Set Init = Me
-End Property
+

@@ -7,19 +7,23 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
-Private B_Fny$()
-Private B_Dry()
+Private A_Dry() As Variant
+Private A_Fny() As String
 
 Property Get Dry() As Variant()
-Dry = B_Dry
+Dry = A_Dry
 End Property
 
 Property Get Fny() As String()
-Fny = B_Fny
+Fny = A_Fny
 End Property
 
-Property Get Init(Fny0, Dry()) As Drs
-B_Dry = Dry
-B_Fny = DftNy(Fny0)
+Friend Property Get Init(Fny0, Dry()) As Drs
+A_Fny = DftNy(Fny0)
+A_Dry = Dry
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = FmtQQ("Drs(|Fny(?)|?|)", Join(A_Fny, " "), DryToStr(A_Dry))
 End Property

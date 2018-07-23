@@ -2,14 +2,6 @@ Attribute VB_Name = "F_Ens"
 Option Explicit
 Private Const C_FldLvs$ = "Lx Src Som NewLin Md"
 
-Sub MdEnsZZAsPrivate(A As CodeModule)
-DrsEns MdDrs(A)
-End Sub
-
-Sub PjEnsZZAsPrivate(A As VBProject)
-DrsEns PjDrs(A)
-End Sub
-
 Function PjZZDrs(A As VBProject) As Drs
 Dim Dry(), I
 'For Each I In PjMdAy(A)
@@ -17,6 +9,14 @@ Dim Dry(), I
 'Next
 PjZZDrs = NewDrs(C_FldLvs, Dry)
 End Function
+
+Sub MdEnsZZAsPrivate(A As CodeModule)
+DrsEns MdDrs(A)
+End Sub
+
+Sub PjEnsZZAsPrivate(A As VBProject)
+DrsEns PjDrs(A)
+End Sub
 
 Private Sub DrsEns(A As Drs)
 If AyIsEmp(A.Dry) Then Exit Sub

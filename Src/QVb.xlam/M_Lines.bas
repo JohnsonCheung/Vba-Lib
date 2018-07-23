@@ -2,39 +2,39 @@ Attribute VB_Name = "M_Lines"
 Option Explicit
 Public Lines$
 
-Property Get LinesEndTrim$(Lines)
+Function LinesEndTrim$(Lines)
 LinesEndTrim = JnCrLf(LyEndTrim(SplitCrLf(Lines)))
-End Property
+End Function
 
-Property Get LinesLasLin$(Lines)
-Dim A$(): A = LinesLy(Lines): If Sz(A) = 0 Then Exit Property
+Function LinesLasLin$(Lines)
+Dim A$(): A = LinesLy(Lines): If Sz(A) = 0 Then Exit Function
 LinesLasLin = AyLasEle(A)
-End Property
+End Function
 
-Property Get LinesLinCnt&(Lines)
+Function LinesLinCnt&(Lines)
 LinesLinCnt = Sz(SplitCrLf(Lines))
-End Property
+End Function
 
-Property Get LinesLy(Lines) As String()
+Function LinesLy(Lines) As String()
 LinesLy = SplitLines(Lines)
-End Property
+End Function
 
-Property Get LinesSqH(Lines) As Variant()
+Function LinesSqH(Lines) As Variant()
 LinesSqH = AySqH(LinesLy(Lines))
-End Property
+End Function
 
-Property Get LinesSqV(Lines) As Variant()
+Function LinesSqV(Lines) As Variant()
 LinesSqV = AySqV(LinesLy(Lines))
-End Property
+End Function
 
-Property Get LinesVbl$(Lines)
+Function LinesVbl$(Lines)
 If InStr(Lines, "|") Then Er "Lines.ToVbl", "Cannt have [|] in {Lines}", Lines
 LinesVbl = Replace(Lines, vbCrLf, "|")
-End Property
+End Function
 
-Property Get LinesWdt%(Lines)
+Function LinesWdt%(Lines)
 LinesWdt = AyWdt(SplitCrLf(Lines))
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_LinesEndTrim

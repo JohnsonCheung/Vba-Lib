@@ -1,47 +1,6 @@
 Attribute VB_Name = "M_Dcl"
 Option Explicit
 
-Property Get DclEnmBdyLy(A$(), EnmNm$) As String()
-Dim B%: B = EnmLx(EnmNm): If B = -1 Then Exit Property
-Dim O$(), J%
-For J = B To U
-   Push O, A(J)
-   If HasPfx(A(J), "End Enum") Then EnmBdyLy = O: Exit Property
-Next
-Stop
-End Property
-
-Property Get DclEnmNy(A$()) As String()
-If AyIsEmp(A) Then Exit Property
-Dim I, O$()
-For Each I In A
-   PushNonEmp O, NewSrcLin(I).EnmNm
-Next
-DclEnmNy = O
-End Property
-
-Property Get DclNEnm%(A$())
-If AyIsEmp(A) Then Exit Property
-Dim I, O%
-For Each I In A
-   If SrcLin_IsEmn(I) Then O = O + 1
-Next
-NEnm = O
-End Property
-
-Property Get DclTyNy(A$(), Optional TyNmPatn$ = ".") As String()
-If AyIsEmp(A) Then Exit Property
-Dim O$(), L, M$, R As Re
-Set R = Re(TyNmPatn)
-For Each L In A
-   M = SrcLin_TyNm(L)
-   If R.Tst(M) Then
-       PushNonEmp O, M
-   End If
-Next
-TyNy = O
-End Property
-
 Function DclEnmLx%(A$(), EnmNm$)
 Dim O%, L$
 For O = 0 To U
@@ -89,15 +48,56 @@ Function DclTyLy(A$(), TyNm$) As String()
 DclTyLy = AyWhFmTo(A, DclTyFmTo(TyNm))
 End Function
 
-Private Sub ZZ_DclTyLines()
-Debug.Print DclTyLines(MdDclLy(CurMd), "AA")
-End Sub
+Function DclEnmBdyLy(A$(), EnmNm$) As String()
+Dim B%: B = EnmLx(EnmNm): If B = -1 Then Exit Function
+Dim O$(), J%
+For J = B To U
+   Push O, A(J)
+   If HasPfx(A(J), "End Enum") Then EnmBdyLy = O: Exit Function
+Next
+Stop
+End Function
 
-Private Function TyToIx(FmI&)
+Function DclEnmNy(A$()) As String()
+If AyIsEmp(A) Then Exit Function
+Dim I, O$()
+For Each I In A
+   PushNonEmp O, NewSrcLin(I).EnmNm
+Next
+DclEnmNy = O
+End Function
+
+Function DclNEnm%(A$())
+If AyIsEmp(A) Then Exit Function
+Dim I, O%
+For Each I In A
+   If SrcLin_IsEmn(I) Then O = O + 1
+Next
+NEnm = O
+End Function
+
+Function DclTyNy(A$(), Optional TyNmPatn$ = ".") As String()
+If AyIsEmp(A) Then Exit Function
+Dim O$(), L, M$, R As Re
+Set R = Re(TyNmPatn)
+For Each L In A
+   M = SrcLin_TyNm(L)
+   If R.Tst(M) Then
+       PushNonEmp O, M
+   End If
+Next
+TyNy = O
+End Function
+
+Private Function DclTyToIx%(A$(), FmLx%)
 If 0 > FmI Then TyToIx = -1: Exit Function
 Dim O&
 For O = FmI + 1 To UB(A)
    If HasPfx(A(O), "End Type") Then TyToIx = O: Exit Function
 Next
-TyToIx = -1
+DclTyToIx = -1
 End Function
+
+Private Sub ZZ_DclTyLines()
+Debug.Print DclTyLines(MdDclLy(CurMd), "AA")
+End Sub

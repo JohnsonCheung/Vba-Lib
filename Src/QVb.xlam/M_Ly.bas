@@ -1,10 +1,10 @@
 Attribute VB_Name = "M_Ly"
 Option Explicit
 
-Property Get LyDic(A$(), Optional JnSep$ = vbCrLf) As Dictionary
+Function LyDic(A$(), Optional JnSep$ = vbCrLf) As Dictionary
 Const CSub$ = "LyDic"
 Dim O As New Dictionary
-   If AyIsEmp(A) Then Set LyDic = O: Exit Property
+   If AyIsEmp(A) Then Set LyDic = O: Exit Function
    Dim I
    For Each I In A
        If Trim(I) = "" Then GoTo Nxt
@@ -19,11 +19,11 @@ Dim O As New Dictionary
 Nxt:
    Next
 Set LyDic = O
-End Property
+End Function
 
-Property Get LyEndTrim(A$()) As String()
-If AyIsEmp(A) Then Exit Property
-If AyLasEle(A) <> "" Then LyEndTrim = A: Exit Property
+Function LyEndTrim(A$()) As String()
+If AyIsEmp(A) Then Exit Function
+If AyLasEle(A) <> "" Then LyEndTrim = A: Exit Function
 Dim J%
 For J = UB(A) To 0 Step -1
     If Not Trim(A(J)) <> "" Then
@@ -31,45 +31,45 @@ For J = UB(A) To 0 Step -1
         O = A
         ReDim Preserve O(J)
         LyEndTrim = O
-        Exit Property
+        Exit Function
     End If
 Next
-End Property
+End Function
 
-Property Get LyHasMajPfx(A$(), MajPfx$) As Boolean
+Function LyHasMajPfx(A$(), MajPfx$) As Boolean
 Dim Cnt%, J%
 For J = 0 To UB(A)
     If HasPfx(A(J), MajPfx) Then Cnt = Cnt + 1
 Next
 LyHasMajPfx = Cnt > (Sz(A) \ 2)
-End Property
+End Function
 
-Property Get LyRmv2Dash(A$()) As String()
-If Sz(A) = 0 Then Exit Property
+Function LyRmv2Dash(A$()) As String()
+If Sz(A) = 0 Then Exit Function
 Dim O$(), I
 For Each I In A
     Push O, Rmv2Dash(CStr(I))
 Next
 LyRmv2Dash = O
-End Property
+End Function
 
-Property Get LySqH(A$()) As Variant()
+Function LySqH(A$()) As Variant()
 LySqH = AySqH(A)
-End Property
+End Function
 
-Property Get LySqV(A$()) As Variant()
+Function LySqV(A$()) As Variant()
 LySqV = AySqV(A)
-End Property
+End Function
 
-Property Get LyToStr$(A$())
+Function LyToStr$(A$())
 If Sz(A) = 0 Then
     LyToStr = "Ly()"
 Else
     LyToStr = FmtQQ("Ly(|?|)", JnCrLf(A, WithIx:=True))
 End If
-End Property
+End Function
 
-Property Get Ly_T1Rst_SyPair(A$()) As SyPair
+Function Ly_T1Rst_SyPair(A$()) As SyPair
 Dim J&, T1$(), Rst$()
 For J = 0 To UB(A)
     With LinT1Rst(A(J))
@@ -78,4 +78,4 @@ For J = 0 To UB(A)
     End With
 Next
 Set Ly_T1Rst_SyPair = SyPair(T1, Rst)
-End Property
+End Function

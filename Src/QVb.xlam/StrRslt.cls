@@ -11,16 +11,16 @@ Option Explicit
 Private A_ErLy$()
 Public Str$
 
-Property Get ErLy() As String()
+Function ErLy() As String()
 ErLy = A_ErLy
-End Property
-
-Property Get ToStr$()
-ToStr = Tag_NyStr_ObjAp("StrRslt", "Str ErLy", StrObj(Str), SyObj(ErLy))
-End Property
+End Function
 
 Friend Property Get Init(S, ErLy$()) As StrRslt
 Me.Str = S
 A_ErLy = ErLy
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = Tag_NyStr_ObjAp("StrRslt", "Str ErLy", StrObj(Str), SyObj(ErLy))
 End Property

@@ -1,35 +1,35 @@
 Attribute VB_Name = "M_Ft"
 Option Explicit
 
-Property Get FtDic(A) As Dictionary
+Function FtDic(A) As Dictionary
 Set FtDic = LyDic(FtLy(A))
-End Property
+End Function
 
-Property Get FtLines$(A)
+Function FtLines$(A)
 FtLines = Fso.GetFile(A).OpenAsTextStream.ReadAll
-End Property
+End Function
 
-Property Get FtLy(A) As String()
+Function FtLy(A) As String()
 FtLy = SplitLines(FtLines(A))
-End Property
+End Function
 
-Property Get FtOpnApp%(A)
+Function FtOpnApp%(A)
 Dim O%: O = FreeFile(1)
 Open A For Append As #O
 FtOpnApp = O
-End Property
+End Function
 
-Property Get FtOpnInp%(A)
+Function FtOpnInp%(A)
 Dim O%: O = FreeFile(1)
 Open A For Input As #O
 FtOpnInp = O
-End Property
+End Function
 
-Property Get FtOpnOup%(A)
+Function FtOpnOup%(A)
 Dim O%: O = FreeFile(1)
 Open A For Output As #O
 FtOpnOup = O
-End Property
+End Function
 
 Sub FtBrw(A)
 Shell "code.cmd """ & A & """", vbHide

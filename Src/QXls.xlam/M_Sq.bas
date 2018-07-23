@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Sq"
 Option Explicit
 
-Property Get SqCol(A, C%) As Variant()
+Function SqCol(A, C%) As Variant()
 Dim O()
 Dim NR&, J&
 NR = UBound(A, 1)
@@ -10,9 +10,9 @@ For J = 1 To NR
     O(J - 1) = A(J, C)
 Next
 SqCol = O
-End Property
+End Function
 
-Property Get SqDr(A, R&, Optional CnoAy) As Variant()
+Function SqDr(A, R&, Optional CnoAy) As Variant()
 Dim mCnoAy%()
    Dim J%
    If IsMissing(CnoAy) Then
@@ -33,11 +33,11 @@ Dim O()
        O(J) = A(R, C)
    Next
 SqDr = O
-End Property
+End Function
 
 
 
-Property Get SqDry(A) As Variant
+Function SqDry(A) As Variant
 Dim O(), NR&, NC%, R&, C%, UR&, UC%
 NR = UBound(A, 1)
 NC = UBound(A, 2)
@@ -52,24 +52,24 @@ For R = 1 To NR
     Push O, Dr
 Next
 SqDry = O
-End Property
+End Function
 
-Property Get SqIsEmp(Sq) As Boolean
+Function SqIsEmp(Sq) As Boolean
 SqIsEmp = True
 On Error GoTo X
 Dim A
-If UBound(Sq, 1) < 0 Then Exit Property
-If UBound(Sq, 2) < 0 Then Exit Property
+If UBound(Sq, 1) < 0 Then Exit Function
+If UBound(Sq, 2) < 0 Then Exit Function
 SqIsEmp = False
-Exit Property
+Exit Function
 X:
-End Property
+End Function
 
-Property Get SqRg(Sq, At As Range, Optional LoNm$) As Range
-If SqIsEmp(Sq) Then Exit Property
+Function SqRg(Sq, At As Range, Optional LoNm$) As Range
+If SqIsEmp(Sq) Then Exit Function
 Dim O As Range
 Set O = RgReSz(At, Sq)
 O.Value = Sq
 Set SqRg = O
-End Property
+End Function
 

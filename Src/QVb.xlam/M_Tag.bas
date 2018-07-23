@@ -1,26 +1,21 @@
 Attribute VB_Name = "M_Tag"
 Option Explicit
 
-Property Get Tag$(TagNm$, S)
+Function Tag$(TagNm$, S)
 If HasPfx(S, TagNm & "(") Then
     If HasSfx(S, ")") Then
         Tag = S
-        Exit Property
+        Exit Function
     End If
 End If
-If Has(S, vbCrLf) Then
-    Tag = FmtQQ("?(|?|?)", TagNm, S, TagNm)
-Else
-    Tag = FmtQQ("?(?)", TagNm, S)
-End If
-End Property
+End Function
 
-Property Get Tag_NyStr_ObjAp$(TagNm$, NyStr$, ParamArray ObjAp())
+Function Tag_NyStr_ObjAp$(TagNm$, NyStr$, ParamArray ObjAp())
 Dim Av(): Av = ObjAp
 Tag_NyStr_ObjAp = Tag_Ny_ObjAv(TagNm, SslSy(NyStr), Av)
-End Property
+End Function
 
-Private Property Get Tag_Ny_ObjAv$(TagNm$, Ny$(), ObjAv())
+Private Function Tag_Ny_ObjAv$(TagNm$, Ny$(), ObjAv())
 Ass AyIsSamSz(Ny, ObjAv)
 Dim S$
     Dim O$()
@@ -36,4 +31,4 @@ Dim S$
     Next
     S = JnCrLf(O)
 Tag_Ny_ObjAv = Tag(TagNm, S)
-End Property
+End Function

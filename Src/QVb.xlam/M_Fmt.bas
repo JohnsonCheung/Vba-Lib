@@ -1,12 +1,12 @@
 Attribute VB_Name = "M_Fmt"
 Option Explicit
 
-Property Get FmtMacro$(MacroStr$, ParamArray Ap())
+Function FmtMacro$(MacroStr$, ParamArray Ap())
 Dim Av(): Av = Ap
 FmtMacro = FmtMacroAv(MacroStr, Av)
-End Property
+End Function
 
-Property Get FmtMacroAv$(MacroStr$, Av())
+Function FmtMacroAv$(MacroStr$, Av())
 Dim Ay$(): Ay = MacroNy(MacroStr)
 Dim O$: O = MacroStr
 Dim J%, I
@@ -15,9 +15,9 @@ For Each I In Ay
     J = J + 1
 Next
 FmtMacroAv = O
-End Property
+End Function
 
-Property Get FmtMacroDic$(MacroStr$, Dic As Dictionary)
+Function FmtMacroDic$(MacroStr$, Dic As Dictionary)
 Dim Ay$(): Stop ' Ay = Macro(MacroStr).Ny
 If Not AyIsEmp(Ay) Then
     Dim O$: O = MacroStr
@@ -29,26 +29,25 @@ If Not AyIsEmp(Ay) Then
         End If
     Next
 End If
-FmtMacroDic = O
-End Property
+End Function
 
-Property Get FmtQQ$(QQVbl$, ParamArray Ap())
+Function FmtQQ$(QQVbl$, ParamArray Ap())
 Dim Av(): Av = Ap
 FmtQQ = FmtQQAv(QQVbl, Av)
-End Property
+End Function
 
-Property Get FmtQQAv$(QQVbl$, Av)
-If AyIsEmp(Av) Then FmtQQAv = QQVbl: Exit Property
+Function FmtQQAv$(QQVbl$, Av)
+If AyIsEmp(Av) Then FmtQQAv = QQVbl: Exit Function
 Dim O$
-    Dim I, NeedUnEsc As Boolean
+    Dim I, NeedEscUn As Boolean
     O = RplVBar(QQVbl)
     For Each I In Av
         If InStr(I, "?") > 0 Then
-            NeedUnEsc = True
+            NeedEscUn = True
             I = Replace(I, "?", Chr(255))
         End If
         O = Replace(O, "?", I, Count:=1)
     Next
-    If NeedUnEsc Then O = Replace(O, Chr(255), "?")
+    If NeedEscUn Then O = Replace(O, Chr(255), "?")
 FmtQQAv = O
-End Property
+End Function

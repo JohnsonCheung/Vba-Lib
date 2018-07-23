@@ -1,14 +1,14 @@
 Attribute VB_Name = "M_Cv"
 Option Explicit
-Property Get CvLo(A) As ListObject
+Function CvLo(A) As ListObject
 Set CvLo = A
-End Property
+End Function
 
-Property Get CvLoCol(A) As ListColumn
+Function CvLoCol(A) As ListColumn
 Set CvLoCol = A
-End Property
+End Function
 
-Property Get CvRg(A) As Range
+Function CvRg(A) As Range
 Set CvRg = A
-End Property
+End Function
 

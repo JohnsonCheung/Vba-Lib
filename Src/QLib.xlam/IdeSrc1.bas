@@ -594,7 +594,7 @@ Dim ODry()
             If Lx = 482 Then Stop
             IsMth = "*Mth"
             RmkLx = SrcMthLx_MthRmkLx(Src, Lx)
-            
+
         End If
         Dr = Array(IsMth, RmkLx, Lin)
         Push ODry, Dr

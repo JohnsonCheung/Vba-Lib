@@ -10,11 +10,13 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Md As CodeModule
 Public Nm$
+
 Property Get Init(A As CodeModule, MthNm) As Mth
 Set Md = A
 Nm = MthNm
 Set Init = Me
 End Property
+
 Property Get ToStr$()
 ToStr = "Mth(" & MdDNm(Md) & "." & Nm & ")"
 End Property

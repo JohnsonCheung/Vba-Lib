@@ -10,11 +10,11 @@ Attribute VB_Exposed = True
 Option Explicit
 Private B_Sy$()
 
-Property Get ToStr$()
-ToStr = Tag("SyObj", JnCrLf(B_Sy, WithIx:=True))
-End Property
-
 Friend Property Get Init(Sy$()) As SyObj
 B_Sy = Sy
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = Tag("SyObj", JnCrLf(B_Sy, WithIx:=True))
 End Property

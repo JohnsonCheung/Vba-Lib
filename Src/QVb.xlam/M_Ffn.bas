@@ -1,54 +1,57 @@
 Attribute VB_Name = "M_Ffn"
 Option Explicit
 
-Property Get FfnAddFnSfx$(A, Sfx$)
+Function FfnAddFnSfx$(A, Sfx$)
 FfnAddFnSfx = FfnRmvExt(A) & Sfx & FfnExt(A)
-End Property
+End Function
 
-Property Get FfnExt$(A)
+Function FfnExt$(A)
 Dim P%: P = InStrRev(A, ".")
-If P = 0 Then Exit Property
+If P = 0 Then Exit Function
 FfnExt = Mid(A, P)
-End Property
+End Function
 
-Property Get FfnFdr$(A)
+Function FfnFdr$(A)
 FfnFdr = PthFdr(FfnPth(A))
-End Property
+End Function
 
-Property Get FfnFn$(A)
+Function FfnFn$(A)
 Dim P%: P = InStrRev(A, "\")
-If P = 0 Then FfnFn = A: Exit Property
+If P = 0 Then FfnFn = A: Exit Function
 FfnFn = Mid(A, P + 1)
-End Property
+End Function
 
-Property Get FfnFnn$(A)
+Function FfnFnn$(A)
 FfnFnn = FfnRmvExt(A)
-End Property
+End Function
 
-Property Get FfnIsExist(A) As Boolean
+Function FfnIsExist(A) As Boolean
 FfnIsExist = Fso.FileExists(A)
-End Property
+End Function
 
-Property Get FfnPth$(A)
+Function FfnPth$(A)
 Dim P%: P = InStrRev(A, "\")
-If P = 0 Then Exit Property
+If P = 0 Then Exit Function
 FfnPth = Left(A, P)
-End Property
+End Function
 
-Property Get FfnRmvExt$(A)
+Function FfnRmvExt$(A)
 Dim P%: P = InStrRev(A, ".")
-If P = 0 Then FfnRmvExt = Left(A, P): Exit Property
+If P = 0 Then FfnRmvExt = Left(A, P): Exit Function
 FfnRmvExt = Left(A, P - 1)
-End Property
+End Function
 
-Property Get FfnRplExt$(A, NewExt)
+Function FfnRplExt$(A, NewExt)
 FfnRplExt = FfnRmvExt(A) & NewExt
-End Property
+End Function
 
 Sub FfnCpyToPth(A, ToPth$, Optional OvrWrt As Boolean)
 Fso.CopyFile A, ToPth$ & FfnFn(A), OvrWrt
 End Sub
 
 Sub FfnDlt(A)
-If FfnIsExist(A) Then Kill A
+On Error GoTo X
+Kill A
+Exit Sub
+X: Debug.Print FmtQQ("FfnDtl: Kill(?) Er(?)", A, Err.Description)
 End Sub

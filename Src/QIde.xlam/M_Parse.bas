@@ -6,6 +6,14 @@ Type Parse
     Ok As String
 End Type
 
+Sub ParseBrw(A As Parse)
+aybrw ParseToLy(A)
+End Sub
+
+Sub ParseDmp(A As Parse)
+AyDmp ParseToLy(A)
+End Sub
+
 Property Get ParseOneTerm(A, TermAy$())  'As Parse
 If Not A.IsOk Then ParseOneTerm = A: Exit Property
 Dim F$: F = StrPfx(A.Lin, TermAy)
@@ -15,7 +23,6 @@ If F = "" Then
 Else
    ParseOneTerm = NewOkParse(F, LTrim(RmvPfx(A.Lin, F)))
 End If
-End Property
 
 Property Get Parse_seKwBktPair(A As Parse) As Parse
 ParseKwBktPair = ParseStr(A, "()")
@@ -26,11 +33,11 @@ ParseKwEnm = ParseTerm(A, "Enum")
 End Property
 
 Property Get Parse_seKwMdy(A As Parse) As Parse
-ParseKwMdy = ParseOptOneTerm(A, SyOfMdy)
+ParseKwMdy = ParseOptOneTerm(A, SyOf_Mdy)
 End Property
 
 Property Get Parse_seKwMthTy(A As Parse) As Parse
-ParseKwMthTy = ParseOneTerm(A, SyOfMthTy)
+ParseKwMthTy = ParseOneTerm(A, SyOf_MthTy)
 End Property
 
 Property Get Parse_seKwOptBktPair(A As Parse) As Parse
@@ -65,7 +72,6 @@ If L = 0 Then
 Else
    ParseNm = NewOkParse(B, Mid(A.Lin, L + 1))
 End If
-End Property
 
 Property Get Parse_seOneChr(A As Parse, ChrLis$) As Parse
 If Not A.IsOk Then ParseOneChr = A: Exit Property
@@ -75,7 +81,6 @@ If HasSubStr(ChrLis, C) Then
 Else
    ParseOneChr = NewErParse(FmtQQ("One of ChrLis[?] not found", ChrLis), A.Lin)
 End If
-End Property
 
 Property Get Parse_seOneTerm(A As Parse, TermAy$()) As Parse
 Dim O As Parse
@@ -131,17 +136,7 @@ With O
    .Add "Is", IIf(A.IsOk, "Ok", "Er")
    .Add IIf(A.IsOk, "Rslt", "Er"), A.Er_or_Ok
 End With
-Set ParseToDic = O
-End Property
 
 Property Get Parse_seToLy(A As Parse) As String()
 ParseToLy = Dix(ParseToDic(A)).Ly
 End Property
-
-Sub ParseBrw(A As Parse)
-aybrw ParseToLy(A)
-End Sub
-
-Sub ParseDmp(A As Parse)
-AyDmp ParseToLy(A)
-End Sub

@@ -10,6 +10,22 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Str$, Som As Boolean
 
+Function IsEq(A As StrOpt) As Boolean
+If Som <> A.Som Then Exit Function
+If Str <> A.Str Then Exit Function
+IsEq = True
+End Function
+
+Sub Dmp()
+Debug.Print ToStr
+End Sub
+
+Friend Property Get Init(S) As StrOpt
+Str = S
+Som = True
+Set Init = Me
+End Property
+
 Property Get ToStr$(Optional W% = 50)
 If Som Then
     If Len(Str) < W Then
@@ -22,18 +38,4 @@ Else
 End If
 End Property
 
-Sub Dmp()
-Debug.Print ToStr
-End Sub
 
-Friend Property Get Init(S) As StrOpt
-Str = S
-Som = True
-Set Init = Me
-End Property
-
-Function IsEq(A As StrOpt) As Boolean
-If Som <> A.Som Then Exit Function
-If Str <> A.Str Then Exit Function
-IsEq = True
-End Function

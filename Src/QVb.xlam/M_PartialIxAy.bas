@@ -1,6 +1,7 @@
 Attribute VB_Name = "M_PartialIxAy"
 Option Explicit
-Property Get PartialIxAy_CompleteIxAy(PartialIxAy&(), U&) As Long()
+
+Function PartialIxAy_CompleteIxAy(PartialIxAy&(), U&) As Long()
 'Des:Make a complete-IxAy-of-U by partialIxAy
 'Des:A complete-IxAy-Of-U is defined as
 'Des:it has (U+1)-elements,
@@ -9,4 +10,4 @@ Property Get PartialIxAy_CompleteIxAy(PartialIxAy&(), U&) As Long()
 Ass IxAy_IsParitial_of_0toU(PartialIxAy, U)
 Dim I&(): I = SeqOfLng(0, U)
 PartialIxAy_CompleteIxAy = AyAddAp(PartialIxAy, AyMinus(I, PartialIxAy))
-End Property
+End Function

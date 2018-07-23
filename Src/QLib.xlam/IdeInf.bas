@@ -248,8 +248,8 @@ Sub TileV()
 CmdBtnOfTileV.Execute
 End Sub
 
-Function VisWinCnt&()
-VisWinCnt = ItrCntByBoolPrp(CurVbe.Windows, "Visible")
+Function VisWin_Cnt&()
+VisWin_Cnt = ItrCntByBoolPrp(CurVbe.Windows, "Visible")
 End Function
 
 Sub WinAp_Keep(ParamArray Ap())

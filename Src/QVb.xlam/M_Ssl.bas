@@ -1,14 +1,14 @@
 Attribute VB_Name = "M_Ssl"
 Option Explicit
 
-Property Get SslJnComma$(Ssl)
+Function SslJnComma$(Ssl)
 SslJnComma = JnComma(SslSy(Ssl))
-End Property
+End Function
 
-Property Get SslJnQuoteComma$(Ssl)
+Function SslJnQuoteComma$(Ssl)
 SslJnQuoteComma = JnComma(AyQuote(SslSy(Ssl), "'"))
-End Property
+End Function
 
-Property Get SslSy(Ssl) As String()
+Function SslSy(Ssl) As String()
 SslSy = Split(RmvDblSpc(Trim(Ssl)), " ")
-End Property
+End Function

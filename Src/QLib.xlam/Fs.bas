@@ -21,8 +21,11 @@ Sub FfnCpyToPth(A$, ToPth$, Optional OvrWrt As Boolean)
 Fso.CopyFile A, ToPth$ & FfnFn(A), OvrWrt
 End Sub
 
-Sub FfnDlt(Ffn)
-If FfnIsExist(Ffn) Then Kill Ffn
+Sub FfnDlt(A)
+On Error GoTo X
+Kill A
+Exit Sub
+X: Debug.Print FmtQQ("FfnDtl: Kill(?) Er(?)", A, Err.Description)
 End Sub
 
 Function FfnExt$(Ffn)

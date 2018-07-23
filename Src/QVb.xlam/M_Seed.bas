@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Seed"
 Option Explicit
 
-Property Get Seed_Expand$(VblQQStr, Ny0)
+Function Seed_Expand$(VblQQStr, Ny0)
 'Seed is a VblQQ-String
 Dim A$, J%, O$()
 Dim Ny$()
@@ -10,7 +10,7 @@ For J = 0 To UB(Ny)
     Push O, Replace(VblQQStr, "?", Ny(J))
 Next
 Seed_Expand = RplVBar(JnCrLf(O))
-End Property
+End Function
 
 Private Sub ZZ_Seed_Expand()
 Dim Ny0

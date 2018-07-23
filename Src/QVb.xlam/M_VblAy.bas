@@ -3,20 +3,20 @@ Option Explicit
 
 'SpecStr:Vbl: is Vertical-Bar-Lin.  It is a string without VbCr and VbLf.
 'SpecStr:Vbl: It uses | as VbCrLf.  It can be converted to Lines.
-Property Get VblAy_IsVdt(A$()) As Boolean
-If Sz(A) = 0 Then VblAy_IsVdt = True: Exit Property
+Function VblAy_IsVdt(A$()) As Boolean
+If Sz(A) = 0 Then VblAy_IsVdt = True: Exit Function
 Dim I
 For Each I In A
-    If Not Vbl_IsVdt(I) Then Exit Property
+    If Not Vbl_IsVdt(I) Then Exit Function
 Next
 VblAy_IsVdt = True
-End Property
+End Function
 
-Property Get VblAy_Lines$(A$(), Optional Pfx$, Optional Ident0%, Optional SfxAy0, Optional Sep$ = ",")
+Function VblAy_Lines$(A$(), Optional Pfx$, Optional Ident0%, Optional SfxAy0, Optional Sep$ = ",")
 VblAy_Lines = JnVBar(VblAy_Ly(A, Pfx, Ident0, SfxAy0, Sep))
-End Property
+End Function
 
-Property Get VblAy_Ly(A$(), Optional Pfx$, Optional Ident0%, Optional SfxAy0, Optional Sep$ = ",") As String()
+Function VblAy_Ly(A$(), Optional Pfx$, Optional Ident0%, Optional SfxAy0, Optional Sep$ = ",") As String()
 Ass VblAy_IsVdt(A)
 Dim NoSfxAy As Boolean
 Dim SfxWdt%
@@ -58,16 +58,16 @@ For J = 0 To U
     Push O, VblLines(A(J), Ident0:=Ident, Pfx:=P, Wdt0:=W, Sfx:=S)
 Next
 VblAy_Ly = O
-End Property
+End Function
 
-Property Get VblAy_Wdt%(A$())
-If Sz(A) = 0 Then Exit Property
+Function VblAy_Wdt%(A$())
+If Sz(A) = 0 Then Exit Function
 Dim W%, I
 For Each I In A
     W = Max(W, Vbl_Wdt(I))
 Next
 VblAy_Wdt = W
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_VblAy_Wdt

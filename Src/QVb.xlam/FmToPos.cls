@@ -10,10 +10,6 @@ Attribute VB_Exposed = True
 Option Explicit
 Public FmPos&, ToPos&
 
-Property Get ToStr$()
-ToStr = FmtQQ("(FmToPos ? ?)", FmPos, ToPos)
-End Property
-
 Friend Property Get Init(FmPos, ToPos) As FmToPos
 If FmPos >= 0 And ToPos >= 0 And ToPos >= FmPos Then
     Me.FmPos = FmPos
@@ -22,5 +18,8 @@ Else
     Me.FmPos = 0
     Me.ToPos = 0
 End If
-Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = FmtQQ("(FmToPos ? ?)", FmPos, ToPos)
 End Property

@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Max"
 Option Explicit
 
-Property Get MaxCol%()
+Function MaxCol%()
 Static C%
 If C = 0 Then
     Dim Ws As Worksheet
@@ -17,9 +17,9 @@ If C = 0 Then
     End If
 End If
 MaxCol = C
-End Property
+End Function
 
-Property Get MaxRow&()
+Function MaxRow&()
 Static R&
 If R = 0 Then
     Dim Ws As Worksheet
@@ -35,5 +35,5 @@ If R = 0 Then
     End If
 End If
 MaxRow = R
-End Property
+End Function
 

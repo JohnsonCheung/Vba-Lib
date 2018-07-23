@@ -1,7 +1,7 @@
 Attribute VB_Name = "G_VBar_HBar"
 Option Explicit
 
-Property Get HBar_SamValRg(A As Range) As Range
+Function HBar_SamValRg(A As Range) As Range
 Dim NCol%: NCol = RgNCol(A)
 Dim C1%, V, C2%, Fnd As Boolean
 For C1 = 1 To NCol - 1
@@ -21,16 +21,16 @@ Nxt:
 Next
 Fnd:
 If Fnd Then Set HBar_SamValRg = RgRCC(A, 1, C1, C2)
-End Property
+End Function
 
-Property Get VBarAy(A As Range) As Variant()
+Function VBarAy(A As Range) As Variant()
 Ass RgIsVBar(A)
 VBarAy = SqCol(RgSq(A), 1)
-End Property
+End Function
 
-Property Get VBarIntAy(A As Range) As Integer()
+Function VBarIntAy(A As Range) As Integer()
 VBarIntAy = AyIntAy(VBarAy(A))
-End Property
+End Function
 
 Sub HBar_MgeSamValCell(A As Range)
 Ass RgIsHBar(A)
@@ -47,9 +47,9 @@ A.Application.DisplayAlerts = Sav
 End Sub
 
 
-Property Get VBarSy(A As Range) As String()
+Function VBarSy(A As Range) As String()
 VBarSy = AySy(VBarAy(A))
-End Property
+End Function
 
 
 Sub VBar_MgeBottomEmpCell(A As Range)

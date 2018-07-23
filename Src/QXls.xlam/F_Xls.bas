@@ -1,7 +1,7 @@
 Attribute VB_Name = "F_Xls"
 Option Explicit
 
-Property Get NmNxtSeqNm$(A, Optional NDig% = 3)
+Function NmNxtSeqNm$(A, Optional NDig% = 3)
 If NDig = 0 Then Stop
 Dim R$: R = Right(A, NDig + 1)
 If Left(R, 1) = "_" Then
@@ -9,20 +9,20 @@ If Left(R, 1) = "_" Then
         Dim L$: L = Left(A, Len(A) - NDig)
         Dim Nxt%: Nxt = Val(Mid(R, 2)) + 1
         NmNxtSeqNm = L + ZerFill(Nxt, NDig)
-        Exit Property
+        Exit Function
     End If
 End If
 NmNxtSeqNm = A & "_" & StrDup(NDig - 1, "0") & "1"
-End Property
+End Function
 
-Property Get NmSeqNo%(A)
+Function NmSeqNo%(A)
 Dim B$: B = TakAftRev(A, "_")
-If B = "" Then Exit Property
-If Not IsNumeric(B) Then Exit Property
+If B = "" Then Exit Function
+If Not IsNumeric(B) Then Exit Function
 NmSeqNo = B
-End Property
+End Function
 
-Property Get TitS1S2Ay_Sq(TitS1S2Ay() As S1S2, Fny$()) As Variant()
+Function TitS1S2Ay_Sq(TitS1S2Ay() As S1S2, Fny$()) As Variant()
 Dim TitColAy$():   TitColAy = A_TitColAy(TitS1S2Ay, Fny)
 Dim VBarColAy():  VBarColAy = A_VBarColAy(TitColAy)
 Dim NRow%:             NRow = A_TitNRow(VBarColAy)
@@ -35,10 +35,10 @@ For C = 0 To UB(Fny)
     Next
 Next
 TitS1S2Ay_Sq = Sq
-End Property
-Property Get ZerFill$(N%, NDig%)
+End Function
+Function ZerFill$(N%, NDig%)
 ZerFill = Format(N, StrDup(NDig, 0))
-End Property
+End Function
 
 
 Sub TitRg_Fmt(A As Range)
@@ -51,7 +51,7 @@ HBar_MgeSamValCell A
 End Sub
 
 
-Private Property Get A_TitColAy(TitS1S2Ay() As S1S2, Fny$()) As String()
+Private Function A_TitColAy(TitS1S2Ay() As S1S2, Fny$()) As String()
 Dim O$(), J%, I%, UTit%
 UTit = UB(TitS1S2Ay)
 For J = 0 To UB(Fny)
@@ -62,18 +62,18 @@ For J = 0 To UB(Fny)
 Nxt:
 Next
 A_TitColAy = O
-End Property
+End Function
 
-Private Property Get A_TitNRow%(VBarColAy())
+Private Function A_TitNRow%(VBarColAy())
 Dim M%, J%, S%
 For J = 0 To UB(VBarColAy)
     S = Sz(VBarColAy(J))
     If S > M Then M = S
 Next
 A_TitNRow = M
-End Property
+End Function
 
-Private Property Get A_VBarColAy(TitColAy$()) As Variant()
+Private Function A_VBarColAy(TitColAy$()) As Variant()
 Dim O(), J%
 For J = 0 To UB(TitColAy)
     Dim VBar$()
@@ -81,7 +81,7 @@ For J = 0 To UB(TitColAy)
     Push O, VBar
 Next
 A_VBarColAy = O
-End Property
+End Function
 
 Private Sub ZZ_TitS1S2Ay_Sq()
 Dim Fny$()

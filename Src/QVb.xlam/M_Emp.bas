@@ -1,32 +1,32 @@
 Attribute VB_Name = "M_Emp"
 Option Explicit
 
-Property Get EmpAy() As Variant()
-End Property
+Function EmpAy() As Variant()
+End Function
 
-Property Get EmpBoolAy() As Boolean()
-End Property
+Function EmpBoolAy() As Boolean()
+End Function
 
-Property Get EmpBytAy() As Byte()
-End Property
+Function EmpBytAy() As Byte()
+End Function
 
-Property Get EmpDblAy() As Double()
-End Property
+Function EmpDblAy() As Double()
+End Function
 
-Property Get EmpDteAy() As Date()
-End Property
+Function EmpDteAy() As Date()
+End Function
 
-Property Get EmpIntAy() As Integer()
-End Property
+Function EmpIntAy() As Integer()
+End Function
 
-Property Get EmpLngAy() As Long()
-End Property
+Function EmpLngAy() As Long()
+End Function
 
-Property Get EmpRRCC() As RRCC
-End Property
+Function EmpRRCC() As RRCC
+End Function
 
-Property Get EmpSngAy() As Single()
-End Property
+Function EmpSngAy() As Single()
+End Function
 
-Property Get EmpSy() As String()
-End Property
+Function EmpSy() As String()
+End Function

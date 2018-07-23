@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Re"
 Option Explicit
 
-Property Get Re(Patn$, Optional MultiLine As Boolean, Optional IgnoreCase As Boolean, Optional IsGlobal As Boolean) As RegExp
+Function Re(Patn$, Optional MultiLine As Boolean, Optional IgnoreCase As Boolean, Optional IsGlobal As Boolean) As RegExp
 Dim O As New RegExp
 With O
    .Pattern = Patn
@@ -9,8 +9,7 @@ With O
    .IgnoreCase = IgnoreCase
    .Global = IsGlobal
 End With
-Set Re = O
-End Property
+End Function
 
 Private Sub ZZ_ReMatch()
 Dim A As MatchCollection

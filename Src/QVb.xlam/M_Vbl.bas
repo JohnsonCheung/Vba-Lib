@@ -1,17 +1,17 @@
 Attribute VB_Name = "M_Vbl"
 Option Explicit
 
-Property Get VblDic(Vbl, Optional JnSep$ = vbCrLf) As Dictionary
+Function VblDic(Vbl, Optional JnSep$ = vbCrLf) As Dictionary
 Set VblDic = LyDic(SplitVBar(Vbl), JnSep)
-End Property
+End Function
 
-Property Get VblLines$(Vbl, Optional Pfx$, Optional Ident0%, Optional Sfx$, Optional Wdt0%)
+Function VblLines$(Vbl, Optional Pfx$, Optional Ident0%, Optional Sfx$, Optional Wdt0%)
 VblLines = JnCrLf(VblLy(VblLines(Vbl), Pfx, Ident0, Sfx, Wdt0))
-End Property
+End Function
 
-Property Get VblLy(Vbl, Optional Pfx$, Optional Ident0%, Optional Sfx$, Optional Wdt0%) As String()
+Function VblLy(Vbl, Optional Pfx$, Optional Ident0%, Optional Sfx$, Optional Wdt0%) As String()
 Ass Vbl_IsVdt(Vbl)
-If Vbl = "" Then Exit Property
+If Vbl = "" Then Exit Function
 Dim Wdt%
     Wdt = Vbl_Wdt(Vbl)
     If Wdt < Wdt0 Then
@@ -48,22 +48,22 @@ Dim O$()
         Push O, A
     Next
 VblLy = O
-End Property
+End Function
 
-Property Get Vbl_IsVdt(Vbl) As Boolean
-If HasSubStr(Vbl, vbCr) Then Exit Property
-If HasSubStr(Vbl, vbLf) Then Exit Property
+Function Vbl_IsVdt(Vbl) As Boolean
+If HasSubStr(Vbl, vbCr) Then Exit Function
+If HasSubStr(Vbl, vbLf) Then Exit Function
 Vbl_IsVdt = True
-End Property
+End Function
 
-Property Get Vbl_LasLin$(Vbl)
+Function Vbl_LasLin$(Vbl)
 Vbl_LasLin = AyLasEle(SplitVBar(Vbl))
-End Property
+End Function
 
-Property Get Vbl_Wdt%(Vbl)
+Function Vbl_Wdt%(Vbl)
 Ass Vbl_IsVdt(Vbl)
 Vbl_Wdt = AyWdt(SplitVBar(Vbl))
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_Vbl_Wdt

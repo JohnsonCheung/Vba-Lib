@@ -268,7 +268,7 @@ Dim R As LABCsRslt
 Dim O$()
 Dim Fny$(): Fny = LvsSy(FnyStr)
 'Set R = A.ValidateAsBetNum(Fny, FmNum, ToNum) '<========================
-   
+
 PushAp O, "LABCAy_LCFVRsltOfBetNum======================"
 PushAp O, "Inp1::LABCAy <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", ToStr
 PushAp O, "Inp2::Fny <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", FnyStr

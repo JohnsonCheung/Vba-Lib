@@ -1,16 +1,31 @@
 Attribute VB_Name = "M_Er"
 Option Explicit
 
+Function ErMsgLines$(CSub$, MacroStr$, ParamArray Ap())
+Dim Av(): Av = Ap
+ErMsgLines = ErMsgLinesByAv(CSub, MacroStr, Av)
+End Function
+
 Sub Er(CSub$, MacroStr$, ParamArray Ap())
 Dim Av(): Av = Ap
 AyBrw ErMsgLyByAv(CSub, MacroStr, Av)
 Stop
 End Sub
 
-Function ErMsgLines$(CSub$, MacroStr$, ParamArray Ap())
-Dim Av(): Av = Ap
-ErMsgLines = ErMsgLinesByAv(CSub, MacroStr, Av)
-End Function
+Sub ErDta()
+MsgBox "ErDta"
+Stop
+End Sub
+
+Sub ErNever()
+MsgBox "Should never reach here"
+Stop
+End Sub
+
+Sub ErPm()
+MsgBox "Parameter Er"
+Stop
+End Sub
 
 Private Sub ErMsgBrw(CSub$, MacroStr$, Av())
 AyBrw ErMsgLyByAv(CSub, MacroStr, Av())

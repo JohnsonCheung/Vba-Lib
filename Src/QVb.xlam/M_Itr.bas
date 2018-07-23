@@ -1,44 +1,49 @@
 Attribute VB_Name = "M_Itr"
 Option Explicit
 
-Property Get ItrAy(A) As Variant()
+Function ItrAy(A) As Variant()
 Dim O(), I
 For Each I In A
     Push O, I
 Next
 ItrAy = O
-End Property
+End Function
 
-Property Get ItrCast(A, CastToAy)
+Function ItrCast(A, CastToAy)
 Dim O: O = CastToAy: Erase O
 Dim I
 For Each I In A
     Push O, I
 Next
 ItrCast = O
-End Property
+End Function
 
-Property Get ItrPrpValAy(A, PrpNm) As Variant()
-Dim O(), I
-For Each I In A
-    Push O, CallByName(I, PrpNm, VbGet)
+Function ItrCntByBoolPrp&(A, BoolPrpNm$)
+If A.Count = 0 Then Exit Function
+Dim O, Cnt&
+For Each O In A
+    If CallByName(O, BoolPrpNm, VbGet) Then
+        Cnt = Cnt + 1
+    End If
 Next
-ItrPrpValAy = O
-End Property
-Property Get ItrPrpSy(A, PrpNm) As String()
-Dim O$(), I
-For Each I In A
-    Push O, CallByName(I, PrpNm, VbGet)
-Next
-ItrPrpSy = O
-End Property
-Property Get ItrFstNm$(A)
+ItrCntByBoolPrp = Cnt
+End Function
+
+Function ItrFstNm$(A)
 Dim I
 For Each I In A
     ItrFstNm = ObjNm(I)
 Next
-End Property
-Property Get ItrNy(A, Optional Patn$ = ".") As String()
+End Function
+
+Function ItrHasNm(A, Nm) As Boolean
+Dim I
+For Each I In A
+    If I.Name = Nm Then ItrHasNm = True: Exit Function
+Next
+End Function
+
+Function ItrNy(A, Optional Patn$ = ".") As String()
 Dim O$(), I
 If Patn = "." Then
     For Each I In A
@@ -54,12 +59,20 @@ Else
         End If
     Next
 End If
-ItrNy = O
-End Property
-Property Get ItrHasNm(A, Nm) As Boolean
-Dim I
-For Each I In A
-    If I.Name = Nm Then ItrHasNm = True: Exit Property
-Next
-End Property
+End Function
 
+Function ItrPrpSy(A, PrpNm) As String()
+Dim O$(), I
+For Each I In A
+    Push O, CallByName(I, PrpNm, VbGet)
+Next
+ItrPrpSy = O
+End Function
+
+Function ItrPrpValAy(A, PrpNm) As Variant()
+Dim O(), I
+For Each I In A
+    Push O, CallByName(I, PrpNm, VbGet)
+Next
+ItrPrpValAy = O
+End Function

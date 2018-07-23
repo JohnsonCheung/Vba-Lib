@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Ny"
 Option Explicit
 
-Property Get NyIxLy(Ny0) As String()
+Function NyIxLy(Ny0) As String()
 'It is to return 2 lines with
 'first line is 0   1     2 ..., where 0,1,2.. are ix of A$()
 'second line is each element of A$() separated by A
@@ -10,7 +10,7 @@ Property Get NyIxLy(Ny0) As String()
 '0 1    2   3
 'A BBBB CCC DD
 Dim Ny$(): Ny = DftNy(Ny0)
-If Sz(Ny) = 0 Then Exit Property
+If Sz(Ny) = 0 Then Exit Function
 Dim A1$()
 Dim A2$()
 Dim U&: U = UB(Ny)
@@ -26,4 +26,4 @@ Next
 Push O, JnSpc(A1)
 Push O, JnSpc(A2)
 NyIxLy = O
-End Property
+End Function

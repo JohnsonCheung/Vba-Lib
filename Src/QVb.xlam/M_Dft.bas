@@ -1,39 +1,45 @@
 Attribute VB_Name = "M_Dft"
 Option Explicit
 
-Property Get Dft(Val, DftV)
+Function Dft(Val, DftV)
 If IsEmp(Val) Then
    Dft = DftV
 Else
    Dft = Val
 End If
-End Property
+End Function
 
-Property Get DftFfn$(Ffn0, Optional Ext$ = ".txt", Optional Pth0$, Optional Fdr$)
-If Ffn0 <> "" Then DftFfn = Ffn0: Exit Property
+Function DftFfn$(Ffn0, Optional Ext$ = ".txt", Optional Pth0$, Optional Fdr$)
+If Ffn0 <> "" Then DftFfn = Ffn0: Exit Function
 Dim Pth$: Pth = DftPth(Pth0)
 DftFfn = Pth & TmpNm & Ext
-End Property
+End Function
 
-Property Get DftNy(Ny0) As String()
+Function DftNy(Ny0) As String()
 If IsStr(Ny0) Then
    DftNy = SslSy(Ny0)
-   Exit Property
+   Exit Function
 End If
-If IsSy(Ny0) Then
-   DftNy = Ny0
-End If
-End Property
+End Function
 
-Property Get DftPth$(Optional Pth0$, Optional Fdr$)
-If Pth0 <> "" Then DftPth = Pth0: Exit Property
+Function DftPth$(Optional Pth0$, Optional Fdr$)
+If Pth0 <> "" Then DftPth = Pth0: Exit Function
 DftPth = TmpPth(Fdr)
-End Property
+End Function
 
-Property Get DftStr(S$, DftV$)
+Function DftStr(S$, DftV$)
 If S = "" Then
    DftStr = DftV
 Else
    DftStr = S
 End If
-End Property
+End Function
+
+Function DftTpLy(Tp0) As String()
+Stop
+'Select Case True
+'Case V(Tp0).IsStr: DftTpLy = SplitVBar(Tp0)
+'Case IsSy(Tp0):  DftTpLy = Tp0
+'Case Else: Stop
+'End Select
+End Function

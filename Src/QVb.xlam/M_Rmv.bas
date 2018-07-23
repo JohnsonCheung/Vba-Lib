@@ -1,71 +1,71 @@
 Attribute VB_Name = "M_Rmv"
 Option Explicit
 
-Property Get Rmv2Dash$(A)
+Function Rmv2Dash$(A)
 Rmv2Dash = RTrim(RmvAft(A, "--"))
-End Property
+End Function
 
-Property Get Rmv3Dash$(A)
+Function Rmv3Dash$(A)
 Rmv3Dash = RTrim(RmvAft(A, "---"))
-End Property
+End Function
 
-Property Get RmvAft$(A, Sep$)
+Function RmvAft$(A, Sep$)
 RmvAft = Brk1(A, Sep, NoTrim:=True).S1
-End Property
+End Function
 
-Property Get RmvDblSpc$(A)
+Function RmvDblSpc$(A)
 Dim O$: O = A
 While HasSubStr(O, "  ")
     O = Replace(O, "  ", " ")
 Wend
 RmvDblSpc = O
-End Property
+End Function
 
-Property Get RmvFstChr$(A)
+Function RmvFstChr$(A)
 RmvFstChr = Mid(A, 2)
-End Property
+End Function
 
-Property Get RmvFstLasChr$(A)
+Function RmvFstLasChr$(A)
 RmvFstLasChr = RmvFstChr(RmvLasChr(A))
-End Property
+End Function
 
-Property Get RmvFstNChr$(A, Optional N% = 1)
+Function RmvFstNChr$(A, Optional N% = 1)
 RmvFstNChr = Mid(A, N + 1)
-End Property
+End Function
 
-Property Get RmvLasChr$(A)
+Function RmvLasChr$(A)
 RmvLasChr = RmvLasNChr(A, 1)
-End Property
+End Function
 
-Property Get RmvLasNChr$(A, N%)
+Function RmvLasNChr$(A, N%)
 RmvLasNChr = Left(A, Len(A) - 1)
-End Property
+End Function
 
-Property Get RmvPfx$(S, Pfx)
+Function RmvPfx$(S, Pfx)
 Dim L%: L = Len(Pfx)
 If Left(S, L) = Pfx Then
     RmvPfx = Mid(S, L + 1)
 Else
     RmvPfx = S
 End If
-End Property
+End Function
 
-Property Get RmvPfxAy$(A, PfxAy)
+Function RmvPfxAy$(A, PfxAy)
 Dim Pfx
 For Each Pfx In PfxAy
-    If HasPfx(A, CStr(Pfx)) Then RmvPfxAy = RmvPfx(A, Pfx): Exit Property
+    If HasPfx(A, CStr(Pfx)) Then RmvPfxAy = RmvPfx(A, Pfx): Exit Function
 Next
 RmvPfxAy = A
-End Property
+End Function
 
-Property Get RmvSfx$(A, Sfx$)
+Function RmvSfx$(A, Sfx$)
 Dim L%: L = Len(Sfx)
 If Right(A, L) = Sfx Then
     RmvSfx = Left(A, Len(A) - L)
 Else
     RmvSfx = A
 End If
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_RmvPfx

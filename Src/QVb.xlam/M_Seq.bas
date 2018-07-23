@@ -1,6 +1,15 @@
 Attribute VB_Name = "M_Seq"
 Option Explicit
-Property Get SeqOf__(FmNum, ToNum, OAy)
+
+Function SeqOfInt(FmNum%, ToNum%) As Integer()
+SeqOfInt = SeqOf__(FmNum, ToNum, EmpIntAy)
+End Function
+
+Function SeqOfLng(FmNum&, ToNum&) As Long()
+SeqOfLng = SeqOf__(FmNum, ToNum, EmpLngAy)
+End Function
+
+Function SeqOf__(FmNum, ToNum, OAy)
 Dim O&()
 ReDim OAy(Abs(FmNum - ToNum))
 Dim J&, I&
@@ -15,11 +24,6 @@ Else
         I = I + 1
     Next
 End If
-SeqOf__ = OAy
-End Property
-Property Get SeqOfInt(FmNum%, ToNum%) As Integer()
-SeqOfInt = SeqOf__(FmNum, ToNum, EmpIntAy)
-End Property
-Property Get SeqOfLng(FmNum&, ToNum&) As Long()
-SeqOfLng = SeqOf__(FmNum, ToNum, EmpLngAy)
-End Property
+End Function
+
+

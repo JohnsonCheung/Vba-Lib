@@ -1,17 +1,13 @@
 Attribute VB_Name = "M_Ay"
 Option Explicit
 
-Property Get AyAdd(Ay1, Ay2)
+Function AyAdd(Ay1, Ay2)
 Dim O: O = Ay1
 PushAy O, Ay2
 AyAdd = O
-End Property
-Property Get AyFstNEle(A, N&)
-Dim O: O = A
-ReDim Preserve O(N - 1)
-AyFstNEle = O
-End Property
-Property Get AyAddAp(Ay, ParamArray Itm_or_Ay_Ap())
+End Function
+
+Function AyAddAp(Ay, ParamArray Itm_or_Ay_Ap())
 Dim Av(): Av = Itm_or_Ay_Ap
 Dim O, I
 O = Ay
@@ -23,55 +19,56 @@ For Each I In Av
     End If
 Next
 AyAddAp = O
-End Property
+End Function
 
-Property Get AyAddPfx(Ay, Pfx) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyAddPfx(A, Pfx) As String()
+If Sz(A) = 0 Then Exit Function
 Dim O$(), J&, U&
-U = UB(Ay)
+U = UB(A)
 ReDim Preserve O(U)
 For J = 0 To U
-    O(J) = Pfx & Ay(J)
+    O(J) = Pfx & A(J)
 Next
 AyAddPfx = O
-End Property
+End Function
 
-Property Get AyAddPfxSfx(Ay, Pfx, Sfx) As String()
+Function AyAddPfxSfx(A, Pfx, Sfx) As String()
 Dim O$(), J&, U&
-If AyIsEmp(Ay) Then Exit Property
-U = UB(Ay)
+If Sz(A) = 0 Then Exit Function
+U = UB(A)
 ReDim Preserve O(U)
 For J = 0 To U
-    O(J) = Pfx & Ay(J) & Sfx
+    O(J) = Pfx & A(J) & Sfx
 Next
 AyAddPfxSfx = O
-End Property
+End Function
 
-Property Get AyAddSfx(Ay, Sfx) As String()
+Function AyAddSfx(A, Sfx) As String()
+If Sz(A) = 0 Then Exit Function
 Dim O$(), J&, U&
-If AyIsEmp(Ay) Then Exit Property
+U = UB(A)
 ReDim Preserve O(U)
 For J = 0 To U
-    O(J) = Ay(J) & Sfx
+    O(J) = A(J) & Sfx
 Next
 AyAddSfx = O
-End Property
+End Function
 
-Property Get AyAlignL(Ay) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyAlignL(Ay) As String()
+If AyIsEmp(Ay) Then Exit Function
 Dim W%: W = AyWdt(Ay)
 Dim O$(), I
 For Each I In Ay
     Push O, AlignL(I, W)
 Next
 AyAlignL = O
-End Property
+End Function
 
-Property Get AyBrk3ByIx(Ay, FmIx&, ToIx&)
+Function AyBrk3ByIx(Ay, FmIx&, ToIx&)
 AyBrk3ByIx = AyFmTo_Brk(Ay, FmTo(FmIx, ToIx))
-End Property
+End Function
 
-Property Get AyCellSy(Ay, Optional ShwZer As Boolean) As String()
+Function AyCellSy(Ay, Optional ShwZer As Boolean) As String()
 Dim O$(), I, J&, U&
 U = UB(Ay)
 ReSz O, U
@@ -79,9 +76,9 @@ For Each I In Ay
     O(J) = VarCellStr(I)
     J = J + 1
 Next
-End Property
+End Function
 
-Property Get AyConst1_Dry(Ay, C) As Variant()
+Function AyConst_Dry_ConstBeg(Ay, C) As Variant()
 'C1Dry is Dry with 2 column and Col1 is const
 Dim U&, J&
 U = UB(Ay)
@@ -90,10 +87,10 @@ ReSz O, U
 For J = 0 To U
     O(J) = Array(C, Ay(J))
 Next
-AyConst1_Dry = O
-End Property
+AyConst_Dry_ConstBeg = O
+End Function
 
-Property Get AyConst2_Dry(Ay, C) As Variant()
+Function AyConst_Dry_ConstEnd(Ay, C) As Variant()
 'C2Dry is Dry with 2 column and Col1 is const
 Dim U&, J&
 U = UB(Ay)
@@ -102,14 +99,10 @@ ReSz O, U
 For J = 0 To U
     O(J) = Array(Ay(J), C)
 Next
-AyConst2_Dry = O
-End Property
+AyConst_Dry_ConstEnd = O
+End Function
 
-Property Get AyDblAy(Ay) As Double()
-AyDblAy = AyCast(Ay, EmpDblAy)
-End Property
-
-Property Get AyDic(Ay, Optional V = True) As Dictionary
+Function AyDic(Ay, Optional V = True) As Dictionary
 Dim O As New Dictionary, I
 If Not AyIsEmp(Ay) Then
     For Each I In Ay
@@ -117,9 +110,9 @@ If Not AyIsEmp(Ay) Then
     Next
 End If
 Set AyDic = O
-End Property
+End Function
 
-Property Get AyDry(Ay) As Variant()
+Function AyDry(Ay) As Variant()
 Dim O(), J&
 Dim U&: U = UB(Ay)
 ReSz O, U
@@ -127,9 +120,9 @@ For J = 0 To U
     O(J) = Array(Ay(J))
 Next
 AyDry = O
-End Property
+End Function
 
-Property Get AyDupAy(Ay)
+Function AyDupAy(Ay)
 'Return Array of element of {Ay} for which has 2 or more value in {Ay}
 Dim OAy: OAy = Ay: Erase OAy
 If Not AyIsEmp(Ay) Then
@@ -145,13 +138,13 @@ If Not AyIsEmp(Ay) Then
     Next
 End If
 AyDupAy = OAy
-End Property
+End Function
 
-Property Get AyEqChk(Ay1, Ay2, Optional Ay1Nm$ = "Exp", Optional Ay2Nm$ = "Act") As String()
+Function AyEqChk(Ay1, Ay2, Optional Ay1Nm$ = "Exp", Optional Ay2Nm$ = "Act") As String()
 Dim U&: U = UB(Ay1)
 Dim O$()
     If U <> UB(Ay2) Then Push O, FmtQQ("Array [?] and [?] has different Sz: [?] [?]", Ay1Nm, Ay2Nm, Sz(Ay1), Sz(Ay2)): GoTo X
-If AyIsEmp(Ay1) Then Exit Property
+If AyIsEmp(Ay1) Then Exit Function
 Dim O1$()
     Dim A2: A2 = Ay2
     Dim J&, ReachLimit As Boolean
@@ -166,7 +159,7 @@ Dim O1$()
             Exit For
         End If
     Next
-If M_Is.IsEmp(O1) Then Exit Property
+If M_Is.IsEmp(O1) Then Exit Function
 Dim O2$()
     Push O2, FmtQQ("Array [?] and [?] both having size[?] have differnt element(s):", Ay1Nm, Ay2Nm, Sz(Ay1))
     If ReachLimit Then
@@ -180,89 +173,93 @@ PushAy O, AyQuote(Ay1, "[]")
 Push O, FmtQQ("Ay-[?]:", Ay2Nm)
 PushAy O, AyQuote(Ay2, "[]")
 AyEqChk = O
-End Property
+End Function
 
-Property Get AyFmTo_Brk(Ay, B As FmTo) As Variant()
+Function AyFmTo_Brk(Ay, B As FmTo) As Variant()
 Ass FmTo_HasU(B, UB(Ay))
 Dim O(2)
 O(0) = AyWhFmTo(Ay, FmTo(0, B.FmIx - 1))
 O(1) = AyWhFmTo(Ay, B)
 O(2) = AyWhFmTo(Ay, FmTo(B.FmIx + 1, UB(Ay)))
 AyFmTo_Brk = O
-End Property
+End Function
 
-Property Get AyGpDry(Ay) As Variant()
-If AyIsEmp(Ay) Then Exit Property
+Function AyFstNEle(A, N&)
+Dim O: O = A
+ReDim Preserve O(N - 1)
+AyFstNEle = O
+End Function
+
+Function AyGpDry(Ay) As Variant()
+If AyIsEmp(Ay) Then Exit Function
 Dim O(), I
 For Each I In Ay
     AyGpDry__Upd O, I
 Next
 AyGpDry = O
-End Property
+End Function
 
-Property Get AyHas(Ay, Itm) As Boolean
-If AyIsEmp(Itm) Then Exit Property
+Function AyHas(Ay, Itm) As Boolean
+If AyIsEmp(Itm) Then Exit Function
 Dim I
 For Each I In Ay
-    If I = Itm Then AyHas = True: Exit Property
+    If I = Itm Then AyHas = True: Exit Function
 Next
-End Property
+End Function
 
-Property Get AyHasDupEle(Ay) As Boolean
-If AyIsEmp(Ay) Then Exit Property
+Function AyHasDupEle(Ay) As Boolean
+If AyIsEmp(Ay) Then Exit Function
 Dim Pool: Pool = Ay: Erase Pool
 Dim I
 For Each I In Ay
-    If AyHas(Pool, I) Then AyHasDupEle = True: Exit Property
+    If AyHas(Pool, I) Then AyHasDupEle = True: Exit Function
     Push Pool, I
 Next
-End Property
+End Function
 
-Property Get AyHasNegOne(Ay) As Boolean
+Function AyHasNegOne(Ay) As Boolean
 Dim V
-If AyIsEmp(Ay) Then Exit Property
+If AyIsEmp(Ay) Then Exit Function
 For Each V In Ay
-    If V = -1 Then AyHasNegOne = True: Exit Property
+    If V = -1 Then AyHasNegOne = True: Exit Function
 Next
-End Property
+End Function
 
-Property Get AyHasSubAy(Ay, SubAy) As Boolean
-If AyIsEmp(Ay) Then Exit Property
-If AyIsEmp(SubAy) Then PmEr
+Function AyHasSubAy(Ay, SubAy) As Boolean
+If AyIsEmp(Ay) Then Exit Function
+If AyIsEmp(SubAy) Then ErPm
 Dim I
 For Each I In SubAy
-    If Not AyHas(Ay, I) Then Exit Property
+    If Not AyHas(Ay, I) Then Exit Function
 Next
-End Property
+End Function
 
-Property Get AyIncNForEachEle(Ay, Optional N& = 1)
+Function AyIncNForEachEle(Ay, Optional N& = 1)
 Dim O: O = Ay
 Dim J&
 For J = 0 To UB(Ay)
     O(J) = O(J) + N
 Next
 AyIncNForEachEle = O
-End Property
+End Function
 
-Property Get AyIns(Ay, Optional Ele, Optional At&)
-Const CSub$ = "AyIns"
-Dim N&: N = Sz(Ay)
+Function AyIns(A, Optional M, Optional At&)
+Dim N&: N = Sz(A)
 If 0 > At Or At > N Then
     Stop
-    Er CSub, "{At} is outside {Ay-UB}", At, N - 1
 End If
 Dim O
-    O = Ay
+    O = A
     ReDim Preserve O(N)
     Dim J&
     For J = N To At + 1 Step -1
         Asg O(J - 1), O(J)
     Next
-    O(At) = Ele
+    O(At) = M
 AyIns = O
-End Property
+End Function
 
-Property Get AyIntersect(Ay1, Ay2)
+Function AyIntersect(Ay1, Ay2)
 Dim O: O = Ay1: Erase O
 If AyIsEmp(Ay1) Then GoTo X
 If AyIsEmp(Ay2) Then GoTo X
@@ -272,84 +269,84 @@ For Each V In Ay1
 Next
 X:
 AyIntersect = O
-End Property
+End Function
 
-Property Get AyIsAllEleHasPfx(A, Pfx$) As Boolean
-If AyIsEmp(A) Then Exit Property
+Function AyIsAllEleHasPfx(A, Pfx$) As Boolean
+If AyIsEmp(A) Then Exit Function
 Dim I
 For Each I In A
-   If Not HasPfx(I, Pfx) Then Exit Property
+   If Not HasPfx(I, Pfx) Then Exit Function
 Next
 AyIsAllEleHasPfx = True
-End Property
+End Function
 
-Property Get AyIsAllEleHasVal(Ay) As Boolean
-If AyIsEmp(Ay) Then Exit Property
+Function AyIsAllEleHasVal(Ay) As Boolean
+If AyIsEmp(Ay) Then Exit Function
 Dim I
 For Each I In Ay
-    If M_Is.IsEmp(I) Then Exit Property
+    If M_Is.IsEmp(I) Then Exit Function
 Next
 AyIsAllEleHasVal = True
-End Property
+End Function
 
-Property Get AyIsAllEq(Ay) As Boolean
-If AyIsEmp(Ay) Then AyIsAllEq = True: Exit Property
+Function AyIsAllEq(Ay) As Boolean
+If AyIsEmp(Ay) Then AyIsAllEq = True: Exit Function
 Dim T: T = Ay(0)
 Dim J&
 For J = 1 To UB(Ay)
-    If Ay(J) = T Then Exit Property
+    If Ay(J) = T Then Exit Function
 Next
 AyIsAllEq = True
-End Property
+End Function
 
-Property Get AyIsAllStr(Ay) As Boolean
-If Sz(Ay) = 0 Then Exit Property
+Function AyIsAllStr(Ay) As Boolean
+If Sz(Ay) = 0 Then Exit Function
 Dim K
 For Each K In Ay
-    If Not IsStr(K) Then Exit Property
+    If Not IsStr(K) Then Exit Function
 Next
 AyIsAllStr = True
-End Property
+End Function
 
-Property Get AyIsEmp(V) As Boolean
+Function AyIsEmp(V) As Boolean
 AyIsEmp = Sz(V) = 0
-End Property
+End Function
 
-Property Get AyIsEq(Ay1, Ay2) As Boolean
-Dim U&: U = UB(Ay1): If U <> UB(Ay2) Then Exit Property
+Function AyIsEq(A1, A2) As Boolean
+Dim U&: U = UB(A1): If U <> UB(A2) Then Exit Function
 Dim J&
 For J = 0 To U
-   If Ay1(J) <> Ay2(J) Then Exit Property
+   If A1(J) <> A2(J) Then Exit Function
 Next
 AyIsEq = True
-End Property
+End Function
 
-Property Get AyIsEqSz(Ay, B) As Boolean
+Function AyIsEqSz(Ay, B) As Boolean
 AyIsEqSz = Sz(Ay) = Sz(B)
-End Property
+End Function
 
-Property Get AyIsSamSz(Ay1, Ay2) As Boolean
+Function AyIsSamSz(Ay1, Ay2) As Boolean
 AyIsSamSz = Sz(Ay1) = Sz(Ay2)
-End Property
+End Function
 
-Property Get AyIsSrt(Ay) As Boolean
+Function AyIsSrt(Ay) As Boolean
 Dim J&
 For J = 0 To UB(Ay) - 1
-   If Ay(J) > Ay(J + 1) Then Exit Property
+   If Ay(J) > Ay(J + 1) Then Exit Function
 Next
 AyIsSrt = True
-End Property
+End Function
 
-Property Get AyIx&(Ay, Itm)
+Function AyIx&(Ay, Itm)
 Dim J&
 For J = 0 To UB(Ay)
-    If Ay(J) = Itm Then AyIx = J: Exit Property
+    If Ay(J) = Itm Then AyIx = J: Exit Function
 Next
 AyIx = -1
-End Property
+End Function
 
-Property Get AyIxAy(Ay, SubAy, Optional ChkNotFound As Boolean, Optional SkipNotFound As Boolean) As Long()
-If AyIsEmp(SubAy) Then Exit Property
+Function AyIxAy(Ay, SubAy, Optional ChkNotFound As Boolean, Optional SkipNotFound As Boolean) As Long()
+If AyIsEmp(SubAy) Then Exit Function
 Dim O&()
 Dim U&: U = UB(SubAy)
 Dim J&, Ix&
@@ -370,14 +367,14 @@ If Not SkipNotFound And ChkNotFound Then
     AyIxAy__ChkNotFound O, Ay, SubAy
 End If
 AyIxAy = O
-End Property
+End Function
 
-Property Get AyLasEle(Ay)
+Function AyLasEle(Ay)
 AyLasEle = Ay(UB(Ay))
-End Property
+End Function
 
-Property Get AyMap(Ay, MthNm$, ParamArray Ap()) As Variant()
-If AyIsEmp(Ay) Then Exit Property
+Function AyMap(Ay, MthNm$, ParamArray Ap()) As Variant()
+If AyIsEmp(Ay) Then Exit Function
 Dim Av(): Av = Ap
 Av = AyIns(Av)
 Dim I, J&
@@ -390,10 +387,10 @@ For Each I In Ay
     J = J + 1
 Next
 AyMap = O
-End Property
+End Function
 
-Property Get AyMapAsgAy(Ay, OAy, MthNm$, ParamArray Ap())
-If AyIsEmp(Ay) Then Exit Property
+Function AyMapAsgAy(Ay, OAy, MthNm$, ParamArray Ap())
+If AyIsEmp(Ay) Then Exit Function
 Dim Av(): Av = Ap
 Av = AyIns(Av)
 Dim I, J&
@@ -408,14 +405,14 @@ For Each I In Ay
     J = J + 1
 Next
 AyMapAsgAy = O
-End Property
+End Function
 
-Property Get AyMapAsgSy(Ay, MthNm$, ParamArray Ap()) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyMapAsgSy(Ay, MthNm$, ParamArray Ap()) As String()
+If AyIsEmp(Ay) Then Exit Function
 Dim Av(): Av = Ap
 If AyIsEmp(Av) Then
     AyMapAsgSy = AyMap_Sy(Ay, MthNm)
-    Exit Property
+    Exit Function
 End If
 Dim I, J&
 Dim O$()
@@ -427,40 +424,42 @@ Dim O$()
         J = J + 1
     Next
 AyMapAsgSy = O
-End Property
+End Function
 
-Property Get AyMapInto(Ay, Obj, GetNm$, OIntoAy)
-Dim O: O = OIntoAy: Erase O
-Dim J&, U&
-Dim Arg
-U = UB(Ay)
-ReSz O, U
-For J = 0 To U
-    Asg Ay(J), Arg
-    Asg CallByName(Obj, GetNm, VbGet, Arg), O(J)
-Next
-AyMapInto = O
-End Property
+Function AyMapInto(A, MapFunNm$, OIntoAy)
+Erase OIntoAy
+Dim I
+If Sz(A) > 0 Then
+    For Each I In A
+        Push OIntoAy, Run(MapFunNm, I)
+    Next
+End If
+AyMapInto = OIntoAy
+End Function
 
-Property Get AyMap_Lng(Ay, MapMthNm$) As Long()
+Function AyMapSy(A, MapFunNm$) As String()
+AyMapSy = AyMapInto(A, MapFunNm, EmpSy)
+End Function
+
+Function AyMap_Lng(Ay, MapMthNm$) As Long()
 AyMap_Lng = AyLngAy(AyMap(Ay, MapMthNm))
-End Property
+End Function
 
-Property Get AyMap_Sy(Ay, MapMthNm$) As String()
+Function AyMap_Sy(Ay, MapMthNm$) As String()
 AyMap_Sy = AySy(AyMap(Ay, MapMthNm))
-End Property
+End Function
 
-Property Get AyMax(Ay)
-If AyIsEmp(Ay) Then Exit Property
-Dim O, I
-For Each I In Ay
-    If I > O Then O = I
+Function AyMax(A)
+Dim O: O = A(0)
+Dim J&
+For J = 1 To UB(A)
+    O = Max(O, A(J))
 Next
 AyMax = O
-End Property
+End Function
 
-Property Get AyMinus(Ay1, Ay2)
-If AyIsEmp(Ay1) Then AyMinus = Ay1: Exit Property
+Function AyMinus(Ay1, Ay2)
+If AyIsEmp(Ay1) Then AyMinus = Ay1: Exit Function
 Dim O: O = Ay1: Erase O
 Dim mAy2: mAy2 = Ay2
 Dim V
@@ -472,41 +471,69 @@ For Each V In Ay1
     End If
 Next
 AyMinus = O
-End Property
+End Function
 
-Property Get AyMinusAp(Ay, ParamArray AyAp())
-Dim O: O = Ay
+Function AyMinusAp(A, ParamArray AyAp())
+Dim O
+If Sz(A) = 0 Then O = A: Erase O: GoTo X
+O = A
 Dim Av(): Av = AyAp
 Dim Ay1, V
 For Each Ay1 In Av
-    If AyIsEmp(O) Then GoTo X
-    O = AyMinus(O, Ay1)
+    O = AyMinus(O, A)
+    If Sz(O) = 0 Then GoTo X
 Next
 X:
 AyMinusAp = O
-End Property
+End Function
 
-Property Get AyNoDupAy(Ay)
+Function AyNoDupAy(Ay)
 Dim O: O = Ay
 Erase O
 Dim I
-If AyIsEmp(Ay) Then AyNoDupAy = O: Exit Property
+If AyIsEmp(Ay) Then AyNoDupAy = O: Exit Function
 For Each I In Ay
     PushNoDup O, I
 Next
 AyNoDupAy = O
-End Property
+End Function
 
-Property Get AyRTrim(Ay) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyQuote(Ay, QuoteStr$) As String()
+If AyIsEmp(Ay) Then Exit Function
+Dim O$(), U&
+    U = UB(Ay)
+    ReDim O(U)
+    Dim J&
+    Dim Q1$, Q2$
+    S1S2_Asg BrkQuote(QuoteStr), Q1, Q2
+    For J = 0 To U
+        O(J) = Q1 & Ay(J) & Q2
+    Next
+AyQuote = O
+End Function
+
+Function AyQuoteDbl(Ay) As String()
+AyQuoteDbl = AyQuote(Ay, """")
+End Function
+
+Function AyQuoteSng(Ay) As String()
+AyQuoteSng = AyQuote(Ay, "'")
+End Function
+
+Function AyQuoteSqBkt(Ay) As String()
+AyQuoteSqBkt = AyQuote(Ay, "[]")
+End Function
+
+Function AyRTrim(Ay) As String()
+If AyIsEmp(Ay) Then Exit Function
 Dim O$(), I
 For Each I In Ay
     Push O, RTrim(I)
 Next
 AyRTrim = O
-End Property
+End Function
 
-Property Get AyReOrd(Ay, PartialIxAy&())
+Function AyReOrd(Ay, PartialIxAy&())
 Dim I&()
     I = PartialIxAy_CompleteIxAy(PartialIxAy, UB(Ay))
 Dim O
@@ -516,28 +543,28 @@ Dim O
         Push O, Ay(I(J))
     Next
 AyReOrd = O
-End Property
+End Function
 
-Property Get AyRmvEle(Ay, Ele)
-Dim Ix&: Ix = AyIx(Ay, Ele): If Ix = -1 Then AyRmvEle = Ay: Exit Property
+Function AyRmvEle(Ay, Ele)
+Dim Ix&: Ix = AyIx(Ay, Ele): If Ix = -1 Then AyRmvEle = Ay: Exit Function
 AyRmvEle = AyRmvEleAt(Ay, AyIx(Ay, Ele))
-End Property
+End Function
 
-Property Get AyRmvEleAt(Ay, Optional At&)
+Function AyRmvEleAt(Ay, Optional At&)
 AyRmvEleAt = AyWhExclAtCnt(Ay, At)
-End Property
+End Function
 
-Property Get AyRmvEmpEle(Ay)
-If AyIsEmp(Ay) Then AyRmvEmpEle = Ay: Exit Property
+Function AyRmvEmpEle(Ay)
+If AyIsEmp(Ay) Then AyRmvEmpEle = Ay: Exit Function
 Dim O: O = Ay: Erase O
 Dim I
 For Each I In Ay
     If Not IsEmp(I) Then Push O, I
 Next
 AyRmvEmpEle = O
-End Property
+End Function
 
-Property Get AyRmvEmpEleAtEnd(Ay)
+Function AyRmvEmpEleAtEnd(Ay)
 Dim LasU&, U&
 Dim O: O = Ay
 For LasU = UB(Ay) To 0 Step -1
@@ -551,9 +578,9 @@ Else
     ReDim Preserve O(LasU)
 End If
 AyRmvEmpEleAtEnd = O
-End Property
+End Function
 
-Property Get AyRmvFmTo(Ay, FmTo As FmTo)
+Function AyRmvFmTo(Ay, FmTo As FmTo)
 Dim O
     O = Ay
     If Not FmTo_IsVdt(FmTo) Or AyIsEmp(Ay) Then
@@ -570,26 +597,26 @@ Dim O
         ReDim Preserve O(U - FmTo_Cnt(FmTo))
     End If
 AyRmvFmTo = O
-End Property
+End Function
 
-Property Get AyRmvFstEle(Ay)
+Function AyRmvFstChr(A) As String()
+AyRmvFstChr = AyMapSy(A, "RmvFstChr")
+End Function
+
+Function AyRmvFstEle(Ay)
 AyRmvFstEle = AyRmvEleAt(Ay)
-End Property
+End Function
 
-Property Get AyRmvLasChr(A) As String()
-Dim O$(), I
-For Each I In A
-    Push O, RmvLasChr(I)
-Next
-AyRmvLasChr = O
-End Property
+Function AyRmvLasChr(A) As String()
+AyRmvLasChr = AyMapSy(A, "RmvLasChr")
+End Function
 
-Property Get AyRmvLasEle(Ay)
+Function AyRmvLasEle(Ay)
 AyRmvLasEle = AyRmvEleAt(Ay, UB(Ay))
-End Property
+End Function
 
-Property Get AyRmvPfx(Ay, Pfx) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyRmvPfx(Ay, Pfx) As String()
+If AyIsEmp(Ay) Then Exit Function
 Dim U&: U = UB(Ay)
 Dim O$()
 ReDim O(U)
@@ -598,9 +625,9 @@ For J = 0 To U
     O(J) = RmvPfx(Ay(J), Pfx)
 Next
 AyRmvPfx = O
-End Property
+End Function
 
-Property Get AyRpl(Ay, FmTo As FmTo, AySeg)
+Function AyRpl(Ay, FmTo As FmTo, AySeg)
 Dim A()
     A = AyFmTo_Brk(Ay, FmTo)
 Dim O
@@ -608,15 +635,15 @@ Dim O
     PushAy O, AySeg
     PushAy O, Ay(2)
 AyRpl = O
-End Property
+End Function
 
-Property Get AyShift(OAy)
+Function AyShift(OAy)
 AyShift = OAy(0)
 OAy = AyRmvFstEle(OAy)
-End Property
+End Function
 
-Property Get AySqH(Ay) As Variant()
-If AyIsEmp(Ay) Then Exit Property
+Function AySqH(Ay) As Variant()
+If AyIsEmp(Ay) Then Exit Function
 Dim O(), C%
 ReDim O(1 To 1, 1 To Sz(Ay))
 C = 0
@@ -626,10 +653,10 @@ For Each V In Ay
     O(1, C) = V
 Next
 AySqH = O
-End Property
+End Function
 
-Property Get AySqV(Ay) As Variant()
-If AyIsEmp(Ay) Then Exit Property
+Function AySqV(Ay) As Variant()
+If AyIsEmp(Ay) Then Exit Function
 Dim O(), R&
 ReDim O(1 To Sz(Ay), 1 To 1)
 R = 0
@@ -639,10 +666,10 @@ For Each V In Ay
     O(R, 1) = V
 Next
 AySqV = O
-End Property
+End Function
 
-Property Get AySrt(Ay, Optional Des As Boolean)
-If AyIsEmp(Ay) Then AySrt = Ay: Exit Property
+Function AySrt(Ay, Optional Des As Boolean)
+If AyIsEmp(Ay) Then AySrt = Ay: Exit Function
 Dim Ix&, V, J&
 Dim O: O = Ay: Erase O
 Push O, Ay(0)
@@ -650,10 +677,10 @@ For J = 1 To UB(Ay)
     O = AyIns(O, Ay(J), AySrt__Ix(O, Ay(J), Des))
 Next
 AySrt = O
-End Property
+End Function
 
-Property Get AySrtInToIxAy(Ay, Optional Des As Boolean) As Long()
-If AyIsEmp(Ay) Then Exit Property
+Function AySrtInToIxAy(Ay, Optional Des As Boolean) As Long()
+If AyIsEmp(Ay) Then Exit Function
 Dim Ix&, V, J&
 Dim O&():
 Push O, 0
@@ -661,10 +688,10 @@ For J = 1 To UB(Ay)
     O = AyIns(O, J, AySrtInToIxAy_Ix(O, Ay, Ay(J), Des))
 Next
 AySrtInToIxAy = O
-End Property
+End Function
 
-Property Get AyTrim(A) As String()
-If AyIsEmp(A) Then Exit Property
+Function AyTrim(A) As String()
+If AyIsEmp(A) Then Exit Function
 Dim U&
     U = UB(A)
 Dim O$()
@@ -674,9 +701,9 @@ Dim O$()
         O(J) = Trim(A(J))
     Next
 AyTrim = O
-End Property
+End Function
 
-Property Get AyUniq(Ay)
+Function AyUniq(Ay)
 Dim O: O = Ay: Erase O
 Dim V
 If Not AyIsEmp(Ay) Then
@@ -685,9 +712,9 @@ If Not AyIsEmp(Ay) Then
     Next
 End If
 AyUniq = O
-End Property
+End Function
 
-Property Get AyVSq(Ay)
+Function AyVSq(Ay)
 Dim O
 Dim N&
 N = Sz(Ay)
@@ -697,56 +724,56 @@ For J = 1 To N
     O(J, 1) = Ay(J - 1)
 Next
 AyVSq = O
-End Property
+End Function
 
-Property Get AyWdt%(Ay)
-If AyIsEmp(Ay) Then Exit Property
+Function AyWdt%(Ay)
+If AyIsEmp(Ay) Then Exit Function
 Dim O%, I
 For Each I In Ay
     O = Max(O, Len(I))
 Next
 AyWdt = O
-End Property
+End Function
 
-Property Get AyWh(Ay, FmIx&, ToIx&)
+Function AyWh(Ay, FmIx&, ToIx&)
 Dim O: O = Ay: Erase O
 AyWh = O
-If AyIsEmp(Ay) Then Exit Property
-If FmIx < 0 Then Exit Property
-If ToIx < 0 Then Exit Property
+If AyIsEmp(Ay) Then Exit Function
+If FmIx < 0 Then Exit Function
+If ToIx < 0 Then Exit Function
 Dim J&
 For J = FmIx To ToIx
     Push O, Ay(J)
 Next
 AyWh = O
-End Property
+End Function
 
-Property Get AyWhDist(Ay)
+Function AyWhDist(Ay)
 Dim O: O = Ay: Erase O
 Dim I
 For Each I In Ay
     PushNoDup O, I
 Next
 AyWhDist = O
-End Property
+End Function
 
-Property Get AyWhDup(Ay)
+Function AyWhDup(Ay)
 Dim O: O = Ay: Erase O
 Dim GpDry(): GpDry = AyGpDry(Ay)
-If AyIsEmp(GpDry) Then AyWhDup = O: Exit Property
+If AyIsEmp(GpDry) Then AyWhDup = O: Exit Function
 Dim Dr
 For Each Dr In GpDry
     If Dr(1) > 1 Then Push O, Dr(0)
 Next
 AyWhDup = O
-End Property
+End Function
 
-Property Get AyWhExclAtCnt(Ay, At&, Optional Cnt& = 1)
-If Cnt <= 0 Then AyWhExclAtCnt = Ay: Exit Property
+Function AyWhExclAtCnt(Ay, At&, Optional Cnt& = 1)
+If Cnt <= 0 Then AyWhExclAtCnt = Ay: Exit Function
 Dim U&: U = UB(Ay)
 If At > U Then Stop
 If At < 0 Then Stop
-If U = 0 Then AyWhExclAtCnt = Ay: Exit Property
+If U = 0 Then AyWhExclAtCnt = Ay: Exit Function
 Dim O: O = Ay
 Dim J&
 For J = At To U - Cnt
@@ -754,9 +781,9 @@ For J = At To U - Cnt
 Next
 ReDim Preserve O(U - Cnt)
 AyWhExclAtCnt = O
-End Property
+End Function
 
-Property Get AyWhExclIxAy(Ay, IxAy)
+Function AyWhExclIxAy(Ay, IxAy)
 'IxAy holds index if Ay to be remove.  It has been sorted else will be stop
 Ass AyIsSrt(Ay)
 Ass AyIsSrt(IxAy)
@@ -766,9 +793,9 @@ For J = UB(IxAy) To 0 Step -1
     O = AyRmvEleAt(O, CLng(IxAy(J)))
 Next
 AyWhExclIxAy = O
-End Property
+End Function
 
-Property Get AyWhFm(Ay, FmIx&)
+Function AyWhFm(Ay, FmIx&)
 Dim O: O = Ay: Erase O
 If 0 <= FmIx And FmIx <= UB(Ay) Then
     Dim J&
@@ -777,19 +804,19 @@ If 0 <= FmIx And FmIx <= UB(Ay) Then
     Next
 End If
 AyWhFm = O
-End Property
+End Function
 
-Property Get AyWhFmTo(Ay, FmTo As FmTo)
+Function AyWhFmTo(Ay, FmTo As FmTo)
 AyWhFmTo = AyWh(Ay, FmTo.FmIx, FmTo.ToIx)
-End Property
+End Function
 
-Property Get AyWhFstNEle(Ay, N&)
+Function AyWhFstNEle(Ay, N&)
 Dim O: O = Ay
 ReDim Preserve O(N - 1)
 AyWhFstNEle = O
-End Property
+End Function
 
-Property Get AyWhIxAy(Ay, IxAy, Optional CrtEmpEle_IfReqEleNotFound As Boolean)
+Function AyWhIxAy(Ay, IxAy, Optional CrtEmpEle_IfReqEleNotFound As Boolean)
 'Return a subset of {Ay} by {IxAy}
 Ass IsArray(Ay)
 Ass IsArray(IxAy)
@@ -819,21 +846,21 @@ Dim O
     Next
 X:
 AyWhIxAy = O
-End Property
+End Function
 
-Property Get AyWhLik(Ay, Lik$) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyWhLik(Ay, Lik$) As String()
+If AyIsEmp(Ay) Then Exit Function
 Dim O$()
 Dim I
 For Each I In Ay
     If I Like Lik Then Push O, I
 Next
 AyWhLik = O
-End Property
+End Function
 
-Property Get AyWhLikAy(Ay, LikAy$()) As String()
-If AyIsEmp(Ay) Then Exit Property
-If AyIsEmp(LikAy) Then Exit Property
+Function AyWhLikAy(Ay, LikAy$()) As String()
+If AyIsEmp(Ay) Then Exit Function
+If AyIsEmp(LikAy) Then Exit Function
 Dim I, Lik, O$()
 For Each I In Ay
     For Each Lik In LikAy
@@ -844,9 +871,9 @@ For Each I In Ay
     Next
 Next
 AyWhLikAy = O
-End Property
+End Function
 
-Property Get AyWhMulEle(Ay)
+Function AyWhMulEle(Ay)
 'Return Set of Element as array in {Ay} having 2 or more element
 Dim Dry(): Dry = AyGpDry(Ay)
 Dim O: O = Ay: Erase O
@@ -859,10 +886,21 @@ If Not AyIsEmp(Dry) Then
     Next
 End If
 AyWhMulEle = O
-End Property
+End Function
 
-Property Get AyWhPatnIx(Ay, Patn$) As Long()
-If AyIsEmp(Ay) Then Exit Property
+Function AyWhPatn(Ay, Patn$) As String()
+If AyIsEmp(Ay) Then Exit Function
+Dim I, O$()
+Dim R As RegExp
+Set R = Re(Patn)
+For Each I In Ay
+    If R.Test(I) Then Push O, I
+Next
+AyWhPatn = O
+End Function
+
+Function AyWhPatnIx(Ay, Patn$) As Long()
+If AyIsEmp(Ay) Then Exit Function
 Dim I, O&(), J&
 Dim R As RegExp
 Set R = Re(Patn)
@@ -871,19 +909,44 @@ For Each I In Ay
     J = J + 1
 Next
 AyWhPatnIx = O
-End Property
+End Function
 
-Property Get AyWhSfx(Ay, Sfx$) As String()
-If AyIsEmp(Ay) Then Exit Property
+Function AyWhPfx(Ay, Pfx$) As String()
+If AyIsEmp(Ay) Then Exit Function
+Dim O$()
+Dim I
+For Each I In Ay
+    If HasPfx(I, Pfx) Then Push O, I
+Next
+AyWhPfx = O
+End Function
+
+Function AyWhPred(Ay, PredMthNm$, ParamArray Ap())
+Dim O: O = Ay: Erase O
+Dim I
+Dim Av()
+    Av = Ap
+    Av = AyIns(Av)
+For Each I In Ay
+    Asg I, Av(0)
+    If RunAv(PredMthNm, Av) Then
+        Push O, I
+    End If
+Next
+AyWhPred = O
+End Function
+
+Function AyWhSfx(Ay, Sfx$) As String()
+If AyIsEmp(Ay) Then Exit Function
 Dim O$()
 Dim I
 For Each I In Ay
     If HasSfx(CStr(I), Sfx) Then Push O, I
 Next
 AyWhSfx = O
-End Property
+End Function
 
-Property Get AyWhSngEle(Ay)
+Function AyWhSngEle(Ay)
 'Return Set of Element as array in {Ay} having 2 or more element
 Dim Dry(): Dry = AyGpDry(Ay)
 Dim O: O = Ay: Erase O
@@ -896,61 +959,16 @@ If Not AyIsEmp(Dry) Then
     Next
 End If
 AyWhSngEle = O
-End Property
+End Function
 
-Property Get AyWh_ByIxAy(Ay, IxAy)
-Dim O: O = Ay: Erase O
-Dim J%
-For J = 0 To UB(IxAy)
-    Push O, Ay(IxAy(J))
-Next
-AyWh_ByIxAy = O
-End Property
-
-Property Get AyWh_ByMth(Ay, WhMthNm$, ParamArray Ap())
-Dim O: O = Ay: Erase O
-Dim I
-Dim Av()
-    Av = Ap
-    Av = AyIns(Av)
-For Each I In Ay
-    Asg I, Av(0)
-    If RunAv(WhMthNm, Av) Then
-        Push O, I
-    End If
-Next
-AyWh_ByMth = O
-End Property
-
-Property Get AyWh_ByPatn(Ay, Patn$) As String()
-If AyIsEmp(Ay) Then Exit Property
-Dim I, O$()
-Dim R As RegExp
-Set R = Re(Patn)
-For Each I In Ay
-    If R.Test(I) Then Push O, I
-Next
-AyWh_ByPatn = O
-End Property
-
-Property Get AyWh_ByPfx(Ay, Pfx$) As String()
-If AyIsEmp(Ay) Then Exit Property
-Dim O$()
-Dim I
-For Each I In Ay
-    If HasPfx(CStr(I), Pfx) Then Push O, I
-Next
-AyWh_ByPfx = O
-End Property
-
-Property Get AyWs(Ay, Optional WsNm$, Optional Vis As Boolean) As Worksheet
+Function AyWs(Ay, Optional WsNm$, Optional Vis As Boolean) As Worksheet
 Stop
 'Dim O As Worksheet: Set O = NewWs(WsNm, Vis)
 'SqRg AyVSq(Ay), WsA1(O)
 'Set AyWs = O
-End Property
+End Function
 
-Property Get AyZip(A1, A2) As Variant()
+Function AyZip(A1, A2) As Variant()
 Dim U1&: U1 = UB(A1)
 Dim U2&: U2 = UB(A2)
 Dim U&: U = Max(U1, U2)
@@ -972,9 +990,9 @@ For J = 0 To U
     End If
 Next
 AyZip = O
-End Property
+End Function
 
-Property Get AyZipAp(A1, ParamArray Ap()) As Variant()
+Function AyZipAp(A1, ParamArray Ap()) As Variant()
 Dim Av(): Av = Ap
 Dim UCol%
     UCol = UB(Av)
@@ -1013,13 +1031,7 @@ Dim ODry()
         ODry(J) = Dr
     Next
 AyZipAp = ODry
-End Property
-
-
-
-
-
-
+End Function
 
 Sub AyBrw(Ay, Optional Fnn$)
 Dim T$
@@ -1074,7 +1086,6 @@ Sub AyWrt(Ay, Ft)
 StrWrt JnCrLf(Ay), Ft
 End Sub
 
-
 Private Sub AyGpDry__Upd(OGpDry(), Itm)
 Dim J&
 For J = 0 To UB(OGpDry)
@@ -1098,43 +1109,43 @@ Next
 Er "AyIxAy__ChkNotFound", "{SomEle} with {Ix} in {SubAy} are not found in Given {Ay}", SomEle, SomEleIx, SubAy, A, SomEleIx
 End Sub
 
-Private Property Get AySrt__Ix&(Ay, V, Des As Boolean)
+Private Function AySrt__Ix&(Ay, V, Des As Boolean)
 Dim I, O&
 If Des Then
     For Each I In Ay
-        If V > I Then AySrt__Ix = O: Exit Property
+        If V > I Then AySrt__Ix = O: Exit Function
         O = O + 1
     Next
     AySrt__Ix = O
-    Exit Property
+    Exit Function
 End If
 For Each I In Ay
-    If V < I Then AySrt__Ix = O: Exit Property
+    If V < I Then AySrt__Ix = O: Exit Function
     O = O + 1
 Next
 AySrt__Ix = O
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_AyTrim
 End Sub
 
-Private Property Get AySrtInToIxAy_Ix&(Ix&(), A, V, Des As Boolean)
+Private Function AySrtInToIxAy_Ix&(Ix&(), A, V, Des As Boolean)
 Dim I, O&
 If Des Then
     For Each I In Ix
-        If V > A(I) Then AySrtInToIxAy_Ix& = O: Exit Property
+        If V > A(I) Then AySrtInToIxAy_Ix& = O: Exit Function
         O = O + 1
     Next
     AySrtInToIxAy_Ix& = O
-    Exit Property
+    Exit Function
 End If
 For Each I In Ix
-    If V < A(I) Then AySrtInToIxAy_Ix& = O: Exit Property
+    If V < A(I) Then AySrtInToIxAy_Ix& = O: Exit Function
     O = O + 1
 Next
 AySrtInToIxAy_Ix& = O
-End Property
+End Function
 
 Private Sub ZZ_AyAdd()
 Dim Act(), Exp(), Ay1(), Ay2()

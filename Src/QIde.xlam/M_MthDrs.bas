@@ -13,3 +13,16 @@ For Each Dr In A.Dry
 Next
 MthDrs_Ky = O
 End Function
+Sub MthDrs_SortingKy__Tst()
+'AyDmp MthDrs_SortingKy(SrcMthDrs(MdSrc(Md("Mth_"))))
+End Sub
+Function MthDrs_SortingKy(A As Drs) As String()
+If AyIsEmp(A.Dry) Then Exit Function
+Dim Dr, Mdy$, Ty$, MthNm$, O$()
+Stop '
+'For Each Dr In DrsSel(A, "Mdy Ty MthNm").Dry
+'    AyAsg Dr, Mdy, Ty, MthNm
+'    Push O, MthDrs_SortingKy__CrtKey(Mdy, Ty, MthNm)
+'Next
+MthDrs_SortingKy = O
+End Function

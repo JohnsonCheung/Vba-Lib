@@ -25,13 +25,6 @@ Function SrcBdyLy(A$()) As String()
 SrcBdyLy = AyWhFm(A, SrcDclLinCnt(A))
 End Function
 
-Function SrcCmpLy(A1$(), A2$()) As String()
-Dim D1 As Dictionary: Set D1 = SrcDic(A1)
-Dim D2 As Dictionary: Set D2 = SrcDic(A2)
-Dim Rslt As DCRslt: Rslt = DicCmp(D1, D2)
-SrcCmpLy = DCRslt_Ly(Rslt, "Bef-Srt", "Aft-Srt")
-End Function
-
 Function SrcContLin$(A$(), FmIx&)
 If FmIx = -1 Then Exit Function
 Const CSub$ = "SrcContLinFm"
@@ -160,8 +153,6 @@ For Each I In Ay
 Next
 End Function
 
-Function SrcLin_MthNmPos%(Lin$)
-End Function
 
 Function SrcMthCnt%(A$())
 If AyIsEmp(A) Then Exit Function
@@ -223,42 +214,7 @@ Dim O&(), I, J&
 SrcMthLxAy = O
 End Function
 
-Function SrcMthLx_BdyLy(A$(), MthLx) As String()
-Dim ToLx%: ToLx = SrcMthLx_ToLx(A, MthLx)
-Dim FmLx%: FmLx = SrcMthLx_MthRmkLx(A, MthLx)
-Dim FT As FmTo
-With FT
-   .FmIx = FmLx
-   .ToIx = ToLx
-End With
-Dim O$()
-   O = AyWhFmTo(A, FT)
-SrcMthLx_BdyLy = O
-If AyLasEle(O) = "" Then Stop
-End Function
 
-Function SrcMthLx_MthRmkLx&(A$(), MthLx)
-Dim M1&
-    Dim J&
-    For J = MthLx - 1 To 0 Step -1
-        If SrcLin_IsCd(A(J)) Then
-            M1 = J
-            GoTo M1IsFnd
-        End If
-    Next
-    M1 = -1
-M1IsFnd:
-Dim M2&
-    For J = M1 + 1 To MthLx - 1
-        If Trim(A(J)) <> "" Then
-            M2 = J
-            GoTo M2IsFnd
-        End If
-    Next
-    M2 = MthLx
-M2IsFnd:
-SrcMthLx_MthRmkLx = M2
-End Function
 
 Function SrcMthNy(A$(), Optional MthNmPatn$ = ".") As String()
 Stop '
@@ -274,119 +230,14 @@ Stop '
 'SrcMthNy = O
 End Function
 
-Function SrcMth_BdyLines$(A$(), MthNm$)
-SrcMth_BdyLines = JnCrLf(SrcMth_BdyLy(A, MthNm))
-End Function
 
-Function SrcMth_BdyLy(A$(), MthNm$) As String()
-Dim FmTo() As FmTo: FmTo = SrcMth_FmToAy(A, MthNm)
-Dim O$(), J%
-For J = 0 To UB(FmTo)
-   PushAy O, AyWhFmTo(A, FmTo(J))
-Next
-SrcMth_BdyLy = O
-End Function
 
-Function SrcMth_FmToAy(A$(), MthNm$) As FmTo()
-Dim IxAy&(), O() As FmTo, M As FmTo
-IxAy = SrcMth_LxAy(A, MthNm)
-Dim J%
-For J = 0 To UB(IxAy)
-   M.FmIx = IxAy(J)
-   M.ToIx = SrcMthLx_ToLx(A, M.FmIx)
-   Push O, M
-Next
-SrcMth_FmToAy = O
-End Function
 
-Function SrcMth_Lno%(A$(), MthNm, Optional PrpTy$)
-If AyIsEmp(A) Then Exit Function
-If PrpTy <> "" Then
-   If Not AyHas(Array("Get Let Set"), PrpTy) Then Stop
-End If
-Dim FunTy$: FunTy = "Property " & PrpTy
-Dim Lno&
-Lno = 0
-Const IMthNm% = 2
-Dim M As MthBrk
-Dim Lin
-For Each Lin In A
-   Lno = Lno + 1
-   M = SrcLin_MthBrk(Lin)
-   If M.MthNm = "" Then GoTo Nxt
-   If M.MthNm <> MthNm Then GoTo Nxt
-   If PrpTy <> "" Then
-       If M.Ty <> FunTy Then GoTo Nxt
-   End If
-   SrcMth_Lno = Lno
-   Exit Function
-Nxt:
-Next
-SrcMth_Lno = 0
-End Function
 
-Function SrcMth_LnoCnt(A$(), MthNm$) As LnoCnt
-End Function
 
-Function SrcMth_LnoCntAy(A$(), MthNm$) As LnoCnt()
-Dim FmAy&(): FmAy = SrcMth_LxAy(A, MthNm)
-Dim O() As LnoCnt, J%
-Dim ToIx&
-Dim FT As FmTo
-Dim LnoCnt As LnoCnt
-For J = 0 To UB(FmAy)
-   ToIx = SrcMthLx_ToLx(A, FmAy(J))
-   Set FT = FmTo(FmAy(J), ToIx)
-   LnoCnt = FmTo_LnoCnt(FT)
-   Push O, LnoCnt
-Next
-SrcMth_LnoCntAy = O
-End Function
 
-Function SrcMth_Lx%(A$(), MthNm$, Optional Fm&)
-Dim I%, Nm$
-For I = Fm To UB(A)
-    Nm = SrcLin_MthNm(A(I))
-    If Nm = MthNm Then
-        SrcMth_Lx% = I
-        Exit Function
-    End If
-Next
-SrcMth_Lx = -1
-End Function
 
-Function SrcMth_LxAy(A$(), MthNm$) As Long()
-Dim Ix&
-   Ix = SrcMth_Lx(A, MthNm)
-   If Ix = -1 Then Exit Function
 
-Dim O&()
-   Push O, Ix
-   If Not HasPfx(SrcLin_MthTy(A(Ix)), "Property") Then
-       SrcMth_LxAy = O
-       Exit Function
-   End If
-
-   Dim J%, Fm&
-   For J = 1 To 2
-       Fm = Ix + 1
-       Ix = SrcMth_Lx(A, MthNm, Fm)
-       If Ix = -1 Then
-           SrcMth_LxAy = O
-           Exit Function
-       End If
-       Push O, Ix
-   Next
-SrcMth_LxAy = O
-End Function
-
-Function SrcMth_RRCC(A$(), MthNm$) As RRCC
-Dim R&, C&, Ix&
-Ix = SrcMth_Lx(A, MthNm)
-R = Ix + 1
-C = SrcLin_MthNmPos(A(Ix))
-SrcMth_RRCC = RRCC(R, R, C + 1, C + Len(MthNm))
-End Function
 
 Function SrcNDisMth%(A$())
 SrcNDisMth = Sz(SrcDisMthNy(A))
@@ -567,26 +418,6 @@ Dim Ay$(): Ay = AyWhIxAy(Src, SrcMthLxAy(Src))
 aybrw Ay
 End Sub
 
-Private Sub ZZ_SrcMthLx_MthRmkLx()
-Dim ODry()
-    Dim Src$(): Src = MdSrc(Md("IdeSrcLin"))
-    Dim Dr(), Lx&
-    Dim J%, IsMth$, RmkLx$, Lin
-    For Each Lin In Src
-        IsMth = ""
-        RmkLx = ""
-        If SrcLin_IsMth(Lin) Then
-            If Lx = 482 Then Stop
-            IsMth = "*Mth"
-            RmkLx = SrcMthLx_MthRmkLx(Src, Lx)
-
-        End If
-        Dr = Array(IsMth, RmkLx, Lin)
-        Push ODry, Dr
-        Lx = Lx + 1
-    Next
-DrsBrw Drs("Mth RmkLx Lin", ODry)
-End Sub
 
 Private Sub ZZ_SrcMthNy()
 Dim Act$()
@@ -594,9 +425,41 @@ Dim Act$()
    aybrw Act
 End Sub
 
-Private Sub ZZ_SrcMth_BdyLy()
-Dim Src$(): Src = ZZSrc
-Dim MthNm$: MthNm = "A"
-Dim Act$()
-Act = SrcMth_BdyLy(Src, MthNm)
+Function SrcItmLy(A As SrcItm) As String()
+SrcItmLy = A.Ly
+End Function
+Function SrcItmSz%(A() As SrcItm)
+On Error Resume Next
+SrcItmSz = UBound(A) + 1
+End Function
+Function SrcItmUB%(A() As SrcItm)
+SrcItmUB = SrcItmSz(A) - 1
+End Function
+Sub SrcItmAyDmp(A() As SrcItm)
+Dim J%
+For J = 0 To SrcItmUB(A)
+AyDmp SrcItmLy(A(J))
+Next
 End Sub
+Sub SrcItmDmp(A As SrcItm)
+AyDmp SrcItmLy(A)
+End Sub
+Sub SrcItmPush(O() As SrcItm, M As SrcItm)
+Dim N%: N = SrcItmSz(O)
+ReDim Preserve O(N)
+O(N) = M
+End Sub
+Sub SrcItmPushAy(O() As SrcItm, M() As SrcItm)
+Dim J%
+For J = 0 To SrcItmUB(M)
+   SrcItmPush O, M(J)
+Next
+End Sub
+Function SrcLinInfFny() As String()
+Static X As Boolean, Y$()
+If Not X Then
+    X = True
+    Y = SplitSpc("Md Lno Lin EnmNm IsBlank IsEmn IsMth IsPrpLin IsRmk IsTy Mdy MthNm MthTy NoMdy PrpTy TyNm")
+End If
+SrcLinInfFny = Y
+End Function

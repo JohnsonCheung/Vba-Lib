@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Fxa"
 Option Explicit
-Property Get FxaCrt(A) As Excel.Application
-If FfnIsExist(A) Then MsgBox FmtQQ("Fxa.Crt: Fxa(?) exist", A): Exit Property
+Function FxaCrt(A) As Excel.Application
+If FfnIsExist(A) Then MsgBox FmtQQ("Fxa.Crt: Fxa(?) exist", A): Exit Function
 Dim Wb As Workbook, X As Excel.Application
    Set X = New Excel.Application
    Set Wb = X.Workbooks.Add
@@ -10,7 +10,7 @@ Wb.SaveAs A, XlFileFormat.xlOpenXMLAddIn
 Wb.Close
 X.AddIns.Add A
 Set FxaCrt = X
-End Property
+End Function
 
 Private Sub ZZ_FxaCrt()
 Stop '

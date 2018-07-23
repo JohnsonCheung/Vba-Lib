@@ -1,6 +1,6 @@
 Attribute VB_Name = "M_Fml"
 Option Explicit
-Property Get FmlErMsgOpt(Fml$, Fny$()) As SomStr
+Function FmlErMsgOpt(Fml$, Fny$()) As StrOpt
 Stop '
 'Dim A$(): A = Ny
 'Dim O$(), J%
@@ -11,11 +11,11 @@ Stop '
 'Next
 'If AyIsEmp(O) Then Exit Property
 'FmlErMsgOpt = SomStr(JnSpc(O))
-End Property
+End Function
 
-Property Get FmlNy(Fml$) As String()
+Function FmlNy(Fml$) As String()
 Stop '
 'FmlNy = Macro(A).Ny(ExclBkt:=True, Bkt:="[]")
-End Property
+End Function
 
 

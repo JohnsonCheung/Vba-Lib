@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_Wb"
 Option Explicit
 
-Property Get WbAddWs(A As Workbook, Optional WsNm$, Optional IsBeg As Boolean) As Worksheet
+Function WbAddWs(A As Workbook, Optional WsNm$, Optional IsBeg As Boolean) As Worksheet
 Dim O As Worksheet
 If IsBeg Then
     Set O = A.Sheets.Add(WbFstWs(A))
@@ -12,19 +12,19 @@ If WsNm <> "" Then
    O.Name = WsNm
 End If
 Set WbAddWs = O
-End Property
+End Function
 
-Property Get WbFstWs(A As Workbook) As Worksheet
+Function WbFstWs(A As Workbook) As Worksheet
 Set WbFstWs = A.Sheets(1)
-End Property
+End Function
 
-Property Get WbHasWs(A As Workbook, Ix_or_WsNm) As Boolean
+Function WbHasWs(A As Workbook, Ix_or_WsNm) As Boolean
 On Error GoTo X
 Dim Ws As Worksheet: Set Ws = A.Sheets(Ix_or_WsNm)
 WbHasWs = True
-Exit Property
+Exit Function
 X:
-End Property
+End Function
 Sub WbClsNoSav(A As Workbook)
 On Error Resume Next
 A.Close False
@@ -44,17 +44,17 @@ Sub WbVis(A As Workbook)
 A.Application.Visible = True
 End Sub
 
-Property Get WbLasWs(A As Workbook) As Worksheet
+Function WbLasWs(A As Workbook) As Worksheet
 Set WbLasWs = A.Sheets(A.Sheets.Count)
-End Property
+End Function
 
-Property Get WbWs(A As Workbook, Ix_or_WsNm) As Worksheet
+Function WbWs(A As Workbook, Ix_or_WsNm) As Worksheet
 Set WbWs = A.Sheets(Ix_or_WsNm)
-End Property
+End Function
 
-Property Get WbWsNy(A As Workbook) As String()
+Function WbWsNy(A As Workbook) As String()
 Stop
 'WbWsNy = ItrNy(A.Sheets)
-End Property
+End Function
 
 

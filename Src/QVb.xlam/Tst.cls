@@ -45,10 +45,6 @@ Sub M_Rpl()
 QVb.M_Rpl.ZZ__Tst
 End Sub
 
-Sub M_S1S2Ay()
-QVb.M_S1S2Ay.ZZ__Tst
-End Sub
-
 Sub M_Tak()
 QVb.M_Tak.ZZ__Tst
 End Sub

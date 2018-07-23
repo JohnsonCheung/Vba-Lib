@@ -1,51 +1,51 @@
 Attribute VB_Name = "M_Rg"
 Option Explicit
 
-Property Get RgA1(A As Range) As Range
+Function RgA1(A As Range) As Range
 Set RgA1 = RgRC(A, 1, 1)
-End Property
+End Function
 
-Property Get RgC(A As Range, C) As Range
+Function RgC(A As Range, C) As Range
 Set RgC = RgCRR(A, C, 1, A.Rows.Count)
-End Property
+End Function
 
-Property Get RgCC(A As Range, C1, C2) As Range
+Function RgCC(A As Range, C1, C2) As Range
 Set RgCC = RgRCRC(A, 1, C1, RgNRow(A), C2)
-End Property
+End Function
 
-Property Get RgCRR(A As Range, C, R1, R2) As Range
+Function RgCRR(A As Range, C, R1, R2) As Range
 Set RgCRR = RgRCRC(A, R1, C, R2, C)
-End Property
+End Function
 
-Property Get RgEntC(A As Range, C) As Range
+Function RgEntC(A As Range, C) As Range
 Set RgEntC = RgC(A, C).EntireColumn
-End Property
+End Function
 
-Property Get RgFstHBar(A As Range) As Range
+Function RgFstHBar(A As Range) As Range
 Set RgFstHBar = RgR(A, 1)
-End Property
+End Function
 
-Property Get RgFstVBar(A As Range) As Range
+Function RgFstVBar(A As Range) As Range
 Set RgFstVBar = RgC(A, 1)
-End Property
+End Function
 
-Property Get RgIsHBar(A As Range) As Boolean
+Function RgIsHBar(A As Range) As Boolean
 RgIsHBar = A.Rows.Count = 1
-End Property
+End Function
 
-Property Get RgIsVBar(A As Range) As Boolean
+Function RgIsVBar(A As Range) As Boolean
 RgIsVBar = A.Columns.Count = 1
-End Property
+End Function
 
-Property Get RgLasHBar(A As Range) As Range
+Function RgLasHBar(A As Range) As Range
 Set RgLasHBar = RgR(A, RgNRow(A))
-End Property
+End Function
 
-Property Get RgLasVBar(A As Range) As Range
+Function RgLasVBar(A As Range) As Range
 Set RgLasVBar = RgC(A, RgNCol(A))
-End Property
+End Function
 
-Property Get RgLo(A As Range, Optional LoNm0$, Optional HasHeader As XlYesNoGuess = xlYes) As ListObject
+Function RgLo(A As Range, Optional LoNm0$, Optional HasHeader As XlYesNoGuess = xlYes) As ListObject
 Dim Ws As Worksheet: Set Ws = RgWs(A)
 Dim O As ListObject: Set O = Ws.ListObjects.Add(xlSrcRange, A, , HasHeader)
 If LoNm0 <> "" Then
@@ -53,39 +53,39 @@ If LoNm0 <> "" Then
 End If
 RgBdrAround A
 Set RgLo = O
-End Property
+End Function
 
-Property Get RgNCol%(A As Range)
+Function RgNCol%(A As Range)
 RgNCol = A.Columns.Count
-End Property
+End Function
 
-Property Get RgNRow%(A As Range)
+Function RgNRow%(A As Range)
 RgNRow = A.Rows.Count
-End Property
+End Function
 
-Property Get RgR(A As Range, R) As Range
+Function RgR(A As Range, R) As Range
 Set RgR = RgRCC(A, R, 1, RgNCol(A))
-End Property
+End Function
 
-Property Get RgRC(A As Range, R, C) As Range
+Function RgRC(A As Range, R, C) As Range
 Set RgRC = A.Cells(R, C)
-End Property
+End Function
 
-Property Get RgRCC(A As Range, R, C1, C2) As Range
+Function RgRCC(A As Range, R, C1, C2) As Range
 Set RgRCC = RgRCRC(A, R, C1, R, C2)
-End Property
+End Function
 
-Property Get RgRCRC(Rg As Range, R1, C1, R2, C2) As Range
+Function RgRCRC(Rg As Range, R1, C1, R2, C2) As Range
 Dim Ws As Worksheet, Cell1 As Range, Cell2 As Range
 Set Ws = Rg.Parent
 Set Cell1 = RgRC(Rg, R1, C1)
 Set Cell2 = RgRC(Rg, R2, C2)
 Set RgRCRC = Ws.Range(Cell1, Cell2)
-End Property
+End Function
 
-Property Get RgRR(A As Range, R1, R2) As Range
+Function RgRR(A As Range, R1, R2) As Range
 Set RgRR = RgRCRC(A, R1, 1, R2, RgNCol(A))
-End Property
+End Function
 
 Sub RgBdrTop(A As Range)
 RgBdr A, xlEdgeTop
@@ -145,28 +145,28 @@ End If
 End Sub
 
 
-Property Get RgReSz(A As Range, Sq) As Range
+Function RgReSz(A As Range, Sq) As Range
 Set RgReSz = RgRCRC(A, 1, 1, UBound(Sq, 1), UBound(Sq, 2))
-End Property
+End Function
 
-Property Get RgSq(A As Range)
+Function RgSq(A As Range)
 If A.Columns.Count = 1 Then
     If A.Rows.Count = 1 Then
         Dim O()
         ReDim O(1 To 1, 1 To 1)
         O(1, 1) = A.Value
         RgSq = O
-        Exit Property
+        Exit Function
     End If
 End If
 RgSq = A.Value
-End Property
+End Function
 
-Property Get RgWb(A As Range) As Workbook
+Function RgWb(A As Range) As Workbook
 Set RgWb = WsWb(RgWs(A))
-End Property
+End Function
 
-Property Get RgWs(A As Range) As Worksheet
+Function RgWs(A As Range) As Worksheet
 Set RgWs = A.Parent
-End Property
+End Function
 

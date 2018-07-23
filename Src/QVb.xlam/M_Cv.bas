@@ -1,20 +1,18 @@
 Attribute VB_Name = "M_Cv"
 Option Explicit
 
-Property Get CvAy(V) As Variant()
+Function CvAy(V) As Variant()
 CvAy = V
-End Property
+End Function
 
-Property Get CvSy(V) As String()
-CvSy = V
-End Property
-
-Property Get CvDic(I) As Dictionary
+Function CvDic(I) As Dictionary
 Set CvDic = I
-End Property
+End Function
 
-Property Get CvS1S2(I) As S1S2
+Function CvS1S2(I) As S1S2
 Set CvS1S2 = I
-End Property
+End Function
 
-
+Function CvSy(V) As String()
+CvSy = V
+End Function

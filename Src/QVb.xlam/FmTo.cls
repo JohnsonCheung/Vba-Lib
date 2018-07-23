@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 Public FmIx&, ToIx&
 
-Property Get Init(FmIx&, ToIx&) As FmTo
+Friend Property Get Init(FmIx&, ToIx&) As FmTo
 Me.FmIx = FmIx
 Me.ToIx = ToIx
 Set Init = Me

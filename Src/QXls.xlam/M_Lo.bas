@@ -1,24 +1,24 @@
 Attribute VB_Name = "M_Lo"
 Option Explicit
 
-Property Get LoSq(A As ListObject)
+Function LoSq(A As ListObject)
 LoSq = A.DataBodyRange.Value
-End Property
+End Function
 
-Property Get LoWs(A As ListObject) As Worksheet
+Function LoWs(A As ListObject) As Worksheet
 Set LoWs = A.Parent
-End Property
+End Function
 
-Property Get LoWsCno%(A As ListObject, Ix_or_ColNm)
+Function LoWsCno%(A As ListObject, Ix_or_ColNm)
 LoWsCno = A.ListColumns(Ix_or_ColNm).Range.Column
-End Property
+End Function
 
-Property Get LoC(A As ListObject, C, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
+Function LoC(A As ListObject, C, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
 Dim R As Range
 Set R = A.ListColumns(C).DataBodyRange
 If Not InclTot And Not InclHdr Then
     Set LoC = R
-    Exit Property
+    Exit Function
 End If
 
 Dim R1&, R2&
@@ -27,45 +27,45 @@ Dim R1&, R2&
     If InclTot Then R2 = R2 + 1
     If InclHdr Then R1 = R1 - 1
 Set LoC = RgRR(R, R1, R2)
-End Property
+End Function
 
-Property Get LoCC(A As ListObject, C1, C2, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
+Function LoCC(A As ListObject, C1, C2, Optional InclTot As Boolean, Optional InclHdr As Boolean) As Range
 Dim R1&, R2&, mC1%, mC2%
 R1 = LoR1(A, InclHdr)
 R2 = LoR2(A, InclTot)
 mC1 = LoWsCno(A, C1)
 mC2 = LoWsCno(A, C2)
 Set LoCC = WsRCRC(LoWs(A), R1, mC1, R2, mC2)
-End Property
+End Function
 
-Property Get LoCol_Rg(A As ListObject, ColNm$) As Range
+Function LoCol_Rg(A As ListObject, ColNm$) As Range
 Set LoCol_Rg = A.ListColumns(ColNm).Range
-End Property
+End Function
 
-Property Get LoCrt(A As Worksheet, Optional LoNm$) As ListObject
+Function LoCrt(A As Worksheet, Optional LoNm$) As ListObject
 Dim R As Range: Set R = WsDtaRg(A)
-If IsNothing(R) Then Exit Property
+If IsNothing(R) Then Exit Function
 Dim O As ListObject: Set O = A.ListObjects.Add(xlSrcRange, WsDtaRg(A), , xlYes)
 If LoNm <> "" Then O.Name = LoNm
 LoAdjColWdt O
 Set LoCrt = O
-End Property
+End Function
 
-Property Get LoDry(A As ListObject) As Variant()
+Function LoDry(A As ListObject) As Variant()
 LoDry = SqDry(LoSq(A))
-End Property
+End Function
 
-Property Get LoEntCol(A As ListObject) As Range
+Function LoEntCol(A As ListObject) As Range
 Set LoEntCol = LoCC(A, 1, LoNCol(A)).EntireColumn
-End Property
+End Function
 
-Property Get LoFny(A As ListObject) As String()
+Function LoFny(A As ListObject) As String()
 Dim O$(), I
 For Each I In A.ListColumns
     Push O, CvLoCol(I).Name
 Next
 LoFny = O
-End Property
+End Function
 
 
 Sub LoAdjColWdt__Tst()
@@ -86,34 +86,34 @@ Dim O As ListObject: Set O = SampleLo
 Stop
 End Sub
 
-Property Get LoHasNoDta(A As ListObject) As Boolean
+Function LoHasNoDta(A As ListObject) As Boolean
 LoHasNoDta = IsNothing(A.DataBodyRange)
-End Property
+End Function
 
-Property Get LoHdrCell(A As ListObject, FldNm) As Range
+Function LoHdrCell(A As ListObject, FldNm) As Range
 Dim Rg As Range: Set Rg = A.ListColumns(FldNm).Range
 Set LoHdrCell = RgRC(Rg, 1, 1)
-End Property
+End Function
 
-Property Get LoNCol%(A As ListObject)
+Function LoNCol%(A As ListObject)
 LoNCol = A.ListColumns.Count
-End Property
+End Function
 
-Property Get LoR1&(A As ListObject, Optional InclHdr As Boolean)
+Function LoR1&(A As ListObject, Optional InclHdr As Boolean)
 If LoHasNoDta(A) Then
    LoR1 = A.ListColumns(1).Range.Row + 1
-   Exit Property
+   Exit Function
 End If
 LoR1 = A.DataBodyRange.Row - IIf(InclHdr, 1, 0)
-End Property
+End Function
 
-Property Get LoR2&(A As ListObject, Optional InclTot As Boolean)
+Function LoR2&(A As ListObject, Optional InclTot As Boolean)
 If LoHasNoDta(A) Then
    LoR2 = LoR1(A)
-   Exit Property
+   Exit Function
 End If
 LoR2 = A.DataBodyRange.Row + IIf(InclTot, 1, 0)
-End Property
+End Function
 
 Sub LoAdjColWdt(A As ListObject)
 Dim C As Range: Set C = LoEntCol(A)

@@ -10,12 +10,12 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Cno%, Val
 
-Property Get ToStr$()
-ToStr = FmtQQ("CnoVal(Cno(?) Val(?) V-Ty(?))", Cno, Val, TypeName(Val))
-End Property
-
 Friend Property Get Init(Cno%, Val) As CnoVal
 Me.Cno = Cno
 Asg Val, Me.Val
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = FmtQQ("CnoVal(Cno(?) Val(?) V-Ty(?))", Cno, Val, TypeName(Val))
 End Property

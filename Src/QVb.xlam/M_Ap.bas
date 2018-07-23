@@ -1,22 +1,22 @@
 Attribute VB_Name = "M_Ap"
 Option Explicit
 
-Property Get ApIntAy(ParamArray Ap()) As Integer()
+Function ApIntAy(ParamArray Ap()) As Integer()
 Dim Av(): Av = Ap
 ApIntAy = AyIntAy(Av)
-End Property
+End Function
 
-Property Get ApLngAy(ParamArray Ap()) As Long()
+Function ApLngAy(ParamArray Ap()) As Long()
 Dim Av(): Av = Ap
 ApLngAy = AyLngAy(Av)
-End Property
+End Function
 
-Property Get ApSngAy(ParamArray Ap()) As Single()
+Function ApSngAy(ParamArray Ap()) As Single()
 Dim Av(): Av = Ap
 ApSngAy = AySngAy(Av)
-End Property
+End Function
 
-Property Get ApSy(ParamArray Ap()) As String()
+Function ApSy(ParamArray Ap()) As String()
 Dim Av(): Av = Ap
 ApSy = AySy(Av)
-End Property
+End Function

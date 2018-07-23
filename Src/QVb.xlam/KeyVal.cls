@@ -10,12 +10,12 @@ Attribute VB_Exposed = True
 Option Explicit
 Public K$, V
 
-Property Get ToStr$()
-ToStr = FmtQQ("KeyVal(K(?) V(?))", K, V)
-End Property
-
 Friend Property Get Init(K, V) As KeyVal
 Me.K = K
 Asg V, Me.V
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = FmtQQ("KeyVal(K(?) V(?))", K, V)
 End Property

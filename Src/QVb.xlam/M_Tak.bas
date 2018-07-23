@@ -1,54 +1,54 @@
 Attribute VB_Name = "M_Tak"
 Option Explicit
 
-Property Get TakAft$(S, Sep, Optional NoTrim As Boolean)
+Function TakAft$(S, Sep, Optional NoTrim As Boolean)
 TakAft = Brk1(S, Sep, NoTrim).S2
-End Property
+End Function
 
-Property Get TakAftBkt$(S, Optional Bkt$ = "()")
+Function TakAftBkt$(S, Optional Bkt$ = "()")
 Dim P2&
    P2 = BrkBktPos(S, Bkt).ToPos
-If P2 = 0 Then Exit Property
+If P2 = 0 Then Exit Function
 TakAftBkt = Mid(S, P2 + 1)
-End Property
+End Function
 
-Property Get TakAftRev$(S, Sep, Optional NoTrim As Boolean)
+Function TakAftRev$(S, Sep, Optional NoTrim As Boolean)
 TakAftRev = Brk1Rev(S, Sep, NoTrim).S2
-End Property
+End Function
 
-Property Get TakBef$(S, Sep, Optional NoTrim As Boolean)
+Function TakBef$(S, Sep, Optional NoTrim As Boolean)
 TakBef = Brk2(S, Sep, NoTrim).S1
-End Property
+End Function
 
-Property Get TakBefBkt$(S, Optional Bkt$ = "()")
+Function TakBefBkt$(S, Optional Bkt$ = "()")
 Dim P1&
    P1 = BrkBktPos(S, Bkt).FmPos
-If P1 = 0 Then Exit Property
+If P1 = 0 Then Exit Function
 TakBefBkt = Left(S, P1 - 1)
-End Property
+End Function
 
-Property Get TakBefRev$(S, Sep, Optional NoTrim As Boolean)
+Function TakBefRev$(S, Sep, Optional NoTrim As Boolean)
 TakBefRev = BrkRev(S, Sep, NoTrim).S1
-End Property
+End Function
 
-Property Get TakBet$(S, S1, S2, Optional NoTrim As Boolean, Optional InclMarker As Boolean)
+Function TakBet$(S, S1, S2, Optional NoTrim As Boolean, Optional InclMarker As Boolean)
 With Brk1(S, S1, NoTrim)
-   If .S2 = "" Then Exit Property
+   If .S2 = "" Then Exit Function
    Dim O$: O = Brk1(.S2, S2, NoTrim).S1
    If InclMarker Then O = S1 & O & S2
    TakBet = O
 End With
-End Property
+End Function
 
-Property Get TakBetBkt$(S, Optional Bkt$ = "()")
+Function TakBetBkt$(S, Optional Bkt$ = "()")
 Dim P1&, P2&
    With BrkBktPos(S, Bkt)
        P1 = .FmPos
        P2 = .ToPos
    End With
-If P1 = 0 Then Exit Property
+If P1 = 0 Then Exit Function
 TakBetBkt = Mid(S, P1 + 1, P2 - P1 - 1)
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_TakBet

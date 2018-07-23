@@ -1,107 +1,114 @@
 Attribute VB_Name = "M_Is"
 Option Explicit
 
-Property Get IsBet(V, A, B) As Boolean
-If A > V Then Exit Property
-If V > B Then Exit Property
+Function IsBet(V, A, B) As Boolean
+If A > V Then Exit Function
+If V > B Then Exit Function
 IsBet = True
-End Property
+End Function
 
-Property Get IsBool(A) As Boolean
+Function IsBool(A) As Boolean
 IsBool = VarType(A) = vbBoolean
-End Property
+End Function
 
-Property Get IsDic(A) As Boolean
+Function IsDic(A) As Boolean
 IsDic = TypeName(A) = "Dictionary"
-End Property
+End Function
 
-Property Get IsDigit(A) As Boolean
+Function IsDigit(A) As Boolean
 IsDigit = "0" <= A And A <= "9"
-End Property
+End Function
 
-Property Get IsEmp(V) As Boolean
+Function IsEmp(V) As Boolean
 IsEmp = True
-If IsMissing(V) Then Exit Property
-If IsNothing(V) Then Exit Property
-If IsEmpty(V) Then Exit Property
+If IsMissing(V) Then Exit Function
+If IsNothing(V) Then Exit Function
+If IsEmpty(V) Then Exit Function
 If IsStr(V) Then
-   If V = "" Then Exit Property
+   If V = "" Then Exit Function
 End If
-If IsArray(V) Then
-   If AyIsEmp(V) Then Exit Property
-End If
-IsEmp = False
-End Property
+End Function
 
-Property Get IsInAp(V, ParamArray Ap()) As Boolean
+Function IsEq(Act, Exp) As Boolean
+'If VarType(Act) <> VarType(Exp) Then Exit Function
+'If IsPrim(Act) Then
+'    If Act <> Exp Then Exit Function
+'End If
+'If IsArray(Act) Then
+'    If Not AyIsEq(Act, Exp) Then Stop
+'    Exit Function
+'End If
+End Function
+
+Function IsInAp(V, ParamArray Ap()) As Boolean
 Dim Av(): Av = Ap
 IsInAp = AyHas(Av, V)
-End Property
+End Function
 
-Property Get IsInUCaseSy(V, Sy$()) As Boolean
+Function IsInUCaseSy(V, Sy$()) As Boolean
 IsInUCaseSy = AyHas(Sy, UCase(V))
-End Property
+End Function
 
-Property Get IsIntAy(V) As Boolean
+Function IsIntAy(V) As Boolean
 IsIntAy = VarType(V) = vbArray + vbInteger
-End Property
+End Function
 
-Property Get IsLetter(A) As Boolean
+Function IsLetter(A) As Boolean
 Dim C1$: C1 = UCase(A)
 IsLetter = ("A" <= C1 And C1 <= "Z")
-End Property
+End Function
 
-Property Get IsLng(A) As Boolean
+Function IsLng(A) As Boolean
 IsLng = VarType(A) = vbLong
-End Property
+End Function
 
-Property Get IsLngAy(V) As Boolean
+Function IsLngAy(V) As Boolean
 IsLngAy = VarType(V) = vbArray + vbLong
-End Property
+End Function
 
-Property Get IsNeedQuote(A) As Boolean
+Function IsNeedQuote(A) As Boolean
 IsNeedQuote = True
-If HasSubStr(A, " ") Then Exit Property
-If HasSubStr(A, "#") Then Exit Property
-If HasSubStr(A, ".") Then Exit Property
+If HasSubStr(A, " ") Then Exit Function
+If HasSubStr(A, "#") Then Exit Function
+If HasSubStr(A, ".") Then Exit Function
 IsNeedQuote = False
-End Property
+End Function
 
-Property Get IsNm(A) As Boolean
-If Not IsLetter(FstChr(A)) Then Exit Property
+Function IsNm(A) As Boolean
+If Not IsLetter(FstChr(A)) Then Exit Function
 Dim L%: L = Len(A)
-If L > 64 Then Exit Property
+If L > 64 Then Exit Function
 Dim J%
 For J = 2 To L
-   If Not IsNmChr(Mid(A, J, 1)) Then Exit Property
+   If Not IsNmChr(Mid(A, J, 1)) Then Exit Function
 Next
 IsNm = True
-End Property
+End Function
 
-Property Get IsNmChr(A) As Boolean
+Function IsNmChr(A) As Boolean
 IsNmChr = True
-If IsLetter(A) Then Exit Property
-If A = "_" Then Exit Property
-If IsDigit(A) Then Exit Property
+If IsLetter(A) Then Exit Function
+If A = "_" Then Exit Function
+If IsDigit(A) Then Exit Function
 IsNmChr = False
-End Property
+End Function
 
-Property Get IsNonBlankStr(V) As Boolean
-If Not IsStr(V) Then Exit Property
+Function IsNonBlankStr(V) As Boolean
+If Not IsStr(V) Then Exit Function
 IsNonBlankStr = V <> ""
-End Property
+End Function
 
-Property Get IsNothing(V) As Boolean
+Function IsNothing(V) As Boolean
 IsNothing = TypeName(V) = "Nothing"
-End Property
+End Function
 
-Property Get IsNothingOrEmp(V) As Boolean
+Function IsNothingOrEmp(V) As Boolean
 Select Case TypeName(V)
 Case "Nothing", "Empty": IsNothingOrEmp = True
 End Select
-End Property
+End Function
 
-Property Get IsPrim(A) As Boolean
+Function IsPrim(A) As Boolean
 Select Case VarType(A)
 Case _
    VbVarType.vbBoolean, _
@@ -116,36 +123,36 @@ Case _
    VbVarType.vbString
    IsPrim = True
 End Select
-End Property
+End Function
 
-Property Get IsStr(V) As Boolean
+Function IsStr(V) As Boolean
 IsStr = VarType(V) = vbString
-End Property
+End Function
 
-Property Get IsStrAy(A) As Boolean
+Function IsStrAy(A) As Boolean
 IsStrAy = VarType(A) = vbArray + vbString
-End Property
+End Function
 
-Property Get IsSy(V) As Boolean
+Function IsSy(V) As Boolean
 IsSy = VarType(V) = vbArray + vbString
-End Property
+End Function
 
-Property Get IsVdtVbl(A) As Boolean
-If Not IsStr(A) Then Exit Property
-If HasSubStr(A, vbCr) Then Exit Property
-If HasSubStr(A, vbLf) Then Exit Property
+Function IsVdtVbl(A) As Boolean
+If Not IsStr(A) Then Exit Function
+If HasSubStr(A, vbCr) Then Exit Function
+If HasSubStr(A, vbLf) Then Exit Function
 IsVdtVbl = True
-End Property
+End Function
 
-Property Get IsWhite(A) As Boolean
+Function IsWhite(A) As Boolean
 Dim B$: B = Left(A, 1)
 IsWhite = True
-If B = " " Then Exit Property
-If B = vbCr Then Exit Property
-If B = vbLf Then Exit Property
-If B = vbTab Then Exit Property
+If B = " " Then Exit Function
+If B = vbCr Then Exit Function
+If B = vbLf Then Exit Function
+If B = vbTab Then Exit Function
 IsWhite = False
-End Property
+End Function
 
 Sub ZZ__Tst()
 ZZ_IsStrAy

@@ -331,20 +331,20 @@ Stop '
 'Set VdtDupFld_1 = O
 End Property
 
-Private Property Get VdtDupFld_DupAtLxOpt(FnyAy(), LxAy%(), J%, I%) As SomInt
+Private Property Get VdtDupFld_DupAtLxOpt(FnyAy(), LxAy%(), J%, I%) As IntOpt
 'Check if Fny(I)-element has duplication found in Fny(I+1..)
 Dim Fny$(): Fny = FnyAy(J)
 Dim F$: F = Fny(I)
 Dim II%
 For II = I + 1 To UB(Fny)
     If Fny(II) = F Then
-        VdtDupFld_DupAtLxOpt = SomInt(II)
+        VdtDupFld_DupAtLxOpt = IntOpt(II)
         Exit Property
     End If
 Next
 For II = J + 1 To UB(FnyAy)
     Fny = FnyAy(II)
-    If AyHas(Fny, F) Then VdtDupFld_DupAtLxOpt = SomInt(II): Exit Property
+    If AyHas(Fny, F) Then VdtDupFld_DupAtLxOpt = IntOpt(II): Exit Property
 Next
 End Property
 

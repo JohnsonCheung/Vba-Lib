@@ -21,6 +21,14 @@ Else
 End If
 End Function
 
+Function DftMdNm$(A$)
+If A = "" Then
+   DftMdNm = CurMdNm
+Else
+   DftMdNm = A
+End If
+End Function
+
 Function DftPj(A As VBProject) As VBProject
 If IsNothing(A) Then
    Set DftPj = CurPj
@@ -46,10 +54,3 @@ Dim X() As vbext_ComponentType
 DftCmpTyAy (X)
 Stop
 End Sub
-Function DftMdNm$(A$)
-If A = "" Then
-   DftMdNm = CurMdNm
-Else
-   DftMdNm = A
-End If
-End Function

@@ -85,11 +85,11 @@ With ZZSampleDDLines
     Ass Sz(A) = 2
     Ass A(0) = "B"
     Ass A(1) = "C"
-    
+
     A = .Ky2("B")
     Ass Sz(A) = 1
     Ass A(0) = "X"
-    
+
     A = .Ky2("C")
     Ass Sz(A) = 0
 End With

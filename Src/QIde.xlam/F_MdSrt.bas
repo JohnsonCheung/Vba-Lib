@@ -5,32 +5,6 @@ MdIdxDt As Dt
 RptDic As Dictionary ' K is Module Name, V is DicCmpRsltLy
 End Type
 
-Sub MdSrt(A As CodeModule)
-Dim Nm$: Nm = MdNm(A)
-Debug.Print "Sorting: "; AlignL(Nm, 30); " ";
-Dim Ay(): Ay = Array("IdeMdSrt")
-'Skip some md
-    If AyHas(Ay, Nm) Then
-        Debug.Print "<<<< Skipped"
-        Exit Sub
-    End If
-Dim NewLines$: NewLines = MdSrtedLines(A)
-Dim Old$: Old = MdLines(A)
-'Exit if same
-    If Old = NewLines Then
-        Debug.Print "<== Same"
-        Exit Sub
-    End If
-Debug.Print "<-- Sorted";
-'Delete
-    Debug.Print FmtQQ("<--- Deleted (?) lines", A.CountOfLines);
-    MdClr A, IsSilent:=True
-'Add sorted lines
-    A.AddFromString NewLines
-    MdRmvEndBlankLines A
-    Debug.Print "<----Sorted Lines added...."
-End Sub
-
 Function MdSrtCmpLy(A As CodeModule) As String()
 MdSrtCmpLy = SrcSrtCmpLy(MdSrc(A))
 End Function
@@ -119,6 +93,32 @@ End Function
 Function SrcSrtedLy(A$()) As String()
 SrcSrtedLy = SplitCrLf(SrcSrtedLines(A))
 End Function
+
+Sub MdSrt(A As CodeModule)
+Dim Nm$: Nm = MdNm(A)
+Debug.Print "Sorting: "; AlignL(Nm, 30); " ";
+Dim Ay(): Ay = Array("IdeMdSrt")
+'Skip some md
+    If AyHas(Ay, Nm) Then
+        Debug.Print "<<<< Skipped"
+        Exit Sub
+    End If
+Dim NewLines$: NewLines = MdSrtedLines(A)
+Dim Old$: Old = MdLines(A)
+'Exit if same
+    If Old = NewLines Then
+        Debug.Print "<== Same"
+        Exit Sub
+    End If
+Debug.Print "<-- Sorted";
+'Delete
+    Debug.Print FmtQQ("<--- Deleted (?) lines", A.CountOfLines);
+    MdClr A, IsSilent:=True
+'Add sorted lines
+    A.AddFromString NewLines
+    MdRmvEndBlankLines A
+    Debug.Print "<----Sorted Lines added...."
+End Sub
 
 Private Function ZZSrc() As String()
 'ZZSrc = MdSrc(Md("IdeMdSrt"))

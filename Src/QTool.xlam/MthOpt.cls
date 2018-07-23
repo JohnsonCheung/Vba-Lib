@@ -10,6 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Som As Boolean
 Public Mth As Mth
+
 Friend Property Get Init(A As Mth) As MthOpt
 Som = True
 Set Mth = A
@@ -23,3 +24,4 @@ Else
     ToStr = FmtQQ("MthOpt(None)")
 End If
 End Property
+

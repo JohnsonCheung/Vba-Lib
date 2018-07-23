@@ -11,11 +11,11 @@ Option Explicit
 Private B_Ay%()
 Private Const T$ = "InAyObj"
 
-Property Get ToStr$()
-ToStr = Tag("IntAyObj", JnCrLf(B_Ay, WithIx:=True))
-End Property
-
 Friend Property Get Init(Ay%()) As IntAyObj
 B_Ay = Ay
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = Tag("IntAyObj", JnCrLf(B_Ay, WithIx:=True))
 End Property

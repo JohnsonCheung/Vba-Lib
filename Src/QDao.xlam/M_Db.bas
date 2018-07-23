@@ -14,7 +14,7 @@ Dim DtAy1() As Dt
 Set DbDs = Ds(DsNm, DtAy1)
 End Property
 
-Property Get Db_DbInf(A As Database) As DbInf
+Property Get DbInf(A As Database) As DbInf
 Stop '
 End Property
 
@@ -71,3 +71,63 @@ Property Get DbEng() As Dao.DBEngine
 Static Y As New Dao.DBEngine
 Set DbEng = Y
 End Property
+Sub DbRunSqlAy(A As Database, SqlAy$())
+If AyIsEmp(A) Then Exit Sub
+Dim Sql
+For Each Sql In SqlAy
+   DbqRun A, CStr(Sql)
+Next
+End Sub
+Function DbTny(A As Database) As String()
+DbTny = DbqSy(A, "Select Name from MSysObjects where Type in (1,6) and Left(Name,4)<>'MSYS'")
+End Function
+Function DbInfDs(A As Database) As Ds
+Dim O As Ds
+DsAddDt O, LnkDt
+DsAddDt O, StruDt
+DsAddDt O, TblFDt
+DsAddDt O, PrpDt
+O.DsNm = A.Name
+Ds = O
+End Function
+Sub ZZ_DbInfBrw()
+'strDdl = "GRANT SELECT ON MSysObjects TO Admin;"
+'CurrentProject.Connection.Execute strDdlDim A As DBEngine: Set A = dao.DBEngine
+'not work: dao.DBEngine.Workspaces(1).Databases(1).Execute "GRANT SELECT ON MSysObjects TO Admin;"
+DbInf(SampleDb_DutyPrepare).Brw
+End Sub
+Function DbLnkInfDt(A As Database) As Dt
+Dim T, Dry(), C$
+For Each T In DbTny(A)
+   C = A.TableDefs(T).Connect
+   If C <> "" Then Push Dry, Array(T, C)
+Next
+Dim O As Dt
+LnkDt = NewDt("Lnk", DftNy("Tbl Connect"), Dry)
+End Function
+Function DbPrpInfDt(A As Database) As Dt
+Set DbPrpInfDt = Dt("DbPrp", SplitSpc("A A"), Emp.Ay)
+End Function
+Function DbInfWb(A As Database, Optional Hid As Boolean) As Workbook
+Dim O As Workbook
+Set O = DsWb(Ds)
+If Not Hid Then WbVis O
+Set Wb = O
+End Function
+Function DbTblFInfDt(A As Database) As Dt
+Dim T, Dry()
+For Each T In DbTny(A)
+   PushAy Dry, DbtTblFInfDry(A, T)
+Next
+Set DbTblFInfDt = Dt("TblFld", FnyOf_InfOf_TblF, Dry)
+End Function
+Sub DbBrwInf(A As Database)
+AyBrw DsLy(DbInfDs(A), 2000, DtBrkLinMapStr:="TblFld:Tbl")
+End Sub
+Function DbStruInfDt(A As Database) As Dt
+Dim T, Dry()
+For Each T In DbTny(A)
+    Push Dry, Array(T, DbtRecCnt(A, T), DbtDes(A, T), DbtStruLin(A, T, SkipTn:=True))
+Next
+Set DbStruInfDt = Dt("Tbl", "Tbl RecCnt Des Stru", Dry)
+End Function

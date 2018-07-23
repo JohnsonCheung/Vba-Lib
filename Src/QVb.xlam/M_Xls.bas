@@ -1,15 +1,13 @@
 Attribute VB_Name = "M_Xls"
 Option Explicit
 
-Property Get Xls() As Excel.Application
-Static Y As New Excel.Application
+Function Xls() As Excel.Application
+Static Y As Excel.Application
 On Error GoTo X
-If Y.Name = "Microsoft Excel" Then
-End If
-E:
+Dim A$: A = Y.Name
 Set Xls = Y
-Exit Property
+Exit Function
 X:
 Set Y = New Excel.Application
-GoTo E
-End Property
+Set Xls = Y
+End Function

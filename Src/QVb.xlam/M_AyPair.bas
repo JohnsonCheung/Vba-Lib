@@ -1,7 +1,7 @@
 Attribute VB_Name = "M_AyPair"
 Option Explicit
 
-Property Get AyPair_Dic(A1, A2) As Dictionary
+Function AyPair_Dic(A1, A2) As Dictionary
 Dim N1&, N2&
 N1 = Sz(A1)
 N2 = Sz(A2)
@@ -14,5 +14,4 @@ For J = 0 To N1 - 1
 Next
 X:
 Set AyPair_Dic = O
-End Property
-
+End Function

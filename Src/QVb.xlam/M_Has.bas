@@ -1,42 +1,57 @@
 Attribute VB_Name = "M_Has"
 Option Explicit
 
-Property Get Has(A, SubStr) As Boolean
+Function Has(A, SubStr) As Boolean
 Has = InStr(A, SubStr) > 0
-End Property
+End Function
 
-Property Get HasCrLf(A) As Boolean
+Function HasCrLf(A) As Boolean
 HasCrLf = Has(A, vbCrLf)
-End Property
+End Function
 
-Property Get HasOneOfPfx(A, PfxAy) As Boolean
+Function HasOneOfPfx(A, PfxAy) As Boolean
 Dim I
 For Each I In PfxAy
-   If HasPfx(A, I) Then HasOneOfPfx = True: Exit Property
+   If HasPfx(A, I) Then HasOneOfPfx = True: Exit Function
 Next
-End Property
+End Function
 
-Property Get HasOneOfPfxIgnCas(A, PfxAy) As Boolean
+Function HasOneOfPfxIgnCas(A, PfxAy) As Boolean
 Dim I
 For Each I In PfxAy
-   If HasPfxIgnCas(A, I) Then HasOneOfPfxIgnCas = True: Exit Property
+   If HasPfxIgnCas(A, I) Then HasOneOfPfxIgnCas = True: Exit Function
 Next
-End Property
+End Function
 
-Property Get HasOneOfPfxIgnCas_PfxSsl(A, PfxSsl$) As Boolean
+Function HasOneOfPfxIgnCas_PfxSsl(A, PfxSsl$) As Boolean
 Stop
 Dim Sy$(): 'Sy = SslSy(PfxSsl)
-If HasOneOfPfxIgnCas(A, Sy) Then HasOneOfPfxIgnCas_PfxSsl = True: Exit Property
-End Property
+If HasOneOfPfxIgnCas(A, Sy) Then HasOneOfPfxIgnCas_PfxSsl = True: Exit Function
+End Function
 
-Property Get HasPfx(A, Pfx) As Boolean
+Function HasPfx(A, Pfx) As Boolean
 HasPfx = (Left(A, Len(Pfx)) = Pfx)
-End Property
+End Function
 
-Property Get HasPfxIgnCas(A, Pfx) As Boolean
+Function HasPfxIgnCas(A, Pfx) As Boolean
 HasPfxIgnCas = UCase(Left(A, Len(Pfx))) = UCase(Pfx)
-End Property
+End Function
 
-Property Get HasSfx(A, Sfx) As Boolean
+Function HasSfx(A, Sfx) As Boolean
 HasSfx = (Right(A, Len(Sfx)) = Sfx)
-End Property
+End Function
+
+Function HasSubStr(S, SubStr) As Boolean
+HasSubStr = InStr(S, SubStr) > 0
+End Function
+
+Function HasSubStrAy(S, SubStrAy) As Boolean
+Dim SubStr
+For Each SubStr In SubStrAy
+    If HasSubStr(S, SubStr) Then HasSubStrAy = True: Exit Function
+Next
+End Function
+
+Function HasVBar(S) As Boolean
+HasVBar = HasSubStr(S, "|")
+End Function

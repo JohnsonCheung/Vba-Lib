@@ -8,15 +8,10 @@ Public Enum eTstLABCs
     eAll
 End Enum
 
-Property Get CurCdPne() As VBIDE.CodePane
-Set CurCdPne = CurVbe.ActiveCodePane
-End Property
-
 'Property Get Fxa(A) As Fxa
 'Dim O As New Fxa
 'Set Fxa = O.Init(A)
 'End Property
-
 Function CmpTy_Str$(A As vbext_ComponentType)
 Dim O$
 Select Case A
@@ -30,7 +25,7 @@ End Select
 CmpTy_Str = O
 End Function
 
-Function DftVbe(A As Vbe) As Vbe
+Function DftVbe(A As VBE) As VBE
 If IsNothing(A) Then
    Set DftVbe = CurVbe
 Else
@@ -67,6 +62,64 @@ With A
 End With
 End Function
 
+Function TyChrAsTyStr$(TyChr$)
+Dim O$
+Select Case TyChr
+Case "#": O = "Double"
+Case "%": O = "Integer"
+Case "!": O = "Signle"
+Case "@": O = "Currency"
+Case "^": O = "LongLong"
+Case "$": O = "String"
+Case "&": O = "Long"
+Case Else: Stop
+End Select
+TyChrAsTyStr = O
+End Function
+
+Function VbeCmdBarAy(A As VBE) As Office.CommandBar()
+Dim O() As Office.CommandBar
+Dim I
+For Each I In A.CommandBars
+   PushObj O, I
+Next
+VbeCmdBarAy = O
+End Function
+
+Function VbeCmdBarNy(A As VBE) As String()
+Stop '
+'VbeCmdBarNy = ItrNy(A.CommandBars)
+End Function
+
+Function WinAy() As VBIDE.Window()
+Dim O() As VBIDE.Window, W As VBIDE.Window
+Stop '
+'For Each W In Vbe.Windows
+'   PushObj O, W
+'Next
+WinAy = O
+End Function
+
+Function WinAyOfCd() As VBIDE.Window()
+WinAyOfCd = WinAyOfTy(vbext_wt_CodeWindow)
+End Function
+
+Function WinAyOfTy(T As vbext_WindowType) As VBIDE.Window()
+WinAyOfTy = OyWhPrp(WinAy, "Type", T)
+End Function
+
+Function WinCnt&()
+WinCnt = Application.VBE.Windows.Count
+End Function
+
+Function WinMdNm$(A As VBIDE.Window)
+WinMdNm = TakBet(A.Caption, " - ", " (Code)")
+End Function
+
+Property Get CurCdPne() As VBIDE.CodePane
+Set CurCdPne = CurVbe.ActiveCodePane
+End Property
+
 Sub SrcPth_BldFxa(SrcPth$)
 Stop '
 Dim F$
@@ -95,55 +148,9 @@ Wb.Quit
 Set X = Nothing
 End Sub
 
-Function TyChrAsTyStr$(TyChr$)
-Dim O$
-Select Case TyChr
-Case "#": O = "Double"
-Case "%": O = "Integer"
-Case "!": O = "Signle"
-Case "@": O = "Currency"
-Case "^": O = "LongLong"
-Case "$": O = "String"
-Case "&": O = "Long"
-Case Else: Stop
-End Select
-TyChrAsTyStr = O
-End Function
-
-Function VbeCmdBarAy(A As Vbe) As Office.CommandBar()
-Dim O() As Office.CommandBar
-Dim I
-For Each I In A.CommandBars
-   PushObj O, I
-Next
-VbeCmdBarAy = O
-End Function
-
-Function VbeCmdBarNy(A As Vbe) As String()
-Stop '
-'VbeCmdBarNy = ItrNy(A.CommandBars)
-End Function
-
-Function WinAy() As VBIDE.Window()
-Dim O() As VBIDE.Window, W As VBIDE.Window
-Stop '
-'For Each W In Vbe.Windows
-'   PushObj O, W
-'Next
-WinAy = O
-End Function
-
-Function WinAyOfCd() As VBIDE.Window()
-WinAyOfCd = WinAyOfTy(vbext_wt_CodeWindow)
-End Function
-
-Function WinAyOfTy(T As vbext_WindowType) As VBIDE.Window()
-WinAyOfTy = OyWhPrp(WinAy, "Type", T)
-End Function
-
 Sub WinClsAll()
 Dim W As VBIDE.Window
-For Each W In Application.Vbe.Windows
+For Each W In Application.VBE.Windows
    W.Close
 Next
 End Sub
@@ -157,11 +164,3 @@ For Each I In WinAyOfCd
    End If
 Next
 End Sub
-
-Function WinCnt&()
-WinCnt = Application.Vbe.Windows.Count
-End Function
-
-Function WinMdNm$(A As VBIDE.Window)
-WinMdNm = TakBet(A.Caption, " - ", " (Code)")
-End Function

@@ -10,13 +10,13 @@ Attribute VB_Exposed = True
 Option Explicit
 Public P1$, P2$, P3$
 
-Property Get ToStr$()
-ToStr = FmtQQ("P123(|P1(?)|P2(?)|P3(?)|P123)", P1, P2, P3)
-End Property
-
 Friend Property Get Init(P1, P2, P3) As P123
 Me.P1 = P1
 Me.P2 = P2
 Me.P3 = P3
 Set Init = Me
+End Property
+
+Property Get ToStr$()
+ToStr = FmtQQ("P123(|P1(?)|P2(?)|P3(?)|P123)", P1, P2, P3)
 End Property

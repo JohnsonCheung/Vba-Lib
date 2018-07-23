@@ -9,18 +9,19 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Private A_Dry() As Variant
 Private A_Fny() As String
-Friend Property Get Init(Fny0, Dry()) As Drs
-A_Fny = DftNy(Fny0)
-A_Dry = Dry
-Set Init = Me
+
+Property Get Dry() As Variant()
+Dry = A_Dry
 End Property
 
 Property Get Fny() As String()
 Fny = A_Fny
 End Property
 
-Property Get Dry() As Variant()
-Dry = A_Dry
+Friend Property Get Init(Fny0, Dry()) As Drs
+A_Fny = DftNy(Fny0)
+A_Dry = Dry
+Set Init = Me
 End Property
 
 Property Get ToStr$()

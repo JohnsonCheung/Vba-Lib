@@ -15,12 +15,12 @@ Property Let Sy(V$())
 A_Sy = V
 End Property
 
-Property Get Sy() As String()
-Sy = A_Sy
-End Property
-
 Friend Property Get Init(Sy$()) As SyOpt
 A_Sy = Sy
 Som = True
 Set Init = Me
+End Property
+
+Property Get Sy() As String()
+Sy = A_Sy
 End Property

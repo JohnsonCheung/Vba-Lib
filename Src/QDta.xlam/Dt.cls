@@ -16,7 +16,7 @@ Dry = A_Dry
 End Property
 
 Property Get Fny() As String()
-Fny = B_Fny
+Fny = A_Fny
 End Property
 
 Friend Property Get Init(DtNm$, Fny0, Dry()) As Dt

@@ -1,21 +1,20 @@
 Attribute VB_Name = "M_Md"
 Option Explicit
 
-Property Get Md(MdDNm) As CodeModule
+Function Md(MdDNm) As CodeModule
 Dim A1$(): A1 = Split(MdDNm, ".")
 Select Case Sz(A1)
-Case 1: Set Md = PjMd(ZCurPj, MdDNm)
+Case 1: Set Md = PjMd(CurPj, MdDNm)
 Case 2: Set Md = PjMd(Pj(A1(0)), A1(1))
 Case Else: Stop
 End Select
-End Property
+End Function
 
-Property Get MdLines$(A As CodeModule)
-If A.CountOfLines = 0 Then Exit Property
+Function MdLines$(A As CodeModule)
+If A.CountOfLines = 0 Then Exit Function
 MdLines = A.Lines(1, A.CountOfLines)
-End Property
+End Function
 
-Property Get MdLy(A As CodeModule) As String()
+Function MdLy(A As CodeModule) As String()
 MdLy = Split(MdLines(A), vbCrLf)
-End Property
-
+End Function
