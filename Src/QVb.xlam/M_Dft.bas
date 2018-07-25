@@ -43,3 +43,7 @@ Stop
 'Case Else: Stop
 'End Select
 End Function
+Function DftPfxAy(PfxAyVbl0)
+If IsArray(PfxAyVbl0) Then DftPfxAy = PfxAyVbl0: Exit Function
+DftPfxAy = SplitVBar(PfxAyVbl0)
+End Function

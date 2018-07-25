@@ -9,7 +9,7 @@ Function S1S2_Lin$(A, Optional Sep$ = " ", Optional W1%)
 S1S2_Lin = AlignL(A.S1, W1) & Sep & A.S2
 End Function
 
-Sub S1S2_Asg(A As S1S2, O1$, O2$)
+Sub S1S2_Asg(A As S1S2, O1, O2)
 O1 = A.S1
 O2 = A.S2
 End Sub

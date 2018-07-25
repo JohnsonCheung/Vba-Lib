@@ -43,8 +43,7 @@ Dim M$
 M = Dir(A & Spec)
 If Atr = 0 Then
     While M <> ""
-        Stop
-'       M_Ay.Push O, M
+       Push O, M
        M = Dir
     Wend
     PthFnAy = O
@@ -120,7 +119,7 @@ Function PthSubPthAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) A
 PthSubPthAy = AyAddPfxSfx(PthSubFdrAy(A, Spec, Atr), A, "\")
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_PthEntAy
 ZZ_PthRmvEmpSubDir
 End Sub

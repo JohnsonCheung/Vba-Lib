@@ -67,7 +67,7 @@ Else
 End If
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_RmvPfx
 End Sub
 

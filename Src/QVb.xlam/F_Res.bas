@@ -1,4 +1,4 @@
-Attribute VB_Name = "M_ResNm"
+Attribute VB_Name = "F_Res"
 Option Explicit
 Private Type Res
     Md As CodeModule
@@ -14,8 +14,8 @@ Function ResNm_Ly(A) As String()
 Dim O$()
 Dim MthLy$()
 Dim Res As Res
-Res = ZResNm_Res(A)
-MthLy = ZResMthLy(Res)
+Res = ResNm_Res(A)
+MthLy = ResMthLy(Res)
 'O
     Dim J%, U%
     U = UB(MthLy)
@@ -26,7 +26,7 @@ MthLy = ZResMthLy(Res)
 ResNm_Ly = O
 End Function
 
-Private Function ZResMthLy(A As Res) As String()
+Private Function ResMthLy(A As Res) As String()
 Dim O$()
 Dim J%, M As CodeModule, L$
 Dim B$, BLno%, N%
@@ -49,10 +49,10 @@ Set M = A.Md
         Push O, L
         If L = "End Sub" Then Exit For
     Next
-ZResMthLy = O
+ResMthLy = O
 End Function
 
-Private Function ZResNm_Res(A) As Res
+Private Function ResNm_Res(A) As Res
 Dim A1$(): A1 = Split(A, ".")
 Dim O As Res
 Select Case Sz(A1)

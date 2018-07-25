@@ -10,53 +10,53 @@ Attribute VB_Exposed = False
 Option Explicit
 
 Sub M_Ay()
-QVb.M_Ay.ZZ__Tst
+QVb.M_Ay.ZZZ__Tst
 End Sub
 
 Sub M_Brk()
-QVb.M_Brk.ZZ__Tst
+QVb.M_Brk.ZZZ__Tst
 End Sub
 
 Sub M_Dic()
-QVb.M_Dic.ZZ__Tst
+QVb.M_Dic.ZZZ__Tst
 End Sub
 
 Sub M_Is()
-QVb.M_Is.ZZ__Tst
+QVb.M_Is.ZZZ__Tst
 End Sub
 
 Sub M_Lin()
-QVb.M_Lin.ZZ__Tst
+QVb.M_Lin.ZZZ__Tst
 End Sub
 
 Sub M_Lines()
-QVb.M_Lines.ZZ__Tst
+QVb.M_Lines.ZZZ__Tst
 End Sub
 
 Sub M_Pth()
-QVb.M_Pth.ZZ__Tst
+QVb.M_Pth.ZZZ__Tst
 End Sub
 
 Sub M_Rmv()
-QVb.M_Rmv.ZZ__Tst
+QVb.M_Rmv.ZZZ__Tst
 End Sub
 
 Sub M_Rpl()
-QVb.M_Rpl.ZZ__Tst
+QVb.M_Rpl.ZZZ__Tst
 End Sub
 
 Sub M_Tak()
-QVb.M_Tak.ZZ__Tst
+QVb.M_Tak.ZZZ__Tst
 End Sub
 
 Sub M_Vbl()
-QVb.M_Vbl.ZZ__Tst
+QVb.M_Vbl.ZZZ__Tst
 End Sub
 
 Sub M_VblAy()
-QVb.M_VblAy.ZZ__Tst
+QVb.M_VblAy.ZZZ__Tst
 End Sub
 
 Sub SyPair()
-Dim A As New SyPair: A.ZZ__Tst
+Dim A As New SyPair: A.ZZZ__Tst
 End Sub

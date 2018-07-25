@@ -6,11 +6,10 @@ TmpFb = TmpFfn(".accdb", Fdr, Fnn)
 End Function
 
 Function TmpFfn(Ext$, Optional Fdr$, Optional Fnn0$)
-Dim Fnn$
 If Fnn0 = "" Then
-    Fnn = TmpNm
+    TmpFfn = TmpPth(Fdr) & TmpNm & Ext
 Else
-    Fnn = Fnn0
+    TmpFfn = TmpPth(Fdr) & Fnn0 & Ext
 End If
 End Function
 

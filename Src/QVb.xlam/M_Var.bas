@@ -4,10 +4,20 @@ Option Explicit
 Function VarCellStr$(V, Optional ShwZer As Boolean)
 'CellStr is a string can be displayed in a cell
 If IsEmp(V) Then Exit Function
-If IsStr(V) Then
-    VarCellStr = V
+If IsArray(V) Then
+    Dim N&: N = Sz(V)
+    If N = 0 Then
+        VarCellStr = "*[0]"
+        Exit Function
+    End If
+    VarCellStr = "*[" & N & "]" & VarCellStr(V(0))
     Exit Function
 End If
+If IsObject(V) Then
+    VarCellStr = TypeName(V)
+    Exit Function
+End If
+VarCellStr = V
 End Function
 
 Function VarLy(V) As String()

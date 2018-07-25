@@ -1,6 +1,10 @@
 Attribute VB_Name = "F_Ide_MthMdy"
 Option Explicit
 
+Sub Ens_Md_Z3DMthAsPrivate()
+MdEnsZ3DMthAsPrivate CurMd
+End Sub
+
 Sub Ens_Md_ZZDashPrvMthAsPublic()
 MdEnsZZDashPrvMthAsPublic CurMd
 End Sub
@@ -41,6 +45,14 @@ Dim T$: T = LinShiftMthTy(L): If T = "" Then Exit Function
 If Not IsPfx(L, "ZZ_") Then Exit Function
 LinIsZZDashPrvMth = True
 End Function
+Function LinIsZ3DPubMth(A) As Boolean
+Dim L$: L = A
+Dim M$: M = LinShiftMdy(L): If M <> "" And M <> "Public" Then Exit Function
+Dim T$: T = LinShiftMthTy(L): If T = "" Then Exit Function
+If IsPfx(L, "ZZZ__Tst()") Then Exit Function
+If Not IsPfx(L, "ZZZ_") Then Exit Function
+LinIsZ3DPubMth = True
+End Function
 
 Function LinIsZZDashPubMth(A) As Boolean
 Dim L$: L = A
@@ -49,6 +61,22 @@ Dim T$: T = LinShiftMthTy(L): If T = "" Then Exit Function
 If Not IsPfx(L, "ZZ_") Then Exit Function
 LinIsZZDashPubMth = True
 End Function
+Sub MdEnsZ3DMthAsPrivate(A As CodeModule)
+Dim DNm$: DNm = MdDNm(A)
+If DNm = "QTool.F_Ide_MthMdy" Then
+    Debug.Print FmtQQ("MdEnsZ3DMthAsPrivate: Md(?) is skipped", DNm)
+    Exit Sub
+End If
+Dim J%, L$, By$
+For J = 1 To A.CountOfLines
+    L = A.Lines(J, 1)
+    If LinIsZ3DPubMth(L) Then
+        By = MthLin_EnsPrivate(L)
+        Debug.Print FmtQQ("MdEnsZ3DMthAsPrivate Md(?) Lin(?) is change to Private: [?]", DNm, J, By)
+        A.ReplaceLine J, By
+    End If
+Next
+End Sub
 
 Private Sub MdEnsZZDashPrvMthAsPublic(A As CodeModule)
 Dim DNm$: DNm = MdDNm(A)
@@ -86,7 +114,7 @@ Next
 End Sub
 
 Sub MthEnsPrivate(A As Mth)
-Dim F%(): F = MthFmLnoAy(A)
+Dim F%(): F = MthFmnoAy(A)
 Dim F1%(), N$
 Dim L2$, J%, L1$, L$
 N = MthDNm(A)
@@ -102,7 +130,7 @@ Next
 End Sub
 
 Sub MthEnsPublic(A As Mth)
-Dim F%(): F = MthFmLnoAy(A)
+Dim F%(): F = MthFmnoAy(A)
 Dim F1%(), N$
 Dim L2$, J%, L1$, L$
 N = MthDNm(A)
@@ -135,10 +163,6 @@ Sub VbeEnsZZDashPubMthAsPrivate(A As Vbe)
 AyDo VbePjAy(A), "PjEnsZZDashPubMthAsPrivate"
 End Sub
 
-Private Function ZZSrc() As String()
-ZZSrc = MdSrc(Md("F_Ide_MthMdy"))
-End Function
-
 Private Sub ZZ_LinIsNonPrivateZMthLin()
 Dim S$(): S = MdSrc(CurMd)
 Dim N$(): N = AyWhPred(S, "LinIsNonPrivateZMthLin")
@@ -147,7 +171,7 @@ End Sub
 
 Private Sub ZZ_LinIsZZDashPrvMth()
 Dim L
-For Each L In ZZSrc
+For Each L In CurSrc
     If LinIsZZDashPrvMth(L) Then
         Debug.Print L
     End If
@@ -156,7 +180,7 @@ End Sub
 
 Private Sub ZZ_LinIsZZDashPubMth()
 Dim L
-For Each L In ZZSrc
+For Each L In CurSrc
     If LinIsZZDashPubMth(L) Then
         Debug.Print L
     End If

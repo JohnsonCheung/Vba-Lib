@@ -6,14 +6,21 @@ Dim O As New Drs
 Set Drs = O.Init(Fny0, Dry)
 End Property
 
-Property Get FmToLno(FmLno%, ToLno%) As FmToLno
-Dim O As New FmToLno
-Set FmToLno = O.Init(FmLno, ToLno)
+Property Get FTNo(Fmno%, Tono%) As FTNo
+Dim O As New FTNo
+Set FTNo = O.Init(Fmno, Tono)
 End Property
-
-Property Get FmToLx(FmLx%, ToLx%) As FmToLx
-Dim O As New FmToLx
-Set FmToLx = O.Init(FmLx, ToLx)
+Property Get LCC(Lno%, C1%, C2%) As LCC
+Dim O As New LCC
+Set LCC = O.Init(Lno, C1, C2)
+End Property
+Property Get LCCOpt(LCC As LCC) As LCCOpt
+Dim O As New LCCOpt
+Set LCCOpt = O.Init(LCC)
+End Property
+Property Get FTIx(Fmix%, Toix%) As FTIx
+Dim O As New FTIx
+Set FTIx = O.Init(Fmix, Toix)
 End Property
 
 Property Get Mth(A As CodeModule, MthNm) As Mth

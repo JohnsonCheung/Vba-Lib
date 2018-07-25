@@ -2,23 +2,23 @@ VERSION 1.0 CLASS
 BEGIN
   MultiUse = -1  'True
 END
-Attribute VB_Name = "FmToLx"
+Attribute VB_Name = "FTIx"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
-Public FmLx%, ToLx%
+Public Fmix%, Toix%
 
-Friend Property Get Init(FmLx%, ToLx%) As FmToLx
-If FmLx < 0 Then Stop
-If ToLx < 0 Then Stop
-If FmLx > ToLx - 1 Then Stop
-Me.FmLx = FmLx
-Me.ToLx = ToLx
+Friend Property Get Init(Fmix%, Toix%) As FTIx
+If Fmix < 0 Then Stop
+If Toix < 0 Then Stop
+If Fmix > Toix - 1 Then Stop
+Me.Fmix = Fmix
+Me.Toix = Toix
 Set Init = Me
 End Property
 
 Property Get ToStr$()
-ToStr = FmtQQ("FmToLx(Fm(?) To(?))", FmLx, ToLx)
+ToStr = FmtQQ("FTIx(Fm(?) To(?))", Fmix, Toix)
 End Property

@@ -77,7 +77,7 @@ Function LinT2$(Lin)
 LinT2 = Brk1(Lin, " ").S2
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_LinRmvT1
 End Sub
 

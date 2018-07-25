@@ -1,37 +1,37 @@
 Attribute VB_Name = "F_Ide_MthCxt"
 Option Explicit
 
-Function MthCxtFmToLnoAy(A As Mth) As FmToLno()
-MthCxtFmToLnoAy = SrcMthCxtFmToLnoAy(MdSrc(A.Md), A.Nm)
+Function MthCxtFTNoAy(A As Mth) As FTNo()
+MthCxtFTNoAy = SrcMthCxtFTNoAy(MdSrc(A.Md), A.Nm)
 End Function
 
-Function MthLy_MthCxtLy(A$()) As String()
-MthLy_MthCxtLy = XX(A, FmToLno(1, Sz(A)))
+Function MthLy_MthCXTLy(A$()) As String()
+MthLy_MthCXTLy = XX(A, FTNo(1, Sz(A)))
 End Function
 
-Private Function SrcMthCxtFmToLnoAy(A$(), MthNm$) As FmToLno()
-Dim P() As FmToLno
-Dim Ay() As FmToLno: Ay = SrcMthFmToLnoAy(A, MthNm)
-SrcMthCxtFmToLnoAy = AyMapPXInto(Ay, "XX", A, P)
+Private Function SrcMthCxtFTNoAy(A$(), MthNm$) As FTNo()
+Dim P() As FTNo
+Dim Ay() As FTNo: Ay = SrcMthFTNoAy(A, MthNm)
+SrcMthCxtFTNoAy = AyMapPXInto(Ay, "XX", A, P)
 End Function
 
-Private Function XX(Src$(), X As FmToLno) As FmToLno
-'Src -> X:MthFmLno -> MthCxtFmToLno
-Dim FmLno%
-For FmLno = X.FmLno To X.ToLno
-    If Not LasChr(Src(FmLno - 1)) = "_" Then
-        FmLno = FmLno + 1
+Private Function XX(Src$(), X As FTNo) As FTNo
+'Src -> X:MthFmno -> MthCxtFTNo
+Dim Fmno%
+For Fmno = X.Fmno To X.Tono
+    If Not LasChr(Src(Fmno - 1)) = "_" Then
+        Fmno = Fmno + 1
         Exit For
     End If
 Next
-Set XX = FmToLno(FmLno, X.ToLno - 1)
+Set XX = FTNo(Fmno, X.Tono - 1)
 End Function
 
 Private Sub _
-ZZ_MthCxtFmToLnoAy _
+ZZ_MthCxtFTNoAy _
 ()
 Dim I
-For Each I In MthCxtFmToLnoAy(CurMth)
-    Debug.Print CvFmToLno(I).ToStr
+For Each I In MthCxtFTNoAy(CurMth)
+    Debug.Print CvFTNo(I).ToStr
 Next
 End Sub

@@ -1,7 +1,7 @@
 Attribute VB_Name = "F_Ide_MthKey"
 Option Explicit
-'Mth2DLin = MthFmLno.MthLinCnt.MthLin
-'Mth4DLin = Pj.Md.MthFmLno.MthLinCnt.MthLin
+'Mth2DLin = MthFmno.MthLinCnt.MthLin
+'Mth4DLin = Pj.Md.MthFmno.MthLinCnt.MthLin
 'MthDr = { Pj MdTy Md Pfx Nm Lno Cnt ShtTy ShtMdy RetTy Prm Rmk [Lines] MthCnt [SamLinesCnt]} Sz = 14 or 15
 Sub ZZ_FnyOf_MthDr()
 AyDmp FnyOf_MthDr(True)
@@ -77,11 +77,11 @@ If Cnt <= 0 Then Stop
 Mth4DLin_MthDr = MthLin_MthDr(L, Pj, Md, Lno, Cnt, MthLines)
 End Function
 
-Function MthDr(A As Mth, Optional X As FmToLno, Optional InclMthLines As Boolean) As Variant()
+Function MthDr(A As Mth, Optional X As FTNo, Optional InclMthLines As Boolean) As Variant()
 Dim Lno%, Cnt%
-If IsNothing(X) Then Set X = MthFmToLno(A)
+If IsNothing(X) Then Set X = MthFTNo(A)
 Dim Lines$: If InclMthLines Then Lines = MthLines(A)
-MthDr = MthLin_MthDr(MthLin(A), MthPjNm(A), MthMdNm(A), X.FmLno, FmToLno_LinCnt(X), Lines)
+MthDr = MthLin_MthDr(MthLin(A), MthPjNm(A), MthMdNm(A), X.Fmno, FTNo_LinCnt(X), Lines)
 End Function
 
 Function MdMthKy(A As CodeModule, Optional IsWrap As Boolean) As String()
@@ -140,6 +140,29 @@ Else
 End If
 End Function
 
+Function CvItr(A) As Collection
+Set CvItr = A
+End Function
+Sub ItrPush(O As Collection, M As Collection)
+Dim I
+For Each I In M
+    O.Add I
+Next
+End Sub
+Function ItrMap(A As Collection, MapFunNm$) As Collection
+Dim O As New Collection, I
+For Each I In A
+    O.Add Run(MapFunNm, I)
+Next
+Set ItrMap = O
+End Function
+Function IItrItr(A As Collection) As Collection
+Dim O As New Collection, I
+For Each I In A
+    ItrPush O, CvItr(I)
+Next
+Set IItrItr = O
+End Function
 Function AyOfAy_Ay(A)
 If Sz(A) = 0 Then Exit Function
 Dim O: O = A(0)
@@ -160,31 +183,27 @@ Set PjMthKyWs = WsVis(SqWs(PjMthKySq(A)))
 End Function
 
 Sub ZZ_SrcMth2DLinAy()
-Dim A$(): A = SrcMth2DLinAy(ZZSrc, True)
+Dim A$(): A = SrcMth2DLinAy(CurSrc, True)
 End Sub
 
-Function ZZSrc() As String()
-ZZSrc = MdSrc(Md("QTool.F_Ide_MthKey"))
-End Function
-
 Function SrcMth2DLinAy(A$(), InclMthLines As Boolean) As String()
-'MthDLin is: MthFmLno.MthLinCnt.MthLin{|}MthLines
-'        or: MthFmLno.MthLinCnt.MthLin
+'MthDLin is: MthFmno.MthLinCnt.MthLin{|}MthLines
+'        or: MthFmno.MthLinCnt.MthLin
 '        depends on InclMthLines
-Dim F% ' MthFmLno
+Dim F% ' MthFmno
 Dim C% ' MthLinCnt
-Dim L() As FmToLx: L = SrcAllMthFmToLxAy(A)
+Dim L() As FTIx: L = SrcAllMthFTIxAy(A)
 If Sz(L) = 0 Then Exit Function
-Dim O$(), LLL As FmToLx, LL
+Dim O$(), LLL As FTIx, LL
 For Each LL In L
-    Set LLL = CvFmToLx(LL)
-    F = LLL.FmLx + 1
-    C = FmToLx_LinCnt(LLL)
+    Set LLL = CvFTIx(LL)
+    F = LLL.Fmix + 1
+    C = FTIx_LinCnt(LLL)
     If InclMthLines Then
-        Dim MthLines$: MthLines = JnCrLf(AyWhFmTo(A, LLL.FmLx, LLL.ToLx))
-        Push O, F & "." & C & "." & SrcContLin(A, LLL.FmLx) & "{|}" & MthLines
+        Dim MthLines$: MthLines = JnCrLf(AyWhFmTo(A, LLL.Fmix, LLL.Toix))
+        Push O, F & "." & C & "." & SrcContLin(A, LLL.Fmix) & "{|}" & MthLines
     Else
-        Push O, F & "." & C & "." & SrcContLin(A, LLL.FmLx)
+        Push O, F & "." & C & "." & SrcContLin(A, LLL.Fmix)
     End If
 Next
 SrcMth2DLinAy = O
@@ -219,10 +238,6 @@ End Function
 Function WbOf_Mth() As Workbook
 Set WbOf_Mth = FxWb(FxOf_Mth)
 End Function
-
-Sub AAA()
-ZZ_VbeMthWb
-End Sub
 
 Sub ZZ_MthDr()
 Dim M As Mth: Set M = Mth(Md("F_Ide_MthKey"), "VbeMthWb")

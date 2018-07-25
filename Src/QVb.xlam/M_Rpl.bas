@@ -17,7 +17,7 @@ Function RplVBar$(A)
 RplVBar = Replace(A, "|", vbCrLf)
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_RplPfx
 End Sub
 

@@ -36,7 +36,7 @@ Function LinesWdt%(Lines)
 LinesWdt = AyWdt(SplitCrLf(Lines))
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_LinesEndTrim
 End Sub
 

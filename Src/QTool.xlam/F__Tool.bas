@@ -1,26 +1,8 @@
 Attribute VB_Name = "F__Tool"
 Option Explicit
-
-Function DftFun(FunDNm0$) As Mth
-If FunDNm0 = "" Then
-    Dim M As Mth
-    Set M = CurMth
-    If IsFun(M) Then
-        Set DftFun = M
-    End If
-Else
-End If
-Stop '
-End Function
-
-Function IsMthDNm(Nm) As Boolean
-IsMthDNm = Sz(Split(Nm, ".")) = 3
-End Function
-
-Function IsMthFNm(Nm) As Boolean
-Dim P%: P = InStr(Nm, ":"): If P = 0 Then Exit Function
-IsMthFNm = InStr(Nm, ".") > P
-End Function
+Sub LisA()
+Lis_Mth "^AA"
+End Sub
 
 Function Shw_Pj_SrtRptWb(Optional PjNm$) As Workbook
 PjSrtRptWb DftPj(PjNm), Vis:=True
@@ -28,6 +10,7 @@ End Function
 
 Sub Add_Cls(Nm$)
 PjAddMbr CurPj, Nm, vbext_ct_ClassModule
+Shw_Mbr CurPjNm & "." & Nm
 End Sub
 
 Sub Add_Fun(FunNm$)
@@ -257,7 +240,7 @@ End Sub
 
 Sub Lis_Pj_InproperMth(Optional PjNm0$)
 If PjNm0 <> "" Then Shw_Pj PjNm0
-AyDmp AyAddPfxSfx(PjMthNyOfInproper(CurPj), "MthMovToProperMd MthDNm_Mth(", """")
+AyDmp AyAddPfxSfx(PjMthNyOfInproper(CurPj), "MthMovToProperMd MthDNm_Mth(""", """)")
 End Sub
 
 Sub Lis_Pj_Mth(Optional MthNmPatn$ = ".", Optional MbrNmPatn$ = ".", Optional Mdy0$)
@@ -282,7 +265,7 @@ Sub Lis_Vbe_Mth(Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Md
 Dim A$()
     A = VbeMthNy(CurVbe, MthNmPatn, MdNmPatn, Mdy)
     A = AySrt(A)
-AyDmp A
+AyDmp AyAddPfx(A, "Shw """)
 End Sub
 
 Sub Mov_Fun(Optional MthDNm0$)
@@ -357,7 +340,11 @@ Debug.Print "SKip"; Skip
 End Sub
 
 Sub Rmk_Mth()
+Dim W As VBIDE.Window
+Set W = CurCdWin
 MthRmk CurMth
+WinOf_Imm.Close
+W.SetFocus
 End Sub
 
 Sub Sav_Pj()
@@ -365,7 +352,10 @@ PjSav CurPj
 End Sub
 
 Sub Sav_Vbe()
-AyDo VbePjAy(CurVbe), "PjSav"
+Dim V As Vbe: Set V = CurVbe
+VbeSav V
+DoEvents
+VbeDmpIsSaved V
 End Sub
 
 Sub Shw(XNm$)
@@ -435,7 +425,9 @@ Dim M As Mth
 Set M = MthDNm_Mth(D)
 MdGoLCCOpt M.Md, MthLCCOpt(M)
 End Sub
+Sub A1()
 
+End Sub
 Sub Shw_Pj(PjNm$)
 PjGo Pj(PjNm)
 End Sub
@@ -491,6 +483,7 @@ End Sub
 
 Sub UnRmk_Mth()
 MthUnRmk CurMth
+WinOf_Imm.Close
 End Sub
 
 Sub Wb_Vbe_Mth(Optional InclMthLines As Boolean)

@@ -27,6 +27,7 @@ If IsEmpty(V) Then Exit Function
 If IsStr(V) Then
    If V = "" Then Exit Function
 End If
+IsEmp = False
 End Function
 
 Function IsEq(Act, Exp) As Boolean
@@ -154,7 +155,7 @@ If B = vbTab Then Exit Function
 IsWhite = False
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_IsStrAy
 End Sub
 

@@ -28,7 +28,7 @@ Property Get ToStr$()
 ToStr = Tag_NyStr_ObjAp("SyPair", "Sy1 Sy2", SyObj(Sy1), SyObj(Sy2))
 End Property
 
-Friend Sub ZZ__Tst()
+Friend Sub ZZZ__Tst()
 ZZ_ToStr
 End Sub
 

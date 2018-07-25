@@ -6,18 +6,17 @@ Dim P&: P = InStr(A, Sep)
 Set Brk1 = Brk1__X(A, P, Sep, NoTrim)
 End Function
 
-Function BrkAt(A, P&, SepLen%, Optional NoTrim As Boolean) As S1S2
-Dim O As S1S2
-With O
-    If NoTrim Then
-        .S1 = Left(A, P - 1)
-        .S2 = Mid(A, P + SepLen)
-    Else
-        .S1 = Trim(Left(A, P - 1))
-        .S2 = Trim(Mid(A, P + SepLen))
-    End If
-End With
-BrkAt = O
+Function BrkAt(A, P&, Sep, Optional NoTrim As Boolean) As S1S2
+Dim SepLen%: SepLen = Len(Sep)
+Dim S1$, S2$
+If NoTrim Then
+    S1 = Left(A, P - 1)
+    S2 = Mid(A, P + SepLen)
+Else
+    S1 = Trim(Left(A, P - 1))
+    S2 = Trim(Mid(A, P + SepLen))
+End If
+Set BrkAt = S1S2(S1, S2)
 End Function
 
 Function Brk(A, Sep, Optional NoTrim As Boolean) As S1S2
@@ -26,6 +25,7 @@ Dim P&: P = InStr(A, Sep)
 If P = 0 Then
     Er CSub, "{S} does not contains {Sep}", A, Sep
 End If
+Set Brk = BrkAt(A, P, Sep, NoTrim)
 End Function
 
 Function Brk1Rev(A, Sep, Optional NoTrim As Boolean) As S1S2
@@ -48,7 +48,7 @@ Const CSub$ = "BktPos"
 Dim P As FmToPos: Set P = BrkBktPos(A, Bkt)
 Dim L1%, P2%, L2%, P3% 'L for Len, P for Position
     Dim Q1$, Q2$
-        BrkQUote_Asg Bkt, Q1, Q2
+        BrkQuoteAsg Bkt, Q1, Q2
     L1 = P.FmPos - 1
     P2 = L1 + Len(Q1) + 1
     L2 = P.ToPos - P2
@@ -63,7 +63,7 @@ End Function
 Function BrkBktPos(A, Optional Bkt$ = "()") As FmToPos
 Const CSub$ = "BrkBktPos"
 Dim Q1$, Q2$
-    BrkQUote_Asg Bkt, Q1, Q2
+    BrkQuoteAsg Bkt, Q1, Q2
 Dim IsBkt As Boolean
     Select Case True
     Case Bkt = "()", Bkt = "[]", Bkt = "{}": IsBkt = True
@@ -92,30 +92,29 @@ If P = 0 Then
 End If
 End Function
 
-Sub BrkQUote_Asg(QuoteStr$, O1$, O2$)
-With BrkQuote(QuoteStr)
-    O1 = .S1
-    O2 = .S2
-End With
+Sub BrkQuoteAsg(QuoteStr$, O1$, O2$)
+S1S2_Asg BrkQuote(QuoteStr), O1, O2
 End Sub
 
 Function BrkQuote(QuoteStr$) As S1S2
 Dim L%: L = Len(QuoteStr)
-Dim O As New S1S2
+Dim S1$, S2$
 Select Case L
 Case 0:
 Case 1
-    O.S1 = QuoteStr
-    O.S2 = O.S1
+    S1 = QuoteStr
+    S2 = QuoteStr
 Case 2
-    O.S1 = Left(QuoteStr, 1)
-    O.S2 = Right(QuoteStr, 1)
+    S1 = Left(QuoteStr, 1)
+    S2 = Right(QuoteStr, 1)
 Case Else
-    Dim P%
     If InStr(QuoteStr, "*") > 0 Then
-        Set O = Brk(QuoteStr, "*", NoTrim:=True)
+        Set BrkQuote = Brk(QuoteStr, "*", NoTrim:=True)
+        Exit Function
     End If
+    Stop
 End Select
+Set BrkQuote = S1S2(S1, S2)
 End Function
 
 Function BrkRev(A, Sep, Optional NoTrim As Boolean) As S1S2
@@ -135,7 +134,7 @@ If P = 0 Then
 End If
 End Function
 
-Private Function Brk2__X(A, P&, Sep, NoTrim As Boolean) As S1S2
+Function Brk2__X(A, P&, Sep, NoTrim As Boolean) As S1S2
 If P = 0 Then
     If NoTrim Then
         Set Brk2__X = S1S2("", A)
@@ -146,7 +145,7 @@ If P = 0 Then
 End If
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_Brk1Rev
 End Sub
 

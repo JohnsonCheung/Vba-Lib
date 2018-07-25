@@ -18,15 +18,49 @@ Type MdSrtRpt
     MdNy() As String
     RptDic As Dictionary ' K is Module Name, V is DicCmpRsltLy
 End Type
-Type LCC
-    Lno As Integer
-    C1 As Integer
-    C2 As Integer
-End Type
-Type LCCOpt
-    Som As Boolean
-    LCC As LCC
-End Type
+Function VbeHasPj(A As Vbe, PjNm) As Boolean
+VbeHasPj = ItrHasNm(A.VBProjects, PjNm)
+End Function
+Function ItrHasNm(A, Nm) As Boolean
+Dim I
+For Each I In A
+    If I.Name = Nm Then ItrHasNm = True: Exit Function
+Next
+End Function
+
+Function TakBefOrNo$(S, Sep, Optional NoTrim As Boolean)
+TakBefOrNo = Brk2(S, Sep, NoTrim).S1
+End Function
+Function TakAftOrNo$(S, Sep, Optional NoTrim As Boolean)
+TakAftOrNo = Brk2(S, Sep, NoTrim).S2
+End Function
+Function TakAftMust$(A, Sep, Optional NoTrim As Boolean)
+TakAftMust = Brk(A, Sep, NoTrim).S2
+End Function
+Function TakAft$(A, Sep, Optional NoTrim As Boolean)
+TakAft = Brk2(A, Sep, NoTrim).S2
+End Function
+Function TakBef$(S, Sep$, Optional NoTrim As Boolean)
+TakBef = Brk1(S, Sep, NoTrim).S1
+End Function
+Function TakBefMust$(S, Sep$, Optional NoTrim As Boolean)
+TakBefMust = Brk(S, Sep, NoTrim).S1
+End Function
+Function Brk2(A, Sep, Optional NoTrim As Boolean) As S1S2
+Dim P&: P = InStr(A, Sep)
+Set Brk2 = Brk2__X(A, P, Sep, NoTrim)
+End Function
+Function Brk2__X(A, P&, Sep, NoTrim As Boolean) As S1S2
+If P = 0 Then
+    If NoTrim Then
+        Set Brk2__X = S1S2("", A)
+    Else
+        Set Brk2__X = S1S2("", Trim(A))
+    End If
+    Exit Function
+End If
+Set Brk2__X = BrkAt(A, P, Sep, NoTrim)
+End Function
 
 Function DryCntDic(A, KeyColIx%) As Dictionary
 Dim O As New Dictionary
@@ -56,14 +90,14 @@ For J = 0 To UB(A)
 Next
 DryAddColByDic = O
 End Function
-Function AlignL$(A, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
+Function AlignL$(A, W, Optional ErIFmnotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
 Const CSub$ = "AlignL"
-If ErIfNotEnoughWdt And DoNotCut Then
+If ErIFmnotEnoughWdt And DoNotCut Then
     Stop
-    'Er CSub, "Both {ErIfNotEnoughWdt} and {DontCut} cannot be True", ErIfNotEnoughWdt, DoNotCut
+    'Er CSub, "Both {ErIFmnotEnoughWdt} and {DontCut} cannot be True", ErIFmnotEnoughWdt, DoNotCut
 End If
 Dim S$: S = VarStr(A)
-AlignL = StrAlignL(S, W, ErIfNotEnoughWdt, DoNotCut)
+AlignL = StrAlignL(S, W, ErIFmnotEnoughWdt, DoNotCut)
 End Function
 
 Function AscIsDigit(A%) As Boolean
@@ -83,7 +117,16 @@ If A < 65 Then Exit Function
 If A > 90 Then Exit Function
 AscIsUCase = True
 End Function
-
+Function AyInto(A, OIntoAy)
+Dim O: O = OIntoAy: Erase O
+If Sz(A) > 0 Then
+    Dim I
+    For Each I In A
+        Push O, I
+    Next
+End If
+AyInto = O
+End Function
 Function AyAB_FmtLy(A, B) As String()
 AyAB_FmtLy = S1S2Ay_FmtLy(AyAB_S1S2Ay(A, B))
 End Function
@@ -172,13 +215,13 @@ Next
 AyCntDry = O
 End Function
 
-Function AyColl(Ay) As Collection
+Function AyItr(A) As Collection
 Dim O As New Collection, I
-If Sz(Ay) = 0 Then Set AyColl = O: Exit Function
-For Each I In Ay
+If Sz(A) = 0 Then Set AyItr = O: Exit Function
+For Each I In A
     O.Add I
 Next
-Set AyColl = O
+Set AyItr = O
 End Function
 
 Function AyDblQuote(A) As String()
@@ -568,13 +611,24 @@ Dim N$(): N = DftNy(ExclNy0)
 AyWhExclNy0 = AyMinus(A, N)
 End Function
 
-Function AyWhFmTo(A, FmIx, ToIx)
+Function AyWhFmTo(A, Fmix, Toix)
 Dim O: O = A: Erase O
 Dim J&
-For J = FmIx To ToIx
+For J = Fmix To Toix
     Push O, A(J)
 Next
 AyWhFmTo = O
+End Function
+Function AyWhFTIx(A, X As FTIx)
+AyWhFTIx = AyWhFmixToix(A, X.Fmix, X.Toix)
+End Function
+Function AyWhFmixToix(A, Fmix&, Toix&)
+Dim O: O = A: Erase O
+Dim J&
+For J = Fmix To Toix
+    Push O, A(J)
+Next
+AyWhFmixToix = O
 End Function
 
 Function AyWhPatn(A, Patn$, Optional ExclNy0) As String()
@@ -588,6 +642,17 @@ For Each I In A
     If R.Test(I) Then Push O, I
 Next
 AyWhPatn = AyWhExclNy0(O, ExclNy0)
+End Function
+Function AyWhPredNot(A, Pred$)
+If Sz(A) = 0 Then AyWhPredNot = A: Exit Function
+Dim O: O = A: Erase O
+Dim J&
+For J = 0 To UB(A)
+    If Not Run(Pred, A(J)) Then
+        Push O, A(J)
+    End If
+Next
+AyWhPredNot = O
 End Function
 
 Function AyWhPred(A, Pred$)
@@ -618,7 +683,7 @@ Next
 AyWhSingleEle = O
 End Function
 
-Function Brk(A, Sep$, Optional IsNoTrim As Boolean) As S1S2
+Function Brk(A, Sep, Optional IsNoTrim As Boolean) As S1S2
 Dim P&: P = InStr(A, Sep)
 If P = 0 Then Stop
 Dim S1$, S2$
@@ -645,13 +710,16 @@ If P = 0 Then
     End If
     Exit Function
 End If
+Set Brk1__X = BrkAt(A, P, Sep, NoTrim)
+End Function
+Function BrkAt(A, P&, Sep, NoTrim As Boolean) As S1S2
 Dim S1$, S2$
-S1 = Left(A, P)
+S1 = Left(A, P - 1)
 S2 = Mid(A, P + Len(Sep))
 If NoTrim Then
-    Set Brk1__X = S1S2(S1, S2)
+    Set BrkAt = S1S2(S1, S2)
 Else
-    Set Brk1__X = S1S2(Trim(S1), Trim(S2))
+    Set BrkAt = S1S2(Trim(S1), Trim(S2))
 End If
 End Function
 
@@ -669,11 +737,11 @@ Function CellReSz(A As Range, Sq) As Range
 Set CellReSz = RgRCRC(A, 1, 1, UBound(Sq, 1), UBound(Sq, 2))
 End Function
 
-Function CmpTyAyOf_Cls_and_Md() As vbext_ComponentType()
+Function CmpTyAyOf_Cls_and_Std() As vbext_ComponentType()
 Dim O(1) As vbext_ComponentType
 O(0) = vbext_ct_ClassModule
 O(1) = vbext_ct_StdModule
-CmpTyAyOf_Cls_and_Md = O
+CmpTyAyOf_Cls_and_Std = O
 End Function
 
 Function CmpTy_Nm$(A As vbext_ComponentType)
@@ -695,6 +763,23 @@ Next
 Set CollAddPfx = O
 End Function
 
+Function CurXls() As Excel.Application
+Set CurXls = Excel.Application
+End Function
+Function CurWb() As Workbook
+Set CurWb = CurXls.ActiveWorkbook
+End Function
+
+Function CurWs() As Worksheet
+Set CurWs = CurXls.ActiveSheet
+End Function
+
+Function CurCdWin() As VBIDE.Window
+Dim C As VBComponent: Set C = CurCmp: If IsNothing(C) Then Exit Function
+Dim M As CodeModule: Set M = C.CodeModule: If IsNothing(M) Then Exit Function
+Set CurCdWin = M.CodePane.Window
+End Function
+
 Function CurCmp() As VBComponent
 Set CurCmp = CurMd.Parent
 End Function
@@ -705,7 +790,12 @@ If M = "" Then Exit Function
 If Not MdIsStd(CurMd) Then Exit Function
 CurFunDNm = CurMdDNm & "." & M
 End Function
+Function XXX()
 
+End Function
+Function CurSrc() As String()
+CurSrc = MdSrc(CurMd)
+End Function
 Function CurMd() As CodeModule
 Set CurMd = CurVbe.ActiveCodePane.CodeModule
 End Function
@@ -756,21 +846,26 @@ CurPjPth = PjPth(CurPj)
 End Function
 
 Function CurVbe() As Vbe
-Set CurVbe = Excel.Application.Vbe
+Set CurVbe = CurXls.Vbe
 End Function
 
-Function CvFmToLno(A) As FmToLno
-Set CvFmToLno = A
+Function CvFTNo(A) As FTNo
+Set CvFTNo = A
 End Function
 
-Function CvFmToLx(A) As FmToLx
-Set CvFmToLx = A
+Function CvFTIx(A) As FTIx
+Set CvFTIx = A
 End Function
 
 Function CvMd(A) As CodeModule
 Set CvMd = A
 End Function
-
+Function CvCmp(A) As VBComponent
+Set CvCmp = A
+End Function
+Function CvS1S2(A) As S1S2
+Set CvS1S2 = A
+End Function
 Function CvMth(A) As Mth
 Set CvMth = A
 End Function
@@ -1016,6 +1111,13 @@ For Each K In A.Keys
 Next
 Set DicMinus = O
 End Function
+Function DicS1S2Itr(A As Dictionary) As Collection
+Dim O As New Collection, K
+For Each K In A.Keys
+    O.Add S1S2(K, A(K))
+Next
+Set DicS1S2Itr = O
+End Function
 
 Function DicS1S2Ay(A As Dictionary) As S1S2()
 Dim O() As S1S2, K
@@ -1098,7 +1200,7 @@ Dim NCol&, NRow&
     NRow = Sz(A)
 Dim O()
 ReDim O(1 To NRow, 1 To NCol)
-Dim C&, R&, Dr()
+Dim C&, R&, Dr
     For R = 1 To NRow
         Dr = A(R - 1)
         For C = 1 To Min(Sz(Dr), NCol)
@@ -1232,7 +1334,8 @@ End Function
 Function EitherR(A) As Either
 Asg A, EitherR.Right
 End Function
-
+Function EmpMdAy() As CodeModule
+End Function
 Function EmpAy() As Variant()
 End Function
 
@@ -1241,7 +1344,59 @@ End Function
 
 Function EmpRfAy() As Reference()
 End Function
+Function DicAy_Mge(A() As Dictionary) As Dictionary
+'Assume there is no duplicated key in each of the dic in A()
+Dim O As New Dictionary
+If Sz(A) > 0 Then
+    Dim I
+    For Each I In A
+        DicPush O, CvDic(I)
+    Next
+End If
+Set DicAy_Mge = O
+End Function
+Function CvDic(A) As Dictionary
+Set CvDic = A
+End Function
+Sub DicPush(O As Dictionary, M As Dictionary)
+'Assume there is no duplicated key
+If M.Count = 0 Then Exit Sub
+Dim K
+For Each K In M.Keys
+    O.Add K, M(K)
+Next
+End Sub
+Function RmvUSfx$(A)
+Dim J%, Fnd As Boolean, C%
+For J = Len(A) To 2 Step -1 ' don't find the first char if non-UCase, to use 'To 2'
+    C = Asc(Mid(A, J, 1))
+    If Not AscIsUCase(C) Then
+        Fnd = True
+        Exit For
+    End If
+Next
+If Fnd Then
+    RmvUSfx = Left(A, J)
+Else
+    RmvUSfx = A
+End If
+End Function
+Function DicIsEmp(A As Dictionary) As Boolean
+DicIsEmp = A.Count = 0
+End Function
 
+Function EmpDicAy() As Dictionary()
+End Function
+Function DicMap(A As Dictionary, ValMapFun$) As Dictionary
+Dim O As New Dictionary, K
+For Each K In A.Keys
+    O.Add K, Run(ValMapFun, A(K))
+Next
+Set DicMap = O
+End Function
+Function CvDicAy(A) As Dictionary()
+CvDicAy = A
+End Function
 Function EmpSy() As String()
 End Function
 
@@ -1282,29 +1437,29 @@ If P = 0 Then FfnRmvExt = Left(A, P): Exit Function
 FfnRmvExt = Left(A, P - 1)
 End Function
 
-Function FmToLnoAy_LinCnt%(A() As FmToLno)
+Function FTNoAy_LinCnt%(A() As FTNo)
 Dim O%, M
 For Each M In A
-    O = O + FmToLno_LinCnt(CvFmToLno(M))
+    O = O + FTNo_LinCnt(CvFTNo(M))
 Next
 End Function
 
-Function FmToLno_LinCnt%(A As FmToLno)
+Function FTNo_LinCnt%(A As FTNo)
 Dim O%
-O = A.ToLno - A.FmLno + 1
+O = A.Tono - A.Fmno + 1
 If O < 0 Then Stop
-FmToLno_LinCnt = O
+FTNo_LinCnt = O
 End Function
 
-Function FmToLx_FmToLno(A As FmToLx) As FmToLno
-Set FmToLx_FmToLno = FmToLno(A.FmLx + 1, A.ToLx + 1)
+Function FTIx_FTNo(A As FTIx) As FTNo
+Set FTIx_FTNo = FTNo(A.Fmix + 1, A.Toix + 1)
 End Function
 
-Function FmToLx_LinCnt%(A As FmToLx)
+Function FTIx_LinCnt%(A As FTIx)
 Dim O%
-O = A.ToLx - A.FmLx + 1
+O = A.Toix - A.Fmix + 1
 If O < 0 Then Stop
-FmToLx_LinCnt = O
+FTIx_LinCnt = O
 End Function
 
 Function FmtQQ$(QQVbl$, ParamArray Ap())
@@ -1375,11 +1530,36 @@ FunNm_CmpLy = DupMthFNyGp_CmpLy(N, InclSam:=InclSam)
 End Function
 
 Function FunNm_DupFunFNy(A) As String()
-FunNm_DupFunFNy = VbeFunFNy(CurVbe, FunNmPatn:="^" & A & "$", ExclFunNy0:="ZZ__Tst", Mdy0:="Public")
+FunNm_DupFunFNy = VbeFunFNy(CurVbe, FunNmPatn:="^" & A & "$", ExclFunNy0:="ZZZ__Tst", Mdy0:="Public")
 End Function
 Private Sub ZZ_MthNm_MthPfx()
 Debug.Assert MthNm_MthPfx("Add_Cls") = "Add"
 End Sub
+Private Sub ZZ_MthNm_MthPfx__BrwAll()
+Dim Ay$(): Ay = VbeMthNy(CurVbe)
+Dim Ay1$(): Ay1 = AyMapSy(Ay, "MthNm_MthPfx")
+WsVis AyAB_Ws(Ay, Ay1)
+End Sub
+Function AyAB_Ws(A, B) As Worksheet
+Dim N&: N = Sz(A)
+If N <> Sz(B) Then Stop
+Dim Ws As Worksheet: Set Ws = NewWs
+WsRC(Ws, 1, 1).Value = "A"
+WsRC(Ws, 1, 2).Value = "B"
+CellPutAyV WsRC(Ws, 2, 1), A
+CellPutAyV WsRC(Ws, 2, 2), B
+RgLo WsRCRC(Ws, 1, 1, N + 1, 2)
+Set AyAB_Ws = Ws
+End Function
+Function WsRCRC(A As Worksheet, R1, C1, R2, C2) As Range
+Set WsRCRC = A.Range(WsRC(A, R1, C1), WsRC(A, R2, C2))
+End Function
+Function CellPutAyH(A As Range, AyH) As Range
+Set CellPutAyH = CellPutSq(A, AySqH(AyH))
+End Function
+Function CellPutAyV(A As Range, AyV) As Range
+Set CellPutAyV = CellPutSq(A, AySqV(AyV))
+End Function
 Sub ZZZ_RmvPfxAy()
 Const A1$ = "ZZZ_ABC"
 Const A2$ = "ZZ_ABC"
@@ -1400,8 +1580,8 @@ RmvPfxAy = A
 End Function
 Function MthNm_MthPfx$(A)
 Dim A0$
-    A0 = TakBef(RmvPfxAy(A, "ZZ_ ZZZ_"), "__")
-With Brk2(A1, "_").S1
+    A0 = Brk1(RmvPfxAy(A, "ZZ_|ZZZ_"), "__").S1
+With Brk2(A0, "_")
     If .S1 <> "" Then
         MthNm_MthPfx = .S1
         Exit Function
@@ -1411,29 +1591,30 @@ Dim P2%
 Dim Fnd As Boolean
     Dim C%
     Fnd = False
-    For P2 = 2 To Len(A1)
-        C = Asc(Mid(A1, P2, 1))
+    For P2 = 2 To Len(A0)
+        C = Asc(Mid(A0, P2, 1))
         If AscIsLCase(C) Then Fnd = True: Exit For
     Next
 '---
     If Not Fnd Then Exit Function
 Dim P3%
 Fnd = False
-    For P3 = P2 + 1 To Len(A1)
-        C = Asc(Mid(A1, P3, 1))
+    For P3 = P2 + 1 To Len(A0)
+        C = Asc(Mid(A0, P3, 1))
         If AscIsUCase(C) Or AscIsDigit(C) Then Fnd = True: Exit For
     Next
 '--
 If Fnd Then
-    MthNm_MthPfx = Left(A1, P3 - 1)
+    MthNm_MthPfx = Left(A0, P3 - 1)
     Exit Function
 End If
 MthNm_MthPfx = A
 End Function
 
-Function FunNm_ProperMdNm$(A)
+Function MthNm_ProperMdNm$(A)
+If A = "ZZZ__Tst" Then Exit Function
 Dim P$: P = MthNm_MthPfx(A): If P = "" Then Exit Function
-FunNm_ProperMdNm = "M_" & P
+MthNm_ProperMdNm = "M_" & P
 End Function
 
 Function FxWb(A) As Workbook
@@ -1613,26 +1794,19 @@ LinIsTstSub = True
 If IsPfx(L, "Sub Tst()") Then Exit Function
 If IsPfx(L, "Sub Tst()") Then Exit Function
 If IsPfx(L, "Friend Sub Tst()") Then Exit Function
-If IsPfx(L, "Sub ZZ__Tst()") Then Exit Function
-If IsPfx(L, "Sub ZZ__Tst()") Then Exit Function
-If IsPfx(L, "Friend Sub ZZ__Tst()") Then Exit Function
+If IsPfx(L, "Sub ZZZ__Tst()") Then Exit Function
+If IsPfx(L, "Sub ZZZ__Tst()") Then Exit Function
+If IsPfx(L, "Friend Sub ZZZ__Tst()") Then Exit Function
 LinIsTstSub = False
 End Function
 
 Function LinLCCOpt(A, MthNm$, Lno%) As LCCOpt
 Dim M$: M = LinMthNm(A)
-If M <> MthNm Then Exit Function
+If M <> MthNm Then Set LinLCCOpt = New LCCOpt: Exit Function
 Dim C1%, C2%
 C1 = InStr(A, MthNm)
 C2 = C1 + Len(MthNm)
-With LinLCCOpt
-    .Som = True
-    With .LCC
-        .Lno = Lno
-        .C1 = C1
-        .C2 = C2
-    End With
-End With
+Set LinLCCOpt = LCCOpt(LCC(Lno, C1, C2))
 End Function
 
 Function LinMdy$(A)
@@ -1719,9 +1893,15 @@ End Function
 Function LinShiftMdy$(O$)
 LinShiftMdy = LinShiftPfxAyAndLTrim(O, SyOf_Mdy)
 End Function
+Function LinShiftShtMdy$(O$)
+LinShiftShtMdy = MdyShtMdy(LinShiftPfxAyAndLTrim(O, SyOf_Mdy))
+End Function
 
 Function LinShiftMthTy$(O$)
 LinShiftMthTy = LinShiftPfxAyAndLTrim(O, SyOf_MthTy)
+End Function
+Function LinShiftMthShtTy$(O$)
+LinShiftMthShtTy = MthTy_MthShtTy(LinShiftPfxAyAndLTrim(O, SyOf_MthTy))
 End Function
 
 Function LinShiftNm$(O$)
@@ -1782,11 +1962,11 @@ Dim O$()
 LinesAy_FmtLy = O
 End Function
 
-Function LinesAy_Wdt%(A$())
-Dim O%, J&, M%
-For J = 0 To UB(A)
-   M = LinesWdt(A(J))
-   If M > O Then O = M
+Function LinesAy_Wdt%(A)
+If Sz(A) = 0 Then Exit Function
+Dim O%, J&, M%, L
+For Each L In A
+   O = Max(O, LinesWdt(L))
 Next
 LinesAy_Wdt = O
 End Function
@@ -1958,14 +2138,14 @@ MdFunPfxAy = O
 End Function
 
 Function MdHasMth(A As CodeModule, MthNm$) As Boolean
-MdHasMth = MdMthFmLno(A, MthNm) > 0
+MdHasMth = MdMthFmno(A, MthNm) > 0
 End Function
 
 Function MdHasTstSub(A As CodeModule) As Boolean
 Dim I
 For Each I In MdLy(A)
-    If I = "Friend Sub ZZ__Tst()" Then MdHasTstSub = True: Exit Function
-    If I = "Sub ZZ__Tst()" Then MdHasTstSub = True: Exit Function
+    If I = "Friend Sub ZZZ__Tst()" Then MdHasTstSub = True: Exit Function
+    If I = "Sub ZZZ__Tst()" Then MdHasTstSub = True: Exit Function
 Next
 End Function
 
@@ -1984,6 +2164,7 @@ End Function
 Function MdIsFunGpMd(A As CodeModule) As Boolean
 'A Md is a FunGpMd must be with Name begins with M_ or S_
 'so that all public-function or ZZ_-function has Fun-ProperMdNm matches with its module-name
+If A.Parent.Type <> vbext_ct_StdModule Then Exit Function
 Dim MdN$: MdN = MdNm(A)
     Dim Pfx$
     Pfx = Left(MdN, 2)
@@ -2022,8 +2203,8 @@ End If
 MdMthAy = O
 End Function
 
-Function MdMthFmLno(A As CodeModule, MthNm$)
-MdMthFmLno = SrcMthFmLx(MdSrc(A), MthNm) + 1
+Function MdMthFmno(A As CodeModule, MthNm$)
+MdMthFmno = SrcMthFmix(MdSrc(A), MthNm) + 1
 End Function
 
 Function MdMthSq(A As CodeModule) As Variant()
@@ -2053,7 +2234,7 @@ End If                                             ' S_Xxxx for Module with sing
 Dim Ay() As Mth
 Dim Ay1() As Mth
     Ay = MdMthAy(A)
-    Ay1 = OyWhPred(Ay, "MthIsInProperMd")
+    Ay1 = AyWhPredNot(Ay, "MthIsInProperMd")
 MdMthNyOfInproper = AyMapSy(Ay1, "MthNm")
 End Function
 
@@ -2071,7 +2252,7 @@ End Function
 
 Function MdProperMdNy(A As CodeModule) As String()
 Dim Ny$(): Ny = MdMthNy(A, IsNoMdNmPfx:=True, Mdy0:="Public")
-MdProperMdNy = AyWhSingleEle(AyMapSy(Ny, "FunNm_ProperMdNm"))
+MdProperMdNy = AyWhSingleEle(AyMapSy(Ny, "MthNm_ProperMdNm"))
 End Function
 
 Function MdRmk(A As CodeModule) As Boolean
@@ -2167,12 +2348,12 @@ End If
 MdXNm_Either = EitherR(Ny)
 End Function
 
-Function Md_FunNm_z_ProperMdNm_S1S2Ay(A As CodeModule) As S1S2()
+Function Md_MthNm_z_ProperMdNm_S1S2Ay(A As CodeModule) As S1S2()
 Dim Ny$(): Ny = MdMthNy(A, IsNoMdNmPfx:=True, Mdy0:="Public")
-Md_FunNm_z_ProperMdNm_S1S2Ay = AyMapS1S2Ay(Ny, "FunNm_ProperMdNm")
+Md_MthNm_z_ProperMdNm_S1S2Ay = AyMapS1S2Ay(Ny, "MthNm_ProperMdNm")
 End Function
 
-Function Md_FunNy_OfPfx_ZZ_(A As CodeModule) As String()
+Function Md_FunNy_OfPfx_ZZDash(A As CodeModule) As String()
 Dim J%, O$(), L$, L1$, Is_ZFun As Boolean
 For J = 1 To A.CountOfLines
     Is_ZFun = True
@@ -2192,21 +2373,21 @@ For J = 1 To A.CountOfLines
         Push O, LinNm(L1)
     End If
 Next
-Md_FunNy_OfPfx_ZZ_ = O
+Md_FunNy_OfPfx_ZZDash = O
 End Function
 
-Function Md_Lines_ByFmToLno$(A As CodeModule, X As FmToLno)
-Dim Cnt%: Cnt = FmToLno_LinCnt(X)
+Function Md_Lines_ByFTNo$(A As CodeModule, X As FTNo)
+Dim Cnt%: Cnt = FTNo_LinCnt(X)
 If Cnt = 0 Then Exit Function
-Md_Lines_ByFmToLno = A.Lines(X.FmLno, Cnt)
+Md_Lines_ByFTNo = A.Lines(X.Fmno, Cnt)
 End Function
 
-Function Md_Ly_ByFmToLno(A As CodeModule, X As FmToLno) As String()
-Md_Ly_ByFmToLno = SplitCrLf(Md_Lines_ByFmToLno(A, X))
+Function Md_Ly_ByFTNo(A As CodeModule, X As FTNo) As String()
+Md_Ly_ByFTNo = SplitCrLf(Md_Lines_ByFTNo(A, X))
 End Function
 
 Function Md_TstSub_BdyLines$(A As CodeModule)
-Dim Ny$(): Ny = Md_FunNy_OfPfx_ZZ_(A)
+Dim Ny$(): Ny = Md_FunNy_OfPfx_ZZDash(A)
 If Sz(Ny) = 0 Then Exit Function
 Ny = AySrt(Ny)
 Dim O$()
@@ -2215,7 +2396,7 @@ If A.Parent.Type = vbext_ct_ClassModule Then
     Pfx = "Friend "
 End If
 Push O, ""
-Push O, Pfx & "Sub ZZ__Tst()"
+Push O, Pfx & "Sub ZZZ__Tst()"
 PushAy O, Ny
 Push O, "End Sub"
 Md_TstSub_BdyLines = Join(O, vbCrLf)
@@ -2299,28 +2480,30 @@ Function MthFNm_Nm$(A$)
 MthFNm_Nm = Brk(A, ":").S1
 End Function
 
-Function MthFmLno%(A As Mth)
-MthFmLno = SrcMthFmLx(MdSrc(A.Md), A.Nm) + 1
+Function MthFmno%(A As Mth)
+MthFmno = SrcMthFmix(MdSrc(A.Md), A.Nm) + 1
 End Function
 
-Function MthFmLnoAy(A As Mth) As Integer()
-MthFmLnoAy = IntAy_Add1(SrcMthFmLxAy(MdSrc(A.Md), A.Nm))
+Function MthFmnoAy(A As Mth) As Integer()
+MthFmnoAy = IntAy_Add1(SrcMthFmixAy(MdSrc(A.Md), A.Nm))
 End Function
 
-Function MthFmToLnoAy(A As Mth) As FmToLno()
-MthFmToLnoAy = SrcMthFmToLnoAy(MdSrc(A.Md), A.Nm)
+Function MthFTNoAy(A As Mth) As FTNo()
+MthFTNoAy = SrcMthFTNoAy(MdSrc(A.Md), A.Nm)
 End Function
-Function MthFmToLno(A As Mth) As FmToLno
-MthFmToLno = SrcMthFmToLno(MdSrc(A.Md), A.Nm)
+Function MthFTNo(A As Mth) As FTNo
+MthFTNo = SrcMthFTNo(MdSrc(A.Md), A.Nm)
 End Function
 
 Function MthIsExist(A As Mth) As Boolean
-MthIsExist = MdMthFmLno(A.Md, A.Nm) > 0
+MthIsExist = MdMthFmno(A.Md, A.Nm) > 0
 End Function
 
-Function MthIsInproperMd(A As Mth) As Boolean
-If Not MdIsFunGpMd(A.Md) Then Exit Function
-MthIsInproperMd = FunNm_ProperMdNm(A.Nm) <> MdNm(A.Md)
+Function MthIsInProperMd(A As Mth) As Boolean
+'Return True if mth is in a ProperMd
+If Not MdIsFunGpMd(A.Md) Then MthIsInProperMd = True: Exit Function
+Dim M$: M = MthNm_ProperMdNm(A.Nm): If M = "" Then MthIsInProperMd = True: Exit Function
+MthIsInProperMd = M = MdNm(A.Md)
 End Function
 
 Function MthIsPub(A As Mth) As Boolean
@@ -2345,10 +2528,9 @@ Dim L%, C As LCCOpt
 Dim M As CodeModule
 Set M = A.Md
 For L = M.CountOfDeclarationLines + 1 To M.CountOfLines
-    C = LinLCCOpt(M.Lines(L, 1), A.Nm, L)
+    Set C = LinLCCOpt(M.Lines(L, 1), A.Nm, L)
     If C.Som Then
-        MthLCCOpt.Som = True
-        MthLCCOpt = C
+        Set MthLCCOpt = LCCOpt(C.LCC)
         Exit Function
     End If
 Next
@@ -2357,9 +2539,11 @@ End Function
 Function MthLin$(A As Mth)
 MthLin = SrcMthLin(MdSrc(A.Md), A.Nm)
 End Function
-
+Function MthBNm_MthNm$(A)
+MthBNm_MthNm = TakBef(TakAftMust(A, "."), ":")
+End Function
 Function MthLinCnt%(A As Mth)
-MthLinCnt = FmToLnoAy_LinCnt(MthFmToLnoAy(A))
+MthLinCnt = FTNoAy_LinCnt(MthFTNoAy(A))
 End Function
 
 Function MthLin_MthBrk(A) As MthBrk
@@ -2368,6 +2552,22 @@ Dim M$: M = LinShiftMdy(L)
 Dim T$: T = LinShiftMthTy(L): If T = "" Then Stop
 Dim N$: N = LinNm(L): If N = "" Then Stop
 Set MthLin_MthBrk = MthBrk(N, M, T)
+End Function
+
+Function MthLin_MthNm$(A)
+Dim L$: L = A
+LinShiftMdy L
+If LinShiftMthTy(L) = "" Then Exit Function
+MthLin_MthNm = LinNm(L)
+End Function
+
+Function MthLin_MthANm$(A)
+Dim L$, T$, T1$
+L = A
+LinShiftMdy L
+T = LinShiftMthShtTy(L): If T = "" Then Exit Function
+T1 = IIf(T = "Sub" Or T = "Fun", "", T)
+MthLin_MthANm = LinNm(L) & IIf(T1 = "", "", ":") & T1
 End Function
 
 Function MthLin_MthKey$(A$, Optional PjNm$, Optional MdNm$, Optional IsWrap As Boolean)
@@ -2382,8 +2582,8 @@ Dim IsMthLin As Boolean
 Dim P% 'Priority
     Select Case True
     Case IsPfx(N, "Init"): P = 1
-    Case N = "ZZ__Tst":    P = 9
-    Case N = "ZZZ__Tst":   P = 9
+    Case N = "ZZZ__Tst":    P = 9
+    Case N = "ZZZZ__Tst":   P = 9
     Case IsPfx(N, "ZZZ_"): P = 9
     Case IsPfx(N, "ZZ_"):  P = 8
     Case IsPfx(N, "Z"):    P = 7
@@ -2441,7 +2641,7 @@ If Not IsPfx(A.Nm, "ZZ_") Then
 End If
 Dim Pj As VBProject
 Dim MdNm$
-    MdNm = FunNm_ProperMdNm(A.Nm)
+    MdNm = MthNm_ProperMdNm(A.Nm)
     Set Pj = MdPj(A.Md)
 PjEnsMd Pj, MdNm
 Set MthProperMd = PjMd(Pj, MdNm)
@@ -2457,11 +2657,10 @@ Select Case A
 Case "Sub": O = A
 Case "Function": O = "Fun"
 Case "Property Get", "Property Let", "Property Set": O = LinRmvT1(A)
-Case Else: Stop
 End Select
 MthTy_MthShtTy = O
 End Function
-Function Mdy_ShtMdy$(A)
+Function MdyShtMdy(A)
 Dim O$
 Select Case A
 Case "", "Public":
@@ -2469,7 +2668,7 @@ Case "Private": O = "Prv"
 Case "Friend": O = "Frd"
 Case Else: Stop
 End Select
-Mdy_ShtMdy = O
+MdyShtMdy = O
 End Function
 
 Function NewA1() As Range
@@ -2482,6 +2681,25 @@ End Function
 
 Function NewWs() As Worksheet
 Set NewWs = NewWb.Sheets(1)
+End Function
+
+Function OyPrpAy(Oy, PrpNm) As Variant()
+OyPrpAy = OyPrpAyInto(Oy, PrpNm, EmpAy)
+End Function
+
+Function OyPrpAyInto(Oy, PrpNm, OIntoAy)
+Dim O: O = OIntoAy: Erase O
+If Sz(Oy) > 0 Then
+    Dim I
+    For Each I In Oy
+        Push O, ObjPrp(I, PrpNm)
+    Next
+End If
+OyPrpAyInto = O
+End Function
+Function ObjPrp(Obj, PrpNm)
+On Error Resume Next
+ObjPrp = CallByName(Obj, PrpNm, VbGet)
 End Function
 
 Function OyNy(Oy) As String()
@@ -2517,19 +2735,27 @@ End Function
 Function LinShiftDTerm$(O$)
 LinShiftDTerm = LinShiftXXX(O, ".")
 End Function
-Function OyWhPred(Oy() As Mth, PredFunNm$)
-Dim O: O = Oy: Erase O
+Function AWhPred(A As Mth, PredFunNm$)
+Dim O: O = A: Erase O
 Dim I
-If Sz(Oy) > 0 Then
-    For Each I In Oy
+If Sz(A) > 0 Then
+    For Each I In A
         If Run(PredFunNm, I) Then
             PushObj O, I
         End If
     Next
 End If
-OyWhPred = O
+AWhPred = O
 End Function
-
+Function DicAddKeyPfx(A As Dictionary, Pfx) As Dictionary
+Dim O As New Dictionary, K
+If A.Count > 0 Then
+    For Each K In A.Keys
+        O.Add Pfx & K, A(K)
+    Next
+End If
+Set DicAddKeyPfx = O
+End Function
 Function Pj(PjNm$) As VBProject
 Set Pj = CurVbe.VBProjects(PjNm)
 End Function
@@ -2620,13 +2846,9 @@ PjFunNy = O
 End Function
 
 Function PjFunPfxAy(A As VBProject) As String()
-Dim O$(), M, Ay() As CodeModule
-Ay = PjMdAy(A)
-If Sz(Ay) = 0 Then Exit Function
-For Each M In Ay
-    PushAyNoDup O, MdFunPfxAy(CvMd(M))
-Next
-PjFunPfxAy = O
+Dim Ay() As CodeModule: Ay = PjMdAy(A)
+Dim Ay1(): Ay1 = AyMap(Ay, "MdFunPfxAy")
+PjFunPfxAy = AyOfAy_Ay(Ay1)
 End Function
 
 Function PjHasCmp(A As VBProject, Nm$) As Boolean
@@ -2635,7 +2857,35 @@ For Each Cmp In A.VBComponents
     If Cmp.Name = Nm Then PjHasCmp = True: Exit Function
 Next
 End Function
+Sub LocStr_Go(A)
+LocGo LocStr_Loc(A)
+End Sub
+Function LocStr_Loc(A) As Loc
 
+End Function
+Sub LocGo(A As Loc)
+
+End Sub
+Function ItrMapInto(A, MapFunNm$, OIntoAy)
+Dim I, O
+O = OIntoAy: Erase O
+For Each I In A
+    Push O, Run(MapFunNm, I)
+Next
+ItrMapInto = O
+End Function
+
+Function ItrMap(A, MapFunNm$)
+ItrMap = ItrMapInto(A, MapFunNm, EmpAy)
+End Function
+
+Function ItrMapSy(A, MapFunNm$) As String()
+ItrMapSy = ItrMapInto(A, MapFunNm, EmpSy)
+End Function
+
+Function PjRfNy(A As VBProject) As String()
+PjRfNy = ItrNy(A.References)
+End Function
 Function PjHasRfNm(A As VBProject, RfNm$) As Boolean
 Dim I, R As Reference
 For Each I In A.References
@@ -2643,10 +2893,77 @@ For Each I In A.References
     If R.Name = RfNm Then PjHasRfNm = True: Exit Function
 Next
 End Function
+Function PjHasRfFfn(A As VBProject, RfFfn) As Boolean
+Dim I, R As Reference
+For Each I In A.References
+    Set R = I
+    If R.FullPath = RfFfn Then PjHasRfFfn = True: Exit Function
+Next
+End Function
+Sub ZZ_ItrWhPrpItr()
+Dim Act1, Act2, Act3, CmpItr, MbrItr
+Set MbrItr = Pj("QTool").VBComponents
+Set Act1 = ItrWhPrpItr(MbrItr, "Type", ApItr(vbext_ct_StdModule))
+Set Act2 = ItrWhPrpItr(MbrItr, "Type", ApItr(vbext_ct_ClassModule))
+Set Act3 = ItrWhPrpItr(MbrItr, "Type", ApItr(vbext_ct_ClassModule, vbext_ct_StdModule))
+Stop
+End Sub
+Function ItrWhPrpItr(A, PrpNm$, WhItr As Collection) As Collection
+If IsNothing(WhItr) Then Set ItrWhPrpItr = A: Exit Function
+Dim I, O As New Collection, P
+For Each I In A
+    For Each P In WhItr
+        If ObjPrp(I, PrpNm) = P Then
+            O.Add I
+        End If
+    Next
+Next
+Set ItrWhPrpItr = O
+End Function
+Function PjMbrItr(A As VBProject, Optional MbrNmPatn$ = ".", Optional ExclMbrLikNy As Collection, Optional CmpTyItr As Collection) As Collection
+Dim Itr As Collection: Set Itr = ItrWhNmPatnExcl(A.VBComponents, MbrNmPatn, ExclMbrLikNy)
+Set PjMbrItr = ItrWhPrpItr(Itr, "Type", CmpTyItr)
+End Function
 
 Function PjMbrAy(A As VBProject, Optional MbrNmPatn$ = ".", Optional ExclMbrNy0, Optional CmpTyAy) As CodeModule()
 Dim MdAy() As CodeModule
 PjMbrAy = AyMapPXInto(PjMbrNy(A, MbrNmPatn, ExclMbrNy0, CmpTyAy), "PjMd", A, MdAy)
+End Function
+Function ItrWhNmPatn(A, NmPatn$) As Collection
+'Assume A is collection of object-with-name-property
+If NmPatn = "." Then Set ItrWhNmPatn = ItrClone(A): Exit Function
+Dim R As RegExp: Set R = Re(NmPatn)
+Dim I, O As New Collection
+For Each I In A
+    If R.Test(I) Then
+        O.Add I
+    End If
+Next
+Set ItrWhNmPatn = O
+End Function
+Function ItrClone(A) As Collection
+Dim I, O As New Collection
+For Each I In A
+    O.Add I
+Next
+Set ItrClone = O
+End Function
+Function ItrWhExclLikNmItr(A, ExclLikNmItr As Collection) As Collection
+'Assume A is Object Itr with property-name
+If IsNothing(ExclLikNmItr) Then Set ItrWhExclLikNmItr = ItrClone(A): Exit Function
+Dim I, O As New Collection, Nm
+For Each I In A
+    For Each Nm In ExclLikNmItr
+        If Not I.Name Like Nm Then
+            O.Add I
+        End If
+    Next
+Next
+Set ItrWhExclLikNmItr = O
+End Function
+Function ItrWhNmPatnExcl(A, Optional NmPatn$ = ".", Optional ExclLikNmItr As Collection) As Collection
+'Assume A is collection of object with Name-property else break
+Set ItrWhNmPatnExcl = ItrWhExclLikNmItr(ItrWhNmPatn(A, NmPatn), ExclLikNmItr)
 End Function
 
 Function PjMbrNy(A As VBProject, Optional Patn$ = ".", Optional ExclNy0, Optional CmpTyAy) As String()
@@ -2666,6 +2983,9 @@ End Function
 
 Function PjMd(A As VBProject, Nm) As CodeModule
 Set PjMd = PjCmp(A, Nm).CodeModule
+End Function
+Function PjMdItr(A As VBProject, Optional MdNmPatn$ = ".", Optional ExclMdLikNmItr As Collection) As Collection
+Set PjMdItr = PjMbrItr(A, MdNmPatn, ExclMdLikNmItr, ApItr(vbext_ct_StdModule))
 End Function
 
 Function PjMdAy(A As VBProject, Optional MdNmPatn$ = ".", Optional ExclMdNy0) As CodeModule()
@@ -2839,11 +3159,11 @@ Pj_ClsNy_With_TstSub = O
 End Function
 
 Function Pj_TstClass_Bdy$(A As VBProject)
-Dim N1$() ' All Class Ny with 'Friend Sub ZZ__Tst' method
+Dim N1$() ' All Class Ny with 'Friend Sub ZZZ__Tst' method
 Dim N2$()
 Dim A1$, A2$
-Const Q1$ = "Sub ?()|Dim A As New ?: A.ZZ__Tst|End Sub"
-Const Q2$ = "Sub ?()|#.?.ZZ__Tst|End Sub"
+Const Q1$ = "Sub ?()|Dim A As New ?: A.ZZZ__Tst|End Sub"
+Const Q2$ = "Sub ?()|#.?.ZZZ__Tst|End Sub"
 N1 = Pj_ClsNy_With_TstSub(A)
 A1 = SeedExpand(Q1, N1)
 N2 = PjMdNy_With_TstSub(A)
@@ -2870,8 +3190,8 @@ Function PthFfnAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As S
 PthFfnAy = AyAddPfx(PthFnAy(A, Spec, Atr), A)
 End Function
 
-Function PthFfnColl(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As Collection
-Set PthFfnColl = CollAddPfx(PthFnColl(A, Spec, Atr), A)
+Function PthFfnItr(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As Collection
+Set PthFfnItr = CollAddPfx(PthFnItr(A, Spec, Atr), A)
 End Function
 
 Function PthFnAy(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As String()
@@ -2899,8 +3219,8 @@ Wend
 PthFnAy = O
 End Function
 
-Function PthFnColl(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As Collection
-Set PthFnColl = AyColl(PthFnAy(A, Spec, Atr))
+Function PthFnItr(A, Optional Spec$ = "*.*", Optional Atr As FileAttribute) As Collection
+Set PthFnItr = AyItr(PthFnAy(A, Spec, Atr))
 End Function
 
 Function PthHasPthSfx(A) As Boolean
@@ -2928,13 +3248,8 @@ On Error Resume Next
 RfFfn = A.FullPath
 End Function
 
-Function RfNm_RfFfn$(RfNm$)
-Dim Ay() As VBProject: Ay = VbePjAy(CurVbe)
-Dim M As VBProject, I
-For Each I In Ay
-    Set M = I
-    If M.Name = RfNm Then RfNm_RfFfn = M.Filename: Exit Function
-Next
+Function PjRfNm_RfFfn$(A As VBProject, RfNm$)
+PjRfNm_RfFfn = PjPth(A) & RfNm & ".xlam"
 End Function
 
 Function RgLo(A As Range, Optional LoNm$) As ListObject
@@ -3133,40 +3448,40 @@ Dim X() As MthBrk
 SrcMthBrkAy = AyMapInto(L, "MthLin_MthBrk", X)
 End Function
 
-Function SrcAllMthFmLnoAy(A$()) As Integer()
-Dim N%(): N = SrcAllMthFmLxAy(A)
+Function SrcAllMthFmnoAy(A$()) As Integer()
+Dim N%(): N = SrcAllMthFmixAy(A)
 Dim J%
 For J = 0 To UB(N)
     N(J) = N(J) + 1
 Next
-SrcAllMthFmLnoAy = N
+SrcAllMthFmnoAy = N
 End Function
 
-Function SrcAllMthFmLxAy(A$()) As Integer()
+Function SrcAllMthFmixAy(A$()) As Integer()
 Dim J%, O%()
 For J = 0 To UB(A)
     If LinIsMthLin(A(J)) Then
         Push O, J
     End If
 Next
-SrcAllMthFmLxAy = O
+SrcAllMthFmixAy = O
 End Function
 
-Function SrcAllMthFmToLxAy(A$()) As FmToLx()
-Dim F%(): F = SrcAllMthFmLxAy(A$)
+Function SrcAllMthFTIxAy(A$()) As FTIx()
+Dim F%(): F = SrcAllMthFmixAy(A$)
 Dim N%: N = Sz(F)
 If N = 0 Then Exit Function
-Dim O() As FmToLx
+Dim O() As FTIx
 ReDim O(N - 1)
 Dim J%
 For J = 0 To N - 1
-    Set O(J) = FmToLx(F(J), SrcMthToLx(A, F(J)))
+    Set O(J) = FTIx(F(J), SrcMthToix(A, F(J)))
 Next
-SrcAllMthFmToLxAy = O
+SrcAllMthFTIxAy = O
 End Function
 
 Function SrcMthLinAy(A$()) As String()
-Dim L%(): L = SrcAllMthFmLxAy(A)
+Dim L%(): L = SrcAllMthFmixAy(A)
 If Sz(L) = 0 Then Exit Function
 Dim O$(), LL
 For Each LL In L
@@ -3232,7 +3547,7 @@ SrcDclLy = AyFstNEle(A, N)
 End Function
 
 Function SrcDicOfMthKeyzzzMthLines(A$(), Optional PjNm$, Optional MdNm$, Optional ExclDcl As Boolean) As Dictionary
-Dim L%(): L = SrcAllMthFmLxAy(A)
+Dim L%(): L = SrcAllMthFmixAy(A)
 Dim K$
 Dim O As New Dictionary
     If Not ExclDcl Then
@@ -3248,7 +3563,7 @@ Dim O As New Dictionary
     For Each Lx In L
         Lin = SrcContLin(A, CInt(Lx))
         MthNm = LinMthNm(Lin):               If MthNm = "" Then Stop
-        Lines = SrcMthLinesByMthFmLx(A, Lx): If Lines = "" Then Stop
+        Lines = SrcMthLinesByMthFmix(A, Lx): If Lines = "" Then Stop
         K = MthLin_MthKey(Lin, PjNm, MdNm)
         O.Add K, Lines
     Next
@@ -3259,7 +3574,7 @@ End Function
 'abc
 'xyz
 Function SrcDicOfMthNmzzzMthLines(A$(), Optional ExclDcl As Boolean) As Dictionary
-Dim L%(): L = SrcAllMthFmLxAy(A)
+Dim L%(): L = SrcAllMthFmixAy(A)
 Dim O As New Dictionary
     If Not ExclDcl Then O.Add "*Dcl", SrcDclLines(A)
     If Sz(L) = 0 Then GoTo X
@@ -3267,7 +3582,7 @@ Dim O As New Dictionary
     For Each Lx In L
         Lin = A(Lx)
         MthNm = LinMthNm(Lin):            If MthNm = "" Then Stop
-        Lines = SrcMthLinesByMthFmLx(A, Lx): If Lines = "" Then Stop
+        Lines = SrcMthLinesByMthFmix(A, Lx): If Lines = "" Then Stop
         If O.Exists(MthNm) Then
             If LinPrpSubFun(Lin) <> "Property" Then Stop
             O(MthNm) = O(MthNm) & vbCrLf & vbCrLf & Lines
@@ -3299,98 +3614,98 @@ Next
 SrcFstMthLx = -1
 End Function
 
-Function SrcMthFmLnoAy(A$(), MthNm) As Integer()
-Dim O%(): O = SrcMthFmLxAy(A, MthNm)
+Function SrcMthFmnoAy(A$(), MthNm) As Integer()
+Dim O%(): O = SrcMthFmixAy(A, MthNm)
 Dim J%
 For J = 0 To UB(O)
     O(J) = O(J) + 1
 Next
-SrcMthFmLnoAy = O
+SrcMthFmnoAy = O
 End Function
 
-Function SrcMthFmLx%(A$(), MthNm, Optional FmIx% = 0)
+Function SrcMthFmix%(A$(), MthNm, Optional Fmix% = 0)
 Dim J%, L$
-For J = FmIx To UB(A)
+For J = Fmix To UB(A)
     L = SrcContLin(A, J)
     If LinMthNm(L) = MthNm Then
-        SrcMthFmLx = J
+        SrcMthFmix = J
         Exit Function
     End If
 Next
-SrcMthFmLx = -1
+SrcMthFmix = -1
 End Function
 
-Function SrcMthFmToLx(A$(), MthNm) As FmToLx
-Dim FmLx%: FmLx = SrcMthFmLx(A, MthNm)
-Dim ToLx%: ToLx = SrcMthToLx(A, FmLx)
-Set SrcMthFmToLx = FmToLx(FmLx, ToLx)
+Function SrcMthFTIx(A$(), MthNm) As FTIx
+Dim Fmix%: Fmix = SrcMthFmix(A, MthNm)
+Dim Toix%: Toix = SrcMthToix(A, Fmix)
+Set SrcMthFTIx = FTIx(Fmix, Toix)
 End Function
 
-Function SrcMthFmLxAy(A$(), MthNm) As Integer()
+Function SrcMthFmixAy(A$(), MthNm) As Integer()
 Dim L%
-L = SrcMthFmLx(A, MthNm): If L <= 0 Then Exit Function
+L = SrcMthFmix(A, MthNm): If L <= 0 Then Exit Function
 Dim O%(): Push O, L
 Dim S$: S = A(L)
 If LinPrpSubFun(S) = "Property" Then
-    L = SrcMthFmLx(A, MthNm, L + 1)
+    L = SrcMthFmix(A, MthNm, L + 1)
     If L > 0 Then Push O, L
 End If
-SrcMthFmLxAy = O
+SrcMthFmixAy = O
 End Function
 
-Function SrcMthFmToLnoAy(A$(), MthNm) As FmToLno()
-Dim X() As FmToLno
-Dim Ay() As FmToLx: Ay = SrcMthFmToLxAy(A, MthNm)
-SrcMthFmToLnoAy = AyMapInto(Ay, "FmToLx_FmToLno", X)
+Function SrcMthFTNoAy(A$(), MthNm) As FTNo()
+Dim X() As FTNo
+Dim Ay() As FTIx: Ay = SrcMthFTIxAy(A, MthNm)
+SrcMthFTNoAy = AyMapInto(Ay, "FTIx_FTNo", X)
 End Function
 
-Function SrcMthFmToLno(A$(), MthNm) As FmToLno
-SrcMthFmToLno = FmToLx_FmToLno(SrcMthFmToLx(A, MthNm))
+Function SrcMthFTNo(A$(), MthNm) As FTNo
+SrcMthFTNo = FTIx_FTNo(SrcMthFTIx(A, MthNm))
 End Function
 
-Function SrcMthFmToLxAy(A$(), MthNm) As FmToLx()
+Function SrcMthFTIxAy(A$(), MthNm) As FTIx()
 Dim F%()
-F = SrcMthFmLxAy(A, MthNm): If Sz(F) <= 0 Then Exit Function
-Dim O() As FmToLx
+F = SrcMthFmixAy(A, MthNm): If Sz(F) <= 0 Then Exit Function
+Dim O() As FTIx
 ReDim O(UB(F))
 Dim J%
 For J = 0 To UB(F)
-    Set O(J) = FmToLx(F(J), SrcMthToLx(A, F(J)))
+    Set O(J) = FTIx(F(J), SrcMthToix(A, F(J)))
 Next
-SrcMthFmToLxAy = O
+SrcMthFTIxAy = O
 End Function
 
 Function SrcMthLin$(A$(), MthNm)
-Dim L%: L = SrcMthFmLx(A, MthNm)
+Dim L%: L = SrcMthFmix(A, MthNm)
 SrcMthLin = SrcContLin(A, L)
 End Function
 
-Function SrcMthLinesByMthFmLx$(A$(), MthFmLx)
+Function SrcMthLinesByMthFmix$(A$(), MthFmix)
 Dim P1$
-    P1 = SrcMthRmkLines(A, MthFmLx)
+    P1 = SrcMthRmkLines(A, MthFmix)
 Dim P2$
     Dim L2%
-    L2 = SrcEndLx(A, MthFmLx): If L2 = 0 Then Stop
-    P2 = Join(AyWhFmTo(A, MthFmLx, L2), vbCrLf)
+    L2 = SrcEndLx(A, MthFmix): If L2 = 0 Then Stop
+    P2 = Join(AyWhFmTo(A, MthFmix, L2), vbCrLf)
 If P1 = "" Then
-    SrcMthLinesByMthFmLx = P2
+    SrcMthLinesByMthFmix = P2
 Else
-    SrcMthLinesByMthFmLx = P1 & vbCrLf & P2
+    SrcMthLinesByMthFmix = P1 & vbCrLf & P2
 End If
 End Function
 
 Function SrcMthLinesByNm$(A$(), MthNm)
-Dim L%(): L = SrcMthFmLxAy(A, MthNm)
+Dim L%(): L = SrcMthFmixAy(A, MthNm)
 If Sz(L) = 0 Then Exit Function
 Dim MthLx, O$()
 For Each MthLx In L
-    Push O, SrcMthLinesByMthFmLx(A, MthLx)
+    Push O, SrcMthLinesByMthFmix(A, MthLx)
 Next
 SrcMthLinesByNm = Join(O, vbCrLf & vbCrLf)
 End Function
 
 Function SrcMthNy(A$(), Optional MthNmPatn$ = ".", Optional ExclMthNy0$, Optional Mdy0$) As String()
-Dim L%(): L = SrcAllMthFmLxAy(A)
+Dim L%(): L = SrcAllMthFmixAy(A)
 If Sz(L) = 0 Then Exit Function
 Dim ExclMthNy$(): ExclMthNy = DftNy(ExclMthNy0)
 Dim O$()
@@ -3449,14 +3764,14 @@ M2IsFnd:
 SrcMthRmkLx = M2
 End Function
 
-Function SrcMthToLx%(A$(), FmLx%)
-Dim T$: T = LinPrpSubFun(A(FmLx))
+Function SrcMthToix%(A$(), Fmix%)
+Dim T$: T = LinPrpSubFun(A(Fmix))
 If Not AyHas(SyOf_PrpSubFun, T) Then Stop
 Dim B$: B = "End " & T
 Dim J%
-For J = FmLx + 1 To UB(A)
+For J = Fmix + 1 To UB(A)
     If IsPfx(A(J), B) Then
-        SrcMthToLx = J
+        SrcMthToix = J
         Exit Function
     End If
 Next
@@ -3509,12 +3824,11 @@ End Function
 Function SslSy(Ssl) As String()
 SslSy = Split(Trim(RplDblSpc(Ssl)), " ")
 End Function
-
-Function StrAlignL$(S$, W, Optional ErIfNotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
+Function StrAlignL$(S$, W, Optional ErIFmnotEnoughWdt As Boolean, Optional DoNotCut As Boolean)
 Const CSub$ = "StrAlignL"
 Dim L%: L = Len(S)
 If L > W Then
-    If ErIfNotEnoughWdt Then
+    If ErIFmnotEnoughWdt Then
         Stop
         'Er CSub, "Len({S)) > {W}", S, W
     End If
@@ -3592,6 +3906,18 @@ If Not A Then
 End If
 SyOf_MthTy = O
 End Function
+Function SyOf_MthShtTy() As String()
+Static O$(4), A As Boolean
+If Not A Then
+    A = True
+    O(0) = "Get"
+    O(1) = "Let"
+    O(2) = "Set"
+    O(3) = "Sub"
+    O(4) = "Fun"
+End If
+SyOf_MthShtTy = O
+End Function
 
 Function SyOf_PrpSubFun() As String()
 Static O$(2), A As Boolean
@@ -3654,13 +3980,60 @@ End Function
 Function UB&(Ay)
 UB = Sz(Ay) - 1
 End Function
-
-Function VarStr$(A)
-If IsPrim(A) Then VarStr = A: Exit Function
-If IsNothing(A) Then VarStr = "#Nothing": Exit Function
-If IsEmpty(A) Then VarStr = "#Empty": Exit Function
-If IsObject(A) Then
-    Dim T$
+Function IsLinesAy(A) As Boolean
+If Not IsSy(A) Then Exit Function
+If Sz(A) = 0 Then Exit Function
+Dim S
+For Each S In A
+    If IsLines(S) Then IsLinesAy = True: Exit Function
+Next
+End Function
+Function IsLines(A) As Boolean
+IsLines = True
+If HasSubStr(A, vbCr) Then Exit Function
+If HasSubStr(A, vbLf) Then Exit Function
+IsLines = False
+End Function
+Function LinesAy_Lines$(A)
+Stop
+Dim W%
+W = LinesAy_Wdt(A): If W = 0 Then Exit Function
+LinesAy_Lines = Join(A, Space(W))
+End Function
+Function ObjToStr$(A)
+If Not IsObject(A) Then Stop
+On Error GoTo X
+ObjToStr = A.ToStr: Exit Function
+X: ObjToStr = QuoteSqBkt(TypeName(A))
+End Function
+Function QuoteSqBkt$(A)
+QuoteSqBkt = "[" & A & "]"
+End Function
+Function LvlSep$(Lvl%)
+Select Case Lvl
+Case 0: LvlSep = "."
+Case 1: LvlSep = "-"
+Case 2: LvlSep = "+"
+Case 3: LvlSep = "="
+Case 4: LvlSep = "*"
+Case Else: LvlSep = Lvl
+End Select
+End Function
+Sub ZZ_VarStr()
+Dim A: A = Array(SslSy("sdf sdf df"), SslSy("sdf sdf"))
+Debug.Print VarStr(A)
+End Sub
+Function VarStr$(A, Optional Lvl%)
+Dim T$, S$, W%, I, O$(), Sep
+Select Case True
+Case IsPrim(A): VarStr = A
+Case IsLinesAy(A): VarStr = LinesAy_Lines(A)
+Case IsSy(A): VarStr = JnCrLf(A)
+Case IsNothing(A): VarStr = "#Nothing"
+Case IsEmpty(A): VarStr = "#Empty"
+Case IsMissing(A): VarStr = "#Missing"
+Case IsObject(A)
+    VarStr = ObjToStr(A)
     T = TypeName(A)
     Select Case T
     Case "CodeModule"
@@ -3671,15 +4044,16 @@ If IsObject(A) Then
     End Select
     VarStr = "*" & T
     Exit Function
-End If
-
-If IsArray(A) Then
-    Dim Ay: Ay = A: ReDim Ay(0)
-    T = TypeName(Ay(0))
-    VarStr = "*[" & T & "]"
-    Exit Function
-End If
-Stop
+Case IsArray(A)
+    If Sz(A) = 0 Then Exit Function
+    For Each I In A
+        Push O, VarStr(I, Lvl + 1)
+    Next
+    W = LinesAy_Wdt(O)
+    Sep = LvlSep(Lvl)
+    VarStr = Join(O, vbCrLf & StrDup(Sep, W) & vbCrLf)
+Case Else
+End Select
 End Function
 
 Function VbeAllPjNy(A As Vbe) As String()
@@ -3723,7 +4097,7 @@ VbeDupFunDry = O
 End Function
 
 Function VbeDupFunFNy(A As Vbe, Optional IsNoSrt As Boolean, Optional ExclPjNy0, Optional IsSamMthBdyOnly As Boolean) As String()
-Dim N$(): N = VbeFunFNy(A, ExclPjNy0:=ExclPjNy0, ExclFunNy0:="ZZ__Tst")
+Dim N$(): N = VbeFunFNy(A, ExclPjNy0:=ExclPjNy0, ExclFunNy0:="ZZZ__Tst")
 Dim N1$(): N1 = FunFNy_DupFunFNy(N)
 If IsSamMthBdyOnly Then
     N1 = DupFunFNy_SamMthBdyFunFNy(N1, A)
@@ -3903,6 +4277,58 @@ End Function
 Function WinTy_Win(Ty As vbext_WindowType) As VBIDE.Window
 Set WinTy_Win = CurVbe.Windows(Ty)
 End Function
+Sub RgBdrTop(A As Range)
+RgBdr A, xlEdgeTop
+End Sub
+
+Sub RgBdr(A As Range, Ix As XlBordersIndex, Optional Wgt As XlBorderWeight = xlMedium)
+With A.Borders(Ix)
+  .LineStyle = xlContinuous
+  .Weight = Wgt
+End With
+End Sub
+Function RgR(A As Range, R) As Range
+Set RgR = RgRCRC(A, R, 1, R, RgNCol(A))
+End Function
+Function RgC(A As Range, C) As Range
+Set RgC = RgRCRC(A, 1, RgNRow(A), 1, C)
+End Function
+Function RgNRow&(A As Range)
+RgNRow = A.Rows.Count
+End Function
+Function RgNCol%(A As Range)
+RgNCol = A.Columns.Count
+End Function
+Sub RgBdrAround(A As Range)
+A.BorderAround XlLineStyle.xlContinuous, xlMedium
+If A.Row > 1 Then RgBdrBottom RgR(A, 0)
+If A.Column > 1 Then RgBdrRight RgC(A, 0)
+RgBdrTop RgR(A, RgNRow(A) + 1)
+RgBdrLeft RgC(A, RgNCol(A) + 1)
+End Sub
+
+Sub RgBdrBottom(A As Range)
+RgBdr A, xlEdgeBottom
+End Sub
+
+Sub RgBdrInside(A As Range)
+RgBdr A, xlInsideHorizontal
+RgBdr A, xlInsideVertical
+End Sub
+
+Sub RgBdrLeft(A As Range)
+RgBdr A, xlEdgeLeft
+If A.Column > 1 Then
+    RgBdr RgC(A, 0), xlEdgeRight
+End If
+End Sub
+
+Sub RgBdrRight(A As Range)
+RgBdr A, xlEdgeRight
+If A.Column < MaxCol Then
+    RgBdr RgC(A, A.Column + 1), xlEdgeLeft
+End If
+End Sub
 
 Function WsA1(A As Worksheet) As Range
 Set WsA1 = A.Cells(1, 1)
@@ -3959,18 +4385,32 @@ AyWrt Ay, T
 FtBrw T
 End Sub
 
-Sub AyDmp(Ay)
-If Sz(Ay) = 0 Then Exit Sub
+Sub AyDmp(A)
+If Sz(A) = 0 Then Exit Sub
 Dim I
-For Each I In Ay
+For Each I In A
     Debug.Print I
 Next
 End Sub
+Sub AyDoPX(A, DoMthNm$, P)
+If Sz(A) = 0 Then Exit Sub
+Dim X
+For Each X In A
+    Run DoMthNm, P, X
+Next
+End Sub
+Sub AyDoXP(A, DoMthNm$, P)
+If Sz(A) = 0 Then Exit Sub
+Dim X
+For Each X In A
+    Run DoMthNm, X, P
+Next
+End Sub
 
-Sub AyDo(Ay, DoMthNm$)
-If Sz(Ay) = 0 Then Exit Sub
+Sub AyDo(A, DoMthNm$)
+If Sz(A) = 0 Then Exit Sub
 Dim I
-For Each I In Ay
+For Each I In A
     Run DoMthNm, I
 Next
 End Sub
@@ -4010,9 +4450,17 @@ Case 3: O1 = Ay(0): O2 = Ay(1): O3 = Ay(2)
 Case Else: Stop
 End Select
 End Sub
-
+Function TyNm$(A)
+TyNm = TypeName(A)
+End Function
+Sub DicTyBrw(A As Dictionary)
+DicBrw DicTy(A)
+End Sub
+Function DicTy(A As Dictionary) As Dictionary
+Set DicTy = DicMap(A, "TyNm")
+End Function
 Sub DicBrw(A As Dictionary)
-S1S2Ay_Brw DicS1S2Ay(A)
+WsVis S1S2Itr_Ws(DicS1S2Itr(A))
 End Sub
 
 Sub DrsBrw(A As Drs)
@@ -4103,21 +4551,47 @@ End If
 End Sub
 
 Sub FxaNm_Crt(A)
-Fxa_Crt FxaNm_Fxa(A)
+FxaCrt FxaNm_Fxa(A)
 End Sub
 
-Sub Fxa_Crt(A)
-If FfnIsExist(A) Then Stop: Exit Sub
-Dim X As Excel.Application
-Set X = Excel.Application
-If XlsHasAddInFn(X, FfnFn(A)) Then Stop: Exit Sub
+Sub FxaCrt(A)
+If FfnIsExist(A) Then
+    Debug.Print FmtQQ("FxaCrt: Fxa(?) is already exist", A)
+    Exit Sub
+End If
+If XlsHasAddInFn(CurXls, FfnFn(A)) Then Stop: Exit Sub
 Dim O As Workbook
-Set O = X.Workbooks.Add
+Set O = CurXls.Workbooks.Add
 O.SaveAs A, XlFileFormat.xlOpenXMLAddIn
 O.Close
-X.AddIns.Add(A).Installed = True
+Dim AddIn As AddIn: Set AddIn = CurXls.AddIns.Add(A)
+AddIn.Installed = True
+Dim Pj As VBProject
+Set Pj = VbePjFfn_Pj(CurVbe, A)
+Pj.Name = FfnFnn(A)
+PjSav Pj
 End Sub
-
+Function VbePjFfn_Pj(A As Vbe, Ffn) As VBProject
+Dim I
+For Each I In A.VBProjects ' Cannot use VbePjAy(A), should use A.VBProjects
+                           ' due to VbePjAy(X).FileName gives error
+                           ' but (Pj in A.VBProjects).FileName is OK
+    Debug.Print PjFfn(CvPj(I))
+    If StrIsEq(PjFfn(CvPj(I)), Ffn) Then
+        Set VbePjFfn_Pj = I
+        Exit Function
+    End If
+Next
+End Function
+Function XlsAddIn(A As Excel.Application, FxaNm) As Excel.AddIn
+Dim I As Excel.AddIn
+For Each I In A.AddIns
+    If StrIsEq(I.Name, FxaNm & ".xlam") Then Set XlsAddIn = I
+Next
+End Function
+Function StrIsEq(A, B) As Boolean
+StrIsEq = StrComp(A, B, vbTextCompare) = 0
+End Function
 Sub ItrDoSub(A, SubNm$)
 Dim I
 For Each I In A
@@ -4239,14 +4713,14 @@ End With
 SendKeys "^{F4}"
 End Sub
 
-Sub MdRmvFmToLno(A As CodeModule, X As FmToLno)
-A.DeleteLines X.FmLno, FmToLno_LinCnt(X)
+Sub MdRmvFTNo(A As CodeModule, X As FTNo)
+A.DeleteLines X.Fmno, FTNo_LinCnt(X)
 End Sub
 
-Sub MdRmvFmToLnoAy(A As CodeModule, X() As FmToLno)
+Sub MdRmvFTNoAy(A As CodeModule, X() As FTNo)
 Dim J%
 For J = UB(X) To 0 Step -1
-    MdRmvFmToLno A, X(J)
+    MdRmvFTNo A, X(J)
 Next
 End Sub
 
@@ -4283,16 +4757,12 @@ Debug.Print "<-- Sorted";
 End Sub
 
 Sub Md_FunNm_z_ProperMdNm_Brw(A As CodeModule)
-S1S2Ay_Brw Md_FunNm_z_ProperMdNm_S1S2Ay(A)
+S1S2Ay_Brw Md_MthNm_z_ProperMdNm_S1S2Ay(A)
 End Sub
 
 Sub Md_Gen_TstSub(A As CodeModule)
 Md_Rmv_TstSub A
-Dim Lines$: Lines = Md_TstSub_BdyLines(A)
-Md_Rmv_EmptyLines_AtEnd A
-If Lines <> "" Then
-    A.InsertLines A.CountOfLines + 1, Lines
-End If
+MdAppLines A, Md_TstSub_BdyLines(A)
 End Sub
 
 Sub Md_Mov_ToPj(A As CodeModule, ToPj As VBProject)
@@ -4352,7 +4822,7 @@ End If
 End Sub
 
 Sub MthCpyToPj(A As Mth, ToPj As VBProject, Optional IsSilent As Boolean)
-Dim ToMdNm$: ToMdNm = FunNm_ProperMdNm(A.Nm)
+Dim ToMdNm$: ToMdNm = MthNm_ProperMdNm(A.Nm)
 Dim ToMd As CodeModule: Set ToMd = PjMd(ToPj, ToMdNm)
 MthCpy A, ToMd
 End Sub
@@ -4360,11 +4830,51 @@ End Sub
 Sub MthDNm_Mov_ToProperMd(A)
 MthMovToProperMd MthDNm_Mth(A)
 End Sub
-
+Function VbeMthIdAy(A As Vbe) As String()
+Dim Ay(): Ay = AyMap(VbePjAy(A), "PjMthIdAy")
+VbeMthIdAy = AyOfAy_Ay(Ay)
+End Function
+Sub ZZ_PjMthIdAy()
+AyBrw PjMthIdAy(CurPj)
+End Sub
+Sub ZZ_VbeMthIdAy()
+AyBrw VbeMthIdAy(CurVbe)
+End Sub
+Function PjMthIdAy(A As VBProject) As String()
+Dim Ay(): Ay = AyMap(PjMbrAy(A), "MdMthIdAy")
+PjMthIdAy = AyOfAy_Ay(Ay)
+End Function
 Sub MthGo(A As Mth)
 MdGoLCCOpt A.Md, MthLCCOpt(A)
 End Sub
 
+Sub ZZ_MdMthIdAy()
+AyBrw MdMthIdAy(CurMd)
+End Sub
+
+Function MdMthIdAy(A As CodeModule, Optional ExclMdy As Boolean) As String()
+Dim L$(): L = SrcMthLinIdAy(MdSrc(A), InclMdy:=Not ExclMdy): If Sz(L) = 0 Then Exit Function
+MdMthIdAy = AyAddPfx(L, MdDNm(A) & ".")
+End Function
+Sub ZZ_SrcMthLinIdAy()
+AyBrw SrcMthLinIdAy(CurSrc, InclMdy:=True)
+End Sub
+Function SrcMthLinIdAy(A$(), InclMdy As Boolean) As String()
+Dim L$(): L = SrcMthLinAy(A): If Sz(L) = 0 Then Exit Function
+SrcMthLinIdAy = AyMapXPSy(L, "MthLin_MthLinId", InclMdy)
+End Function
+Function MthLin_MthLinId$(A, InclMdy As Boolean)
+'MthLinId : MthNm:ShtMdy
+Dim L$: L = A
+Dim M$: M = LinShiftShtMdy(L)
+Dim T$: T = LinShiftMthShtTy(L): If T = "" Then Exit Function
+Dim N$: N = LinNm(L)
+If InclMdy Then
+    MthLin_MthLinId = N & ":" & T & ":" & M
+Else
+    MthLin_MthLinId = N & ":" & T
+End If
+End Function
 Sub MthLin_BrkAsg(A$, Optional OIsMthLin As Boolean, Optional OMdy$, Optional OMthTy$, Optional OMthNm$)
 OIsMthLin = False
 Dim L$: L = A
@@ -4401,15 +4911,15 @@ AyDmp MthNm_CmpLy(A)
 End Sub
 
 Sub MthRmv(A As Mth, Optional IsSilent As Boolean)
-Dim L() As FmToLno: L = MthFmToLnoAy(A)
-MdRmvFmToLnoAy A.Md, L
+Dim L() As FTNo: L = MthFTNoAy(A)
+MdRmvFTNoAy A.Md, L
 If Not IsSilent Then
-    Debug.Print FmtQQ("MthRmv: Mth(?) of LinCnt(?) is deleted", MthDNm(A), FmToLnoAy_LinCnt(L))
+    Debug.Print FmtQQ("MthRmv: Mth(?) of LinCnt(?) is deleted", MthDNm(A), FTNoAy_LinCnt(L))
 End If
 End Sub
 
 Sub MthRpl(A As Mth, RplByLines$)
-Dim F%: F = MthFmLno(A)
+Dim F%: F = MthFmno(A)
 MthRmv A
 A.Md.InsertLines F, RplByLines
 End Sub
@@ -4436,16 +4946,40 @@ Cmp.Name = Nm
 Cmp.CodeModule.InsertLines 1, "Option Explicit"
 If IsGoMbr Then Shw_Mbr Nm
 End Sub
-
-Sub PjAddRf(A As VBProject, RfNm$)
-Dim RfFfn$: RfFfn = RfNm_RfFfn(RfNm)
-If RfFfn = "" Then Stop
-Dim F$: F = PjFfn(A)
-If F = "" Then Exit Sub
-If F = RfFfn Then Exit Sub
-If PjHasRfNm(A, RfNm) Then Exit Sub
-A.References.AddFromFile RfFfn
+Sub ZZ_PjAddRf()
+PjAddRf Pj("QXls"), "QDta"
+End Sub
+Sub PjRmvRf(A As VBProject, RfNy0$)
+AyDoPX DftNy(RfNy0), "PjRmvRf__X", A
 PjSav A
+End Sub
+Sub PjAddRf(A As VBProject, RfNy0$)
+AyDoPX DftNy(RfNy0), "PjAddRf__X", A
+PjSav A
+End Sub
+Private Sub PjAddRf__X(A As VBProject, RfNm$)
+If PjHasRfNm(A, RfNm) Then
+    Debug.Print FmtQQ("PjAddRf: Pj(?) already has RfNm(?)", A.Name, RfNm)
+    Exit Sub
+End If
+Dim RfFfn$: RfFfn = PjRfNm_RfFfn(A, RfNm)
+If PjHasRfFfn(A, RfFfn) Then
+    Debug.Print FmtQQ("PjAddRf: Pj(?) already has RfFfnNm(?)", A.Name, RfFfn)
+    Exit Sub
+End If
+A.References.AddFromFile RfFfn
+End Sub
+Private Sub PjRmvRf__X(A As VBProject, RfNm$)
+If PjHasRfNm(A, RfNm) Then
+    Debug.Print FmtQQ("PjAddRf: Pj(?) already has RfNm(?)", A.Name, RfNm)
+    Exit Sub
+End If
+Dim RfFfn$: RfFfn = PjRfNm_RfFfn(A, RfNm)
+If PjHasRfFfn(A, RfFfn) Then
+    Debug.Print FmtQQ("PjAddRf: Pj(?) already has RfFfnNm(?)", A.Name, RfFfn)
+    Exit Sub
+End If
+A.References.AddFromFile RfFfn
 End Sub
 
 Sub PjCompile(A As VBProject)
@@ -4491,19 +5025,91 @@ For Each I In Ay
 Next
 AyWrt PjRfLy(A), PjRfCfgFfn(A) 'Exp rf -----
 End Sub
-
+Function CmdBarOf_Std() As CommandBar
+Set CmdBarOf_Std = CurVbe.CommandBars("Standard")
+End Function
+Function CmdBTonof_Std_Sav() As CommandBarButton
+Dim I As CommandBarControl
+For Each I In CmdBarOf_Std.Controls
+    If IsPfx(I.Caption, "&Sav") Then Set CmdBTonof_Std_Sav = I: Exit Function
+Next
+Stop
+End Function
 Sub PjGo(A As VBProject)
 Cls_Win
 Dim Md As CodeModule
 Set Md = PjFstMd(A)
-If IsNothing(Md) Then Exit Sub
+If IsNothing(Md) Then
+    Stop
+    Exit Sub
+End If
 Md.CodePane.Show
 SendKeys "%WV" ' Window SplitVertical
+DoEvents
+End Sub
+Function PjTim(A As VBProject) As Date
+PjTim = FfnTim(PjFfn(A))
+End Function
+
+Function FfnTim(A) As Date
+FfnTim = FileDateTime(A)
+End Function
+
+Function PjFn$(A As VBProject)
+PjFn = FfnFn(PjFfn(A))
+End Function
+Function DryToStr$(A)
+
+End Function
+Sub ZZ_PjSav()
+PjSav CurPj
+End Sub
+Sub VbeSav(A As Vbe)
+ItrDo A.VBProjects, "PjSav"
 End Sub
 
+Sub ZZ_VbeDmpIsSaved()
+VbeDmpIsSaved CurVbe
+End Sub
+Sub VbeDmpIsSaved(A As Vbe)
+Dim I As VBProject
+For Each I In A.VBProjects
+    Debug.Print I.Saved, I.BuildFileName
+Next
+End Sub
+Function ItrPrpAy(A, PrpNm)
+ItrPrpAy = ItrPrpAyInto(A, PrpNm, EmpAy)
+End Function
+Function ItrPrpAyInto(A, PrpNm, OInto)
+Dim O: O = OInto: Erase O
+Dim I
+For Each I In A
+    Push O, ObjPrp(I, PrpNm)
+Next
+ItrPrpAyInto = O
+End Function
+Sub ItrDo(A, DoFunNm$)
+Dim I
+For Each I In A
+    Run DoFunNm, I
+Next
+End Sub
 Sub PjSav(A As VBProject)
+If A.Saved Then
+    Debug.Print FmtQQ("PjSav: Pj(?) is already saved", A.Name)
+    Exit Sub
+End If
+Dim Fn$: Fn = PjFn(A)
+If Fn = "" Then
+    Debug.Print FmtQQ("PjSav: Pj(?) needs saved first", A.Name)
+    Exit Sub
+End If
 PjGo A
-SendKeys "^S"
+If ObjPtr(CurPj) <> ObjPtr(A) Then Stop
+Dim B As CommandBarButton: Set B = CmdBTonof_Std_Sav
+If Not StrIsEq(B.Caption, "&Save " & Fn) Then Stop
+B.Execute
+Debug.Print FmtQQ("PjSav: Pj(?) is not sure if saved <---------------", A.Name)
 End Sub
 
 Sub PjSrcPthBrw(A As VBProject)
@@ -4573,7 +5179,7 @@ End Sub
 
 Sub PthClrFil(A)
 Dim F
-For Each F In PthFfnColl(A)
+For Each F In PthFfnItr(A)
    FfnDlt F
 Next
 End Sub
@@ -4649,7 +5255,16 @@ For J = 0 To UB(Dr)
     OSq(R, J + 1) = Dr(J)
 Next
 End Sub
-
+Function ApItr(ParamArray Ap()) As Collection
+Dim Av(): Av = Ap
+Set ApItr = AyItr(Av)
+End Function
+Function StrLikItr(A, LikItr As Collection) As Boolean
+Dim I
+For Each I In LikItr
+    If A Like I Then StrLikItr = True
+Next
+End Function
 Sub StrBrw(A$)
 Dim T$:
 T = TmpFt
@@ -4854,14 +5469,14 @@ MdEndTrim M, ShwMsg:=True
 Debug.Assert M.CountOfLines = 15
 End Sub
 
-Private Sub ZZZ_MthFmToLnoAy()
+Private Sub ZZZ_MthFTNoAy()
 Dim M As Mth: Set M = Mth(Md("ZZModule"), "ZZA")
-Dim Act() As FmToLno: Act = MthFmToLnoAy(M)
+Dim Act() As FTNo: Act = MthFTNoAy(M)
 Debug.Assert Sz(Act) = 2
-Debug.Assert Act(0).FmLno = 5
-Debug.Assert Act(0).ToLno = 7
-Debug.Assert Act(1).FmLno = 13
-Debug.Assert Act(1).ToLno = 15
+Debug.Assert Act(0).Fmno = 5
+Debug.Assert Act(0).Tono = 7
+Debug.Assert Act(1).Fmno = 13
+Debug.Assert Act(1).Tono = 15
 End Sub
 
 Private Sub ZZZ_MthRmv()
@@ -4918,7 +5533,7 @@ Md_FunNm_z_ProperMdNm_Brw CurMd
 End Sub
 
 Private Sub ZZ_MthLin_MthKey()
-Dim Ay1$(): Ay1 = SrcMthLinAy(ZZSrc)
+Dim Ay1$(): Ay1 = SrcMthLinAy(CurSrc)
 Dim Ay2$(): Ay2 = AyMapSy(Ay1, "MthLin_MthKey")
 S1S2Ay_Brw AyAB_S1S2Ay(Ay2, Ay1)
 End Sub
@@ -4928,41 +5543,43 @@ Const A$ = "Function ZZA()"
 Debug.Print MthLin_MthKey(A, IsWrap:=True)
 End Sub
 
-Private Sub ZZ_MthNm_Cmp()
+Private Sub ZZ_FunNm_Cmp()
 FunNm_Cmp "FfnDlt"
 End Sub
 
 Private Sub ZZ_SrcMthBrkAy()
-Dim A() As MthBrk: A = SrcMthBrkAy(ZZSrc)
+Dim A() As MthBrk: A = SrcMthBrkAy(CurSrc)
 AyBrw OyToStrSy(A)
 End Sub
 
 Private Sub ZZ_SrcDclLinCnt()
-Dim B1$(): B1 = ZZSrc
+Dim B1$(): B1 = CurSrc
 Dim B2$(): B2 = SrcSrtedLy(B1)
-Dim A1%: A1 = SrcDclLinCnt(ZZSrc)
-Dim A2%: A2 = SrcDclLinCnt(SrcSrtedLy(ZZSrc))
+Dim A1%: A1 = SrcDclLinCnt(B1)
+Dim A2%: A2 = SrcDclLinCnt(SrcSrtedLy(B1))
 End Sub
 
 Private Sub ZZ_SrcDicOfMthNmzzzMthLines()
-'Dim A As Dictionary: Set A = SrcDicOfMthNmzzzMthLines(ZZSrc)
-DicBrw SrcDicOfMthNmzzzMthLines(ZZSrc)
+'Dim A As Dictionary: Set A = SrcDicOfMthNmzzzMthLines(CurSrc)
+DicBrw SrcDicOfMthNmzzzMthLines(CurSrc)
 End Sub
 
 Private Sub ZZ_SrcSrtRptLy()
-AyBrw SrcSrtRptLy(ZZSrc, "Pj", "Md")
+AyBrw SrcSrtRptLy(CurSrc, "Pj", "Md")
 End Sub
 
 Private Sub ZZ_SrcSrtedBdyLines()
-StrBrw SrcSrtedBdyLines(ZZSrc)
+StrBrw SrcSrtedBdyLines(CurSrc)
 End Sub
 
 Private Sub ZZ_VbeDupFunCmpLy()
 AyBrw VbeDupFunCmpLy(CurVbe)
 End Sub
-
+Sub A1()
+'...
+End Sub
 Private Sub ZZ_VbeFunFNy()
-AyBrw VbeFunFNy(CurVbe, ExclFunNy0:="ZZ__Tst")
+AyBrw VbeFunFNy(CurVbe, ExclFunNy0:="ZZZ__Tst")
 End Sub
 
 Private Sub ZZ_VbeFunPfxAy()
@@ -4972,4 +5589,25 @@ End Sub
 Private Sub ZZ_XlsAddFxaNm()
 XlsAddFxaNm Application, "QIde0"
 End Sub
+
+Function DftFun(FunDNm0$) As Mth
+If FunDNm0 = "" Then
+    Dim M As Mth
+    Set M = CurMth
+    If IsFun(M) Then
+        Set DftFun = M
+    End If
+Else
+End If
+Stop '
+End Function
+
+Function IsMthDNm(Nm) As Boolean
+IsMthDNm = Sz(Split(Nm, ".")) = 3
+End Function
+
+Function IsMthFNm(Nm) As Boolean
+Dim P%: P = InStr(Nm, ":"): If P = 0 Then Exit Function
+IsMthFNm = InStr(Nm, ".") > P
+End Function
 

@@ -15,34 +15,23 @@ For Each I In PfxAy
    If HasPfx(A, I) Then HasOneOfPfx = True: Exit Function
 Next
 End Function
-
-Function HasOneOfPfxIgnCas(A, PfxAy) As Boolean
+Function HasPfxAy(A, PfxAyVbl0, Optional Compare As VbCompareMethod = VbCompareMethod.vbTextCompare) As Boolean
 Dim I
-For Each I In PfxAy
-   If HasPfxIgnCas(A, I) Then HasOneOfPfxIgnCas = True: Exit Function
+For Each I In DftPfxAy(PfxAyVbl0)
+   If HasPfx(A, I, Compare) Then HasPfxAy = True: Exit Function
 Next
 End Function
 
-Function HasOneOfPfxIgnCas_PfxSsl(A, PfxSsl$) As Boolean
-Stop
-Dim Sy$(): 'Sy = SslSy(PfxSsl)
-If HasOneOfPfxIgnCas(A, Sy) Then HasOneOfPfxIgnCas_PfxSsl = True: Exit Function
+Function HasPfx(A, Pfx, Optional Compare As VbCompareMethod = VbCompareMethod.vbTextCompare) As Boolean
+HasPfx = StrComp(Left(A, Len(Pfx)), Pfx, Compare)
 End Function
 
-Function HasPfx(A, Pfx) As Boolean
-HasPfx = (Left(A, Len(Pfx)) = Pfx)
+Function HasSfx(A, Sfx, Optional Compare As VbCompareMethod = VbCompareMethod.vbTextCompare) As Boolean
+HasSfx = StrComp(Right(A, Len(Sfx)), Sfx, Compare)
 End Function
 
-Function HasPfxIgnCas(A, Pfx) As Boolean
-HasPfxIgnCas = UCase(Left(A, Len(Pfx))) = UCase(Pfx)
-End Function
-
-Function HasSfx(A, Sfx) As Boolean
-HasSfx = (Right(A, Len(Sfx)) = Sfx)
-End Function
-
-Function HasSubStr(S, SubStr) As Boolean
-HasSubStr = InStr(S, SubStr) > 0
+Function HasSubStr(S, SubStr, Optional Compare As VbCompareMethod = VbCompareMethod.vbTextCompare) As Boolean
+HasSubStr = InStr(S, SubStr, Compare) > 0
 End Function
 
 Function HasSubStrAy(S, SubStrAy) As Boolean

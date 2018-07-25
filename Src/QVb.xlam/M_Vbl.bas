@@ -65,7 +65,7 @@ Ass Vbl_IsVdt(Vbl)
 Vbl_Wdt = AyWdt(SplitVBar(Vbl))
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_Vbl_Wdt
 End Sub
 

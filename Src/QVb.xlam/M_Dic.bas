@@ -183,8 +183,8 @@ Function DicLines(A As Dictionary) As String
 DicLines = JnCrLf(DicLy(A))
 End Function
 
-Function DicLines_Dic(DicLines, Optional JnSep$ = vbCrLf) As Dictionary
-Set DicLines_Dic = DicLy_Dic(SplitLines(DicLines), JnSep)
+Function DicLines_Dic(A, Optional JnSep$ = vbCrLf) As Dictionary
+Set DicLines_Dic = DicLy_Dic(SplitLines(A), JnSep)
 End Function
 
 Function DicLy(A As Dictionary, Optional InclDicValTy As Boolean) As String()
@@ -396,7 +396,7 @@ Next
 DicLy__1 = O
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 'ZZ_Cmp
 'ZZ_S1S2s
 ZZ_ToStr

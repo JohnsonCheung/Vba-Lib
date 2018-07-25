@@ -1,6 +1,13 @@
 Attribute VB_Name = "M_Ffn"
 Option Explicit
-
+Function FfnSz&(A)
+If Not FfnIsExist(A) Then FfnSz = -1: Exit Function
+FfnSz = FileLen(A)
+End Function
+Function FfnTim(A) As Date
+If Not FfnIsExist(A) Then Exit Function
+FfnTim = FileDateTime(A)
+End Function
 Function FfnAddFnSfx$(A, Sfx$)
 FfnAddFnSfx = FfnRmvExt(A) & Sfx & FfnExt(A)
 End Function

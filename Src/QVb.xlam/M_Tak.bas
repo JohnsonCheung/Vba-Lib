@@ -50,7 +50,7 @@ If P1 = 0 Then Exit Function
 TakBetBkt = Mid(S, P1 + 1, P2 - P1 - 1)
 End Function
 
-Sub ZZ__Tst()
+Sub ZZZ__Tst()
 ZZ_TakBet
 ZZ_TakBetBkt
 End Sub

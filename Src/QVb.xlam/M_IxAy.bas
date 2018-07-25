@@ -28,3 +28,9 @@ For Each I In A
 Next
 IxAy_IsParitial_of_0toU = True
 End Function
+Private Sub ZZ_IxAy_IsParitial_of_0toU()
+Ass IxAy_IsParitial_of_0toU(ApLngAy(1, 2, 3, 4), 4) = True
+Ass IxAy_IsParitial_of_0toU(ApLngAy(0, 1, 2, 3, 4), 4) = True
+Ass IxAy_IsParitial_of_0toU(ApLngAy(1, 1, 3, 4), 4) = False
+Ass IxAy_IsParitial_of_0toU(ApLngAy(5, 3, 4), 4) = False
+End Sub
