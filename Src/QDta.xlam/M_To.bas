@@ -1,6 +1,5 @@
 Attribute VB_Name = "M_To"
 Option Explicit
-
 Function ToCellStr$(V, ShwZer As Boolean)
 'CellStr is a string can be displayed in a cell
 If QVb.M_Is.IsEmp(V) Then Exit Function

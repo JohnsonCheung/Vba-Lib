@@ -21,15 +21,12 @@ VarCellStr = V
 End Function
 
 Function VarLy(V) As String()
-If IsPrim(V) Then
-   VarLy = ApSy(V)
-ElseIf IsArray(V) Then
-   VarLy = AySy(V)
-ElseIf IsObject(V) Then
-   VarLy = ApSy("*Type: " & TypeName(V))
-Else
-   Stop
-End If
+Select Case True
+Case IsPrim(V):   VarLy = ApSy(V)
+Case IsArray(V):  VarLy = AySy(V)
+Case IsObject(V): VarLy = ApSy("*Type: " & TypeName(V))
+Case Else: Stop
+End Select
 End Function
 
 Function VarStr$(A)

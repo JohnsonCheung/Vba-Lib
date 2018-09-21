@@ -59,6 +59,7 @@ Else
         End If
     Next
 End If
+ItrNy = O
 End Function
 
 Function ItrPrpSy(A, PrpNm) As String()

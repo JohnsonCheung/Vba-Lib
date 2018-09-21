@@ -6,12 +6,12 @@ If DsIsEmp(Ds) Then Exit Function
 Dim O$()
 Dim J%
 For J = 0 To UBound(Ds.DtAy)
-   PushAy O, DbDt_SqlAy_OfIns(A, Ds.DtAy(J))
+   PushAy O, DbDt_SqlAyzOfIns(A, Ds.DtAy(J))
 Next
 DbDs_SqlAy_OfIns = O
 End Function
 
-Function DbDt_SqlAy_OfIns(A As Database, Dt As Dt) As String()
+Function DbDt_SqlAyzOfIns(A As Database, Dt As Dt) As String()
 If DtIsEmp(Dt) Then Exit Function
 Dim SimTyAy() As eSimTy
 SimTyAy = Dbt(A, Dt.DtNm).SimTyAy(Dt.Fny)
@@ -31,7 +31,7 @@ Dim O$()
        O(J) = FmtQQAv(Tp, Dr)
        J = J + 1
    Next
-DbDt_SqlAy_OfIns = O
+DbDt_SqlAyzOfIns = O
 End Function
 
 Sub DsInsDb(A As Ds, Db As Database)
@@ -39,7 +39,7 @@ DbSqlAy_Run Db, DbDs_SqlAy_OfIns(Db, A)
 End Sub
 
 Sub DtInsDb(A As Database, Dt As Dt)
-DbSqlAy_Run A, DbDt_SqlAy_OfIns(A, Dt)
+DbSqlAy_Run A, DbDt_SqlAyzOfIns(A, Dt)
 End Sub
 
 Function SimTyAy_InsValTp$(SimTyAy() As eSimTy)
@@ -54,10 +54,10 @@ Next
 SimTyAy_InsValTp = JnComma(Ay)
 End Function
 
-Private Sub DbDt_SqlAy_OfIns__Tst()
+Private Sub DbDt_SqlAyzOfIns__Tst()
 'Tmp1Tbl_Ens
 Stop
 Dim Dt As Dt: Dt = Dbt(CurDb, "Tmp1").Dt
-Dim O$(): O = DbDt_SqlAy_OfIns(CurDb, Dt)
+Dim O$(): O = DbDt_SqlAyzOfIns(CurDb, Dt)
 Stop
 End Sub

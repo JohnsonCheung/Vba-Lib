@@ -495,7 +495,7 @@ Case eAllValidate:
     TstValidateAsNm
     TstValidateAsFny
 Case Else
-    PmEr
+    Stop
 End Select
 End Sub
 

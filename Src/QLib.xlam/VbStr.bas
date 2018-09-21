@@ -84,17 +84,7 @@ End Function
 
 Function Brk2(A, Sep, Optional NoTrim As Boolean) As S1S2
 Dim P&: P = InStr(A, Sep)
-If P = 0 Then
-    Dim O As S1S2
-    If NoTrim Then
-        O.S2 = A
-    Else
-        O.S2 = Trim(A)
-    End If
-    Brk2 = O
-    Exit Function
-End If
-Brk2 = BrkAt(A, P, Len(Sep), NoTrim)
+Set Brk2 = Brk2__X(A, P, Sep, NoTrim)
 End Function
 
 Sub BrkAsg(A, Sep, OS1$, OS2$, Optional NoTrim As Boolean)

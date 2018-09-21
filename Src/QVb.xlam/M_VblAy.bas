@@ -69,11 +69,6 @@ Next
 VblAy_Wdt = W
 End Function
 
-Sub ZZZ__Tst()
-ZZ_VblAy_Wdt
-ZZ_VblAy_Ly
-End Sub
-
 Private Function ZZAy() As String()
 Dim O$()
 Push O, "lksdfj|slkdfjsdf|lksdfj"
@@ -92,4 +87,9 @@ End Sub
 Private Sub ZZ_VblAy_Wdt()
 Dim Act%: Act = VblAy_Wdt(ZZAy)
 Ass Act = 9
+End Sub
+
+Sub ZZZ__Tst()
+ZZ_VblAy_Wdt
+ZZ_VblAy_Ly
 End Sub

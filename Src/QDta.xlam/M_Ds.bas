@@ -18,6 +18,14 @@ For Each I In DtAy
 Next
 End Function
 
+Sub DsBrw(A As Ds)
+AyBrw DsLy(A)
+End Sub
+
+Sub DsDmp(A As Ds)
+AyDmp DsLy(A)
+End Sub
+
 Function DsHasDt(A As Ds, DtNm) As Boolean
 If DsIsEmp(A) Then Exit Function
 Dim Ay() As Dt: Ay = A.DtAy
@@ -35,8 +43,7 @@ Function DsLy(A As Ds, Optional MaxColWdt& = 1000, Optional DtBrkLinMapStr$) As 
 Dim O$()
     Push O, "*Ds " & A.DsNm & "=================================================="
 Dim Dic As Dictionary ' DicOf_Tn_to_BrkColNm
-    Stop '
-'    Set Dic = MapStr_Dic(DtBrkLinMapStr)
+    Set Dic = MapVbl_Dic(DtBrkLinMapStr)
 If Not DsIsEmp(A) Then
     Dim J%, DtNm$, Dt As Dt, BrkColNm$, Ay() As Dt
     Ay = A.DtAy
@@ -44,8 +51,7 @@ If Not DsIsEmp(A) Then
         Set Dt = Ay(J)
         DtNm = Dt.DtNm
         If Dic.Exists(DtNm) Then BrkColNm = Dic(DtNm) Else BrkColNm = ""
-        Stop '
-        'PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
+        PushAy O, DtLy(Dt, MaxColWdt, BrkColNm)
     Next
 End If
 DsLy = O
@@ -69,12 +75,25 @@ If Vis Then WbVis O
 Set DsWb = O
 End Function
 
-Sub DsBrw(A As Ds)
-AyBrw DsLy(A)
+Function DsWs(A As Ds) As Worksheet
+Dim O As Worksheet: Set O = NewWs
+WsA1(O).Value = "*Ds " & A.DsNm
+Dim At As Range, J%
+Set At = WsRC(O, 2, 1)
+Dim Ay() As Dt: Ay = A.DtAy
+For J = 0 To DsNDt(A) - 1
+    Set At = DtAt(Ay(J), At, J)
+Next
+Set DsWs = O
+End Function
+Function DsNDt%(A As Ds)
+DsNDt = Sz(A.DtAy)
+End Function
+Sub ZZ_DsWs()
+WsVis DsWs(SampleDs)
 End Sub
-
-Sub DsDmp(A As Ds)
-AyDmp DsLy(A)
+Sub ZZ_DsLy()
+AyDmp DsLy(SampleDs)
 End Sub
 
 Private Sub ZZ_DsWb()

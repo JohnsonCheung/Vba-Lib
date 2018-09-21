@@ -73,7 +73,9 @@ If Not StopAutoFit Then
     R2.AutoFit
 End If
 End Function
-
+Function ZZ_DrsLy()
+AyDmp DrsLy(SampleDrs1)
+End Function
 Function DrsLoWithFmt(A As Drs, At As Range, LoFmtrLy$(), Optional LoNm$) As ListObject
 Dim Lo As ListObject
 Set Lo = DrsLo(A, At, LoNm)
@@ -113,7 +115,6 @@ Dim IxAy&()
     Else
         IxAy = AyIxAy(A.Fny, Fny, ChkNotFound:=True)
     End If
-Dim O As New Drs
 Set DrsSel = Drs(Fny, DrySel(A.Dry, IxAy, CrtEmpColIfReqFldNotFound))
 End Function
 
@@ -185,5 +186,5 @@ Stop '
 End Sub
 
 Private Sub ZZ_DrsSel()
-DrsBrw DrsSel(SampleDrs, "A B D")
+DrsBrw DrsSel(SampleDrs1, "A B D")
 End Sub

@@ -21,11 +21,11 @@ PjMbrNy = OyNy(PjMdAy(A, NmPatn))
 End Function
 
 Function PjMdAy(A As VBProject, Optional NmPatn$ = ".") As CodeModule()
-PjMdAy = ZPjMbrAy(A, Ay, NmPatn, CmpTyAy0)
+'PjMdAy = ZPjMbrAy(A, Ay, NmPatn, CmpTyAy0)
 End Function
 
 Function PjMdNy(A As VBProject, Optional NmPatn$ = ".", Optional CmpTyAy0) As String()
-PjMdNy = OyPrp(PjMdAy(A, NmPatn, CmpTyAy0), "Name", EmpSy)
+'PjMdNy = OyPrp(PjMdAy(A, NmPatn, CmpTyAy0), "Name", EmpSy)
 End Function
 
 Function PjMthDrs(A As VBProject, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Drs

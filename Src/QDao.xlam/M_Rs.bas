@@ -16,3 +16,13 @@ End With
 RsSy = O
 End Function
 
+Function RsDry(A As Recordset) As Variant()
+Dim O()
+With A
+    While Not .EOF
+        Push O, FldsDr(A.Fields)
+        .MoveNext
+    Wend
+End With
+RsDry = O
+End Function

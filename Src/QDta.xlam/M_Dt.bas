@@ -85,3 +85,6 @@ End Sub
 Sub DtDmp(A As Dt)
 AyDmp DtLy(A)
 End Sub
+Sub ZZ_DtLy()
+AyDmp DtLy(SampleDt1)
+End Sub

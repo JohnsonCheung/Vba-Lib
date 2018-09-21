@@ -17,9 +17,9 @@ Set O.Dic = A
 Set DicOpt = O
 End Property
 
-Property Get FmTo(FmIx&, ToIx&) As FmTo
+Property Get FmTo(Fmix&, Toix&) As FmTo
 Dim O As New FmTo
-Set FmTo = O.Init(FmIx, ToIx)
+Set FmTo = O.Init(Fmix, Toix)
 End Property
 
 Property Get FmToPos(FmPos, ToPos) As FmToPos

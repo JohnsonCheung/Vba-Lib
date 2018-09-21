@@ -1,12 +1,17 @@
 Attribute VB_Name = "M_FnyOf"
 Option Explicit
-Function FnyOf_FldInf() As String()
-FnyOf_FldInf = SplitSpc("Fld Pk Ty Sz Dft Req Des")
+Function FnyzDbInfzFld() As String()
+FnyzDbInfzFld = SplitSpc("Fld Pk Ty Sz Dft Req Des")
 End Function
-Function FnyOf_TblFInf() As String()
+Function FnyzDbInfzTbl() As String()
 Dim O$()
 Push O, "Tbl"
 Push O, "SeqNo"
-PushAy O, FnyOf_FldInf
-FnyOf_TblFInf = O
+PushAy O, FnyzDbInfzFld
+FnyzDbInfzTbl = O
 End Function
+Function FnyzDbInfzTblF() As String()
+Dim O$()
+FnyzDbInfzTblF = O
+End Function
+

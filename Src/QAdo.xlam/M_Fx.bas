@@ -1,28 +1,28 @@
 Attribute VB_Name = "M_Fx"
 Option Explicit
-Sub ZZ_FxWsNy()
+Private Sub ZZ_FxWsNy()
 AyDmp FxWsNy(SampleFx_KE24)
 End Sub
 
-Sub ZZ_FxFstWsNm()
+Private Sub ZZ_FxFstWsNm()
 Debug.Print FxFstWsNm(SampleFx_KE24)
 End Sub
 
-Property Get FxFstWsNm$(A)
+Function FxFstWsNm$(A)
 FxFstWsNm = RmvLasChr(ItrFstNm(FxCat(A).Tables))
-End Property
+End Function
 
-Property Get FxCn(A) As Connection
+Function FxCn(A) As Connection
 Dim O As New Connection
 O.Open FxCnStr(A)
 Set FxCn = O
-End Property
+End Function
 
-Property Get FxCnStr$(A)
+Function FxCnStr$(A)
 FxCnStr = FmtQQ("Provider=Microsoft.ACE.OLEDB.12.0;Data Source=?;Extended Properties=""Excel 12.0;HDR=YES""", A)
-End Property
+End Function
 
-Property Get FxWsNy(A, Optional Patn$ = ".") As String()
+Function FxWsNy(A, Optional Patn$ = ".") As String()
 Dim O$(), I, N$
 If Patn = "." Then
     For Each I In FxCat(A).Tables
@@ -43,7 +43,7 @@ Else
     Next
 End If
 FxWsNy = AyRmvLasChr(O)
-End Property
+End Function
 
 Function FxCat(A) As Catalog
 Dim O As New Catalog
@@ -94,29 +94,15 @@ Dim Sql$: Sql = FmtQQ("Select * from [?$]", N)
 Set FxWsDt = DrsDt(FxSqlDrs(A, Sql), N)
 End Function
 
-Property Get FxDftWsNm$(A, WsNm0$)
+Function FxDftWsNm$(A, WsNm0$)
 If WsNm0 = "" Then
     FxDftWsNm = FxFstWsNm(A)
-    Exit Property
+    Exit Function
 End If
 FxDftWsNm = WsNm0
-End Property
-
-
-
-Function FxWsFny(A, Optional WsNm0$) As String()
-Dim WsNm$: WsNm = DftWsNmByFxFstWs(WsNm, Fx)
-FxWsFny = ItrNy(FxCat(A).Tables(WsNm & "$").Columns)
 End Function
 
-Sub WsDt__Tst()
-DtBrw Xls.Fx(SampleFx_KE24).WsDt
-End Sub
-
-Sub WsFny__Tst()
-AyDmp Xls.Fx(SampleFx_KE24).WsFny
-End Sub
-
-Sub WsNy__Tst()
-AyDmp Xls.Fx(SampleFx_KE24).WsNy
-End Sub
+Function FxWsFny(A, Optional WsNm0$) As String()
+Dim WsNm$: WsNm = DftWsNmByFxFstWs(WsNm, A)
+FxWsFny = ItrNy(FxCat(A).Tables(WsNm & "$").Columns)
+End Function

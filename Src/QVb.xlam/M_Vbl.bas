@@ -65,10 +65,6 @@ Ass Vbl_IsVdt(Vbl)
 Vbl_Wdt = AyWdt(SplitVBar(Vbl))
 End Function
 
-Sub ZZZ__Tst()
-ZZ_Vbl_Wdt
-End Sub
-
 Private Sub ZZ_VblLy()
 AyDmp VblLy("lksfj|lksdfjldf|lskdlksdflsdf|sdkjf", "Select")
 End Sub
@@ -76,4 +72,8 @@ End Sub
 Private Sub ZZ_Vbl_Wdt()
 Dim Act%: Act = Vbl_Wdt("lksdjf|sldkf|              df")
 Ass Act = 16
+End Sub
+
+Sub ZZZ__Tst()
+ZZ_Vbl_Wdt
 End Sub

@@ -1,6 +1,6 @@
 Attribute VB_Name = "JDao"
 Option Explicit
 
-Property Get Db() As Database
-Set Db = Dao.DBEngine.OpenDatabase(A)
-End Property
+Function FbDb(A) As Database
+Set FbDb = DAO.DBEngine.OpenDatabase(A)
+End Function

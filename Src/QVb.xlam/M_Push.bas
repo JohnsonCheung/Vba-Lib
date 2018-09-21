@@ -1,13 +1,14 @@
 Attribute VB_Name = "M_Push"
 Option Explicit
 
-Sub Push(OAy, M)
-Dim N&: N = Sz(OAy)
-ReDim Preserve OAy(N)
+Sub Push(O, M)
+Dim N&
+    N = Sz(O)
+ReDim Preserve O(N)
 If IsObject(M) Then
-    Set OAy(N) = M
+    Set O(N) = M
 Else
-    OAy(N) = M
+    O(N) = M
 End If
 End Sub
 

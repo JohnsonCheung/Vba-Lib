@@ -20,42 +20,8 @@ Type SrcItmCnt
     NPrv As Integer
 End Type
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Property Get CurCdWin() As VBIDE.Window
-Stop '
-'Set CurCdWin = Vbe.ActiveCodePane.Window
+'Set CurCdWin = VBE.ActiveCodePane.Window
 End Property
 
 Property Get CurMd() As VBIDE.CodeModule
@@ -77,19 +43,6 @@ End Property
 Property Get CurWin() As VBIDE.Window
 Set CurWin = CurVbe.ActiveWindow
 End Property
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 Private Function MthDrs_SortingKy__CrtKey$(Mdy$, Ty$, MthNm$)
 Dim A1 As Byte

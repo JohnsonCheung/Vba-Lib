@@ -1,45 +1,46 @@
 Attribute VB_Name = "F_CvAy"
 Option Explicit
 
-Function AyBoolAy(Ay) As Boolean()
-AyBoolAy = AyCast(Ay, EmpBoolAy)
+Function AyBoolAy(A) As Boolean()
+AyBoolAy = AyInto(A, EmpBoolAy)
 End Function
 
-Function AyBytAy(Ay) As Byte()
-AyBytAy = AyCast(Ay, EmpBytAy)
+Function AyBytAy(A) As Byte()
+AyBytAy = AyInto(A, EmpBytAy)
 End Function
 
-Function AyCast(Ay, IntoAy)
-Ass IsArray(Ay)
-Ass IsArray(IntoAy)
-If TypeName(Ay) = TypeName(IntoAy) Then
-    AyCast = Ay
+Function AyInto(A, OInto)
+Ass IsArray(A)
+Ass IsArray(OInto)
+If TypeName(A) = TypeName(OInto) Then
+    AyInto = A
     Exit Function
 End If
-Dim O: O = IntoAy: Erase O
+Dim O: O = OInto: Erase O
 Dim I
-For Each I In Ay
+If Sz(A) = 0 Then AyInto = O: Exit Function
+For Each I In A
     Push O, I
 Next
-AyCast = O
+AyInto = O
 End Function
 
-Function AyDblAy(Ay) As Double()
-AyDblAy = AyCast(Ay, EmpDblAy)
+Function AyDblAy(A) As Double()
+AyDblAy = AyInto(A, EmpDblAy)
 End Function
 
-Function AyIntAy(Ay) As Integer()
-AyIntAy = AyCast(Ay, EmpIntAy)
+Function AyIntAy(A) As Integer()
+AyIntAy = AyInto(A, EmpIntAy)
 End Function
 
-Function AyLngAy(Ay) As Long()
-AyLngAy = AyCast(Ay, EmpLngAy)
+Function AyLngAy(A) As Long()
+AyLngAy = AyInto(A, EmpLngAy)
 End Function
 
-Function AySngAy(Ay) As Single()
-AySngAy = AyCast(Ay, EmpSngAy)
+Function AySngAy(A) As Single()
+AySngAy = AyInto(A, EmpSngAy)
 End Function
 
-Function AySy(Ay) As String()
-AySy = AyCast(Ay, EmpSy)
+Function AySy(A) As String()
+AySy = AyInto(A, EmpSy)
 End Function

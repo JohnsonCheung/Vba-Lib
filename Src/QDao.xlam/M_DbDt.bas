@@ -3,7 +3,7 @@ Option Explicit
 Function DbDt_SqlAy_OfIns(A As Database, Dt As Dt) As String()
 If DtIsEmp(Dt) Then Exit Function
 Dim SimTyAy() As eSimTy
-SimTyAy = Dbt(A, Dt.DtNm).SimTyAy(Dt.Fny)
+SimTyAy = DbtSimTyAy(A, Dt.DtNm)
 Dim ValTp$
    ValTp = SimTyAy_InsValTp(SimTyAy)
 Dim Tp$
@@ -25,7 +25,8 @@ End Function
 Private Sub ZZ_DbDt_SqlAy_OfIns()
 'Tmp1Tbl_Ens
 Stop
-Dim Dt As Dt: Dt = Dbt(CurDb, "Tmp1").Dt
-Dim O$(): O = DbDt_SqlAy_OfIns(CurDb, Dt)
+Dim Db As Database: Set Db = Sample_Db_DutyPrepare
+Dim Dt As Dt: Dt = DbtDt(Db, "Tmp1")
+Dim O$(): O = DbDt_SqlAy_OfIns(Db, Dt)
 Stop
 End Sub

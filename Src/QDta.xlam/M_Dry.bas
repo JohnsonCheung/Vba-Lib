@@ -94,9 +94,11 @@ For Each Dr In Dry
 Next
 DryKeyGpAy = O
 End Function
-
+Sub ZZ_DryLy()
+AyDmp DryLy(SampleDry1)
+End Sub
 Function DryLy(A, Optional MaxColWdt& = 100, Optional BrkColIx% = -1, Optional ShwZer As Boolean) As String()
-If IsEmp(A) Then Exit Function
+If AyIsEmp(A) Then Exit Function
 Dim A1()
     A1 = DryStrCellDry(A, ShwZer)
 Dim Hdr$
@@ -249,10 +251,10 @@ Next
 DrySrt = O
 End Function
 
-Function DryStrCellDry(Dry, ShwZer As Boolean) As Variant()
+Function DryStrCellDry(A, ShwZer As Boolean) As Variant()
 Dim O(), Dr
-If AyIsEmp(O) Then Exit Function
-For Each Dr In Dry
+If AyIsEmp(A) Then Exit Function
+For Each Dr In A
    Push O, AyCellSy(Dr, ShwZer)
 Next
 DryStrCellDry = O

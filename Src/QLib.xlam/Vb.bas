@@ -148,9 +148,6 @@ O.Init A
 Set V = O
 End Property
 
-Sub AA()
-Tag_NyStr_ObjAp "", "", 3, 4
-End Sub
 
 Sub Asg(V, OV)
 If IsObject(V) Then

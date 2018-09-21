@@ -8,14 +8,14 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 Option Explicit
-Public FmIx&, ToIx&
+Public Fmix&, Toix&
 
-Friend Property Get Init(FmIx&, ToIx&) As FmTo
-Me.FmIx = FmIx
-Me.ToIx = ToIx
+Friend Property Get Init(Fmix&, Toix&) As FmTo
+Me.Fmix = Fmix
+Me.Toix = Toix
 Set Init = Me
 End Property
 
 Property Get ToStr$()
-ToStr = FmtQQ("FmTo(? ?)", FmIx, ToIx)
+ToStr = FmtQQ("FmTo(? ?)", Fmix, Toix)
 End Property

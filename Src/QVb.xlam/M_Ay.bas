@@ -172,12 +172,20 @@ PushAy O, AyQuote(Ay2, "[]")
 AyEqChk = O
 End Function
 
-Function AyBrkInto3Ay(A, FmIx&, ToIx&) As Variant()
+Function AyBrkInto3Ay(A, Fmix&, Toix&) As Variant()
 Dim O(2)
-O(0) = AyWhFmTo(A, 0, FmIx - 1)
-O(1) = AyWhFmTo(A, FmIx, ToIx)
-O(2) = AyWhFm(A, ToIx + 1)
+O(0) = AyWhFmTo(A, 0, Fmix - 1)
+O(1) = AyWhFmTo(A, Fmix, Toix)
+O(2) = AyWhFm(A, Toix + 1)
 AyBrkInto3Ay = O
+End Function
+Function AyWhFmTo(A, Fmix, Toix)
+Dim O: O = A: Erase O
+Dim J&
+For J = Fmix To Toix
+    Push O, A(J)
+Next
+AyWhFmTo = O
 End Function
 
 Function AyFstNEle(A, N&)
@@ -558,8 +566,8 @@ Dim O
     O = Ay
     If Not FmTo_IsVdt(FmTo) Or AyIsEmp(Ay) Then
         Dim FmI&, ToI&
-        FmI = FmTo.FmIx
-        ToI = FmTo.ToIx
+        FmI = FmTo.Fmix
+        ToI = FmTo.Toix
         Dim I&, J&, U&
         U = UB(Ay)
         I = 0
@@ -600,9 +608,9 @@ Next
 AyRmvPfx = O
 End Function
 
-Function AyRpl(Ay, FmIx&, ToIx&, AySeg)
+Function AyRpl(Ay, Fmix&, Toix&, AySeg)
 Dim A()
-    A = AyBrkInto3Ay(Ay, FmIx, ToIx)
+    A = AyBrkInto3Ay(Ay, Fmix, Toix)
 Dim O
     O = Ay(0): Erase O
     PushAy O, AySeg
@@ -708,14 +716,14 @@ Next
 AyWdt = O
 End Function
 
-Function AyWh(Ay, FmIx&, ToIx&)
+Function AyWh(Ay, Fmix&, Toix&)
 Dim O: O = Ay: Erase O
 AyWh = O
 If AyIsEmp(Ay) Then Exit Function
-If FmIx < 0 Then Exit Function
-If ToIx < 0 Then Exit Function
+If Fmix < 0 Then Exit Function
+If Toix < 0 Then Exit Function
 Dim J&
-For J = FmIx To ToIx
+For J = Fmix To Toix
     Push O, Ay(J)
 Next
 AyWh = O
@@ -768,11 +776,11 @@ Next
 AyWhExclIxAy = O
 End Function
 
-Function AyWhFm(Ay, FmIx&)
+Function AyWhFm(Ay, Fmix&)
 Dim O: O = Ay: Erase O
-If 0 <= FmIx And FmIx <= UB(Ay) Then
+If 0 <= Fmix And Fmix <= UB(Ay) Then
     Dim J&
-    For J = FmIx To UB(Ay)
+    For J = Fmix To UB(Ay)
         Push O, Ay(J)
     Next
 End If
@@ -1053,7 +1061,7 @@ For J = 0 To UB(Av)
 Next
 End Sub
 Sub AyIxAyAsgAp(A, IxAy&(), ParamArray OAp())
-di J&
+Dim J&
 For J = 0 To UB(IxAy)
     Asg A(IxAy(J)), OAp(J)
 Next
@@ -1213,8 +1221,8 @@ Dim A
 Dim FmTo As FmTo
 Dim Act
 A = SplitSpc("a b c d e")
-FmTo.FmIx = 1
-FmTo.ToIx = 2
+FmTo.Fmix = 1
+FmTo.Toix = 2
 Act = AyRmvFmTo(A, FmTo)
 Ass Sz(Act) = 3
 Ass JnSpc(Act) = "a d e"
