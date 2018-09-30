@@ -65,7 +65,8 @@ Const ElseCaseWhen$ = "|Else Case When"
 Dim CrdTyAy%()
     CrdTyAy = AyIntAy(SslSy(CrdTyLvs))
     Dim StdCrdTyAy%()
-    StdCrdTyAy = DryBy_Ay_and_Const(CrdPfxTyDry, 1) ' 1 is colIx which is CrdTyId
+    Stop '
+    'StdCrdTyAy = DryIns(CrdPfxTyDry, 1) ' 1 is colIx which is CrdTyId
     Dim NotExistIdAy%()
         NotExistIdAy = AyMinus(CrdTyAy, StdCrdTyAy)
         If Not AyIsEmp(NotExistIdAy) Then
@@ -491,7 +492,8 @@ Dim InclPhone As Boolean
     InclEmail = P.InclEmail
     InclPhone = P.InclPhone
 Dim O$(), ECrd$
-    ECrd = CrdTyLvs_CrdExpr(P.LisCrd, DryOf_CrdPfxTy)
+Stop '
+'    ECrd = CrdTyLvs_CrdExpr(P.LisCrd, DryOf_CrdPfxTy)
 Push O, Srp_Drp
 Push O, Srp_T(P, ECrd)
 Push O, Srp_O(BrkMbr, InclNm, InclAdr, InclEmail, InclPhone)
@@ -528,7 +530,8 @@ SrpNy = PthFnAy(SrpPth, "*-Prm.txt")
 End Function
 
 Function SrpPth$()
-SrpPth = TstResPth
+Stop
+'SrpPth = TstResPth
 End Function
 
 Private Function CrdTyId_GpItm$(CrdTyId%, CrdPfxTyDry())
@@ -574,7 +577,8 @@ SampleSrPm = O
 End Function
 
 Private Function Srp_Drp$()
-Srp_Drp = TblNms("#Tx #TxMbr #MbrDta #Div #Sto #Crd #Cnt #Oup #MbrWs").DrpStmts
+Stop '
+'Srp_Drp = TblNms("#Tx #TxMbr #MbrDta #Div #Sto #Crd #Cnt #Oup #MbrWs").DrpStmts
 End Function
 
 Private Function Srp_O$( _

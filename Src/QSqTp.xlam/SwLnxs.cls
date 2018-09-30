@@ -21,18 +21,8 @@ Private Type SwErLy
     Sw As Sw
     ErLy() As String
 End Type
-Private B_Ay() As SwLnx
-Private B_Pm As Dictionary
-
-Property Get Init(A() As Lnx, Pm As Dictionary) As SwLnxs
-Dim M As SwLnx, J%
-For J = 0 To UB(A)
-    Set M = New SwLnx
-    PushObj B_Ay, M.Init(A(J), Pm)
-Next
-Set B_Pm = Pm
-Set Init = Me
-End Property
+Private B1_Ay() As SwLnx
+Private B1_Pm As Dictionary
 
 Private Function DupNmEr_0(A() As SwLnx) As String()
 Dim O$(), J%

@@ -13,50 +13,6 @@ Dim B$: B = PjPth(A)
 If PthFdr(B) = "Src" Then Stop
 End Function
 
-Function PjMbrAy(A As VBProject, Optional NmPatn$ = ".", Optional CmpTyAy0) As CodeModule()
-End Function
-
-Function PjMbrNy(A As VBProject, Optional NmPatn$ = ".") As String()
-PjMbrNy = OyNy(PjMdAy(A, NmPatn))
-End Function
-
-Function PjMdAy(A As VBProject, Optional NmPatn$ = ".") As CodeModule()
-'PjMdAy = ZPjMbrAy(A, Ay, NmPatn, CmpTyAy0)
-End Function
-
-Function PjMdNy(A As VBProject, Optional NmPatn$ = ".", Optional CmpTyAy0) As String()
-'PjMdNy = OyPrp(PjMdAy(A, NmPatn, CmpTyAy0), "Name", EmpSy)
-End Function
-
-Function PjMthDrs(A As VBProject, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Drs
-Dim Fny$()
-    Fny = FnyOfMthDrs(WithBdyLy, WithBdyLines)
-PjMthDrs.Fny = Fny
-PjMthDrs.Dry = PjMthDry(A, WithBdyLy, WithBdyLines)
-End Function
-
-Function PjMthDry(A As VBProject, Optional WithBdyLy As Boolean, Optional WithBdyLines As Boolean) As Variant()
-Dim Dry()
-    Dim I, Md As CodeModule
-    For Each I In PjMdAy(A)
-        Set Md = I
-        PushAy Dry, MdMthDry(Md, WithBdyLy, WithBdyLines)
-    Next
-PjMthDry = Dry
-End Function
-
-Function PjMthLinDry(A As VBProject) As Variant()
-Dim I, Md As CodeModule, O()
-For Each I In PjMbrAy(A)
-    Set Md = I
-    Dim N$: N = MdNm(Md)
-    Dim Ay$(): Ay = MdMthLinAy(Md)
-    Dim Dry(): Dry = ConstAy_ConstValDry(N, Ay)
-    PushAy O, Dry
-Next
-PjMthLinDry = O
-End Function
-
 Function PjMthNy(A As VBProject, Optional CmpTyAy0, Optional MthNmPatn$ = ".", Optional MdNmPatn$ = ".", Optional Sep$ = ".") As String()
 Dim CmpTyAy() As vbext_ComponentType
     CmpTyAy = DftCmpTyAy(CmpTyAy0)

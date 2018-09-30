@@ -1,40 +1,42 @@
 Attribute VB_Name = "IdeMthCxt"
 Option Explicit
-
-Function MthCxtFTNoAy(A As Mth) As FTNo()
-MthCxtFTNoAy = FTIxNoAy(SrcMthCxtFTIxAy(MdSrc(A.Md), A.Nm))
-End Function
-
-Function MthLyCxt(MthLy$()) As String()
-MthLyCxt = XX(MthLy, FTNo(1, Sz(MthLy)))
-End Function
-
-Private Function SrcMthCxtFTIxAy(A$(), MthNm$) As FTIx()
+Function SrcMthCxtFT(A$(), MthNm$) As FTNo()
 Dim P() As FTIx
-Dim Ay() As FTIx: Ay = SrcMthNmFTIxAy(A, MthNm)
-SrcMthCxtFTIxAy = AyMapPXInto(Ay, "XX", A, P)
+Dim Ix() As FTIx: Ix = SrcMthNmFT(A, MthNm)
+SrcMthCxtFT = AyMapPXInto(Ix, "CxtIx", A, P)
 End Function
 
-Private Function XX(Src$(), X As FTIx) As FTIx
+
+Function SrcMthFT_CxtFT(Src$(), Mth As FTIx) As FTIx
 'Src -> X:MthFmno -> MthCxtFTNo
-Dim Ix%
-For Ix = X.Fmix To X.Toix
-    If Not LasChr(Src(Ix)) = "_" Then
-        Ix = Ix + 1
-        Exit For
-    End If
-Next
-Set XX = FTIx(Ix, X.Toix - 1)
+With Mth
+    Dim Ix%
+    For Ix = .Fmix To .Toix
+        If Not LasChr(Src(Ix)) = "_" Then
+            Ix = Ix + 1
+            Exit For
+        End If
+    Next
+    Set SrcMthFT_CxtFT = FTIx(Ix, .Toix - 1)
+End With
 End Function
 
 Private Sub _
-ZZ_MthCxtFTNoAy _
+ZZ_MthCxtFT _
  _
 ()
 
 Dim I
-For Each I In MthCxtFTNoAy(CurMth)
+For Each I In MthCxtFT(CurMth)
     Debug.Print CvFTNo(I).ToStr
 Next
 
 End Sub
+Function MthCxtFT(A As Mth) As FTNo()
+MthCxtFT = SrcMthCxtFT(MdBdyLy(A.Md), A.Nm)
+End Function
+Function MthLyCxt(MthLy$()) As String()
+Stop '
+'MthLyCxt = CxtIx(MthLy, FTNo(1, Sz(MthLy)))
+End Function
+

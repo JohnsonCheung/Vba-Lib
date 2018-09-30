@@ -10,7 +10,7 @@ Attribute VB_Exposed = True
 Option Explicit
 Public Fmix%, Toix%
 
-Friend Property Get Init(Fmix%, Toix%) As FTIx
+Friend Property Get Init(Fmix, Toix) As FTIx
 If Fmix < 0 Then Stop
 If Toix < 0 Then Stop
 If Fmix > Toix - 1 Then Stop

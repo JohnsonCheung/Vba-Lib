@@ -8,11 +8,6 @@ Static Y As New SqlTst
 Set Tst = Y
 End Property
 
-Property Get SqTp2(Optional SqTpStr) As SqTp2
-Dim O As New SqTp2
-Set SqTp2 = O.Init(SqTpStr)
-End Property
-
 Function SqpAnd$(Expr$)
 If Expr = "" Then Exit Function
 SqpAnd = "|    And " & Expr

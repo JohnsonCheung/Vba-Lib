@@ -3,10 +3,6 @@ Option Explicit
 Const LblOf_FmPj$ = "Mge from pj"
 Const LblOf_ToPj$ = "Mge into pj"
 
-Sub AA()
-ZZ_DoMgePj
-End Sub
-
 Private Function CellOf_FmPj(A As Worksheet) As Range
 Set CellOf_FmPj = WsRC(A, 3, 1)
 End Function
@@ -34,12 +30,6 @@ End Function
 Private Sub ZZ_DifOf_BNms()
 Dim Act As Collection: Set Act = DifOf_BNms(ZZFmMthDic, ZZToMthDic)
 Stop
-End Sub
-Sub MthDicB_AssKeysIsBNm(A As Dictionary)
-Dim K
-For Each K In A.Keys
-    If InStr(K, ".") = 0 Then Stop
-Next
 End Sub
 Function DifOf_BNms(FmDicB As Dictionary, ToDicA As Dictionary) As Collection
 'See #Dif
@@ -105,9 +95,6 @@ For Each BNm In BNms
 Next
 DifOf_Dry = O
 End Function
-Sub AAA()
-ZZ_PjMgeWs_Bld
-End Sub
 Private Sub ZZ_PjMgeWs_Bld()
 Dim W As Worksheet: Set W = WsOf_PjMge
 PjMgeWs_Bld W
@@ -116,7 +103,7 @@ End Sub
 Sub DoMgePj()
 Dim W As Worksheet: Set W = WsOf_PjMge
 PjMgeWs_Bld W
-ItrDo PjMgeWs_MthCpyPrms(W), "MthCpyPrm_Cpy"
+'ItrDo PjMgeWs_MthCpyPrms(W), "MthCpyPrm_Cpy"
 End Sub
 
 Sub Doc()
@@ -139,16 +126,6 @@ Sub Doc()
 '        and the MthB's MthLines is dif and any of the MthA's MthLines
 '       (Note.MthANm will have one or more MthLines (due to in differmodule))
 End Sub
-Function DicA_RmvMth(A As Dictionary, MthNm$) As Dictionary
-Dim O As New Dictionary
-Dim K
-For Each K In A.Keys
-    If MthANm_MthNm(K) <> MthNm Then
-        O.Add K, A(K)
-    End If
-Next
-Set DicA_RmvMth = O
-End Function
 
 Private Function FTPjMSq(FmPj As VBProject, ToPj As VBProject) As Variant()
 Dim MaxToMthCnt% ' ToPj is using MthNm as key to get all mth (no matter which md and mdy)
@@ -198,15 +175,16 @@ End Function
 
 Function MisOf_Dr(BNmMIS, FmDicB As Dictionary) As Variant()
 'Const C$ = "FmMd ToMd Mth Sel Ty Mdy FmMth "
-Dim Ay$(), FmMdNm$, MthNm$
-Dim ToMdNm$, MthShtTy$, ShtMdy$, FmMthLines$
-FmMdNm = MthBNm_MdNm(BNmMIS)
-MthNm = MthBNm_MthNm(BNmMIS)
-ToMdNm = MthProperMdNm(MthNm)
-FmMthLines = FmDicB(BNmMIS): If FmMthLines = "" Then Stop
-ShtMdy = LinShtMdy(FmMthLines)
-MthShtTy = LinMthShtTy(FmMthLines): If MthShtTy = "" Then Stop
-MisOf_Dr = Array(FmMdNm, ToMdNm, MthNm, , MthShtTy, ShtMdy, FmMthLines)
+Stop
+'Dim Ay$(), FmMdNm$, MthNm$
+'Dim ToMdNm$, MthShtTy$, ShtMdy$, FmMthLines$
+'FmMdNm = MthBNm_MdNm(BNmMIS)
+'MthNm = MthBNm_MthNm(BNmMIS)
+'ToMdNm = MthProperMdNm(MthNm)
+'FmMthLines = FmDicB(BNmMIS): If FmMthLines = "" Then Stop
+'ShtMdy = LinShtMdy(FmMthLines)
+'MthShtTy = LinMthShtTy(FmMthLines): If MthShtTy = "" Then Stop
+'MisOf_Dr = Array(FmMdNm, ToMdNm, MthNm, , MthShtTy, ShtMdy, FmMthLines)
 End Function
 
 Function ItrIsEmp(A) As Boolean
@@ -327,13 +305,7 @@ If Not VbeHasPj(CurVbe, P) Then Exit Function
 Set PjMgeWs_ToPj = Pj(P)
 End Function
 
-Function RgOf_FmPj(A As Worksheet) As Range
-Set RgOf_FmPj = WsRCRC(A, 1, 1, 3, 1)
-End Function
 
-Function RgOf_ToPj(A As Worksheet) As Range
-Set RgOf_ToPj = WsRCRC(A, 1, 2, 3, 2)
-End Function
 
 Function WsIsPjMgeWs(A As Worksheet) As Boolean
 If IsNothing(A) Then Exit Function
@@ -373,12 +345,6 @@ Private Property Get ZZToPj() As VBProject
 Set ZZToPj = Pj("QVb")
 End Property
 
-Private Sub ZZ_DicMaxValSz()
-Dim D As Dictionary, M%
-Set D = PjMthDic(CurPj)
-M = DicMaxValSz(D)
-Stop
-End Sub
 
 Private Sub ZZ_DifOf_Dry()
 Dim O(): O = DifOf_Dry(ZZFmMthDic, ZZToMthDic)
@@ -394,20 +360,11 @@ Dim Sq(): Sq = FTPjMSq(ZZFmPj, ZZToPj)
 Stop
 End Sub
 
-Private Sub ZZ_MdMthDic()
-Dim D As Dictionary
-Set D = MdMthDic(CurMd)
-Stop
-End Sub
-
 Private Sub ZZ_MisOf_Dry()
 Dim A(): A = MisOf_Dry(ZZFmMthDic, ZZToMthDic)
 Stop
 End Sub
 
-Private Sub ZZ_SrcToMthDic()
-DicBrw SrcMthDic(CurSrc)
-End Sub
 Sub Z__Tst()
 Stop
 End Sub

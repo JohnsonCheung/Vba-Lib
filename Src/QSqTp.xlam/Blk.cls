@@ -8,13 +8,11 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Private A_LnxAy() As Lnx
+Private X_LnxAy() As Lnx
 Public BlkTyStr$
-Friend Property Get Init(Ay() As Lnx, BlkTyStr$) As Blk
-A_Lnxs = Ay
-Me.BlkTyStr = BlkTyStr
-Set Init = Me
-End Property
 Property Get LnxAy() As Lnx()
-LnxAy = A_LnxAy
+LnxAy = X_LnxAy
+End Property
+Property Let LnxAy(V() As Lnx)
+X_LnxAy = V
 End Property

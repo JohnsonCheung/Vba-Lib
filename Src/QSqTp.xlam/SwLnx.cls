@@ -8,22 +8,19 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
-Private B_Lx As Integer
-Private B_Nm As String
-Private B_OpStr As String
-Private B_TermAy() As String
-Private B_Pm As Dictionary
-Friend Property Get Init(A As Lnx, Pm As Dictionary) As SwLnx
-B_Lx = A.Lx
-Set B_Pm = Pm
-With ABC(A.Lin)
-    B_Nm = .A
-    B_OpStr = .B
-    B_TermAy = SslSy(.C)
-End With
-Set Init = Me
-End Property
-
+Private B1_Lx As Integer
+Private B1_Nm As String
+Private B1_OpStr As String
+Private B1_TermAy() As String
+Private B1_Pm As Dictionary
+Private Type SomBool
+    Bool As Boolean
+    Som As Boolean
+End Type
+Private Type SomV
+    V As Variant
+    Som As Boolean
+End Type
 Property Get AndOrLinEr$()
 If Not BoolOpStr_IsAndOr(B_OpStr) Then Exit Property
 Dim O$
@@ -117,7 +114,7 @@ Dim O As VarOpt
 Term_VarOpt = O
 End Function
 
-Private Function TermAy_SomBool(A$(), Op As e_BoolAyOp, Sw As Dictionary) As SomBool
+Private Function TermAy_SomBool(A$(), Op, Sw As Dictionary) As SomBool ' Op as  As e_BoolAyOp
 Dim B As New Bools
     Dim I
     For Each I In A
@@ -129,7 +126,7 @@ Dim B As New Bools
 TermAy_SomBool = SomBool(B.Val(Op))
 End Function
 
-Function SomBool(Sw As Dictionary) As SomBool
+Private Function SomBool(Sw As Dictionary) As SomBool
 If Sw.Exists(B_Nm) Then Exit Function
 Dim Ay$(): Ay = B_TermAy
 Dim Z As SomBool
