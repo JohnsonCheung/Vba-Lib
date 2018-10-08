@@ -1,13 +1,5 @@
 Attribute VB_Name = "IdeMthDr"
 Option Explicit
-Function DrrDry(A As Collection) As Variant()
-Dim O(), Dr
-For Each Dr In A
-    If Not IsArray(Dr) Then Stop
-    Push O, Dr
-Next
-DrrDry = O
-End Function
 Function CurVbeSrc() As String()
 CurVbeSrc = VbeSrc(CurVbe)
 End Function

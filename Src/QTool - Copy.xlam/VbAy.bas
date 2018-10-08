@@ -11,7 +11,6 @@ For Each X In AyOfAy
 Next
 End Function
 
-
 Function AyAsg(A, ParamArray OAp())
 Dim Av: Av = OAp
 Dim J%
@@ -374,7 +373,7 @@ Function AyRmvEle(Ay, Ele)
 Dim Ix&: Ix = AyIx(Ay, Ele): If Ix = -1 Then AyRmvEle = Ay: Exit Function
 AyRmvEle = AyRmvEleAt(Ay, AyIx(Ay, Ele))
 End Function
-Function AyRmvEleAt(Ay, Optional At&)
+Function AyRmvEleAt(Ay, Optional At = 0)
 AyRmvEleAt = AyWhExclAtCnt(Ay, At)
 End Function
 Function AyRmvEmp(Ay)
@@ -506,7 +505,7 @@ For Each Dr In AyNz(AyCntDry(A))
 Next
 AyWhDup = O
 End Function
-Function AyWhExclAtCnt(Ay, At&, Optional Cnt& = 1)
+Function AyWhExclAtCnt(Ay, At, Optional Cnt = 1)
 If Cnt <= 0 Then AyWhExclAtCnt = Ay: Exit Function
 Dim U&: U = UB(Ay)
 If At > U Then Stop
@@ -531,7 +530,7 @@ Function AyWhExl(A, Exl$) As String()
 AyWhExl = AyWhExlAy(A, SslSy(Exl))
 If Sz(A) = 0 Then Exit Function
 End Function
-Function AyMid(A, Fm, Optional L)
+Function AyMid(A, Fm, Optional L = 0)
 Dim O: O = A: Erase O
 Dim J&, E&
 If L = 0 Then E = UB(A) Else E = L + Fm - 1
@@ -763,8 +762,8 @@ For Each I In A
     Run DoMthNm, I
 Next
 End Sub
-Sub AyWrt(A, FT$)
-StrWrt JnCrLf(A), FT
+Sub AyWrt(A, Ft$)
+StrWrt JnCrLf(A), Ft
 End Sub
 Function AyIxAy(A, B) As Long()
 AyIxAy = AyIxAyInto(A, B, EmpLngAy)

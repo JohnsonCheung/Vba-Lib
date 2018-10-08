@@ -286,7 +286,10 @@ For Each I In A.VBProjects
 Next
 End Sub
 Sub VbeExport(A As Vbe)
-OyDo VbePjAy(A), "PjExport"
+Dim P As VBProject
+For Each P In A.VBProjects
+    PjExport P
+Next
 End Sub
 Sub VbeSrcPthBrw(A As Vbe)
 PthBrw VbeSrcPth(A)

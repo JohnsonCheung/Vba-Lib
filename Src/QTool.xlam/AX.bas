@@ -3042,6 +3042,7 @@ Set PjEnsMd = PjEnsCmp(A, MdNm, vbext_ct_StdModule).CodeModule
 End Function
 
 Sub PjExport(A As VBProject)
+Debug.Print "PjExport: " & PjNm(A) & "-----------------------------"
 Dim P$: P = PjSrcPth(A)
 If P = "" Then
     Debug.Print FmtQQ("PjExport: Pj(?) does not have FileName", A.Name)
@@ -3268,16 +3269,6 @@ End Sub
 Sub Export()
 CurVbeExport
 End Sub
-
-
-
-
-
-
-
-
-
-
 
 Private Function DupMthFNyGp_CmpLy__1Hdr(OIx%, MthNm$, Cnt%) As String()
 Dim O$(1)

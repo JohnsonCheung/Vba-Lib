@@ -1,15 +1,23 @@
 Attribute VB_Name = "IdeMthKey"
 Option Explicit
-Private Const Hom$ = "C:\Users\user\Desktop\MHD\SAPAccessReports\"
-Private Const StkShpRateFb$ = Hom & "StockShipRate\StockShipRate\StockShipRate (ver 1.0).accdb"
-Private Const TaxExpCmpFb$ = Hom & "TaxExpCmp\TaxExpCmp\TaxExpCmp v1.3.accdb"
-Private Const StkShpCstFb$ = Hom & "StockShipCost\StockShipCost (ver 1.0).accdb"
-Private Const TaxRateAlertFb$ = Hom & "TaxRateAlert\TaxRateAlert\TaxRateAlert (ver 1.3).accdb"
+Private Const AppHom$ = "C:\Users\user\Desktop\MHD\SAPAccessReports\"
+Private Const AppStkShpRateFb$ = AppHom & "StockShipRate\StockShipRate\StockShipRate (ver 1.0).accdb"
+Private Const AppTaxExpCmpFb$ = AppHom & "TaxExpCmp\TaxExpCmp\TaxExpCmp v1.3.accdb"
+Private Const AppStkShpCstFb$ = AppHom & "StockShipCost\StockShipCost (ver 1.0).accdb"
+Private Const AppTaxRateAlertFb$ = AppHom & "TaxRateAlert\TaxRateAlert\TaxRateAlert (ver 1.3).accdb"
+Private Const AppJJFb$ = AppHom & "TaxExpCmp\TaxExpCmp\PgmObj\Lib\jj.accdb"
+Sub Z_AppFbAy()
+Dim F
+For Each F In AppFbAy
+If Not IsFfnExist(F) Then Stop
+Next
+End Sub
 Function AppFbAy() As String()
-Push AppFbAy, StkShpCstFb
-Push AppFbAy, StkShpRateFb
-Push AppFbAy, TaxExpCmpFb
-Push AppFbAy, TaxRateAlertFb
+Push AppFbAy, AppJJFb
+Push AppFbAy, AppStkShpCstFb
+Push AppFbAy, AppStkShpRateFb
+Push AppFbAy, AppTaxExpCmpFb
+Push AppFbAy, AppTaxRateAlertFb
 End Function
 Function FbAcs(A, Optional Vis As Boolean) As Access.Application
 Dim O As New Access.Application
@@ -38,7 +46,6 @@ Sub Z_PjMthDry()
 Brw DryFmtss(PjMthDry(CurPj))
 End Sub
 
-
 Function MdMthKy(A As CodeModule, Optional IsWrap As Boolean) As String()
 Dim PjN$: PjN = MdPjNm(A)
 Dim MdN$: MdN = MdNm(A)
@@ -52,7 +59,7 @@ If Left(L, 3) = "As " Then ShfAs = Array(True, LTrim(Mid(L, 4))): Exit Function
 ShfAs = Array(False, A)
 End Function
 
-Function ShfTerm$(OLin$)
+Function ShfTerm$(OLin)
 Dim L$, P%
 L = LTrim(OLin)
 If FstChr(L) = "[" Then
@@ -68,7 +75,7 @@ If P = 0 Then
     Exit Function
 End If
 ShfTerm = Left(L, P - 1)
-OLin = Trim(Mid(L, P + 1))
+OLin = LTrim(Mid(L, P + 1))
 End Function
 Sub Z_VbeMthLinDry()
 Brw DryFmtss(VbeMthLinDry(CurVbe))
@@ -136,115 +143,6 @@ Sub SrcMthDrAsg(A, OShtMdy$, OShtTy$, ONm$, OPrm$, ORet$, OLinRmk$, OLines$, OTo
 AyAsg A, OShtMdy, OShtTy, ONm, OPrm, ORet, OLinRmk, OLines, OTopRmk
 End Sub
 
-Function SrcMthFullDry(A$()) As Variant()
-Dim Ix
-For Each Ix In AyNz(SrcMthIx(A))
-    PushI SrcMthFullDry, SrcMthIxFullDr(A, Ix)
-Next
-Dim Dr(): GoSub X
-If Sz(Dr) > 0 Then
-    PushI SrcMthFullDry, Dr
-End If
-Exit Function
-X:
-    Dim Dcl$, Cnt%
-    Dcl = SrcDclLines(A)
-    Cnt = LinCnt(Dcl)
-    Const Fldss$ = "Ty Nm Cnt Lines"
-    Dim Vy(): Vy = Array("Dcl", "*Dcl", Cnt, Dcl)
-    If Dcl = "" Then
-        Erase Dr
-    Else
-        Dr = VyDr(Vy, Fldss, SrcMthIxFullDrFny)
-    End If
-    Return
-End Function
-
-Function MdMthFullDrsFny() As String()
-MdMthFullDrsFny = AyAdd(SslSy("PjFfn Pj MdTy Md"), SrcMthIxFullDrFny)
-End Function
-
-Function MdMthFullDrs(A As CodeModule, Optional B As WhMth) As Drs
-Set MdMthFullDrs = Drs(MdMthFullDrsFny, MdMthFullDry(A, B))
-End Function
-
-Function PjMthFullDry(A As VBProject, Optional B As WhMdMth) As Variant()
-Dim M
-For Each M In AyNz(PjMdAy(A, WhMdMth_Md(B)))
-    PushIAy PjMthFullDry, MdMthFullDry(CvMd(M), WhMdMth_Mth(B))
-Next
-End Function
-
-Function PjMthFullDrs(A As VBProject, Optional B As WhMdMth) As Drs
-Dim O As Drs
-Set O = Drs(MdMthFullDrsFny, PjMthFullDry(A, B))
-Set O = DrsAddValIdCol(O, "Lines", "Pj")
-Set O = DrsAddValIdCol(O, "Nm", "PjMth")
-Set PjMthFullDrs = O
-End Function
-
-Function VbeMthFullDrs(A As Vbe, Optional B As WhPjMth) As Drs
-Dim P, Fst As Boolean
-Fst = True
-For Each P In AyNz(VbePjAy(A, WhPjMth_Nm(B)))
-    Dim M As Drs: Set M = PjMthFullDrs(CvPj(P), WhPjMth_MdMth(B))
-    If Fst Then
-        Set VbeMthFullDrs = M
-        Fst = False
-    Else
-        PushDrs VbeMthFullDrs, M
-    End If
-Next
-End Function
-
-Function FbMthFullDrs(A, Optional B As WhPjMth) As Drs
-If False Then
-    Set FbMthFullDrs = VbeMthFullDrs(FbAcs(A).Vbe, B)
-    Exit Function
-End If
-Dim Acs As New Access.Application
-Debug.Print "FbMthFullDry: "; Now; " Start get Drs "; A; "==============="
-Debug.Print "FbMthFullDry: "; Now; " Start open"
-Set Acs = FbAcs(A)
-Debug.Print "FbMthFullDry: "; Now; " Start get Drs "
-Set FbMthFullDrs = VbeMthFullDrs(Acs.Vbe, B)
-Debug.Print "FbMthFullDry: "; Now; " Start quit acs "
-Acs.Quit acQuitSaveNone
-Debug.Print "FbMthFullDry: "; Now; " acs is quit"
-Set Acs = Nothing
-Debug.Print "FbMthFullDry: "; Now; " acs is nothing"
-End Function
-
-Function FbvbeAyMthFullDrs(FbvbeAy(), Optional B As WhPjMth) As Drs
-Dim I, Fst As Boolean
-Fst = True
-For Each I In FbvbeAy
-    Dim A As Drs: GoSub X_A
-    If Fst Then
-        Set FbvbeAyMthFullDrs = A
-        Fst = False
-    Else
-        PushDrs FbvbeAyMthFullDrs, A
-    End If
-Next
-Exit Function
-X_A:
-    Select Case True
-    Case IsStr(I):            Set A = FbMthFullDrs(I, B)
-    Case TypeName(I) = "VBE": Set A = VbeMthFullDrs(CvVbe(I), B)
-    Case Else: Stop
-    End Select
-    Return
-End Function
-
-Sub AAA()
-Z_MthFullWbFmt
-End Sub
-
-Sub AAAA()
-Z_UsrEdtMthLocDrs
-End Sub
-
 Function WbFstWs(A As Workbook) As Worksheet
 Dim Ws
 For Each Ws In A.Sheets
@@ -253,15 +151,10 @@ For Each Ws In A.Sheets
 Next
 End Function
 
-Sub Z_MthFullWbFmt()
-Dim Wb As Workbook
-Const Fx$ = "C:\Users\user\Desktop\Vba-Lib-1\Mth.xlsx"
-MthFullWbFmt WbVis(FxWb(Fx))
-Stop
-End Sub
 Function RgLasRow&(A As Range)
 RgLasRow = A.Row + A.Rows.Count - 1
 End Function
+
 Function RgLasCol%(A As Range)
 RgLasCol = A.Column + A.Columns.Count - 1
 End Function
@@ -287,55 +180,6 @@ For Each Ws In A.Sheets
     If Ws.CodeName = CdNm Then Set WbCdNmWs = Ws: Exit Function
 Next
 End Function
-Function MthFullWbFmt(A As Workbook) As Workbook
-Dim Ws As Worksheet, Lo As ListObject
-Set Ws = WbCdNmWs(A, "MthLoc"): If IsNothing(Ws) Then Stop
-Set Lo = WsLo(Ws, "T_MthLoc"): If IsNothing(Lo) Then Stop
-Dim Ws1 As Worksheet:  GoSub X_Ws1
-Dim Pt1 As PivotTable: GoSub X_Pt1
-Dim Lo1 As ListObject: GoSub X_Lo1
-Dim Pt2 As PivotTable: GoSub X_Pt2
-Dim Lo2 As ListObject: GoSub X_Lo2
-Ws1.Outline.ShowLevels , 1
-Set MthFullWbFmt = WsWb(Ws)
-Exit Function
-X_Ws1:
-    Set Ws1 = WbAddWs(WsWb(Ws))
-    Ws1.Outline.SummaryColumn = xlSummaryOnLeft
-    Ws1.Outline.SummaryRow = xlSummaryBelow
-    Return
-X_Pt1:
-    Set Pt1 = LoPt(Lo, WsA1(Ws1), "MdTy Nm VbeLinesId Lines", "Pj")
-    PtSetRowssOutLin Pt1, "Lines"
-    PtSetRowssColWdt Pt1, "VbeLinesId", 12
-    PtSetRowssColWdt Pt1, "Nm", 30
-    PtSetRowssRepeatLbl Pt1, "MdTy Nm"
-    Return
-X_Lo1:
-    Set Lo1 = PtCpyToLo(Pt1, Ws1.Range("G1"), LoNm:="T_MthLines")
-    LoSetColWdt Lo1, "Nm", 30
-    LoSetColWdt Lo1, "Lines", 100
-    LoSetOutLin Lo1, "Lines"
-    
-    Return
-X_Pt2:
-    Set Pt2 = LoPt(Lo1, Ws1.Range("M1"), "MdTy Nm", "Lines")
-    PtSetRowssRepeatLbl Pt2, "MdTy"
-    Return
-X_Lo2:
-    Set Lo2 = PtCpyToLo(Pt2, Ws1.Range("Q1"), "T_UsrEdtMthLoc")
-    Return
-Set MthFullWbFmt = A
-End Function
-Sub Z_CurFbvbeAyMthFullWs()
-WsVis CurFbvbeAyMthFullWs
-End Sub
-
-Sub Z_FbvbeAyMthFullWb()
-Dim A()
-    PushObj A, CurVbe
-WbVis FbvbeAyMthFullWb(A, WhPjMth(MdMth:=WhMdMth(WhMd("Cls"))))
-End Sub
 
 Function PtPf(A As PivotTable, F) As PivotField
 Set PtPf = A.PivotFields(F)
@@ -383,22 +227,6 @@ For Each F In AyNz(SslSy(Rowss))
 Next
 End Sub
 
-Function FbvbeAyMthFullWb(FbvbeAy(), Optional B As WhPjMth) As Workbook
-Set FbvbeAyMthFullWb = MthFullWbFmt(WsWb(FbvbeAyMthFullWs(FbvbeAy, B)))
-End Function
-
-Function CurFbvbeAyMthFullWs() As Worksheet
-Set CurFbvbeAyMthFullWs = FbvbeAyMthFullWs(CurFbvbeAy)
-End Function
-
-Function FbvbeAyMthFullWs(FbvbeAy(), Optional B As WhPjMth) As Worksheet
-Dim O As Drs
-Set O = FbvbeAyMthFullDrs(FbvbeAy, B)
-Set O = DrsAddValIdCol(O, "Nm", "VbeMth")
-Set O = DrsAddValIdCol(O, "Lines", "Vbe")
-Set FbvbeAyMthFullWs = WsSetCdNmAndLoNm(DrsWs(O), "MthLoc")
-End Function
-
 Private Sub Z_VyDr()
 Dim Fny$(), Fldss$, Vy()
 Fny = SslSy("A B C D E f")
@@ -430,20 +258,6 @@ X_ChkIxAy:
         If Ix <= -1 Then Stop
     Next
     Return
-End Function
-
-Sub Z_MdMthFullDrs()
-DrsBrw MdMthFullDrs(CurMd)
-End Sub
-
-Function MdMthFullDry(A As CodeModule, Optional B As WhMth) As Variant()
-Dim P As VBProject, Ffn$, Pj$, ShtTy$, Md$, MdTy$
-Set P = MdPj(A)
-Ffn$ = PjFfn(P)
-Pj = P.Name
-MdTy = MdShtTy(A)
-Md = MdNm(A)
-MdMthFullDry = DryInsC4(SrcMthFullDry(MdBdyLy(A)), Ffn, Pj, MdTy, Md)
 End Function
 
 Function MdShtTy$(A As CodeModule)
@@ -540,9 +354,16 @@ Function CvAcs(A) As Access.Application
 Set CvAcs = A
 End Function
 
-Function CurFbvbeAy() As Variant()
-PushObj CurFbvbeAy, CurVbe
-PushIAy CurFbvbeAy, AppFbAy
+Function VbePjFfnAy(A As Vbe) As String()
+Dim P As VBProject
+For Each P In A.VBProjects
+    PushNonBlankStr VbePjFfnAy, PjFfn(P)
+Next
+End Function
+
+Function CurPjFfnAy() As String()
+PushIAy CurPjFfnAy, AppFbAy
+PushIAy CurPjFfnAy, VbePjFfnAy(CurVbe)
 End Function
 
 Function DrsInsCol(A As Drs, ColNm$, C) As Drs
@@ -550,6 +371,11 @@ Set DrsInsCol = Drs(AyIns(A.Fny, ColNm), DryInsCol(A.Dry, C))
 End Function
 
 Sub PushDrs(O As Drs, A As Drs)
+If IsNothing(O) Then
+    Set O = A
+    Exit Sub
+End If
+If IsNothing(A) Then Exit Sub
 If Not IsEq(O.Fny, A.Fny) Then Stop
 Set O = Drs(O.Fny, CvAy(AyAddAp(O.Dry, A.Dry)))
 End Sub

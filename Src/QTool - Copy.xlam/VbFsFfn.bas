@@ -16,7 +16,7 @@ Function FfnAddFnSfx$(A$, Sfx$)
 FfnAddFnSfx = CutExt(A) & Sfx & FfnExt(A)
 End Function
 
-Function FfnExt$(A$)
+Function FfnExt$(A)
 Dim B$, P%
 B = LasFilSeg(A)
 P = InStrRev(B, ".")
@@ -63,8 +63,10 @@ Sub FfnCpyToPth(A, ToPth$, Optional OvrWrt As Boolean)
 Fso.CopyFile A, ToPth$ & FfnFn(A), OvrWrt
 End Sub
 
-Function LasFilSeg$(A$)
-LasFilSeg = AyLasEle(Split(A, "\"))
+Function LasFilSeg$(A)
+Dim P%: P = InStrRev(A, "\")
+If P = 0 Then LasFilSeg = A: Exit Function
+LasFilSeg = Mid(A, P + 1)
 End Function
 Function CutExt$(A$)
 

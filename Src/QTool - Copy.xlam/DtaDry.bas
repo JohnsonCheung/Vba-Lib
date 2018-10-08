@@ -141,6 +141,11 @@ End Function
 Sub DrsFmtssBrw(A As Drs)
 Brw DrsFmtss(A)
 End Sub
+
+Sub DrsFmtssDmp(A As Drs)
+D DrsFmtss(A)
+End Sub
+
 Function DrsFmtss(A As Drs) As String()
 DrsFmtss = DryFmtss(CvAy(ItmAddAy(A.Fny, A.Dry)))
 End Function

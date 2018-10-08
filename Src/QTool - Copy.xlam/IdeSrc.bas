@@ -251,6 +251,7 @@ Function SrcMthIxTo%(A$(), MthIx)
 Dim T$, F$, J%
 T = LinMthKd(A(MthIx)): If T = "" Then Stop
 F = "End " & T
+If HasSubStr(A(MthIx), F) Then SrcMthIxTo = MthIx: Exit Function
 For J = MthIx + 1 To UB(A)
     If IsPfx(A(J), F) Then SrcMthIxTo = J: Exit Function
 Next

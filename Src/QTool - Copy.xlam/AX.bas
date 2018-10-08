@@ -9,8 +9,51 @@ Type DCRslt
     BDif As New Dictionary
     Sam As New Dictionary
 End Type
+Type StruBase
+    F As Drs    'Ele FldLik
+    E As Dictionary 'Ele->Fd
+    TDes As Dictionary
+    FDes As Dictionary
+    TFDes As Drs
+End Type
+Public Const EleLblss$ = "*Ty ?Req ?AlwZLen Dft VTxt VRul TxtSz Expr"
 Public Fso As New FileSystemObject
-
+Function ItrMaxPrp(A, P)
+Dim X, O
+For Each X In A
+    O = Max(O, ObjPrp(X, P))
+Next
+ItrMaxPrp = O
+End Function
+Sub AyMapDo(A, Map$, DoFun$)
+Dim X
+For Each X In AyNz(A)
+    Run DoFun, Run(Map, X)
+Next
+End Sub
+Sub Z_FbPjDte()
+AyMapDo AppFbAy, "FbPjDte", "D"
+End Sub
+Function FbPjDte(A) As Date
+Static Y As Access.Application, X As Boolean
+If Not X Then
+    X = True
+    Set Y = New Access.Application
+End If
+Y.OpenCurrentDatabase A
+Y.Visible = False
+FbPjDte = AcsPjDte(Y)
+Y.CloseCurrentDatabase
+End Function
+Function AcsPjDte(A As Access.Application)
+Dim O As Date
+Dim M As Date
+M = ItrMaxPrp(A.CurrentProject.AllForms, "DateModified")
+O = Max(O, M)
+O = Max(O, ItrMaxPrp(A.CurrentProject.AllModules, "DateModified"))
+O = Max(O, ItrMaxPrp(A.CurrentProject.AllReports, "DateModified"))
+AcsPjDte = O
+End Function
 Function DrsWhColEq(A As Drs, C$, V) As Drs
 Dim Dry(), Ix%, Fny$()
 Fny = A.Fny
@@ -72,6 +115,7 @@ End Sub
 Function CvAy(A) As Variant()
 CvAy = A
 End Function
+
 Private Sub ZZ_DrsGpFlat_1()
 Dim Act As Drs, D As Drs, Dr1, Dr2, Dr3
 Dr1 = Array("A", , 1)
@@ -82,6 +126,179 @@ Set Act = DrsGpFlat(D, "A", "C")
 Stop
 DrsBrw Act
 End Sub
+Function SampleDry() As Variant()
+PushI SampleDry, Array("A", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "A"))
+PushI SampleDry, Array("B", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "B"))
+PushI SampleDry, Array("C", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "C"))
+PushI SampleDry, Array("D", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "D"))
+PushI SampleDry, Array("E", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "E"))
+PushI SampleDry, Array("F", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "F"))
+PushI SampleDry, Array("G", True, CByte(8), 1, 2&, 3#, 4!, 5@, Now, String(300, "G"))
+End Function
+Function SampleDrs() As Drs
+Set SampleDrs = Drs("A B C D E G H I J K", SampleDry)
+End Function
+Function DbtDrs(A As Database, T) As Drs
+Set DbtDrs = Drs(DbtFny(A, T), DbtDry(A, T))
+End Function
+Sub Z_DrsEnsRplDbt()
+Dim Db As Database, D1 As Drs, D2 As Drs
+Set Db = TmpDb
+Set D1 = SampleDrs
+DrsEnsRplDbt D1, Db, "T"
+Set D2 = DbtDrs(Db, "T")
+Ass IsEqDrs(D1, D2)
+DbKill Db
+End Sub
+Function IsEqDry(A(), B()) As Boolean
+If Sz(A) <> Sz(B) Then Exit Function
+If Sz(A) = 0 Then IsEqDry = True: Exit Function
+Dim Dr, J&
+For Each Dr In A
+    If Not IsEqAy(Dr, B(J)) Then Exit Function
+    J = J + 1
+Next
+IsEqDry = True
+End Function
+Function IsEqDrs(A As Drs, B As Drs) As Boolean
+If Not IsEqAy(A.Fny, B.Fny) Then Exit Function
+If Not IsEqDry(A.Dry, B.Dry) Then Exit Function
+IsEqDrs = True
+End Function
+Sub DbKill(A As Database)
+Dim F$
+F = A.Name
+A.Close
+Kill F
+End Sub
+Function AyHasAyChk(A, B) As String()
+Dim C
+C = AyMinus(B, A)
+If Sz(C) = 0 Then Exit Function
+FunEr "AyHasAyChk", "[Some-Ele] in [Ay-B] not [Ay-A]", C, B, A
+End Function
+Function DrsSel(A As Drs, Fny0) As Drs
+Dim Fny$(): Fny = CvNy(Fny0)
+If IsEqAy(A.Fny, Fny) Then Set DrsSel = A: Exit Function
+AyBrwEr AyHasAyChk(A.Fny, Fny)
+
+Dim Ix&(): Ix = AyIxAy(A.Fny, Fny)
+Dim Dry(), Dr
+For Each Dr In A.Dry
+    PushI Dry, DrSel(Dr, Ix)
+Next
+Set DrsSel = Drs(Fny, Dry)
+End Function
+Sub DrUpdRs(Dr, Rs As DAO.Recordset)
+With Rs
+    .Edit
+    DrSetRs Dr, Rs
+    .Update
+End With
+End Sub
+Sub DrsRplDbt(A As Drs, Db As Database, T, Optional BExpr$)
+Db.Execute DltSql(T, BExpr)
+Dim Dr, Rs As DAO.Recordset
+Set Rs = Db.TableDefs(T).OpenRecordset
+With Rs
+    For Each Dr In DrsSel(A, DbtFny(Db, T)).Dry
+        DrInsRs Dr, Rs
+    Next
+    .Close
+End With
+End Sub
+
+Sub DrsEnsRplDbt(A As Drs, Db As Database, T)
+DrsEnsDbt A, Db, T
+DrsRplDbt A, Db, T
+End Sub
+
+Sub DrsEnsDbt(A As Drs, Db As Database, T)
+If DbHasTbl(Db, T) Then Exit Sub
+Db.Execute DrsCrtTblSql(A, T)
+End Sub
+
+Function DrsCrtTblSql$(A As Drs, T)
+Dim F, J%, Dry(), O$()
+Dry = A.Dry
+For Each F In A.Fny
+    PushI O, F & " " & DryColSqlTy(Dry, J)
+    J = J + 1
+Next
+DrsCrtTblSql = CrtTblSql(T, JnComma(O))
+End Function
+
+Function CrtTblSql$(T, FldList$)
+CrtTblSql = FmtQQ("Create Table [?] (?)", T, FldList)
+End Function
+Function IsVbTyNum(A As VbVarType) As Boolean
+Select Case A
+Case vbInteger, vbLong, vbDouble, vbSingle, vbDouble: IsVbTyNum = True: Exit Function
+End Select
+End Function
+
+Function MaxVbTy(A As VbVarType, B As VbVarType) As VbVarType
+If A = vbString Or B = vbString Then MaxVbTy = A: Exit Function
+If A = vbEmpty Then MaxVbTy = B: Exit Function
+If B = vbEmpty Then MaxVbTy = A: Exit Function
+If A = B Then MaxVbTy = A: Exit Function
+Dim AIsNum As Boolean, BIsNum As Boolean
+AIsNum = IsVbTyNum(A)
+BIsNum = IsVbTyNum(B)
+Select Case True
+Case A = vbBoolean And BIsNum: MaxVbTy = B
+Case AIsNum And B = vbBoolean: MaxVbTy = A
+Case A = vbDate Or B = vbDate: MaxVbTy = vbString
+Case AIsNum And BIsNum:
+    Select Case True
+    Case A = vbByte: MaxVbTy = B
+    Case B = vbByte: MaxVbTy = A
+    Case A = vbInteger: MaxVbTy = B
+    Case B = vbInteger: MaxVbTy = A
+    Case A = vbLong: MaxVbTy = B
+    Case B = vbLong: MaxVbTy = A
+    Case A = vbSingle: MaxVbTy = B
+    Case B = vbSingle: MaxVbTy = A
+    Case A = vbDouble: MaxVbTy = B
+    Case B = vbDouble: MaxVbTy = A
+    Case A = vbCurrency Or B = vbCurrency: MaxVbTy = A
+    Case Else: Stop
+    End Select
+Case Else: Stop
+End Select
+End Function
+
+Function DryColSqlTy$(A(), ColIx%)
+Dim O As VbVarType, Dr, V, T As VbVarType
+For Each Dr In A
+    If UB(Dr) >= ColIx Then
+        V = Dr(ColIx)
+        T = VarType(V)
+        If T = vbString Then
+            If Len(V) > 255 Then DryColSqlTy = "Memo": Exit Function
+        End If
+        O = MaxVbTy(O, T)
+    End If
+Next
+DryColSqlTy = VbTySqlTy(O)
+End Function
+
+Function VbTySqlTy$(A As VbVarType, Optional IsMem As Boolean)
+Select Case A
+Case vbEmpty: VbTySqlTy = "Text(255)"
+Case vbBoolean: VbTySqlTy = "YesNo"
+Case vbByte: VbTySqlTy = "Byte"
+Case vbInteger: VbTySqlTy = "Short"
+Case vbLong: VbTySqlTy = "Long"
+Case vbDouble: VbTySqlTy = "Double"
+Case vbSingle: VbTySqlTy = "Single"
+Case vbCurrency: VbTySqlTy = "Currency"
+Case vbDate: VbTySqlTy = "Date"
+Case vbString: VbTySqlTy = IIf(IsMem, "Memo", "Text(255)")
+Case Else: Stop
+End Select
+End Function
+
 Function DrsKeyCntDic(A As Drs, K$) As Dictionary
 Dim Dry(), O As New Dictionary, Fny$(), Dr, Ix%, KK$
 Fny = A.Fny
@@ -250,30 +467,22 @@ Function CellReSz(A As Range, Sq) As Range
 Set CellReSz = RgRCRC(A, 1, 1, UBound(Sq, 1), UBound(Sq, 2))
 End Function
 
-Function CmpTyAyOf_Cls_and_Std() As vbext_ComponentType()
+Function ClsStdCmpTyAy() As vbext_ComponentType()
 Dim O(1) As vbext_ComponentType
 O(0) = vbext_ct_ClassModule
 O(1) = vbext_ct_StdModule
-CmpTyAyOf_Cls_and_Std = O
+ClsStdCmpTyAy = O
 End Function
 
-Function CmpTy_Nm$(A As vbext_ComponentType)
+Function CmpTyStr$(A As vbext_ComponentType)
 Dim O$
 Select Case A
-Case vbext_ct_ClassModule: O = "*Cls"
-Case vbext_ct_StdModule: O = "*Std"
-Case vbext_ct_Document: O = "*Doc"
+Case vbext_ct_ClassModule: O = "Cls"
+Case vbext_ct_StdModule: O = "Std"
+Case vbext_ct_Document: O = "Doc"
 Case Else: Stop
 End Select
-CmpTy_Nm = O
-End Function
-
-Function CollAddPfx(A As Collection, Pfx) As Collection
-Dim O As New Collection, I
-For Each I In A
-    O.Add Pfx & I
-Next
-Set CollAddPfx = O
+CmpTyStr = O
 End Function
 
 Function CurXls() As Excel.Application
@@ -338,6 +547,9 @@ Exit Function
 X:
 End Function
 
+Sub CurPjSrcPthBrw()
+PthBrw PjSrcPth(CurPj)
+End Sub
 Function CurPj() As VBProject
 Set CurPj = CurVbe.ActiveVBProject
 End Function
@@ -636,6 +848,15 @@ Next
 X: Set Ws = O
 If Vis Then O.Application.Visible = True
 End Function
+
+Function DrsWsVis(A As Drs) As Worksheet
+Set DrsWsVis = WsVis(DrsWs(A))
+End Function
+
+Function DrsWsBrw(A As Drs) As Worksheet
+Set DrsWsBrw = WsVis(DrsWs(A))
+End Function
+
 Function DrsWs(A As Drs) As Worksheet
 Dim O As Worksheet, R As Range
 Set O = NewWs
@@ -757,17 +978,27 @@ Function PjHasCmp(A As VBProject, Nm$) As Boolean
 PjHasCmp = ItrHasNm(A.VBComponents, Nm)
 End Function
 
-Sub PjAddCmp(A As VBProject, Nm$, Ty As vbext_ComponentType)
+Function PjAddCmpLines(A As VBProject, Nm$, Ty As vbext_ComponentType, Lines$)
+Dim O As VBComponent
+Set O = PjAddCmp(A, Nm, Ty): If IsNothing(O) Then Stop
+MdAppLines O.CodeModule, Lines
+Set PjAddCmpLines = O
+End Function
+
+Function PjAddCmp(A As VBProject, Nm$, Ty As vbext_ComponentType) As VBComponent
 If PjHasCmp(A, Nm) Then
     Debug.Print FmtQQ("PjAddCmp: Pj[?] already has Cmp[?]", A.Name, Nm)
-    Exit Sub
+    Exit Function
 End If
-With A.VBComponents.Add(Ty)
+Dim O As VBComponent
+Set O = A.VBComponents.Add(Ty)
+With O
     .Name = Nm
     .CodeModule.InsertLines 1, "Option Explicit"
     MdSav .CodeModule
 End With
-End Sub
+Set PjAddCmp = O
+End Function
 Sub MdSav(A As CodeModule)
 
 End Sub
@@ -1491,52 +1722,113 @@ ShfMthShtTy = MthShtTy(ShfMthTy(OLin))
 End Function
 
 Private Sub Z_ShfVal()
-Dim A$, SSNm$
-A = "": SSNm = "": Ept = Array(Array(), ApSy()): GoSub Tst
+Dim A$, Lblss$
+A = "Txt VTxt=XYZ [Dft=A 1] VRul=123 Req"
+Lblss = "*Ty ?Req ?AlwZLen Dft VTxt VRul"
+Ept = LinTermAy("Txt 1 1 [A 1] [] 123")
+GoSub Tst
 Exit Sub
 Tst:
-    Act = ShfVal(A, SSNm)
+    Act = ShfVal(A, Lblss)
     C
     Return
 End Sub
 
 Function LinTermAy(A) As String()
-Dim L$, T$
+Dim L$, T$, J%
 L = A
-X:
-If L = "" Then Exit Function
-T = ShfTerm(L): If T = "" Then Stop
-Push LinTermAy, T
-GoTo X
+While L <> ""
+    J = J + 1: If J > 50000 Then Stop
+    Push LinTermAy, ShfTerm(L)
+Wend
 End Function
 
-Function ShfStarTerm(OItm$(), OLbl$()) As Variant()
-Dim NStar%, I
-For Each I In OLbl
+Function ShfStarTerm(OItm$(), OLbl$()) As String()
+Dim NStar%, I, Ay$()
+Ay = OLbl
+For Each I In Ay
     If FstChr(I) <> "*" Then
         If NStar > 0 Then
             OItm = AyMid(OItm, NStar)
             OLbl = AyMid(OLbl, NStar)
             Exit Function
         End If
+        Exit Function
     End If
     Push ShfStarTerm, OItm(NStar)
     NStar = NStar + 1
 Next
 End Function
 
-Function ShfLblVal(OItm$(), OLblQ) As Variant()
+Sub Z_ShfLblVal()
+Dim OItm$(), QLbl, EptOItm$()
+OItm = SslSy("A B C=123 D=XYZ")
+QLbl = "?B"
+Ept = True
+EptOItm = SslSy("A C=123 D=XYZ")
+GoSub Tst
+Exit Sub
+Tst:
+    Act = ShfLblVal(OItm, QLbl)
+    C
+    Ass IsEqAy(OItm, EptOItm)
+    Return
+End Sub
 
+Function ShfLblVal$(OItm$(), QLbl)
+'Shift a value in OItm with label being QLbl.
+'OItm: is array of LLL or LLL=VVV
+'QLbl: is ?LLL or LLL
+'If QLbl=?LLL, looking LLL in OItm, return truen and remove it from OItm, else return false only
+'If QLbl=LLL,  looking LLL=VVV in OItm, return VVV and remove it from OItm
+If FstChr(QLbl) = "?" Then
+    Dim Lbl$
+    Lbl = RmvFstChr(QLbl)
+    If AyHas(OItm, Lbl) Then
+        ShfLblVal = 1
+        OItm = AyRmvEle(OItm, Lbl)
+    Else
+        ShfLblVal = 0
+    End If
+    Exit Function
+End If
+Dim J%
+For J = 0 To UB(OItm)
+    With Brk2(OItm(J), "=")
+        If .S1 = QLbl Then
+            ShfLblVal = .S2
+            OItm = AyRmvEleAt(OItm, J)
+            Exit Function
+        End If
+    End With
+Next
 End Function
-Function ShfVal(Lin$, SSLbl$) As Variant()
+
+Function JnTerm$(A)
+Dim O$(), X
+For Each X In AyNz(A)
+    PushI O, QuoteSqBktIfNeeded(X)
+Next
+JnTerm = Join(O, " ")
+End Function
+
+Function ShfVal(OLin$, Lblss$) As String()
+'Lin   is: XX YY ZZ=123 [ABC=A 1] ..
+'Lblss is: *LL ?LL LL LL
+'Return: as many elements as in Lblss
+'        *LL means fixed position, no Lbl is required in OLin
+'        ?LL means boolean, return 0 or 1, is LL in OLin, return 1, else return 0
+'        LL  means match LL=VV in OLin, return VV is match else return ''
+'        those element in OLin has matched Lblss will be removed and remaining unmatched will put back into OLin
 Dim Lbl$(), Itm$(), Lbli
-Lbl = SslSy(SSLbl)
-Itm = LinTermAy(Lin)
+Lbl = SslSy(Lblss)
+Itm = LinTermAy(OLin)
 ShfVal = ShfStarTerm(Itm, Lbl)
 For Each Lbli In AyNz(Lbl)
     If Sz(Itm) = 0 Then Exit For
     PushI ShfVal, ShfLblVal(Itm, Lbli)
 Next
+OLin = JnTerm(Itm)
 End Function
 
 Sub Z_ShfTerm()
@@ -1701,7 +1993,7 @@ Function MaxCol&()
 Static C&, Y As Boolean
 If Not Y Then
     Y = True
-    C = IIf(Application.Version = "16.0", 16384, 255)
+    C = IIf(CurXls.Version = "16.0", 16384, 255)
 End If
 MaxCol = C
 End Function
@@ -1710,9 +2002,75 @@ Function MaxRow&()
 Static R&, Y As Boolean
 If Not Y Then
     Y = True
-    R = IIf(Application.Version = "16.0", 1048576, 65535)
+    R = IIf(CurXls.Version = "16.0", 1048576, 65535)
 End If
 MaxRow = R
+End Function
+Function CvDt(A) As Dt
+Set CvDt = A
+End Function
+
+Sub DsRplDb(A As Ds, Db As Database)
+Dim T
+For Each T In A.DtAy
+    DtRplDb CvDt(T), Db
+Next
+End Sub
+Sub DtRplDb(A As Dt, Db As Database)
+Dim T$: T = A.DtNm
+Db.Execute DltSql(T)
+DtInsDb A, Db
+End Sub
+
+Function FdStr$(A As DAO.Field2)
+Dim D$, R$, Z$, VTxt$, VRul, E$, S$
+If A.Type = DAO.DataTypeEnum.dbText Then S = " TxtSz=" & A.Size
+If A.DefaultValue <> "" Then D = " " & QuoteSqBktIfNeeded("Dft=" & A.DefaultValue)
+If A.Required Then R = " Req"
+If A.AllowZeroLength Then Z = " AlwZLen"
+If A.Expression <> "" Then E = " " & QuoteSqBktIfNeeded("Expr=" & A.Expression)
+If A.ValidationRule <> "" Then VRul = " " & QuoteSqBktIfNeeded("VRul=" & A.ValidationRule)
+If A.ValidationText <> "" Then VRul = " " & QuoteSqBktIfNeeded("VTxt=" & A.ValidationText)
+FdStr = A.Name & " " & DaoTyShtStr(A.Type) & R & Z & S & VTxt & VRul & D & E
+End Function
+Function RsStru$(A As DAO.Recordset)
+Dim O$(), F As DAO.Field2
+For Each F In A.Fields
+    PushI O, FdStr(F)
+Next
+RsStru = JnCrLf(O)
+End Function
+Sub DrSetRs(Dr, Rs As DAO.Recordset)
+Dim V, J%
+For Each V In Dr
+    If IsEmpty(V) Then
+        Rs.Fields(J).Value = Rs.Fields(J).DefaultValue
+    Else
+        Rs.Fields(J).Value = V
+    End If
+    J = J + 1
+Next
+End Sub
+
+Sub DtInsDb(A As Dt, Db As Database)
+If Sz(A.Dry) = 0 Then Exit Sub
+Dim Rs As DAO.Recordset, Dr
+Set Rs = Db.TableDefs(A.DtNm).OpenRecordset
+With Rs
+    For Each Dr In A.Dry
+        .AddNew
+        DrSetRs Dr, Rs
+        .Update
+    Next
+    .Close
+End With
+End Sub
+Function WhBExprSqp$(BExpr$)
+If BExpr = "" Then Exit Function
+WhBExprSqp = " Where " & BExpr
+End Function
+Function DltSql$(T, Optional BExpr$)
+DltSql = "Delete * from [" & T & "]" & WhBExprSqp(BExpr)
 End Function
 
 Function Md(MdDNm) As CodeModule
@@ -1897,7 +2255,7 @@ CurMthMov "IdeSrt"
 End Sub
 
 Function MdTyNm$(A As CodeModule)
-MdTyNm = CmpTy_Nm(MdCmpTy(A))
+MdTyNm = CmpTyStr(MdCmpTy(A))
 End Function
 
 Function MdUnRmk(A As CodeModule) As Boolean
@@ -3743,13 +4101,13 @@ End If
 End Sub
 
 Sub Ass(A As Boolean)
-Debug.Print A
+If Not A Then Stop
 End Sub
 
 Sub D(A)
 Select Case True
 Case IsStr(A): Debug.Print A
-Case IsNumeric(A): Debug.Print A
+Case IsNumeric(A), IsDate(A): Debug.Print A
 Case IsArray(A)
     Dim X
     For Each X In AyNz(A)
@@ -3763,10 +4121,486 @@ Stop
 End Select
 End Sub
 
+Function StruBase(Ly$()) As StruBase
+With StruBase
+    Set .E = SchmEleDic(Ly)
+    Set .F = SchmFldDrs(Ly)
+    Set .TDes = SchmTDesDic(Ly)
+    Set .FDes = SchmFDesDic(Ly)
+    Set .TFDes = SchmTFDesDrs(Ly)
+End With
+End Function
+
+Function SchmEleDic(Ly$()) As Dictionary
+Dim E, Ele$, EleStr$
+Set SchmEleDic = New Dictionary
+For Each E In AyNz(AyWhT1SelRst(Ly, "Ele"))
+    Ele = ShfTerm(E)
+    SchmEleDic.Add Ele, EleStrFd(E)
+Next
+End Function
+
+Function SchmFldDrs(Ly$()) As Drs
+Dim L, Ele$, Dry(), FldLik, F
+For Each F In AyNz(AyWhT1SelRst(Ly, "Fld"))
+    Ele = ShfTerm(F)
+    For Each FldLik In SslSy(F)
+        PushI Dry, Array(Ele, FldLik)
+    Next
+Next
+Set SchmFldDrs = Drs("Ele FldLik", Dry)
+End Function
+Function LyDic(A) As Dictionary
+Dim X, K$, O As New Dictionary
+For Each X In AyNz(A)
+    K = ShfTerm(X)
+    If O.Exists(K) Then
+        O(K) = O(K) & vbCrLf & X
+    Else
+        O.Add K, X
+    End If
+Next
+Set LyDic = O
+End Function
+Function SchmTDesDic(Ly$()) As Dictionary
+Set SchmTDesDic = LyDic(AyWhT1SelRst(Ly, "TDes"))
+End Function
+
+Function SchmFDesDic(Ly$()) As Dictionary
+Set SchmFDesDic = LyDic(AyWhT1SelRst(Ly, "FDes"))
+End Function
+
+Function LinT3Ay(A) As String()
+Dim L$: L = A
+PushI LinT3Ay, ShfTerm(L)
+PushI LinT3Ay, ShfTerm(L)
+PushI LinT3Ay, L
+End Function
+Function SchmTFDesDrs(Ly$()) As Drs
+Dim Dry(), L
+For Each L In Ly
+    PushI Dry, LinT3Ay(L)
+Next
+Set SchmTFDesDrs = Drs("T F Des", Dry)
+End Function
+Function SchmLyEr(SchmLy$()) As String()
+Dim E1$(), E2$(), E3$(), E4$(), E5$()
+PushIAy SchmLyEr, E1
+PushIAy SchmLyEr, E2
+PushIAy SchmLyEr, E3
+PushIAy SchmLyEr, E4
+PushIAy SchmLyEr, E5
+End Function
+Sub SchmAsg(Schm$, OEr$(), OStruAy$(), OStruBase As StruBase)
+Dim Ly$()
+Ly = Split(Schm, vbCrLf)
+OStruAy = AyWhT1SelRst(Ly, "Tbl")
+OStruBase = StruBase(Ly)
+OEr = SchmLyEr(Ly)
+End Sub
+
+Function AyWhT1SelRst(A, T1) As String()
+Dim L
+For Each L In AyNz(A)
+    If ShfTerm(L) = T1 Then PushI AyWhT1SelRst, L
+Next
+End Function
+
+Function AyBrwEr(A) As Boolean
+If Sz(A) = 0 Then Exit Function
+AyBrw A
+AyBrwEr = True
+End Function
+
+Sub Z_DbCrtSchm()
+Dim Schm$, Db As Database
+Set Db = TmpDb
+Schm = _
+         "Tbl A *Id *Nm | *Dte AATy Loc Expr Rmk" & _
+vbCrLf & "Tbl B *Id AId *Nm | *Dte" & _
+vbCrLf & "Fld Txt AATy" & _
+vbCrLf & "Fld Loc Loc" & _
+vbCrLf & "Fld Expr Expr" & _
+vbCrLf & "Fld Mem Rmk" & _
+vbCrLf & "Ele Loc Txt Rq Dft=ABC [VTxt=Loc must cannot be blank] [VRul=IsNull([Loc]) or Trim(Loc)='']" & _
+vbCrLf & "Ele Expr Txt [Expr=Loc & 'abc']" & _
+vbCrLf & "TDes A AA BB " & _
+vbCrLf & "TDes A CC DD " & _
+vbCrLf & "FDes ANm AA BB " & _
+vbCrLf & "TFDes A ANm TFDes-AA-BB"
+GoSub Tst
+Exit Sub
+Tst:
+    DbSchmCrt Db, Schm
+    DbBrw Db
+    Stop
+    Return
+End Sub
+
+Sub DbBrw(A As Database)
+FbBrw A.Name
+End Sub
+
+Function TmpDb(Optional Fdr$, Optional Fnn$) As Database
+Dim Fb$
+Fb = TmpFb(Fdr, Fnn)
+FbCrt Fb
+Set TmpDb = FbDb(Fb)
+End Function
+
+Sub FbBrw(A$)
+Static X As New Access.Application
+AcsCls X
+X.OpenCurrentDatabase A
+X.Visible = True
+End Sub
+Sub AAA()
+EnsMthTbl
+End Sub
+Sub AA()
+EnsMthFb
+End Sub
+Function AyRplStar(A, By) As String()
+Dim X
+For Each X In A
+    PushI AyRplStar, Replace(X, By, "*")
+Next
+End Function
+Function CatHasTbl(A As adox.Catalog, T) As Boolean
+CatHasTbl = ItrHasNm(A.Tables, T)
+End Function
+Function DbHasTbl(A As Database, T) As Boolean
+DbHasTbl = CatHasTbl(FbCat(A.Name), T)
+End Function
+Function DbtStru$(A As Database, T)
+If Not DbHasTbl(A, T) Then Exit Function
+Dim SkAy$(), RstAy$(), Fny$(), Sk$, Rst$, J%
+Fny = DbtFny(A, T)
+SkAy = DbtSk(A, T)
+If Sz(SkAy) > 0 Then
+    Sk = " " & JnSpc(AyRplStar(SkAy, T)) & " |"
+End If
+RstAy = AyMinus(Fny, SkAy)
+If Sz(RstAy) > 0 Then Rst = " " & JnSpc(AyRplStar(RstAy, T))
+DbtStru = T & Sk & Rst
+End Function
+
+Sub DbSchmCrt(A As Database, Schm$)
+Dim Er$(), StruAy$(), B As StruBase, Stru
+SchmAsg Schm, Er, StruAy$(), B
+If AyBrwEr(Er) Then Exit Sub
+For Each Stru In StruAy
+    DbStruCrt A, Stru, B
+Next
+End Sub
+
+Sub StruAsg(Stru, B As StruBase, OTd As DAO.TableDef, OPk$, OSk$, ODes$, OFDes As Dictionary)
+Dim T$: T = LinT1(Stru)
+Dim Fny$(): Fny = StruFny(Stru)
+Dim FdAy() As DAO.Field2: GoSub X1
+Dim HasPk As Boolean:     GoSub X2
+Dim Sk$:                  GoSub X3
+Set OTd = NewTd(T, FdAy)
+If HasPk Then OPk = CrtPkSql(T) Else OPk = ""
+If Sk <> "" Then OSk = CrtSkSql(T, Sk) Else OSk = ""
+If Not IsNothing(B.TDes) Then ODes = DicVal(B.TDes, T)
+Set OFDes = TFnyFDesDic(T, Fny, B.FDes, B.TFDes)
+Exit Sub
+X1:
+    Dim F
+    For Each F In Fny
+        PushObj FdAy, FldFd(F, T, B)   '<===
+    Next
+    Return
+X2:
+    HasPk = AyHas(Fny, T & "Id")
+    Return
+X3:
+    Sk = LinRmvT1(Replace(TakBef(Stru, "|"), "*", T))
+    Return
+    
+End Sub
+Function TFnyFDesDic(T, Fny$(), FDes As Dictionary, TFDes As Drs) As Dictionary
+Set TFnyFDesDic = New Dictionary
+End Function
+Function NewTd(T, FdAy() As DAO.Field2) As DAO.TableDef
+Dim O As New DAO.TableDef, F
+O.Name = T
+For Each F In FdAy
+    O.Fields.Append F
+Next
+Set NewTd = O
+End Function
+Function DicVal(A As Dictionary, K)
+If A.Exists(K) Then DicVal = A(K)
+End Function
+Property Get DbtDes$(A As Database, T)
+
+End Property
+
+Property Let DbtDes(A As Database, T, V$)
+
+End Property
+
+Property Get DbtfDes$(A As Database, T, F)
+
+End Property
+
+Property Let DbtfDes(A As Database, T, F, V$)
+
+End Property
+Function StruFny(A) As String()
+Dim L$, T$
+T = LinT1(A)
+L = Replace(A, "*", T)
+L = Replace(L, "|", " ")
+L = LinRmvT1(L)
+StruFny = SslSy(L)
+End Function
+Sub DbStruCrt(A As Database, Stru, B As StruBase)
+Dim Td As DAO.TableDef, Pk$, Sk$, Des$, FDes As Dictionary
+StruAsg Stru, B, _
+    Td, Pk, Sk, Des, FDes
+A.TableDefs.Append Td
+If Pk <> "" Then A.Execute Pk
+If Sk <> "" Then A.Execute Sk
+If Des <> "" Then DbtDes(A, Td.Name) = Des
+DbtSetFDes A, Td.Name, FDes
+End Sub
+
+Function IsEqFd(A As DAO.Field2, B As DAO.Field2) As Boolean
+With A
+    If .Name <> B.Name Then Exit Function
+    If .Type <> B.Type Then Exit Function
+    If .Required <> B.Required Then Exit Function
+    If .AllowZeroLength <> B.AllowZeroLength Then Exit Function
+    If .DefaultValue <> B.DefaultValue Then Exit Function
+    If .ValidationRule <> B.ValidationRule Then Exit Function
+    If .ValidationText <> B.ValidationText Then Exit Function
+    If .Expression <> B.Expression Then Exit Function
+    If .Attributes <> B.Attributes Then Exit Function
+    If .Size <> B.Size Then Exit Function
+End With
+IsEqFd = True
+End Function
 
 
+Sub Z_EleStrFd()
+Dim A$, Act As DAO.Field2, Ept As DAO.Field2
+A = "Int Req AlwZLen Dft=ABC TxtSz=10"
+Set Ept = New DAO.Field
+With Ept
+    .Type = DAO.DataTypeEnum.dbInteger
+'    .AllowZeroLength = True
+    .DefaultValue = "ABC"
+    .Required = True
+    .Size = 10
+End With
+GoSub Tst
+Exit Sub
+Tst:
+    Set Act = EleStrFd(A)
+    If Not IsEqFd(Act, Ept) Then Stop
+    Return
+End Sub
 
+Function EleStrFd(A) As DAO.Field2
+Dim TyStr$, R As Boolean, Z As Boolean, D$, VTxt$, VRul$, S$, X$
+Dim L$: L = A
+Dim Ay$()
+Ay = ShfVal(L, EleLblss)
+AyAsg Ay, _
+    TyStr, R, Z, D, VTxt, VRul, S, X
+Set EleStrFd = New DAO.Field
+With EleStrFd
+    .Type = DaoShtTyStrTy(TyStr)
+    .Required = R
+    If .Type = dbText Then .AllowZeroLength = Z
+    .DefaultValue = D
+    .ValidationText = VTxt
+    .ValidationRule = VRul
+    .Size = Val(S)
+    .Expression = X
+End With
+End Function
 
+Function DaoShtTyStrTy(A$) As DAO.DataTypeEnum
+Dim O$
+Select Case A
+Case "Lgc": O = DAO.DataTypeEnum.dbBoolean
+Case "Dbl": O = DAO.DataTypeEnum.dbDouble
+Case "Txt": O = DAO.DataTypeEnum.dbText
+Case "Dte": O = DAO.DataTypeEnum.dbDate
+Case "Byt": O = DAO.DataTypeEnum.dbByte
+Case "Int": O = DAO.DataTypeEnum.dbInteger
+Case "Lng": O = DAO.DataTypeEnum.dbLong
+Case "Dec": O = DAO.DataTypeEnum.dbDecimal
+Case "Cur": O = DAO.DataTypeEnum.dbCurrency
+Case "Sng": O = DAO.DataTypeEnum.dbSingle
+Case Else: Stop
+End Select
+DaoShtTyStrTy = O
+End Function
+
+Function DaoTyShtStr$(A As DAO.DataTypeEnum)
+Dim O$
+Select Case A
+Case DAO.DataTypeEnum.dbBoolean: O = "Lgc"
+Case DAO.DataTypeEnum.dbDouble: O = "Dbl"
+Case DAO.DataTypeEnum.dbText: O = "Txt"
+Case DAO.DataTypeEnum.dbDate: O = "Dte"
+Case DAO.DataTypeEnum.dbByte: O = "Byt"
+Case DAO.DataTypeEnum.dbInteger: O = "Int"
+Case DAO.DataTypeEnum.dbLong: O = "Lng"
+Case DAO.DataTypeEnum.dbDecimal: O = "Dec"
+Case DAO.DataTypeEnum.dbCurrency: O = "Cur"
+Case DAO.DataTypeEnum.dbSingle: O = "Sng"
+Case Else: Stop
+End Select
+DaoTyShtStr = O
+End Function
+
+Function FldDrsEle$(Fld, F As Drs)
+Dim Dr
+For Each Dr In AyNz(F.Dry)
+    If Fld Like Dr(1) Then FldDrsEle = Dr(0): Exit Function
+Next
+End Function
+
+Function StdIdFd(Fld) As DAO.Field2
+Set StdIdFd = StdFd(Fld, dbLong, True)
+End Function
+
+Function StdPkFd(Fld) As DAO.Field2
+Set StdPkFd = StdFd(Fld, dbLong, True)
+StdPkFd.Attributes = DAO.FieldAttributeEnum.dbAutoIncrField
+End Function
+
+Function StdFd(Fld, Ty As DAO.DataTypeEnum, Optional Req As Boolean) As DAO.Field2
+Set StdFd = New DAO.Field
+With StdFd
+    .Name = Fld
+    .Type = Ty
+    .Size = 255
+    .Required = Req
+End With
+End Function
+
+Function StdCrtDteFd(Fld) As DAO.Field2
+Set StdCrtDteFd = StdFd(Fld, dbDate, True)
+StdCrtDteFd.DefaultValue = "Now"
+End Function
+
+Function StdDteFd(Fld) As DAO.Field2
+Set StdDteFd = StdFd(Fld, dbDate)
+End Function
+
+Function StdNmFd(Fld) As DAO.Field2
+Set StdNmFd = StdFd(Fld, dbText, True)
+StdNmFd.Size = 50
+StdNmFd.AllowZeroLength = False
+End Function
+
+Function StdCurFd(Fld) As DAO.Field2
+Set StdCurFd = StdFd(Fld, dbCurrency, True)
+StdCurFd.DefaultValue = 0
+End Function
+
+Function StdFldFd(Fld, Tbl) As DAO.Field2
+Dim R2$, R3$: R2 = Right(Fld, 2): R3 = Right(Fld, 3)
+Select Case True
+Case Fld = "CrtDte":   Set StdFldFd = StdCrtDteFd(Fld)
+Case Tbl & "Id" = Fld: Set StdFldFd = StdPkFd(Fld)
+Case R2 = "Id":        Set StdFldFd = StdIdFd(Fld)
+Case R2 = "Nm":        Set StdFldFd = StdNmFd(Fld)
+Case R3 = "Dte":       Set StdFldFd = StdDteFd(Fld)
+Case R3 = "Amt":       Set StdFldFd = StdCurFd(Fld)
+End Select
+End Function
+Function StdEleTnnnFd(Ele, Fld) As DAO.Field2
+If Left(Ele, 1) <> "T" Then Exit Function
+Dim A$
+A = Mid(Ele, 2)
+If CStr(Val(A)) <> A Then Exit Function
+Set StdEleTnnnFd = StdFd(Fld, dbText, True)
+With StdEleTnnnFd
+    .Size = A
+    .DefaultValue = """"""
+    .AllowZeroLength = True
+End With
+End Function
+Function StdEleFd(Ele, Fld) As DAO.Field2
+Dim O As DAO.Field2
+Set O = StdEleTnnnFd(Ele, Fld): If Not IsNothing(O) Then Set StdEleFd = O: Exit Function
+Select Case Ele
+Case "Nm": Set StdEleFd = StdNmFd(Fld)
+Case "Amt": Set StdEleFd = StdFd(Fld, dbCurrency, True): StdEleFd.DefaultValue = 0
+Case "Txt": Set StdEleFd = StdFd(Fld, dbText, True): StdEleFd.DefaultValue = """""": StdEleFd.AllowZeroLength = True
+Case "Cur": Set StdEleFd = StdFd(Fld, dbCurrency, True): StdEleFd.DefaultValue = 0
+Case "Dte": Set StdEleFd = StdFd(Fld, dbDate, False)
+Case "Int": Set StdEleFd = StdFd(Fld, dbInteger, True): StdEleFd.DefaultValue = 0
+Case "Lng": Set StdEleFd = StdFd(Fld, dbLong, True): StdEleFd.DefaultValue = 0
+Case "Dbl": Set StdEleFd = StdFd(Fld, dbDouble, True): StdEleFd.DefaultValue = 0
+Case "Sng": Set StdEleFd = StdFd(Fld, dbSingle, True): StdEleFd.DefaultValue = 0
+Case "Lgc": Set StdEleFd = StdFd(Fld, dbBoolean, True): StdEleFd.DefaultValue = 0
+Case "Mem": Set StdEleFd = StdFd(Fld, dbMemo, True): StdEleFd.DefaultValue = """""": StdEleFd.AllowZeroLength = True
+End Select
+End Function
+
+Sub CurVbeSav()
+VbeSav CurVbe
+End Sub
+
+Sub VbeSav(A As Vbe)
+Dim P As VBProject
+For Each P In A.VBProjects
+    PjSav P
+Next
+End Sub
+Function FldFd(F, T, B As StruBase) As DAO.Field2
+Dim O As DAO.Field2, Fd As DAO.Field2, E$
+Set O = StdFldFd(F, T)
+If Not IsNothing(O) Then
+    Set FldFd = O
+    Exit Function
+End If
+E = FldDrsEle(F, B.F): If E = "" Then Stop
+Set O = StdEleFd(E, F)
+If Not IsNothing(O) Then
+    Set FldFd = O
+    Exit Function
+End If
+If Not B.E.Exists(E) Then Stop
+Set Fd = B.E(E)
+Set FldFd = FdClone(Fd, F)
+End Function
+
+Function FdClone(A As DAO.Field2, FldNm) As DAO.Field2
+Set FdClone = New DAO.Field
+With FdClone
+    .Name = FldNm
+    .Type = A.Type
+    .AllowZeroLength = A.AllowZeroLength
+    .Attributes = A.Attributes
+    .DefaultValue = A.DefaultValue
+    .Expression = A.Expression
+    .Required = A.Required
+    .ValidationRule = A.ValidationRule
+    .ValidationText = A.ValidationText
+End With
+End Function
+
+Function DbtFny(A As Database, T) As String()
+DbtFny = ItrNy(A.TableDefs(T).Fields)
+End Function
+Sub DbtSetFDes(A As Database, T, FDes As Dictionary)
+Dim F
+For Each F In DbtFny(A, T)
+    If FDes.Exists(F) Then
+        DbtfDes(A, T, F) = FDes(F)
+    End If
+Next
+End Sub
 
 Sub CmpRmv(A As VBComponent)
 A.Collection.Remove A
@@ -3781,21 +4615,27 @@ Case 3: O1 = Ay(0): O2 = Ay(1): O3 = Ay(2)
 Case Else: Stop
 End Select
 End Sub
+
 Function TyNm$(A)
 TyNm = TypeName(A)
 End Function
+
 Sub DicTyBrw(A As Dictionary)
 DicBrw DicTy(A)
 End Sub
+
 Function DicTy(A As Dictionary) As Dictionary
 Set DicTy = DicMap(A, "TyNm")
 End Function
+
 Sub DicWsBrw(A As Dictionary)
 WsVis DicWs(A)
 End Sub
+
 Sub DicBrw(A As Dictionary)
 Brw DicLy(A)
 End Sub
+
 Function DicLy(A As Dictionary) As String()
 DicLy = S1S2AyFmt(DicS1S2Ay(A))
 End Function
@@ -3814,20 +4654,18 @@ Sub ErImposs()
 Stop ' Impossible
 End Sub
 
-
-
 Sub FtBrw(A)
 Shell "code.cmd """ & A & """", vbHide
 'Shell "notepad.exe """ & A & """", vbMaximizedFocus
 End Sub
 
-Sub FtRmvFst4Lines(FT$)
-Dim A$: A = Fso.GetFile(FT).OpenAsTextStream.ReadAll
+Sub FtRmvFst4Lines(Ft$)
+Dim A$: A = Fso.GetFile(Ft).OpenAsTextStream.ReadAll
 Dim B$: B = Left(A, 55)
 Dim C$: C = Mid(A, 56)
 Dim B1$: B1 = Replace("VERSION 1.0 CLASS|BEGIN|  MultiUse = -1  'True|END|", "|", vbCrLf)
 If B <> B1 Then Stop
-Fso.CreateTextFile(FT, True).Write C
+Fso.CreateTextFile(Ft, True).Write C
 End Sub
 
 Sub FunFNm_BrkAsg(A$, OFunNm$, OPjNm$, OMdNm$)
@@ -3857,18 +4695,15 @@ O.Close
 Dim AddIn As AddIn: Set AddIn = CurXls.AddIns.Add(A)
 AddIn.Installed = True
 Dim Pj As VBProject
-Set Pj = VbePjFfn_Pj(CurVbe, A)
+Set Pj = VbePjFfnPj(CurVbe, A)
 Pj.Name = FfnFnn(A)
 PjSav Pj
 End Sub
-Function VbePjFfn_Pj(A As Vbe, Ffn) As VBProject
-Dim I
-For Each I In A.VBProjects ' Cannot use VbePjAy(A), should use A.VBProjects
-                           ' due to VbePjAy(X).FileName gives error
-                           ' but (Pj in A.VBProjects).FileName is OK
-    Debug.Print PjFfn(CvPj(I))
-    If StrIsEq(PjFfn(CvPj(I)), Ffn) Then
-        Set VbePjFfn_Pj = I
+Function VbePjFfnPj(A As Vbe, Ffn) As VBProject
+Dim P As VBProject
+For Each P In A.VBProjects
+    If StrComp(PjFfn(P), Ffn, vbTextCompare) = 0 Then
+        Set VbePjFfnPj = P
         Exit Function
     End If
 Next
@@ -4402,7 +5237,7 @@ If Not PjHasCmp(A, Nm) Then
     Set Cmp = A.VBComponents.Add(Ty)
     Cmp.Name = Nm
     Cmp.CodeModule.AddFromString "Option Explicit"
-    Debug.Print FmtQQ("PjEnsCmp: Md(?) of Ty(?) is added in Pj(?) <===================================", Nm, CmpTy_Nm(Ty), A.Name)
+    Debug.Print FmtQQ("PjEnsCmp: Md(?) of Ty(?) is added in Pj(?) <===================================", Nm, CmpTyStr(Ty), A.Name)
 End If
 Set PjEnsCmp = A.VBComponents(Nm)
 End Function
@@ -4427,6 +5262,11 @@ For Each I In Ay
 Next
 AyWrt PjRfLy(A), PjRfCfgFfn(A) 'Exp rf -----
 End Sub
+
+Sub PjAct(A As VBProject)
+Set CurVbe.ActiveVBProject = A
+End Sub
+
 Sub PjGo(A As VBProject)
 ClsWin
 Dim Md As CodeModule
@@ -4448,9 +5288,6 @@ PjFn = FfnFn(PjFfn(A))
 End Function
 Private Sub ZZ_PjSav()
 PjSav CurPj
-End Sub
-Sub VbeSav(A As Vbe)
-ItrDo A.VBProjects, "PjSav"
 End Sub
 
 Private Sub ZZ_VbeDmpIsSaved()
@@ -4501,7 +5338,7 @@ If Fn = "" Then
     Debug.Print FmtQQ("PjSav: Pj(?) needs saved first", A.Name)
     Exit Sub
 End If
-PjGo A
+PjAct A
 If ObjPtr(CurPj) <> ObjPtr(A) Then Stop: Exit Sub
 Dim B As CommandBarButton: Set B = SavBtn
 If Not StrIsEq(B.Caption, "&Save " & Fn) Then Stop
@@ -4538,8 +5375,6 @@ For Each N In Ny
     Md_Gen_TstSub M
 Next
 End Sub
-
-
 
 Sub PushI(O, M)
 Dim N&: N = Sz(O)
@@ -4646,8 +5481,8 @@ Shell FmtQQ("code.cmd ""?""", T), vbMaximizedFocus
 'Shell FmtQQ("notepad.exe ""?""", T), vbMaximizedFocus
 End Sub
 
-Sub StrWrt(A, FT$, Optional IsNotOvrWrt As Boolean)
-Fso.CreateTextFile(FT, Overwrite:=Not IsNotOvrWrt).Write A
+Sub StrWrt(A, Ft$, Optional IsNotOvrWrt As Boolean)
+Fso.CreateTextFile(Ft, Overwrite:=Not IsNotOvrWrt).Write A
 End Sub
 
 Sub CurVbeExport()
@@ -4953,6 +5788,9 @@ End Function
 Function DbtRs(A As Database, T) As DAO.Recordset
 Set DbtRs = A.OpenRecordset(SelTblSql(T))
 End Function
+Function RsFny(A As DAO.Recordset) As String()
+RsFny = ItrNy(A.Fields)
+End Function
 Function RsDry(A As DAO.Recordset) As Variant()
 With A
     While Not .EOF
@@ -4972,9 +5810,7 @@ End Function
 Function SelTblSql$(T)
 SelTblSql = "Select * from [" & T & "]"
 End Function
-Sub AAAAA()
-Z_DrsInsUpdDbt
-End Sub
+
 Sub Z_DrsInsUpdDbt()
 Dim Db As Database, T, A As Drs, TFb$
     TFb = TmpFb("Tst", "DrsInsUpdDbt")
@@ -5088,12 +5924,26 @@ For Each Dr In A
     If IsEqAy(DrSel(Dr, IxAy), ValAy) Then PushI DryWhIxAyValAy, Dr
 Next
 End Function
+Function DbqDrs(A As Database, Q) As Drs
+Set DbqDrs = RsDrs(DbqRs(A, Q))
+End Function
+Function RsDrs(A As DAO.Recordset) As Drs
+Set RsDrs = Drs(RsFny(A), RsDry(A))
+End Function
+
+Function DbqRs(A As Database, Q) As DAO.Recordset
+Set DbqRs = A.OpenRecordset(Q)
+End Function
 Function DryPkMinus(A, B, PkIxAy&()) As Variant()
 Dim AK(): AK = DrySel(A, PkIxAy)
 Dim BK(): BK = DrySel(B, PkIxAy)
 Dim CK(): CK = DryPkMinus(AK, BK, PkIxAy)
 DryPkMinus = DryWhIxAyValAy(A, PkIxAy, CK)
 End Function
+Sub LinTRstAsg(Lin, OT$, ORst$)
+OT = LinT1(Lin)
+ORst = LinRmvT1(Lin)
+End Sub
 Function DrsPkDiff(A As Drs, B As Drs, PkSs$) As Drs
 
 End Function
@@ -5373,16 +6223,27 @@ End Function
 Function DbNm$(A As Database)
 DbNm = A.Name
 End Function
+
+Function DbtIdx(A As Database, T, Idx) As DAO.Index
+Dim I As DAO.Index
+For Each I In A.TableDefs(T).Indexes
+    If I.Name = Idx Then Set DbtIdx = I: Exit Function
+Next
+End Function
+
+Function DbtSecIdx(A As Database, T)
+Set DbtSecIdx = DbtIdx(A, T, "SecondaryKey")
+End Function
 Function DbtSkIdx(A As Database, T) As DAO.Index
 Dim O As DAO.Index
-Set O = ItrFstNm(A.TableDefs(T).Indexes, "SecondaryKey")
+Set O = DbtSecIdx(A, T)
 If IsNothing(O) Then Exit Function
 If Not O.Unique Then FunEr "DbtSkIdx", "[T] of [Db] has Idx-SecondaryKey.  It should be Unique", DbNm(A), T
 If O.Primary Then FunEr "DbtSkIdx", "[T] of [Db] is Primary, but is has a name-SecondaryKey.", DbNm(A), T
 Set DbtSkIdx = O
 End Function
-Sub FunEr(FunNm$, QStr$, ParamArray Ap())
-
+Sub FunEr(FunNm$, MacroStr$, ParamArray Ap())
+Stop '
 End Sub
 Function IdxFny(A As DAO.Index) As String()
 If IsNothing(A) Then Exit Function
@@ -5449,8 +6310,7 @@ Function DrsNRow&(A As Drs)
 DrsNRow = Sz(A.Dry)
 End Function
 
-
-Function FbCat(A$) As ADOX.Catalog
+Function FbCat(A$) As adox.Catalog
 Dim O As New Catalog
 Set O.ActiveConnection = FbCn(A)
 Set FbCat = O
